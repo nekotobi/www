@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>HTML5 table</title>
+</head>
+<body>
+<table id="fruit_table">
+  <caption>水果價目表</caption>
+  
+  <colgroup>
+    <col style="background:lightgray">
+    <col span="2" style="background:yellow">
+  </colgroup>
+  
+  <thead>
+    <tr>
+      <th id="fruit_name">名稱</th>
+      <th id="fruit_price">價格</th>
+      <th id="fruit_inventory">剩餘數目</th>
+    </tr>
+  </thead>
+  
+  <tfoot style="color:blue;">
+    <tr>
+      <td colspan="3">芭樂已售完</td>
+    </tr>
+  </tfoot>
+  
+  <tbody>
+    <tr>
+      <td headers="fruit_name">蘋果</td>
+      <td headers="fruit_price">30</td>
+      <td headers="fruit_inventory">10</td>
+    </tr>
+    <tr>
+      <td headers="fruit_name">香蕉</td>
+      <td headers="fruit_price">25</td>
+      <td headers="fruit_inventory">7</td>
+    </tr>
+    <tr>
+      <td headers="fruit_name">芭樂</td>
+      <td headers="fruit_price">20</td>
+      <td headers="fruit_inventory"></td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>
