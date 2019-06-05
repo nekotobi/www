@@ -86,12 +86,13 @@
 			  $plans= sortArrays( $plansTmp2 ,5 ,"false");
 			  $ColorJump=array(0,0,0,0,0);
 			  $LinkURL="scheduleAll.php?PhpInputType=EditPlan&SelectType=".$SelectType;
+			  $color_num=2;
 			  for($i=0;$i<count($plans);$i++){
 			      $d=returnDateString($plans[$i][0],$plans[$i][1],$plans[$i][2]);
 				  $x=RetrunXpos($daysLoc,$d);	
 	              $info= $plans[$i][4];	
 				  $line=$plans[$i][5];
-                  $color= $colorCodes[$line+2][$ColorJump[$line]+1];	
+                  $color= $colorCodes[$color_num][$ColorJump[$line]+1];	
 				  $fontColor="#222222";
 		          $process=$plans[$i][8];
 				  if(  $plans[$i][7]=="目標" ){
@@ -133,7 +134,8 @@
 						  if($ps[$j]!=0 ) $st="";
 				     }
 					 if($nowState>=count($ps))$nowState=count($ps)-1;
-				  $color=$colorCodes[9][$nowState+1];
+					
+				  $color=$colorCodes[9][$color_num];
 				  $state=$SelectScheduleType2[$SelectType][$nowState];
 				  if($state!=$plans[$i][9]) $color="#ff0000";
 				  if ($passDays==0)$color="#cccccc";
@@ -147,6 +149,8 @@
 				   }else{
 				   $ColorJump[$line]=0;
 				   }
+				    $color_num+=1;
+					if( $color_num>7)$color_num=3;
 			  }
 	 }
 	
