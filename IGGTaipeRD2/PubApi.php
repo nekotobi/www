@@ -14,6 +14,14 @@
 ?>
 
 <?php //功能
+    function returnArrayNum($BaseArray,$string){
+	        for($i=0;$i<count($BaseArray);$i++){
+				if($BaseArray[$i]==$string)return $i;
+			}
+			return  0;
+	}
+
+
     function returnOrdersNumArray($BaseArray,$BaseNum,$SortArray,$sortNum){
 	         $newArray= array();
 			  for($i=0;$i<count($SortArray);$i++){

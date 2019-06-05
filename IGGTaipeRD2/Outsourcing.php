@@ -71,6 +71,7 @@
     function DrawOutsourcing($Data,$x,$y,$color,$fontColor){
 	     global $width,$TableType;
 	     global $LastSn;
+	     global $radio_1,$radio_2;
 	   		    $x=20;
 				$h=40;
 	      for($i=0;$i<count($Data);$i++){
@@ -83,7 +84,20 @@
 				           DrawRect($Data[$i],"12",$fontColor,$x,$y,$w,$h,$color);
 			              break;
 					 case $TableType[$i]=="radio_2" :
-				           DrawRect($Data[$i],"12",$fontColor,$x,$y,$w,$h,$color);
+					 	   $pic="Pics/star.png";
+						   $n=returnArrayNum($radio_2,$Data[$i]);
+						   DrawRect("","12",$fontColor,$x,$y,$w,$h,$color);
+						   if($n==4){
+						      $pic="Pics/crow.png";
+						      DrawPosPic($pic,($y+2),$x+12 ,30,30,"absolute" );
+						   }else{
+							  for($s=0;$s<=$n;$s++) 
+							      DrawPosPic($pic,( $y+16),$x +($s*12),12,12,"absolute" );
+						   
+							}
+					
+					     
+				          
 			              break;
 				     case $TableType[$i]=="time" :
   						   $time_d=date("d日H時",(time()+(8+$Data[$i])*3600));
@@ -95,7 +109,7 @@
 			              break; 
 					case  $TableType[$i]=="pic" :
 			        	  $pic="Outsourcing/pic/".$Data[$i];
-					      DrawPosPic($pic, $y,$x,$h,$h,"fixed" );
+					      DrawPosPic($pic, $y,$x,$h,$h,"absolute" );
 					       
 						  break;
 		        	}
