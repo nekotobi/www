@@ -10,15 +10,12 @@
 	 $ex=400;
 	 $ey=300;
 	 $w=400;
-	 $h=200;
-	//c="scheduleAll.php";
+	 $h=400;
 	 $DataBase=getMysqlDataArray($tablename);
- 
      $getplan= getMysqlSortData($DataBase,2,$epd,5,$epLine,4);
 	 $eptype= getMysqlSortData($DataBase,2,$epd,5,$epLine,7);
-      //echo ">".$getplan;
      DrawPopBG($ex,$ey-60,$w,$h,$title ,"12",$BackURL);
-	// echo $SelectScheduleType[$SelectType];
+	 //Hiden
      echo   "<form id='AddPlan'  name='Show' action='scheduleUp.php' method='post'>";
      echo   "<input type=hidden name=ProjectDataName value=".$ProjectDataName.">"; 
 	 echo   "<input type=hidden name=Upy value=".$epy.">"; 
@@ -27,58 +24,85 @@
 	 echo   "<input type=hidden name=UpLine value=".$epLine.">"; 
      echo   "<input type=hidden name=selecttype value=".$SelectScheduleType[$SelectType].">";
 	 echo   "<input type=hidden name=selectnum value=".$SelectType.">"; 
-	 $workyinput="<input type=text name=epy  value='".$epy."'  size=4   >";
-	 DrawInputRect("年","12","#ffffff",($ex ),$ey-20,120,18, $colorCodes[4][2],"top", $workyinput);
+	 //Base
+	 $workyinput="<input type=text name=epy  value='".$epy."'  size=4  style=font-size:10px >";
+	 DrawInputRect("年","12","#ffffff",($ex ),$ey,120,18, $colorCodes[4][2],"top", $workyinput);
 	 
-	 $workminput="<input type=text name=epm  value='".$epm."'  size=4   >";
-	 DrawInputRect("月","12","#ffffff",($ex +60),$ey-20,120,18, $colorCodes[4][2],"top", $workminput);
+	 $workminput="<input type=text name=epm  value='".$epm."'  size=4  style=font-size:10px >";
+	 DrawInputRect("月","12","#ffffff",($ex +60),$ey,120,18, $colorCodes[4][2],"top", $workminput);
 	 
-	 $workdinput="<input type=text name=epd  value='".$epd."'  size=4   >";
-	 DrawInputRect("日","12","#ffffff",($ex +120),$ey-20,120,18, $colorCodes[4][2],"top", $workdinput);
+	 $workdinput="<input type=text name=epd  value='".$epd."'  size=4   style=font-size:10px>";
+	 DrawInputRect("日","12","#ffffff",($ex +120),$ey,120,18, $colorCodes[4][2],"top", $workdinput);
 	 
-     $Planinput="<input type=text name=getplan value='".$getplan."'  size=34  >";
-	 DrawInputRect("計畫","12","#ffffff",($ex),$ey,220,18, $colorCodes[4][2],"top",$Planinput);
+     $Planinput="<input type=text name=getplan value='".$getplan."'  size=32 style=font-size:12px >";
+	 DrawInputRect("計畫","12","#ffffff",($ex),$ey-30,220,18, $colorCodes[4][2],"top",$Planinput);
 	 
-     $workDayinput="<input type=text name=epDay  value='".$epDay."'  size=2   >";
-	 DrawInputRect("天數","12","#ffffff",($ex+220),$ey,120,18, $colorCodes[4][2],"top",$workDayinput);
+     $workDayinput="<input type=text name=epDay  value='".$epDay."'  size=2 style=font-size:10px  >";
+	 DrawInputRect("總天數","12","#ffffff",($ex+180),$ey,120,18, $colorCodes[4][2],"top",$workDayinput);
 	 
-	 $Typeinput="<input type=text name=eptype  value='".$eptype."'  size=6   >";
-	 DrawInputRect("類型","12","#ffffff",($ex+280),$ey,120,18, $colorCodes[4][2],"top", $Typeinput);
+	 $Typeinput="<input type=text name=eptype  value='".$eptype."'  size=6 style=font-size:10px  >";
+	 DrawInputRect("類型 ","12","#ffffff",($ex+280),$ey,120,18, $colorCodes[4][2],"top", $Typeinput);
 	 
-	 $Lineinput="<input type=text name=epLine value='".$epLine."'  size=2   >";
-	 DrawInputRect("行數","12","#ffffff",($ex+280),$ey+20,120,18, $colorCodes[4][2],"top", $Lineinput);
+	 $Lineinput="<input type=text name=epLine value='".$epLine."'  size=2  style=font-size:10px >";
+	 DrawInputRect("行數 ","12","#ffffff",($ex+280),$ey-20,120,18, $colorCodes[4][2],"top", $Lineinput);
 	 
-	 $submitP="<input type=submit name=submit value=刪除計畫>";
-	 DrawInputRect("","12","#ffffff",($ex+350),$ey+20,120,18, $colorCodes[4][2],"top",$submitP);
+	 $submitP="<input type=submit name=submit value=刪除計畫 style=font-size:10px>";
+	 DrawInputRect("","12","#ffffff",($ex+350),$ey-60,120,18, $colorCodes[4][2],"top",$submitP);
 	 
-	 $submitP="<input type=submit name=submit value=修改計畫>";
-	 DrawInputRect("","12","#ffffff",($ex+350),$ey,120,18, $colorCodes[4][2],"top",$submitP);
+	 $submitP="<input type=submit name=submit value=修改計畫 style=font-size:14px>";
+	 DrawInputRect("","12","#ffffff",($ex+350),$ey ,120,40, $colorCodes[4][2],"top",$submitP);
      //腳色:
-	 if(count($SelectScheduleType2[ $SelectType])==1)return;
+	 
+	 if(count($SelectScheduleType2[ $SelectType])==1)return;//無分類跳出
 	 $processData = getMysqlSortData($DataBase,2,$epd,5,$epLine,8); 
 	 $processarr=explode("_",$processData); //explode($clipStr ,$string)
+	 $OutData = getMysqlSortData($DataBase,2,$epd,5,$epLine,11); 
+	 $OutAr=explode("_", $OutData);  
 	 echo  "<input type=hidden name=totallT value=".count($SelectScheduleType2[ $SelectType]).">"; 
 	 $stateCheck= getMysqlSortData($DataBase,2,$epd,5,$epLine,9); 
 	 $isCheck="";
-
+     
+	 //選擇外包
+	 $OutsDatatmp=getMysqlDataArray("outsourcing");
+	 $OutsDatatmp2=filterArray($OutsDatatmp,0,"data");
+	 $OutsData=returnArraybySort( $OutsDatatmp2,2);
+     //BG
+	 DrawRect("","12","#000000",$ex+55,$ey+40,110,140,$colorCodes[3][0]); 
+     DrawText("負責人",$ex+80,$ey+40,100,120,12,"#ffffff"); 
+	 //State
+	 $now_State=$SelectScheduleType2[ $SelectType][$i];
+     DrawRect("","12","#000000",$ex+165,$ey+40,110,140,$colorCodes[0][0]); 
+     DrawText("目前進度[".$stateCheck."]",$ex+180,$ey+40,100,120,12,"#ffffff"); 
+	 
+	 
 	 for($i=0;$i<count($SelectScheduleType2[ $SelectType]);$i++){
-	     $sinput="<input type=text name=sinput".$i."  value='". $processarr[$i]."'  size=2   >";
-		 $msg=$SelectScheduleType2[ $SelectType][$i]." " ;
-	     DrawInputRect( $msg,"12","#ffffff",($ex+40),$ey+60+$i*20,120,18, $colorCodes[4][2],"top",$sinput);
-		 //確認:
- 
-		 if( $stateCheck==$msg) $isCheck="checked=true";
+		 //選擇外包 //style=font-size:12px
+		 $selectTable= MakeSelectionV2($OutsData,$OutAr[$i],"outInput".$i,10);
+		 DrawInputRect( "","10","#ffffff",($ex+60),$ey+60+$i*30,120,16, $colorCodes[4][2],"top", $selectTable);
+		 
+		 //天數
+	     $sinput="<input type=text name=sinput".$i."  value='". $processarr[$i]."'  size=2  style=font-size:12px >";
+		 $msg=$SelectScheduleType2[ $SelectType][$i] ;
+	     DrawInputRect( $msg,"12","#ffffff",($ex),$ey+60+$i*30,120,18, $colorCodes[4][2],"top",$sinput);
+		 //狀態
+	
+		 $isCheck="";
+		 if( $msg==$stateCheck) $isCheck="checked=true ";
 	     $inputp="<input type=radio name=state value=".$msg." ".$isCheck.">";
-	     DrawInputRect( ">>","12","#ffffff",($ex+220),$ey+60+$i*20,120,18, $colorCodes[4][2],"top",  $inputp);
+	     DrawInputRect( ">>","12","#ffffff",($ex+220),$ey+60+$i*30,120,18, $colorCodes[4][2],"top",  $inputp);
 	 }
 	  $isCheck="";
 	  if( $stateCheck==$msg) $isCheck="checked=true";
       $inputp="<input type=radio name=state value=完成 ".$isCheck.">";
-	  DrawInputRect( "完成","12","#ffffff",($ex+120),$ey+60+count($SelectScheduleType2[ $SelectType])*20,120,18, $colorCodes[4][2],"top",  $inputp);
+	  DrawInputRect( "完成","12","#ffffff",($ex+120),$ey+120+count($SelectScheduleType2[ $SelectType])*20,120,18, $colorCodes[4][2],"top",  $inputp);
      
   
   }
+  function ChoseOutsourcing($x,$y,$OutSelectData,$BaseOut,$inputName){
+      	
+	 // DrawInputRect( "完成","12","#ffffff",($ex+120),$ey+60+count($SelectScheduleType2[ $SelectType])*20,120,18, $colorCodes[4][2],"top",  $inpu
   
+  }
   
   function AddPlanEditor($ex,$ey,$w,$h,$y,$m,$d){
 	 global $ProjectDataName;

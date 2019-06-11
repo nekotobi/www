@@ -39,6 +39,7 @@
 			  for($i=0;$i<count($YearRange);$i++){
 			     $VacationDays=  getMonthVacationDays($YearRange[$i],$MonthRange[$i],$VacationDays);
 			  }
+ 
 	          return  $VacationDays;
 	  }
       function getMonthVacationDays($y,$m,$VacationDays){
@@ -69,25 +70,21 @@
 				//echo $y."-".$m."-".$startday."-".$workd.">". $CurrentDay."</br>";
 				return  $CurrentDay-$startday ;
 	   } 
+	   
+	   
+	   
  	   function SetCalendarRange( $TargetYear,$TargetMonth){
 	            global $YearRange,$MonthRange,$showMonthNum;
 				if( $TargetYear=="") $TargetYear=  date("Y");
-				if($TargetMonth!=""){
-				$m=$TargetMonth;
-				}
+				if( $TargetMonth!="") $m=$TargetMonth;
 				if( $TargetMonth=="")
 				  {
 				    $TargetMonth=  date("m");
 					$m=$TargetMonth-1;
 				  }
 				if($showMonthNum==0)$showMonthNum=5;
-			
 				$y=$TargetYear;
-			 
-				if($m==0){
-					$m=12;
-					$y-=1;
-				}
+				if($m==0){$m=12; $y-=1;}
 				for($i=0;$i<=$showMonthNum;$i++){
 				 	 $MonthRange[$i]=$m;
 					 $YearRange[$i]=$y;

@@ -52,7 +52,18 @@
 			  global $BackURL,$tableName;
  	          global $process,$state ,$Artprincipal,$outsourcing,$worktype,$remark,$selecttype;
 			  global $SelectType,$selectnum,$totallT;
-			  global $sinput0,$sinput1,$sinput2,$sinput3,$sinput4;
+			  for ($i=0;$i<$totallT;$i++){
+			       $na="sinput".$i; 
+                   $oi="outInput".$i;
+				   //echo $na;
+				   global   $$na;//,$sinput1,$sinput2,$sinput3,$sinput4;
+				   global   $$oi;
+				   echo "[".$i.">".$$na;
+			  }
+				  echo "-".$totallT;
+			  
+			  
+			
 			  $BackURL=$BackURL."?SelectType=".$selectnum;
 			  $WHEREtable=array( "year", "month","startDay","Line");
 		      $WHEREData=array( $Upy,$Upm,$Upd,$UpLine );
@@ -61,9 +72,18 @@
 			 
               if($selectnum>0){
 			    $epDay=0;
-			    $epDay+=$sinput0+$sinput1+$sinput2+$sinput3+$sinput4;
-				$process=$sinput0."_".$sinput1."_".$sinput2."_".$sinput3 ;
-			 }
+				$process="";
+				$outsourcing="";
+				for($i=0;$i<$totallT;$i++){
+					 $na="sinput".$i; 
+			      	 $epDay+=$$na;
+					 $oi="outInput".$i;
+					 $process=$process.$$na."_";
+					 $outsourcing=$outsourcing.$$oi."_";
+				}
+			    //$epDay+=$sinput0+$sinput1+$sinput2+$sinput3+$sinput4;
+				//$process=$sinput0."_".$sinput1."_".$sinput2."_".$sinput3 ;
+			  }
  
 			  $Base=array("year", "month", "startDay", "days", "plan", "Line", "type"
 			            , "process" , "state" , "Artprincipal" , "outsourcing" , "worktype" , "remark" ,"selecttype" 
@@ -75,7 +95,7 @@
 			   $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
 			   echo $stmt;
 			   SendCommand($stmt,$data_library);
-			    echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+			   echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	  }
   
      function AddPlanData(){

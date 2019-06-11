@@ -218,7 +218,9 @@
 <?php   //php表格用
 	   function MakeSelectionV2($items,$selectItem,$selectName,$size){
 	        $seletProject= "<select  style=width:100px; name=".$selectName."   >";
+			$seletProject=$seletProject."<option value=未定義 >未定義</option>";
 			for($i=0;$i<count($items);$i++){
+				//echo $items[$i];
 			     $seletProject=$seletProject."<option value=".$items[$i];
 				 if($items[$i]==$selectItem) $seletProject=$seletProject." selected=true ";
 				 $seletProject=$seletProject.">".$items[$i]."</option>";
@@ -250,6 +252,52 @@
 		    DrawLinkPic("Pics/Cancel.png",$y-50,$x+$w+20,32,32,$Link);
 		    if($pic) DrawLinkPic($pic,$x,$y,$w,$h,$Link);
 			DrawText($title,$x-20,$y-20,300,50,24,"#ffffff");
+	   }
+	   function DrawOutLinkArea($StartX,$startY ,$BaseURL){
+                $outTmp1=getMysqlDataArray("outsourcing");
+				 $outTmp=filterArray($outTmp1,"0","data");
+				 $x= $StartX;
+	            for($i=0;$i<count( $outTmp);$i++){
+					$Link=$BaseURL."?List=Out&user=".$outTmp[$i][1];
+					$color="#444444";
+				    $pic="Outsourcing/pic/".$outTmp[$i][13];
+					$outName=substr($outTmp[$i][2],0,8);
+				    DrawMemberLinkRect(	$outName,"10","#ffffff", $x+2, $startY ,"70","40",$color,$outTmp[$i][7],$outTmp[$i][2], $Link,$pic);
+				    $x+=  74;
+			    }
+			
+	   }
+	   
+	   
+	   function DrawMembersLinkArea( $StartX,$startY ,$BaseURL){
+		     global $memberId;
+			 $memberTmp=getMysqlDataArray("members");
+			 $members=filterArray($memberTmp,"3","Art");
+			 $memberId=array();
+			 $x= $StartX;
+			 for($i=0;$i<count($members);$i++){
+			  if($members[$i][4]!="Other"){  
+				 $color="#000000";
+				 $id=$members[$i][0] ;
+				 $pic="Pics/Members/".$id.".png";
+				 $Link=$BaseURL."?List=ArtWork&user=".$members[$i][0];
+			     DrawMemberLinkRect($members[$i][1],"10","#cccccc", $x+2, $startY , "60","40",$color,$members[$i][4],$id, $Link,$pic);
+				 $memberId[$members[$i][0]]=$members[$i][1] ;
+				 $x+=  64;
+			  }
+		   }
+	   } 
+	  function DrawMemberLinkRect($Name,$fontSize,$fontColor,$x,$y,$w,$h,$BgColor,$Job,$id,$Link,$pic){
+		      //color
+			  echo "<div  id=User-".$id." ";
+	          echo "  style=' color:".$fontColor."; " ;
+			  echo "text-align:center ; font-weight:bolder ;font-family:Microsoft JhengHei; font-size:".$fontSize."px;";
+			  echo "position:absolute  ;  top:".$y."px; left:".$x."px;  width:".$w."px;height:".$h."px; background-color:".$BgColor."; '>";
+			  echo  $Job;
+	          echo "</div>";
+			  DrawLinkRect("　　".$Name,$fontSize,"#000000",$x,$y+20,$w-6,$h-42,"#ffffff",$Link,1);
+			 // $pic="Pics/Members/".$id.".png";
+			  DrawPosPic($pic,$y+20,$x,"14","14","absolute");
 	   }
 	   function DrawMembersDragArea( $StartX,$startY ){
 		   
@@ -285,7 +333,6 @@
 			  echo "　".$Name;
 	          echo "</div>";
 			  $pic="Pics/Members/".$id.".png";
-			  
 			  DrawPosPic($pic,$y+20,$x,"14","14","fixed");
 	   }
 ?>

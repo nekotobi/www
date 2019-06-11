@@ -59,11 +59,11 @@
    DrawUserData( 25, 0);   //使用者資料(PubApi)
    DrawMembersDragArea( 30,32); //美術群資料(PubApi)
    GetCalendarData(); //取得日曆資料(scheduleApi)
-   DrawBaseCalendar(); //列印基礎日期資料(scheduleApi)
+  DrawBaseCalendar(); //列印基礎日期資料(scheduleApi)
    DrawType();//進度表類型
-   if($sendData=="DragWorkOrder")upData();//上傳表單
+  if($sendData=="DragWorkOrder")upData();//上傳表單
    ShowType();//依類別顯示
-   CheckinputType();//判斷輸入
+ //  CheckinputType();//判斷輸入
    
 ?>
 

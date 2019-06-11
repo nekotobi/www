@@ -1,3 +1,37 @@
+
+
+<?php //V2 Use
+      function GetCalendarData(){
+	          global $StartX, $StartY,$OneDayWidth,$daysLoc,$monthLoc, $YearLoc; 
+	          global $TargetYear,$TargetMonth,$YearRange,$MonthRange,$showMonthNum;
+			  global  $colorCodes;
+	          SetCalendarRange("","");
+			  $MonthTotalWidth=0;
+			  for($i=0;$i<count($MonthRange);$i++){
+			       getDaysLoc( $YearRange[$i], $MonthRange[$i]);
+			  }
+			  $daysLoc= getDayLocVacationDays($daysLoc);
+	  }
+	  function getDaysLoc($y,$m){ //取得日期資料$daysLo[]=$daydata=array($y年,$m月,$i日,$CurrentX位置,$假期0 否 1假期)
+	            global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX,$monthLoc ; 
+				$MonthEnd=getMonthDay($m,$y);
+				$sx=$CurrentX+$OneDayWidth;
+				for($i=1;$i<=$MonthEnd;$i++){
+				    $CurrentX+=$OneDayWidth;
+					$daydata=array($y,$m,$i,$CurrentX,0);
+				    array_push(   $daysLoc,$daydata);
+				}
+		     	$monthData=array($y,$m,$sx,$CurrentX-$sx+$OneDayWidth);
+			    array_push( $monthLoc,$monthData);
+	 }
+ 
+?>
+
+
+
+
+
+
 <?php  //判斷輸入
      function CheckinputType(){
 	       global $epy,$epm,$epd,$epLine,$epDay,$eptype;
@@ -78,6 +112,7 @@
 			  global $colorCodes;
 			  global $SelectScheduleType, $SelectType,$State,$SelectScheduleType2;
 			  global $LinkURL;
+			 
 			  if($SelectType=="")$SelectType=0;
 	          $plansTmp=getMysqlDataArray("rpgartschedule");
 			  
@@ -87,6 +122,7 @@
 			  $ColorJump=array(0,0,0,0,0);
 			  $LinkURL="scheduleAll.php?PhpInputType=EditPlan&SelectType=".$SelectType;
 			  $color_num=2;
+			
 			  for($i=0;$i<count($plans);$i++){
 			      $d=returnDateString($plans[$i][0],$plans[$i][1],$plans[$i][2]);
 				  $x=RetrunXpos($daysLoc,$d);	
@@ -102,7 +138,6 @@
 				   "&epLine=".$line."&epDay=".$plans[$i][3]."&eptype=".$plans[$i][6];
 				   DrawabsoluteRect("","0",$fontColor, $x, $sy-20,"2" ,$line*20+38, $color,  "absolute", $Link );
 				  }
-				  
                   $w= $plans[$i][3]*$OneDayWidth;
 				  $yadd=$plans[$i][5]*20;
 				  $y=$sy+$yadd;
@@ -149,9 +184,10 @@
 				   }else{
 				   $ColorJump[$line]=0;
 				   }
-				    $color_num+=1;
-					if( $color_num>7)$color_num=3;
+				   $color_num+=1;
+				   if( $color_num>7)$color_num=3;
 			  }
+			 
 	 }
 	
 
@@ -167,7 +203,6 @@
 		 global $BackURL,$tablename;
 		        $BackURL="scheduleAll.php?SelectType=".$SelectType;
 				$tablename="rpgartschedule";
-
 				$State=array("未製作","優化","進行中","已完成","最終版完成");
                 $LockProject="RPG";
 	            $StartX=20;
@@ -179,29 +214,7 @@
                 $monthLoc=array();//($y,m,x軸位置,Siz)
 				$showMonthNum=8;
 	 }
-	 function GetCalendarData(){
-	          global $StartX, $StartY,$OneDayWidth,$daysLoc,$monthLoc, $YearLoc; 
-	          global $TargetYear,$TargetMonth,$YearRange,$MonthRange,$showMonthNum;
-			  global  $colorCodes;
-	          SetCalendarRange("","");
-			  $MonthTotalWidth=0;
-			  for($i=0;$i<count($MonthRange);$i++){
-			       getDaysLoc( $YearRange[$i], $MonthRange[$i]);
-			  }
-			  $daysLoc= getDayLocVacationDays($daysLoc);
-	 }
-	  function getDaysLoc($y,$m){ //取得日期資料$daysLo[]=$daydata=array($y年,$m月,$i日,$CurrentX位置,$假期0 否 1假期)
-	            global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX,$monthLoc ; 
-				$MonthEnd=getMonthDay($m,$y);
-				$sx=$CurrentX+$OneDayWidth;
-				for($i=1;$i<=$MonthEnd;$i++){
-				    $CurrentX+=$OneDayWidth;
-					$daydata=array($y,$m,$i,$CurrentX,0);
-				    array_push(   $daysLoc,$daydata);
-				}
-		     	$monthData=array($y,$m,$sx,$CurrentX-$sx+$OneDayWidth);
-			    array_push( $monthLoc,$monthData);
-	 }
+	
 ?> 
 
 <?php //日期/轉座標資料
