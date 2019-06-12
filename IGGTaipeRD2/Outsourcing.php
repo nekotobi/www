@@ -81,7 +81,7 @@
 				          DrawRect($Data[$i],"12",$fontColor,$x,$y,$w,$h,$color  );
 			              break;
 				     case $TableType[$i]=="radio_1" :
-				           DrawRect($Data[$i],"12",$fontColor,$x,$y,$w,$h,$color);
+				          DrawRect($Data[$i],"12",$fontColor,$x,$y,$w,$h,$color);
 			              break;
 					 case $TableType[$i]=="radio_2" :
 					 	   $pic="Pics/star.png";

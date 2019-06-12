@@ -56,7 +56,7 @@
    include('scheduleApi.php');
  
      defineData_v2();   //定義基礎資料(scheduleApi)
-    // DrawUserData( 25, 0);   //使用者資料(PubApi)
+     
      GetCalendarData(); //取得日曆資料(scheduleApi)
      DrawBaseCalendar_v2(); //列印基礎日期資料(scheduleApi)
      DrawType_v2();//進度表類型
@@ -66,6 +66,7 @@
 	 global   $BaseURL;
      DrawMembersLinkArea( 30,6,  $BaseURL); 
 	 DrawOutLinkArea(30,52,$BaseURL);
+	 DrawUserData( 820, 11);   //使用者資料(PubApi)
 ?>
 
 <?php
@@ -84,13 +85,18 @@
 		 global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
 		        $BaseURL="schedule.php";
                 $BackURL= $BaseURL."?Stype_1=".$Stype_1."&Stype_2=".$Stype_2;
-			    $SelectType_1=array("總規劃","角色","怪物","場景","UI");
+			    $SelectType_1=array("總規劃","角色","怪物","場景","UI","其他");
 				$SelectType_2=array("文案","設定","建模","動作","特效");
 				$stateType=array("未製作","進行中","優化","已完成","結案");
+				if($Stype_1=="")$Stype_1=0;
 		 //資料表
 		 global $data_library,$tableName;
 				$tableName="fpschedule";
 			    $data_library="iggtaiperd2";
+		 //共用資料表
+	     global $OutsData,$memberData;
+                $OutsData=getMysqlDataArray("outsourcing");	 
+      	        $memberData=getMysqlDataArray("members");
 	        
 	 }
      function  DrawType_v2(){
@@ -99,7 +105,7 @@
 			  global $colorCodes;
 			  $y=$StartY+10;
 	          for ($i=0;$i<count( $SelectType_1);$i++){
-				   $x=40+ $i*70;
+				   $x=120+ $i*70;
                    $BackURL2= $BaseURL."?Stype_1=".$i."&Stype_2=".$Stype_2;
 				   //echo  $BackURL;
 				   $msg=" ".$SelectType_1[$i];
@@ -171,22 +177,19 @@
 	  	      global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2;
 		      global $data_library,$tableName;
 			  global $user,$List;
-			  global $memberId;
+			  //global $memberId;
+			  global $OutsData,$memberData;
 			  $plansTmp=getMysqlDataArray($tableName); 
 			  
 			   
               if($List=="ArtWork"){
-			      $memberTmp=getMysqlDataArray("members");
-			      $idtmp=returnDataArray( $memberTmp,0,$user);
-				 
+			      $idtmp=returnDataArray( $memberData,0,$user);
 				  $id=$idtmp[1];
 				  $plans= filterArray($plansTmp,8,$id);
 			  }
 			  if($List=="Out"){
-			      $memberTmp=getMysqlDataArray("outsourcing");
-			      $idtmp=returnDataArray( $memberTmp,1,$user);
+			      $idtmp=returnDataArray( $OutsData,1,$user);
 				  $id=$idtmp[2];
-			  
 				  $plans= filterArray($plansTmp,9,$id);
 			  }
               $JobsArray=array( );
@@ -320,19 +323,49 @@
  
 				$Link=$BackURL."&PhpInputType=DrawEditPlanType&Ecode=".$plansArray[1];
 				$color=$colorCodes[9][0];
+				
 			    for($i=0;$i<count($SelectType_2);$i++){
 					if($SelectType_2[$i]==$plan_type){
-								$color=$colorCodes[9][$i];
+						$color=$colorCodes[9][$i];
+						   if($plansArray[7]=="已完成")	$color=$colorCodes[10][$i];
+							 
 					}
 				}
 				$NameAdd="";
+				$NameBackAdd="";
+			 	if($List==""){ 
+				  $NameBackAdd= "[".$plansArray[9]."]";
+				}
 				if($List!=""){//列印名單工項
 				   $plansTmp=getMysqlDataArray($tableName); 
 				   $codeA=returnDataArray( $plansTmp,1,$plansArray[3]);//取得主資料array
-				   $NameAdd= "[".$codeA[3]."]";
+				   $NameAdd= "[".$codeA[3] ;
 				}
-                DrawLinkRect($NameAdd.">".$plan_type,"10","#000000",$x,$y,$w ,"16", $color,$Link,"1");
+                DrawLinkRect($NameAdd.">".$plan_type.$NameBackAdd,"10","#000000",$x,$y,$w ,"16", $color,$Link,"1");
+				//狀態圖
+				 DrawStatePics($plansArray,$x,$y);
+			
 	  }
+	  function DrawStatePics($plansArray,$x,$y){
+		  		  global $OutsData,$memberData;
+				 $pic="";
+			     if($plansArray[7]=="")$pic="Pics/question";
+				 if($plansArray[7]=="已完成")$pic="Pics/finish";
+				 if($plansArray[7]=="進行中")$pic="Pics/construction";
+				 //狀態問題
+				  $startDayArray=explode("_",$plansArray[2]);
+				  $nowDayArray=array(date(Y),date(m),date(d));
+				  $passDays= getPassDays($startDayArray,$nowDayArray);
+	              if($passDays>$plansArray[6] && $plansArray[7]!="已完成"){
+					  $pic="Pics/warring.gif";
+				  }
+				 if( $pic!="")
+			       DrawPosPic($pic, $y,$x-12,16,16,"absolute" );
+
+	  
+	  }
+	  
+	  
 	  function DrawWorkDetail($ex,$ey,$w,$h){
 	          global $data_library,$tableName;   
 	          global $colorCodes;
