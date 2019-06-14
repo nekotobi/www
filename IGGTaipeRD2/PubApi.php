@@ -260,13 +260,29 @@
 					$Link=$BaseURL."?List=Out&user=".$outTmp[$i][1];
 					$color="#444444";
 				    $pic="Outsourcing/pic/".$outTmp[$i][13];
-					$outName=substr($outTmp[$i][2],0,8);
-				    DrawMemberLinkRect(	$outName,"10","#ffffff", $x+2, $startY ,"70","40",$color,$outTmp[$i][7],$outTmp[$i][2], $Link,$pic);
+					$outName=substr($outTmp[$i][2],0,7);
+					$color=getColor($outTmp[$i][7]);
+				    DrawMemberLinkRect(	$outName,"9","#ffffff", $x-2, $startY ,"70","40",$color,$outTmp[$i][7],$outTmp[$i][2], $Link,$pic);
 				    $x+=  74;
 			    }
 			
 	   }
-	   
+	   function getColor($name){
+		        global $colorCodes;
+				$color="#000000";
+
+	          //  if(strpos('$name','角色')==true   && !strpos('$name','3D') )$color=$colorCodes[10][1];
+			     if(strpos( $name,'角色') !== false && strpos( $name,'3D') ==false){
+				 	  $color=$colorCodes[11][1];
+				 }
+			     if(strpos( $name,'3D') !== false  ){
+				 	  $color=$colorCodes[11][2];
+				 }
+		         if(strpos( $name,'特效') !== false  ){
+				 	  $color=$colorCodes[11][4];
+				 }
+				return $color;
+	   }
 	   
 	   function DrawMembersLinkArea( $StartX,$startY ,$BaseURL){
 		     global $memberId;
@@ -294,14 +310,11 @@
 			  echo "position:absolute  ;  top:".$y."px; left:".$x."px;  width:".$w."px;height:".$h."px; background-color:".$BgColor."; '>";
 			  echo  $Job;
 	          echo "</div>";
-			  DrawLinkRect("　　".$Name,$fontSize,"#000000",$x,$y+20,$w-6,$h-42,"#ffffff",$Link,1);
-			 // $pic="Pics/Members/".$id.".png";
+			  DrawLinkRect("　".$Name,$fontSize,"#000000",$x,$y+20,$w-6,$h-42,"#ffffff",$Link,1);
+ 
 			  DrawPosPic($pic,$y+20,$x,"14","14","absolute");
 	   }
 	   function DrawMembersDragArea( $StartX,$startY ){
-		   
-		  //   global    $CalendarWidth,$NowHeight,$members, $memberId ;
-	       //  $members=getMysqlDataArray("members");
 		     global $memberId;
 			 $memberTmp=getMysqlDataArray("members");
 			 $members=filterArray($memberTmp,"3","Art");

@@ -85,7 +85,7 @@
 		 global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
 		        $BaseURL="schedule.php";
                 $BackURL= $BaseURL."?Stype_1=".$Stype_1."&Stype_2=".$Stype_2;
-			    $SelectType_1=array("總規劃","角色","怪物","場景","UI","概念","TA","其他");
+			    $SelectType_1=array("總規劃","角色","怪物","場景","UI","城建","概念","TA","其他");
 				$SelectType_2=array("文案","設定","建模","動作","特效");
 				$stateType=array("未製作","進行中","優化","已完成","結案");
 				if($Stype_1=="")$Stype_1=0;
@@ -246,7 +246,7 @@
 				  DrawTargetLine($plansLine2[$i]);
 			  }
 		   }
-		   
+ 
 		   
 		   for($i=0;$i<count($plans);$i++){
 			  DrawPlanBar($color_num,$y,$plans[$i] );

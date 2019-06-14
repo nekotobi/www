@@ -69,8 +69,8 @@
 		$y=60;
 	    $SprintStartDay=Array($ey,$em,$ed);
 		$SprintEndDay =getPassDaysDay( $SprintStartDay,$edays);
-	     echo "</br>".$i.">".$SprintEndDay[0]."-".$SprintEndDay[1]."-".$SprintEndDay[2] ;
-		 echo "</br>";
+	    echo "</br>".$i.">".$SprintEndDay[0]."-".$SprintEndDay[1]."-".$SprintEndDay[2] ;
+		echo "</br>";
 	    $info="M".$emil."-Sprint".$enum."工單總覽";
 	  //  DrawRect(  $info,"22","#ffffff","20","20","1400","30","#000000");
 	}
@@ -101,15 +101,17 @@
 			 echo "</br>".$SortArray[$i];
 		     $tmp=filterArray($BaseArray,$num,$SortArray[$i]);	
 		     ListAtmp( $tmp);
+			 
 		   //  Array_Push($rArray,tmp);
 		 }
 		// return $rArray();
 	}
 	function ListAtmp($tmp){
 		 for($i=0;$i<count($tmp);$i++){
+			 
 			 $codeA=returnDataArray( $tmp,1,$tmp[$i][1]);//取得主資料array
 			 $NameAdd= "[".$codeA[3] ;
-		     echo "</br>".$NameAdd."-".$tmp[$i][1]."-";
+		     echo "</br>".$NameAdd."-".$tmp[$i][5]."-";
 		 }
 	}
 	function isDateinDate($StartDay,$EndDay){
