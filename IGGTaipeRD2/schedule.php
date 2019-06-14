@@ -64,7 +64,7 @@
 	// DrawPlan_v2();
 	 CheckinputType_v2();//判斷輸入
 	 global   $BaseURL;
-   DrawMembersLinkArea( 30,6,  $BaseURL); 
+     DrawMembersLinkArea( 30,6,  $BaseURL); 
 	 DrawOutLinkArea(30,52,$BaseURL);
 	 DrawUserData( 820, 11);   //使用者資料(PubApi)
 ?>

@@ -372,6 +372,12 @@
 			  position:absolute; top:".$y."px; left:".$x."px ;width:".$width."px;height:".$height."px;
 	          '>".$text."</div>";
 	   }
+	   function DrawLinkText($text,$x,$y,$width,$height,$Size,$Color,$Link){
+	      echo"<div  onclick=location.href='".$Link."' style=' text-align:left  ;color:".$Color.";
+			  font-weight:bolder ;font-family:Microsoft JhengHei; font-size:".$Size."px;
+			  position:absolute; top:".$y."px; left:".$x."px ;width:".$width."px;height:".$height."px;
+	          '>".$text."</div>";
+	   }
 	   function DrawPosPic($pic,$x,$y,$w,$h,$posType ){
 	    	echo "<div style='position:".$posType; 
 			echo ";  top:".$x."px;Left:".$y."px; width:".$w."px;height:".$h."px;
@@ -402,16 +408,17 @@
 	   function DrawLinkRectAutoLength($msg,$fontSize,$fontColor,$x,$y,$w,$h,$BgColor,$Link,$border){
 		
 	            $c=strlen($msg);
-			 
+			   
 				if($c*$fontSize<$w){
 				DrawLinkRect($msg,$fontSize,$fontColor,$x,$y,$w,$h,$BgColor,$Link,$border);
 				return;
 				}
-				$w2=$c*$fontSize;
+			 
+				$w2=$c*($fontSize/2);
 				
-				DrawLinkRect("",$fontSize,$fontColor,$x,$y,$w2,$h,"#aaaaaa",$Link,$border);
-				DrawLinkRect("",$c*$fontSize,$fontColor,$x,$y,$w,$h,$BgColor,$Link,$border);
-				DrawText($msg,$x,$y,$c*$fontSize,$h,$fontSize,$fontColor);
+				 DrawRect( "",$fontSize,$fontColor,$x,$y,$w2,$h,"#aaaaaa" );
+				 DrawRect( "",$fontSize,$fontColor,$x,$y,$w,$h,$BgColor );
+				 DrawLinkText($msg,$x,$y,$c*$fontSize,$h,$fontSize,$fontColor,$Link);
 	   }
 	   
 	   function DrawLinkRect($msg,$fontSize,$fontColor,$x,$y,$w,$h,$BgColor,$Link,$border){
