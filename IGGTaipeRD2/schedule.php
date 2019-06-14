@@ -334,11 +334,17 @@
 				$NameAdd="";
 				$NameBackAdd="";
 			 	if($List==""){ 
-				  $NameBackAdd= "[".$plansArray[9]."]";
+				    $NameBackAdd= "[".$plansArray[9]."]";
+				   if($plansArray[9]=="" or $plansArray[9]=="未定義"){
+					     $NameBackAdd="[".$plansArray[8]."]"; 
+				   }
+				
+				  
 				}
 				if($List!=""){//列印名單工項
 				   $plansTmp=getMysqlDataArray($tableName); 
-				   $codeA=returnDataArray( $plansTmp,1,$plansArray[3]);//取得主資料array
+				 
+				   $codeA=returnDataArray( $plansTmp,1,$plansArray[3] );//取得主資料array
 				   $NameAdd= "[".$codeA[3] ;
 				}
                 DrawLinkRect($NameAdd.">".$plan_type.$NameBackAdd,"10","#000000",$x,$y,$w ,"16", $color,$Link,"1");
