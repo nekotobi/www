@@ -64,7 +64,7 @@
 	// DrawPlan_v2();
 	 CheckinputType_v2();//判斷輸入
 	 global   $BaseURL;
-     DrawMembersLinkArea( 30,6,  $BaseURL); 
+   DrawMembersLinkArea( 30,6,  $BaseURL); 
 	 DrawOutLinkArea(30,52,$BaseURL);
 	 DrawUserData( 820, 11);   //使用者資料(PubApi)
 ?>
@@ -343,13 +343,12 @@
 				}
 				if($List!=""){//列印名單工項
 				   $plansTmp=getMysqlDataArray($tableName); 
-				 
 				   $codeA=returnDataArray( $plansTmp,1,$plansArray[3] );//取得主資料array
 				   $NameAdd= "[".$codeA[3] ;
 				}
-                DrawLinkRect($NameAdd.">".$plan_type.$NameBackAdd,"10","#000000",$x,$y,$w ,"16", $color,$Link,"1");
+                DrawLinkRectAutoLength($NameAdd.">".$plan_type.$NameBackAdd,"10","#000000",$x,$y,$w ,"16", $color,$Link,"1");
 				//狀態圖
-				 DrawStatePics($plansArray,$x,$y);
+			   DrawStatePics($plansArray,$x,$y);
 			
 	  }
 	  function DrawStatePics($plansArray,$x,$y){

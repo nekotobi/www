@@ -399,6 +399,21 @@
 				       top:".$x."px;Left:".$y."px; width:".$w."px;height:".$h."px;
 				      '><img src=".$pic." width=".$w." height=".$h."></div>";
 	   }
+	   function DrawLinkRectAutoLength($msg,$fontSize,$fontColor,$x,$y,$w,$h,$BgColor,$Link,$border){
+		
+	            $c=strlen($msg);
+			 
+				if($c*$fontSize<$w){
+				DrawLinkRect($msg,$fontSize,$fontColor,$x,$y,$w,$h,$BgColor,$Link,$border);
+				return;
+				}
+				$w2=$c*$fontSize;
+				
+				DrawLinkRect("",$fontSize,$fontColor,$x,$y,$w2,$h,"#aaaaaa",$Link,$border);
+				DrawLinkRect("",$c*$fontSize,$fontColor,$x,$y,$w,$h,$BgColor,$Link,$border);
+				DrawText($msg,$x,$y,$c*$fontSize,$h,$fontSize,$fontColor);
+	   }
+	   
 	   function DrawLinkRect($msg,$fontSize,$fontColor,$x,$y,$w,$h,$BgColor,$Link,$border){
 	          echo "<div onclick=location.href='".$Link."' style=' cursor:pointer ; color:".$fontColor."; " ;
 			  echo $border;
