@@ -320,7 +320,12 @@
 					DrawLinkRect("+","10","#ffffff",$x-20,$y+2,"12" ,"12", "#555555",$Link,"1");
 					return;
 				}
- 
+                if ($plan_type!="工項" or $plan_type!="目標" ){
+					 $plansTmp=getMysqlDataArray($tableName); 
+				   $codeA=returnDataArray( $plansTmp,1,$plansArray[3] );//取得主資料array
+				    $y=($StartY+90+$codeA[4]*20);
+				}
+
 				$Link=$BackURL."&PhpInputType=DrawEditPlanType&Ecode=".$plansArray[1];
 				$color=$colorCodes[9][0];
 				
@@ -345,8 +350,10 @@
 				   $plansTmp=getMysqlDataArray($tableName); 
 				   $codeA=returnDataArray( $plansTmp,1,$plansArray[3] );//取得主資料array
 				   $NameAdd= "[".$codeA[3] ;
+				  
 				}
-                DrawLinkRectAutoLength($NameAdd.">".$plan_type.$NameBackAdd,"10","#000000",$x,$y,$w ,"16", $color,$Link,"1");
+				 
+                DrawLinkRectAutoLength($NameAdd.">".$plan_type.$NameBackAdd,"10","#000000",$x, $y,$w ,"16", $color,$Link,"1");
 				//狀態圖
 			   DrawStatePics($plansArray,$x,$y);
 			
