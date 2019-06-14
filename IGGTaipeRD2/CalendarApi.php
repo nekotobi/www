@@ -1,17 +1,35 @@
 <?php
+      function getPassDaysDay($dateData,$Workday){//給予開始日 工作天,取得結束日 陣列
+	          $y=$dateData[0];
+			  $m=$dateData[1];
+			  $d=$dateData[2];
+			  $p=$Workday;
+			  $mDay=getMonthDay($m,$TargetYear);
+			  while($p>0){
+				    $d+=1;
+					$p-=1;
+				  	if($d>$mDay){
+				       $d=1;
+					   $m+=1;
+					   if($m>12){
+						  $y+=1;
+						  $m=1;
+				          $mDay=getMonthDay($m,$TargetYear);
+					     }
+					}
+			  }
+			  return Array($y,$m,$d);
+	  }
+
+
       function getPassDays($startDayArray,$nowDayArray){ //從開始結束 計算經過日期 2019_9_12  >>> 2019_9_14
-	        // $startArray=explode("_",$mystring);
-			  //echo $nowDayArray[0].$nowDayArray[1].$nowDayArray[2];
-			
 			  $y=$startDayArray[0];
 			  $m=$startDayArray[1];
 			  $d=$startDayArray[2];
-			  
 			  $ny= $nowDayArray[0];
 			  $nm= $nowDayArray[1];
 			  $nd= $nowDayArray[2];
 			  $td=0;
-			// echo $y.">".$m.">".$d; 
 			  if($ny==$y){//同一年
 			      if($nowDayArray[1]>$startDayArray[1]){//跨月
 				    $td+=getMonthDay($m,$y)-$d;
@@ -27,10 +45,7 @@
 					    return $td;
 				  }
 			  }
-		
-		 
-			      return $td;
-	      
+             return $td;
 	  }
 
 
@@ -66,13 +81,8 @@
 				   }
 			       $CurrentDay+=1;
 				}
-				
-				//echo $y."-".$m."-".$startday."-".$workd.">". $CurrentDay."</br>";
 				return  $CurrentDay-$startday ;
 	   } 
-	   
-	   
-	   
  	   function SetCalendarRange( $TargetYear,$TargetMonth){
 	            global $YearRange,$MonthRange,$showMonthNum;
 				if( $TargetYear=="") $TargetYear=  date("Y");

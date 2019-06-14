@@ -85,7 +85,7 @@
 		 global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
 		        $BaseURL="schedule.php";
                 $BackURL= $BaseURL."?Stype_1=".$Stype_1."&Stype_2=".$Stype_2;
-			    $SelectType_1=array("總規劃","角色","怪物","場景","UI","其他");
+			    $SelectType_1=array("總規劃","角色","怪物","場景","UI","概念","TA","其他");
 				$SelectType_2=array("文案","設定","建模","動作","特效");
 				$stateType=array("未製作","進行中","優化","已完成","結案");
 				if($Stype_1=="")$Stype_1=0;
@@ -349,7 +349,7 @@
 	  function DrawStatePics($plansArray,$x,$y){
 		  		  global $OutsData,$memberData;
 				 $pic="";
-			     if($plansArray[7]=="")$pic="Pics/question";
+			     if($plansArray[7]=="" or $plansArray[7]=="未定義")$pic="Pics/question";
 				 if($plansArray[7]=="已完成")$pic="Pics/finish";
 				 if($plansArray[7]=="進行中")$pic="Pics/construction";
 				 //狀態問題
@@ -360,7 +360,7 @@
 					  $pic="Pics/warring.gif";
 				  }
 				 if( $pic!="")
-			       DrawPosPic($pic, $y,$x-12,16,16,"absolute" );
+			       DrawPosPic($pic, $y,$x-6,16,16,"absolute" );
 
 	  
 	  }

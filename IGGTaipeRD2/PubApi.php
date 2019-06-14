@@ -44,7 +44,6 @@
 	  function returnProjectColor($projects,$name){
 			   $n=0;
 			    for($i=0;$i<count($projects);$i++){
-				 
 				    if($projects[$i][0]==$name){
 						$n=$projects[$i][1];
 					}

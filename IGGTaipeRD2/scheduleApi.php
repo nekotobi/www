@@ -417,7 +417,10 @@
 				$nowMilestone=2;
 				if( $SprintData[$i][6]==$nowMilestone)	$color="#123451";
 				$w= $SprintData[$i][4]*$OneDayWidth;
-			    DrawabsoluteRect($info,"10","#ffffff", $x-8,  $sy ,$w ,"20", $color,  "absolute" ,"");
+			   // DrawabsoluteRect($info,"10","#ffffff", $x-8,  $sy ,$w ,"20", $color,  "absolute" ,"");
+				$Link="sprintShow.php?ey=".$SprintData[$i][0]."&em=".$SprintData[$i][1].
+				"&ed=".$SprintData[$i][2]."&edays=".$SprintData[$i][4]."&enum=".$SprintData[$i][5]."&emil=".$SprintData[$i][6];
+				DrawLinkRect($info,"10","#ffffff",$x-8,  $sy ,$w ,"20", $color,$Link,"");
 			}
   	 }
 	     function DrawDragArea($height ){//拖曳灰區
