@@ -422,11 +422,12 @@
 				 DrawRect( "",$fontSize,$fontColor,$x,$y,$w,$h,$BgColor );
 				 DrawLinkText($msg,$x,$y,$c*$fontSize,$h,$fontSize,$fontColor,$Link);
 	   }
-	   function DrawLinkRect_v2($msg,$fontSize,$fontColor,$x,$y,$w,$h,$BgColor,$Link,$border,$target){
-	          echo "<div onclick=location.href='".$Link."'  style=' cursor:pointer ; color:".$fontColor."; " ;
+	   function DrawLinkRect_newtab($msg,$fontSize,$fontColor,$x,$y,$w,$h,$BgColor,$Link,$border){
+	          echo "<div   style=' cursor:pointer ; color:".$fontColor."; " ;
 			  echo $border;
 			  echo " text-align:center ; font-weight:bolder ;font-family:Microsoft JhengHei; font-size:".$fontSize."px;";
-			  echo " position:absolute;  top:".$y."px; left:".$x."px;  width:".$w."px;height:".$h."px; background-color:".$BgColor."; '>";
+			  echo " position:absolute;  top:".$y."px; left:".$x."px;  width:".$w."px;height:".$h."px; background-color:".$BgColor."; ' "; 
+			  echo " onClick=window.open('".$Link."','_newtab'); >";
 			  echo $msg;
 	          echo "</div>";
 	   }

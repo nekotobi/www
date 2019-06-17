@@ -105,7 +105,7 @@
 			              break;  
 				     case $TableType[$i]=="Link" :
 				          $Link=$Data[$i];
-				          DrawLinkRect("Link","12",$fontColor,$x,$y,$w,$h,$color,$Link,1);
+				          DrawLinkRect_newtab("Link","12",$fontColor,$x,$y,$w,$h,$color,$Link,1);
 			              break; 
 					case  $TableType[$i]=="pic" :
 			        	  $pic="Outsourcing/pic/".$Data[$i];

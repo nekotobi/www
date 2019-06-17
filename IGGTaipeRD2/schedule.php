@@ -321,7 +321,7 @@
 				  return;
 			   }
 			   if ($plan_type=="工項"){
-				    $w= $OneDayWidth* ((strlen($info)/2));
+				    $w= 10* ((strlen($info)/2));
 				    $sx=$x-$w-20;
 				 
 				    $add="　　　";
@@ -330,16 +330,17 @@
 					$Link=$BackURL."&PhpInputType=AddPlanType&Ecode=".$plansArray[1];
 					
 					 if($plansArray[12]!=""){
-				        $JilaLink="http://bzbfzjira.iggcn.com/browse/FP-".$plansArray[12]."   target='_blank' ";
-					    DrawLinkRect($plansArray[12],"9","#000000",$sx+2,$y+2,"25" ,"11", $colorCodes[0][3],$JilaLink,"1");
+				        $JilaLink="http://bzbfzjira.iggcn.com/browse/FP-".$plansArray[12]  ;
+					    DrawLinkRect_newtab($plansArray[12],"9","#000000",$sx+2,$y+2,"25" ,"11", $colorCodes[0][3],$JilaLink,"1" );
 					}
 					DrawLinkRect("+","10","#ffffff",$x-20,$y+2,"12" ,"12", "#555555",$Link,"1");
 					return;
 				}
                 if ($plan_type!="工項" or $plan_type!="目標" ){
 					 $plansTmp=getMysqlDataArray($tableName); 
-				   $codeA=returnDataArray( $plansTmp,1,$plansArray[3] );//取得主資料array
-				    $y=($StartY+90+$codeA[4]*20);
+				     $codeA=returnDataArray( $plansTmp,1,$plansArray[3] );//取得主資料array
+					 if($codeA==null)return;
+				     $y=($StartY+90+$codeA[4]*20);
 				}
 
 				$Link=$BackURL."&PhpInputType=DrawEditPlanType&Ecode=".$plansArray[1];
