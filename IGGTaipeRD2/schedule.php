@@ -314,9 +314,18 @@
 				  return;
 			   }
 			   if ($plan_type=="工項"){
+				    $w= $OneDayWidth* ((strlen($info)/2));
 				    $sx=$x-$w-20;
-					DrawLinkRect("　".$info,"10","#ffffff",$sx,$y,$w ,"16", "#666666",$Link,"1");
+				 
+				    $add="　　　";
+					 if($plansArray[12]=="") $add="";
+					DrawLinkRect($add.$info,"10","#ffffff",$sx,$y,$w ,"16", "#666666",$Link,"1");
 					$Link=$BackURL."&PhpInputType=AddPlanType&Ecode=".$plansArray[1];
+					
+					 if($plansArray[12]!=""){
+				        $JilaLink="http://bzbfzjira.iggcn.com/browse/FP-".$plansArray[12];
+					    DrawLinkRect($plansArray[12],"9","#000000",$sx+2,$y+2,"25" ,"11", $colorCodes[0][3],$JilaLink,"1");
+					}
 					DrawLinkRect("+","10","#ffffff",$x-20,$y+2,"12" ,"12", "#555555",$Link,"1");
 					return;
 				}
@@ -677,8 +686,14 @@
 	     $Planinput="<input type=text name=plan value='".$plan."'  size=30 >";
 	     DrawInputRect("計畫","12","#ffffff",($ex),$ey+40,300,18, $colorCodes[4][2],"top",$Planinput);
 		 //
-	     $workDayinput="<input type=text name=workingDays  value='5'  size=2   >";
-	     DrawInputRect("天數","12","#ffffff",($ex+240),$ey+40,120,18, $colorCodes[4][2],"top",$workDayinput);
+		 if($Stype_1==0 or  $Stype_1==""){
+		      $workDayinput="<input type=text name=workingDays  value='5'  size=2   >";
+	          DrawInputRect("天數","12","#ffffff",($ex+240),$ey+40,120,18, $colorCodes[4][2],"top",$workDayinput);
+		 }
+		 if($Stype_1!=0 and  $Stype_1!=""){
+		    	$jirainput="<input type=text name=remark  value='".$plansArray[12]."'  size=4   >";
+	        DrawInputRect("jila單","12","#ffffff",($ex+240),$ey+40,120,18, $colorCodes[4][2],"top",$jirainput);
+		 }
 		 
 		 $Lineinput="<input type=text name=line value='1'  size=2   >";
      	 DrawInputRect("行數","12","#ffffff",($ex+240),$ey+70,120,18, $colorCodes[4][2],"top", $Lineinput);
@@ -728,13 +743,16 @@ function EditPlan_v2($ex,$ey,$w,$h){
 			
 	        $Planinput="<input type=text name=plan value='".$plansArray[3]."'  size=30 >";
 	        DrawInputRect("計畫","12","#ffffff",($ex),$ey+40,300,18, $colorCodes[4][2],"top",$Planinput);
+			//jilar
+			$jirainput="<input type=text name=remark  value='".$plansArray[12]."'  size=4   >";
+	        DrawInputRect("jila","12","#ffffff",($ex+240),$ey+40,120,18, $colorCodes[4][2],"top",$jirainput);
 		    //
-	        $workDayinput="<input type=text name=workingDays  value='".$plansArray[6]."'  size=2   >";
-	        DrawInputRect("天數","12","#ffffff",($ex+240),$ey+40,120,18, $colorCodes[4][2],"top",$workDayinput);
+	       // $workDayinput="<input type=text name=workingDays  value='".$plansArray[6]."'  size=2   >";
+	      //  DrawInputRect("天數","12","#ffffff",($ex+240),$ey+40,120,18, $colorCodes[4][2],"top",$workDayinput);
 		 
 		    $Lineinput="<input type=text name=line value='".$plansArray[4]."'  size=2   >";
      	    DrawInputRect("行數","12","#ffffff",($ex+240),$ey+70,120,18, $colorCodes[4][2],"top", $Lineinput);
-	
+	        
 		    $types=array("工項","目標","Sprint");
 	        $select=MakeSelectionV2($types,$plansArray[5],"type",160);
 	        DrawInputRect("類型","10","#ffffff",($ex ),$ey+70,120,18, $colorCodes[4][2],"top",  $select);

@@ -270,9 +270,11 @@
 	   function getTypeColor($name){
 		        global $colorCodes;
 				$color="#000000";
-
 	          //  if(strpos('$name','角色')==true   && !strpos('$name','3D') )$color=$colorCodes[10][1];
 			     if(strpos( $name,'角色') !== false && strpos( $name,'3D') ==false){
+				 	  $color=$colorCodes[11][1];
+				 }
+			     if(strpos( $name,'概念') !== false  ){
 				 	  $color=$colorCodes[11][1];
 				 }
 			     if(strpos( $name,'3D') !== false  ){
