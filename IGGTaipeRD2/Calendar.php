@@ -199,8 +199,11 @@
 		        global $YearRange,$MonthRange,$id  ;
 				global $CalendarWidth,$NowHeight,$StartX, $colorSet_Green ,$Bwidth; 
 				global $CrossMonthData;
+				global $colorCodes;
 		        $Data_Struct= getUserWorks($y,$m,$ID);
 			    $addDivHeight=getDivHeight($Data_Struct);
+	            $color=$colorCodes[5][2];
+			    $colorb=$colorCodes[5][1];
 		    	for ($i=0;$i<count( $Data_Struct);$i++){
 					 $dd= $Data_Struct[$i][1];
 					 $finDay= $Data_Struct[$i][2];
@@ -209,8 +212,10 @@
 					 $info=  $Data_Struct[$i][0] ;
                      $x= $StartX+($dd-1)*$Bwidth+80;
 					 $wid= $finDay*$Bwidth;
-					 $colorb=GetProjectColor( $Project ,0);
-					 $color=GetProjectColor( $Project ,1);
+					// $colorb=GetProjectColor( $Project ,0);
+					// $color=GetProjectColor( $Project ,1);
+					// $color=$colorCodes[5][2];
+					//  $colorb=$colorCodes[5][1];
 					 $Csn=$Data_Struct[$i][5];
 					 $border=" border-width:2px; border-style:solid ;border-color:".$colorb.";padding:0px ;";
 					 if($id==$ID or $rank==1){ 
@@ -229,8 +234,8 @@
 						   $x= $StartX +80;
 						   $info= $CrossMonthData[$i][3];//."[".$CrossMonthData[$i][4]."]";
 						   $Project=$CrossMonthData[$i][5];
-						   $colorb=GetProjectColor($Project ,0);
-				           $color=GetProjectColor( $Project ,1);
+						   //$colorb=GetProjectColor($Project ,0);
+				          // $color=GetProjectColor( $Project ,1);
 					       $border=" border-width:2px; border-style:solid ;border-color:".$colorb.";padding:0px ;";	 
 					 $Link="";
 			         DrawLinkRect(   $info,"12","#000000",$x, $NowHeight,  $wid,"19", $color, $Link,$border);  
@@ -238,6 +243,8 @@
 					 
 				 }
 	   }
+	   
+	   
        function GetProjectColor($name,$sn){
 		   	 global $colorCodes,$Projects;
 			 $color=$colorCodes[7][0];

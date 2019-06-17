@@ -267,7 +267,7 @@
 			    }
 			
 	   }
-	   function getColor($name){
+	   function getTypeColor($name){
 		        global $colorCodes;
 				$color="#000000";
 
