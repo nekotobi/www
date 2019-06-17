@@ -422,9 +422,16 @@
 				 DrawRect( "",$fontSize,$fontColor,$x,$y,$w,$h,$BgColor );
 				 DrawLinkText($msg,$x,$y,$c*$fontSize,$h,$fontSize,$fontColor,$Link);
 	   }
-	   
+	   function DrawLinkRect_v2($msg,$fontSize,$fontColor,$x,$y,$w,$h,$BgColor,$Link,$border,$target){
+	          echo "<div onclick=location.href='".$Link."'  style=' cursor:pointer ; color:".$fontColor."; " ;
+			  echo $border;
+			  echo " text-align:center ; font-weight:bolder ;font-family:Microsoft JhengHei; font-size:".$fontSize."px;";
+			  echo " position:absolute;  top:".$y."px; left:".$x."px;  width:".$w."px;height:".$h."px; background-color:".$BgColor."; '>";
+			  echo $msg;
+	          echo "</div>";
+	   }
 	   function DrawLinkRect($msg,$fontSize,$fontColor,$x,$y,$w,$h,$BgColor,$Link,$border){
-	          echo "<div onclick=location.href='".$Link."' style=' cursor:pointer ; color:".$fontColor."; " ;
+	          echo "<div onclick=location.href='".$Link."'  style=' cursor:pointer ; color:".$fontColor."; " ;
 			  echo $border;
 			  echo " text-align:center ; font-weight:bolder ;font-family:Microsoft JhengHei; font-size:".$fontSize."px;";
 			  echo " position:absolute;  top:".$y."px; left:".$x."px;  width:".$w."px;height:".$h."px; background-color:".$BgColor."; '>";

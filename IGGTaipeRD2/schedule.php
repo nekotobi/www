@@ -81,14 +81,6 @@
 				$showMonthNum=8;
 				$daysLoc=array();//(year,m,d,x軸位置)
                 $monthLoc=array();//($y,m,x軸位置,Siz)
-		 //返回資料
-		 global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
-		        $BaseURL="schedule.php";
-                $BackURL= $BaseURL."?Stype_1=".$Stype_1."&Stype_2=".$Stype_2;
-			    $SelectType_1=array("總規劃","角色","怪物","場景","UI","城建","概念","TA","其他");
-				$SelectType_2=array("文案","概念","設定","建模","動作","特效","精稿");
-				$stateType=array("未製作","進行中","優化","已完成","結案");
-				if($Stype_1=="")$Stype_1=0;
 		 //資料表
 		 global $data_library,$tableName;
 				$tableName="fpschedule";
@@ -97,15 +89,30 @@
 	     global $OutsData,$memberData;
                 $OutsData=getMysqlDataArray("outsourcing");	 
       	        $memberData=getMysqlDataArray("members");
-	        
+	            defineTypeData_v2();
 	 }
+	 function  defineTypeData_v2(){ //類別資料
+	 		 global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
+		        $BaseURL="schedule.php";
+                $BackURL= $BaseURL."?Stype_1=".$Stype_1."&Stype_2=".$Stype_2;
+				$sTypeTmp= getMysqlDataArray("scheduletype");	
+				$SelectType_1tmp= filterArray($sTypeTmp ,0,"data");
+			    $SelectType_1=   returnArraybySort($SelectType_1tmp,2);
+			    $SelectType_2tmp= filterArray($sTypeTmp ,0,"data2");
+				$SelectType_2=   returnArraybySort($SelectType_2tmp,2);
+				$stateTypetmp= filterArray($sTypeTmp ,0,"data3");
+				$stateType=   returnArraybySort($stateTypetmp,2);
+ 
+				if($Stype_1=="")$Stype_1=0;
+	 }
+	 
      function  DrawType_v2(){
 		 	  global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX,$monthLoc,$showMonthNum ;
 	    	  global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1;
 			  global $colorCodes;
 			  $y=$StartY+10;
 	          for ($i=0;$i<count( $SelectType_1);$i++){
-				   $x=120+ $i*70;
+				   $x=30+  $i*70;
                    $BackURL2= $BaseURL."?Stype_1=".$i."&Stype_2=".$Stype_2;
 				   //echo  $BackURL;
 				   $msg=" ".$SelectType_1[$i];
@@ -323,7 +330,7 @@
 					$Link=$BackURL."&PhpInputType=AddPlanType&Ecode=".$plansArray[1];
 					
 					 if($plansArray[12]!=""){
-				        $JilaLink="http://bzbfzjira.iggcn.com/browse/FP-".$plansArray[12];
+				        $JilaLink="http://bzbfzjira.iggcn.com/browse/FP-".$plansArray[12]."   target='_blank' ";
 					    DrawLinkRect($plansArray[12],"9","#000000",$sx+2,$y+2,"25" ,"11", $colorCodes[0][3],$JilaLink,"1");
 					}
 					DrawLinkRect("+","10","#ffffff",$x-20,$y+2,"12" ,"12", "#555555",$Link,"1");
