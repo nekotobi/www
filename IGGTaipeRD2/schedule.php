@@ -689,16 +689,16 @@
 		 echo   "<input type=hidden name=code value=".$code.">"; 
 		 $selecttype= $SelectType_1[$Stype_1];
 		 echo   "<input type=hidden name=selecttype value=".$selecttype.">"; 
-		 
+		 $plan="新計畫";
 		 //input
 	     $Planinput="<input type=text name=plan value='".$plan."'  size=30 >";
 	     DrawInputRect("計畫","12","#ffffff",($ex),$ey+40,300,18, $colorCodes[4][2],"top",$Planinput);
 		 //
+	 
 		 if($Stype_1==0 or  $Stype_1==""){
 		      $workDayinput="<input type=text name=workingDays  value='5'  size=2   >";
 	          DrawInputRect("天數","12","#ffffff",($ex+240),$ey+40,120,18, $colorCodes[4][2],"top",$workDayinput);
-		 }
-		 if($Stype_1!=0 and  $Stype_1!=""){
+		 }else{
 		    	$jirainput="<input type=text name=remark  value='".$plansArray[12]."'  size=4   >";
 	        DrawInputRect("jila單","12","#ffffff",($ex+240),$ey+40,120,18, $colorCodes[4][2],"top",$jirainput);
 		 }
@@ -751,12 +751,14 @@ function EditPlan_v2($ex,$ey,$w,$h){
 			
 	        $Planinput="<input type=text name=plan value='".$plansArray[3]."'  size=30 >";
 	        DrawInputRect("計畫","12","#ffffff",($ex),$ey+40,300,18, $colorCodes[4][2],"top",$Planinput);
-			//jilar
-			$jirainput="<input type=text name=remark  value='".$plansArray[12]."'  size=4   >";
-	        DrawInputRect("jila","12","#ffffff",($ex+240),$ey+40,120,18, $colorCodes[4][2],"top",$jirainput);
-		    //
-	       // $workDayinput="<input type=text name=workingDays  value='".$plansArray[6]."'  size=2   >";
-	      //  DrawInputRect("天數","12","#ffffff",($ex+240),$ey+40,120,18, $colorCodes[4][2],"top",$workDayinput);
+			 if($Stype_1==0 or  $Stype_1==""){
+		      $workDayinput="<input type=text name=workingDays  value='5'  size=2   >";
+	          DrawInputRect("天數","12","#ffffff",($ex+240),$ey+40,120,18, $colorCodes[4][2],"top",$workDayinput);
+		     }else{
+		    	$jirainput="<input type=text name=remark  value='".$plansArray[12]."'  size=4   >";
+	            DrawInputRect("jila單","12","#ffffff",($ex+240),$ey+40,120,18, $colorCodes[4][2],"top",$jirainput);
+		      }
+ 
 		 
 		    $Lineinput="<input type=text name=line value='".$plansArray[4]."'  size=2   >";
      	    DrawInputRect("行數","12","#ffffff",($ex+240),$ey+70,120,18, $colorCodes[4][2],"top", $Lineinput);
