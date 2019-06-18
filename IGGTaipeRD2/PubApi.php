@@ -185,7 +185,8 @@
 				return $returnData;
 	  }
 ?>
-<?php  //公用
+
+<?php //會員相關資料
 	   function DrawUserData($x,$startY){
 	        global $id,$colorCodes,$startY;
 	        DrawRect("" ,"12","#ffffff",$x+10,$startY+10,160,20, $colorCodes[0][0]);
@@ -199,6 +200,42 @@
 			DrawLinkPic("Pics/Logout.png",$startY+12,$x+150,16,16,"Login.php");
 			}
 	  }
+	  function DrawMembersLinkArea( $StartX,$startY ,$BaseURL){
+		     global $memberId;
+			 $memberTmp=getMysqlDataArray("members");
+			 $members=filterArray($memberTmp,"3","Art");
+			 $memberId=array();
+			 $x= $StartX;
+			 for($i=0;$i<count($members);$i++){
+			  if($members[$i][4]!="Other"){  
+				 $color="#000000";
+				 $id=$members[$i][0] ;
+				 $pic="Pics/Members/".$id.".png";
+				 $Link=$BaseURL."?List=ArtWork&user=".$members[$i][0];
+			     DrawMemberLinkRect($members[$i][1],"10","#cccccc", $x+2, $startY , "60","40",$color,$members[$i][4],$id, $Link,$pic);
+				 $memberId[$members[$i][0]]=$members[$i][1] ;
+				 $x+=  64;
+			  }
+		   }
+	   } 
+	  function DrawMemberLinkRect($Name,$fontSize,$fontColor,$x,$y,$w,$h,$BgColor,$Job,$id,$Link,$pic){
+		      //color
+			  echo "<div  id=User-".$id." ";
+	          echo "  style=' color:".$fontColor."; " ;
+			  echo "text-align:center ; font-weight:bolder ;font-family:Microsoft JhengHei; font-size:".$fontSize."px;";
+			  echo "position:absolute  ;  top:".$y."px; left:".$x."px;  width:".$w."px;height:".$h."px; background-color:".$BgColor."; '>";
+			  echo  $Job;
+	          echo "</div>";
+			  DrawLinkRect("　".$Name,$fontSize,"#000000",$x,$y+20,$w-6,$h-42,"#ffffff",$Link,1);
+			  DrawPosPic($pic,$y+20,$x,"14","14","absolute");
+	   }
+      function DrawOutsGruop(){
+		  
+	  }
+?>
+
+<?php  //公用
+
 	  function GetColorCode(){
 	          $all_num= getAll_num( "colorcodes");
 	          $t=mysql_num_rows($all_num); 
@@ -286,36 +323,8 @@
 				return $color;
 	   }
 	   
-	   function DrawMembersLinkArea( $StartX,$startY ,$BaseURL){
-		     global $memberId;
-			 $memberTmp=getMysqlDataArray("members");
-			 $members=filterArray($memberTmp,"3","Art");
-			 $memberId=array();
-			 $x= $StartX;
-			 for($i=0;$i<count($members);$i++){
-			  if($members[$i][4]!="Other"){  
-				 $color="#000000";
-				 $id=$members[$i][0] ;
-				 $pic="Pics/Members/".$id.".png";
-				 $Link=$BaseURL."?List=ArtWork&user=".$members[$i][0];
-			     DrawMemberLinkRect($members[$i][1],"10","#cccccc", $x+2, $startY , "60","40",$color,$members[$i][4],$id, $Link,$pic);
-				 $memberId[$members[$i][0]]=$members[$i][1] ;
-				 $x+=  64;
-			  }
-		   }
-	   } 
-	  function DrawMemberLinkRect($Name,$fontSize,$fontColor,$x,$y,$w,$h,$BgColor,$Job,$id,$Link,$pic){
-		      //color
-			  echo "<div  id=User-".$id." ";
-	          echo "  style=' color:".$fontColor."; " ;
-			  echo "text-align:center ; font-weight:bolder ;font-family:Microsoft JhengHei; font-size:".$fontSize."px;";
-			  echo "position:absolute  ;  top:".$y."px; left:".$x."px;  width:".$w."px;height:".$h."px; background-color:".$BgColor."; '>";
-			  echo  $Job;
-	          echo "</div>";
-			  DrawLinkRect("　".$Name,$fontSize,"#000000",$x,$y+20,$w-6,$h-42,"#ffffff",$Link,1);
- 
-			  DrawPosPic($pic,$y+20,$x,"14","14","absolute");
-	   }
+
+
 	   function DrawMembersDragArea( $StartX,$startY ){
 		     global $memberId;
 			 $memberTmp=getMysqlDataArray("members");

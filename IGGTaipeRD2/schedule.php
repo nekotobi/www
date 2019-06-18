@@ -54,9 +54,8 @@
    include('CalendarApi.php');  
    include('mysqlApi.php');
    include('scheduleApi.php');
- 
      defineData_v2();   //定義基礎資料(scheduleApi)
-     
+	  DrawWarring();
      GetCalendarData(); //取得日曆資料(scheduleApi)
      DrawBaseCalendar_v2(); //列印基礎日期資料(scheduleApi)
      DrawType_v2();//進度表類型
@@ -67,10 +66,11 @@
      DrawMembersLinkArea( 30,6,  $BaseURL); 
 	 DrawOutLinkArea(30,52,$BaseURL);
 	 DrawUserData( 820, 11);   //使用者資料(PubApi)
+	
 ?>
 
-<?php
-	 function defineData_v2(){
+<?php  //主要資料
+	 function  defineData_v2(){
 		 //基礎數值
 		 global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX,$monthLoc,$showMonthNum ;
 		        $StartX=20;
@@ -82,17 +82,21 @@
 				$daysLoc=array();//(year,m,d,x軸位置)
                 $monthLoc=array();//($y,m,x軸位置,Siz)
 		 //資料表
-		 global $data_library,$tableName;
+		 global $data_library,$tableName,$MainPlanData;
 				$tableName="fpschedule";
 			    $data_library="iggtaiperd2";
+				$MainPlanData=getMysqlDataArray($tableName); 
 		 //共用資料表
 	     global $OutsData,$memberData;
+		 global $WarringDatas;
+			    $WarringDatas= array();
                 $OutsData=getMysqlDataArray("outsourcing");	 
       	        $memberData=getMysqlDataArray("members");
 	            defineTypeData_v2();
 	 }
 	 function  defineTypeData_v2(){ //類別資料
-	 		 global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
+	 		    global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
+			    global $stateType;
 		        $BaseURL="schedule.php";
                 $BackURL= $BaseURL."?Stype_1=".$Stype_1."&Stype_2=".$Stype_2;
 				$sTypeTmp= getMysqlDataArray("scheduletype");	
@@ -102,27 +106,35 @@
 				$SelectType_2=   returnArraybySort($SelectType_2tmp,2);
 				$stateTypetmp= filterArray($sTypeTmp ,0,"data3");
 				$stateType=   returnArraybySort($stateTypetmp,2);
- 
 				if($Stype_1=="")$Stype_1=0;
 	 }
-	 
-     function  DrawType_v2(){
+     function  DrawType_v2(){ //類別
 		 	  global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX,$monthLoc,$showMonthNum ;
 	    	  global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1;
 			  global $colorCodes;
 			  $y=$StartY+10;
+			  $x=120;
 	          for ($i=0;$i<count( $SelectType_1);$i++){
-				   $x=30+  $i*70;
                    $BackURL2= $BaseURL."?Stype_1=".$i."&Stype_2=".$Stype_2;
-				   //echo  $BackURL;
 				   $msg=" ".$SelectType_1[$i];
 				   $color= "#222222";
-				   if($Stype_1==$i)$color= "#ff2212";
+				   if($Stype_1==$i)$color= "#dd2212";
 			       DrawLinkRect($msg,"12","#ffffff",$x,$y,"60","16",$color,$BackURL2,1);
+				   $x += 70;
 			  }
 			  DrawState();
+			  global $stateType;
+			  $x+=100;
+			  for ($i=0;$i<count( $stateType);$i++){
+			       $BackURL2= $BaseURL."?CheckState=".$i;
+				   $msg=" ".$stateType[$i];
+				   $color= "#222222";
+				   if($CheckState==$i and  $CheckState!="" )$color= "#cc2212";
+			       DrawLinkRect($msg,"10","#ffffff",$x,$y,"60","14",$color,$BackURL2,1);
+				   $x+=70;
+			  }
 	 }
-    function DrawBaseCalendar_v2(){  //日曆格
+     function  DrawBaseCalendar_v2(){  //日曆格
 		      global $StartX, $StartY,$OneDayWidth,$daysLoc,$monthLoc, $YearLoc; 
 	          global $TargetYear,$TargetMonth,$YearRange,$MonthRange,$showMonthNum;
 			  global $BaseURL,$BackURL, $Stype_1,$Stype_2;
@@ -151,9 +163,8 @@
 			  DrawSprint($StartY+80 );
               echo "</div>"	;	
 			  DrawDragArea(25);
-			
 	 }
-	    function DrawDragHorArea($height ){//橫排區
+	 function  DrawDragHorArea($height ){//橫排區
 	         global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX  ; 
 			 	 $w= 40;//$OneDayWidth*count($daysLoc);
 			     $y= $StartY+90;
@@ -167,50 +178,99 @@
 			    // DrawDragRect($x,$y,$w,$h,$BGColor,$id);
 			    }
 		}
+	 function  DrawWarring(){ //錯誤
+		 	   global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX,$monthLoc,$showMonthNum ;
+		       global $WarringDatas;
+			   global $BaseURL;
+			   CollectWarring();
+	           if(count($WarringDatas)==0)return;
+			   $pic="Pics/warring.gif";
+			   $Link=$BackURL."?List=Warring";
+			   $msg="　進度問題x".count($WarringDatas);
+			   DrawRect($msg,"10","#ffffff",$StartX+10,$StartY+10,80,14,"#ee3333");
+			   DrawLinkPic($pic,$StartY+10,$StartX+10,16,16 ,$Link);
+	 }
+	 function  CollectWarring(){
+	           global $WarringDatas;
+	           global $MainPlanData;
+			   for( $i=0;$i<count($MainPlanData);$i++){
+			       if(isPlaneWarring($MainPlanData[$i])=="true"){
+				      array_push($WarringDatas,$MainPlanData[$i]);
+				   }
+			   }
+	 }
+	 function isPlaneWarring($plansArray){
+		         if($plansArray[5]=="工項" or $plansArray[5]=="目標") return "false";
+	              $startDayArray=explode("_",$plansArray[2]);
+				  $nowDayArray=array(date(Y),date(m),date(d));
+				  $passDays= getPassDays($startDayArray,$nowDayArray);
+				 
+	              if($passDays>$plansArray[6] && $plansArray[7]!="已完成") return "true";
+	              return "false";
+	 }
 ?>
 
 <?php //繪製計畫
-
       function DrawTypeCont(){
 		       global $List,$Stype_1,$Stype_2 ;
 			   if($List!=""){
-				   DrawMemberWorks();
+				   DrawListWorks();
 			       return;
 			   }
 			   DrawPlan_v2();
-			  
       }
-      function DrawMemberWorks(){
+      function DrawListWorks(){
 	  	      global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2;
 		      global $data_library,$tableName;
 			  global $user,$List;
+			  global $WarringDatas;
 			  //global $memberId;
 			  global $OutsData,$memberData;
 			  $plansTmp=getMysqlDataArray($tableName); 
-			  
-			   
-              if($List=="ArtWork"){
-			      $idtmp=returnDataArray( $memberData,0,$user);
-				  $id=$idtmp[1];
-				  $plans= filterArray($plansTmp,8,$id);
-			  }
-			  if($List=="Out"){
-			      $idtmp=returnDataArray( $OutsData,1,$user);
-				  $id=$idtmp[2];
-				  $plans= filterArray($plansTmp,9,$id);
+			  switch ($List){
+				  case "ArtWork":
+				       $idtmp=returnDataArray( $memberData,0,$user);
+				       $id=$idtmp[1];
+				       $plans= filterArray($plansTmp,8,$id);
+				  break;
+				  case "Out":
+				        $idtmp=returnDataArray( $OutsData,1,$user);
+				        $id=$idtmp[2];
+				        $plans= filterArray($plansTmp,9,$id);
+				  break;
+				  case "Warring";
+				        echo count(  $WarringDatas);
+				        $plans= $WarringDatas;
+				  break;
 			  }
               $JobsArray=array( );
 		      for($i=0;$i<count($plans);$i++){
-			       DrawPlanBar($color_num,$y,$plans[$i] );
+				   DrawListBar($plans[$i],$i);
 			       $color_num+=1;
 			       if( $color_num>7)$color_num=3;
 				   $codeA=returnDataArray( $plansTmp,1,$plans[$i][3]);//取得主資料array
 				   $job=$codeA[3]."[".$plans[$i][5]."][".$plans[$i][7]."]".$plans[$i][6]."天";
 				   array_push($JobsArray,$job);
 		          }
-			  DrawUserInfo( $idtmp,$JobsArray);
+			
+			  DrawListInfo( $idtmp,$JobsArray);
 	  }
-      function DrawUserInfo($UserArray,$JobsArray ){
+	  function DrawListBar($plansArray,$i){
+		       global $colorCodes;
+			   global $StartX, $StartY,$OneDayWidth,$daysLoc,$MainPlanData;
+		       $startDay=explode("_",$plansArray[2]);
+		       $d=returnDateString($startDay[0],$startDay[1],$startDay[2]);
+			   $x=RetrunXpos($daysLoc,$d);
+	           $y= $StartY+90+($i+1)*20;
+			   $codeA=returnDataArray( $MainPlanData,1,$plansArray[3] );//取得主資料array
+			   $msg=$plansArray[12]."_".$codeA[3].">".$plansArray[5] ;
+			   $color=$colorCodes[6][2];
+			   $w=10* ((strlen($msg)/2));
+			   DrawLinkRectAutoLength( $msg,"10","#000000",$x, $y,$w ,"16", $color,$Link,"1");
+				//狀態圖
+			   DrawStatePics($plansArray,$x,$y);
+	  }
+      function DrawListInfo($UserArray,$JobsArray ){
 		       global $List; 
 			   global $BackURL;
 		       $ex=20;
@@ -224,8 +284,8 @@
 		       if( $List=="Out"){
 			       $title=$UserArray[2]."排程";
 			   }
-			   
 			   DrawPopBG($ex,$ey,$w,$h,$title ,"12",$BackURL);
+			   
 	           for($i=0;$i<count( $JobsArray);$i++){
 				    echo $i;
 				    $ey+=20;
@@ -233,17 +293,12 @@
 				    DrawRect($info,"11","#322222",$ex-10,$ey,150 ,"20","#ffffff");
 			   }
 	  }
-	  
-	  
-      function  DrawPlan_v2(){
+      function DrawPlan_v2(){
 	       global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2;
-		   global $data_library,$tableName;
-		   $plansTmp=getMysqlDataArray($tableName);
+		   global $data_library,$tableName,$MainPlanData;
 		   $type1=$SelectType_1[$Stype_1];
-           
-		   $plansTmp2 =  filterArray( $plansTmp ,10, $type1);
+		   $plansTmp2 =  filterArray( $MainPlanData ,10, $type1);
 	       $plans= filterArray($plansTmp2,0,"data");
-		   
 		   $plansLine= filterArray($plansTmp2,5,"工項");
 		   $color_num=3;
            DrawBgLine($plansLine);
@@ -253,7 +308,7 @@
 				  DrawTargetLine($plansLine2[$i]);
 			  }
 		   }
- 
+        
 		   
 		   for($i=0;$i<count($plans);$i++){
 			  DrawPlanBar($color_num,$y,$plans[$i] );
@@ -273,7 +328,6 @@
 			   DrawabsoluteRect("","0",$fontColor, $x, $y-20*$line,"2" ,$line*20 , $color,  "absolute", $Link );
 			   DrawLinkRect($info,"10",$fontColor,$x,$y,$w ,"16", $color,$Link,"1");
 	  }
-	  
 	  function DrawBgLine($plansLine){
 		  	   global $daysLoc, $StartY;
 	  		   for($i=0;$i<count( $plansLine);$i++){
@@ -291,7 +345,7 @@
 		       global $colorCodes;
 			   global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1, $SelectType_2;
 			   global $user,$List;
-			   global $data_library,$tableName;
+			   global $data_library,$tableName,$MainPlanData;
 		       $fontColor="#222222";
 			   $startDay=explode("_",$plansArray[2]);
 		       $d=returnDateString($startDay[0],$startDay[1],$startDay[2]);
@@ -323,12 +377,10 @@
 			   if ($plan_type=="工項"){
 				    $w= 10* ((strlen($info)/2));
 				    $sx=$x-$w-20;
-				 
 				    $add="　　　";
 					 if($plansArray[12]=="") $add="";
 					DrawLinkRect($add.$info,"10","#ffffff",$sx,$y,$w ,"16", "#666666",$Link,"1");
 					$Link=$BackURL."&PhpInputType=AddPlanType&Ecode=".$plansArray[1];
-					
 					 if($plansArray[12]!=""){
 				        $JilaLink="http://bzbfzjira.iggcn.com/browse/FP-".$plansArray[12]  ;
 					    DrawLinkRect_newtab($plansArray[12],"9","#000000",$sx+2,$y+2,"25" ,"11", $colorCodes[0][3],$JilaLink,"1" );
@@ -336,16 +388,13 @@
 					DrawLinkRect("+","10","#ffffff",$x-20,$y+2,"12" ,"12", "#555555",$Link,"1");
 					return;
 				}
-                if ($plan_type!="工項" or $plan_type!="目標" ){
-					 $plansTmp=getMysqlDataArray($tableName); 
-				     $codeA=returnDataArray( $plansTmp,1,$plansArray[3] );//取得主資料array
+               if ($plan_type!="工項" or $plan_type!="目標" ){ 
+				     $codeA=returnDataArray( $MainPlanData,1,$plansArray[3] );//取得主資料array
 					 if($codeA==null)return;
 				     $y=($StartY+90+$codeA[4]*20);
 				}
-
 				$Link=$BackURL."&PhpInputType=DrawEditPlanType&Ecode=".$plansArray[1];
 				$color=$colorCodes[9][0];
-				
 			    for($i=0;$i<count($SelectType_2);$i++){
 					if($SelectType_2[$i]==$plan_type){
 						$color=$colorCodes[9][$i];
@@ -353,30 +402,18 @@
 							 
 					}
 				}
-				$NameAdd="";
-				$NameBackAdd="";
-			 	if($List==""){ 
-				    $NameBackAdd= "[".$plansArray[9]."]";
-				   if($plansArray[9]=="" or $plansArray[9]=="未定義"){
-					     $NameBackAdd="[".$plansArray[8]."]"; 
-				   }
-				
-				  
+				$NameBackAdd= "[".$plansArray[9]."]";
+				if($plansArray[9]=="" or $plansArray[9]=="未定義"){
+					 $NameBackAdd="[".$plansArray[8]."]"; 
 				}
-				if($List!=""){//列印名單工項
-				   $plansTmp=getMysqlDataArray($tableName); 
-				   $codeA=returnDataArray( $plansTmp,1,$plansArray[3] );//取得主資料array
-				   $NameAdd= "[".$codeA[3] ;
-				  
-				}
-				 
                 DrawLinkRectAutoLength($NameAdd.">".$plan_type.$NameBackAdd,"10","#000000",$x, $y,$w ,"16", $color,$Link,"1");
 				//狀態圖
-			   DrawStatePics($plansArray,$x,$y);
+			    DrawStatePics($plansArray,$x,$y);
 			
 	  }
 	  function DrawStatePics($plansArray,$x,$y){
-		  		  global $OutsData,$memberData;
+		  		 global $OutsData,$memberData;
+				 //global $WarringDatas;
 				 $pic="";
 			     if($plansArray[7]=="" or $plansArray[7]=="未定義")$pic="Pics/question";
 				 if($plansArray[7]=="已完成")$pic="Pics/finish";
@@ -386,15 +423,11 @@
 				  $nowDayArray=array(date(Y),date(m),date(d));
 				  $passDays= getPassDays($startDayArray,$nowDayArray);
 	              if($passDays>$plansArray[6] && $plansArray[7]!="已完成"){
-					  $pic="Pics/warring.gif";
+					 $pic="Pics/warring.gif";
 				  }
-				 if( $pic!="")
-			       DrawPosPic($pic, $y,$x-6,16,16,"absolute" );
-
-	  
-	  }
-	  
-	  
+				  if( $pic!="")
+			      DrawPosPic($pic, $y,$x-6,16,16,"absolute" );
+	  }  
 	  function DrawWorkDetail($ex,$ey,$w,$h){
 	          global $data_library,$tableName;   
 	          global $colorCodes;
@@ -419,8 +452,6 @@
 			  $ey+=30;
 			  DrawRect($info,12,$fontColor,$ex,$ey,200,16,$BgColor);
 	  }
-
-	  
 ?>
 
 <?php //輸入
@@ -548,7 +579,6 @@
 		      	  echo $stmt;
 	 }
 ?>
-
 
 
 <?php //Oder
