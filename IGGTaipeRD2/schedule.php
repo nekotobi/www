@@ -376,7 +376,7 @@
 			   }
 			   if ($plan_type=="工項"){
 				    $t=strlen($info);
-					if($t<12)$t=12;
+					if($t<14)$t=14;
 				    $w= 10* (($t/2));
 					 
 				    $sx=$x-$w-20;
