@@ -375,7 +375,10 @@
 				  return;
 			   }
 			   if ($plan_type=="工項"){
-				    $w= 10* ((strlen($info)/2));
+				    $t=strlen($info);
+					if($t<12)$t=12;
+				    $w= 10* (($t/2));
+					 
 				    $sx=$x-$w-20;
 				    $add="　　　";
 					 if($plansArray[12]=="") $add="";

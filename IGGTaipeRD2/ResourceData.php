@@ -7,32 +7,49 @@
 <?php
     include('PubApi.php');
 	include('mysqlApi.php');
-	 DrawMainUI();
+	DefineData();
+	DrawMainUI();
 ?>
 <?php
-  function DrawMainUI(){
-		global $tableName;
-		global $data_library;
-		global $width,$TableType,$Names;
-		global $BackURL;
-		global $BaseData;
-		global $radio_1,$radio_2;
+  function DefineData(){
+	    //分頁
+	  	global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
+		$BaseURL="ResourceData.php";
+		$BackURL= $BaseURL."?Stype_1=".$Stype_1."&Stype_2=".$Stype_2;
+		if($Stype_1=="")$Stype_1=0;
+		if($Stype_2=="")$Stype_2=0;
+	    //資料庫
+      	global $tableName,$data_library,$mainData,$typeData,$typeData2; 
 		$data_library= "iggtaiperd2";
-		$tableName="outsourcing";
-      	$datasTmp= getMysqlDataArray($tableName); 	//0名稱 1序號 2尺寸 3類別
-		$BaseData= filterArray($datasTmp,0,"data");
-		$width=returnDataArray($datasTmp,0,"size")   ;
-		$TableType=returnDataArray($datasTmp,0,"type")   ;
-		$Names=returnDataArray($datasTmp,0,"name")   ;
-		$types_1=array("角色","概念圖","模型","場景","VFX","UI");
-		$radio_1=array("個人","工作室");
-		$radio_2=array("差","稍差","普通","可","優");
-		$x=20;
-		$y=60;
-	    $BackURL="Outsourcing.php";
-	    DrawRect("外包資源列表","22","#ffffff","20","20","1400","30","#000000");
-		DrawTitle($Names,$x,$y,"#222222","#ffffff");
- 
-        DrawOutsourcings($BaseData,$y);
+		$tableName="fpschedule";
+		$typeDatat = getMysqlDataArray("scheduletype");	
+		$typeData= filterArray($typeDatat,0,"ResourceData");
+		$typeData2= filterArray($typeDatat,0,"ResourceType");
+		$mainDatat= getMysqlDataArray($tableName); 
+		mainData=filterArray($mainDatat,$typeData[$Stype_1]);
+
+  }
+  function DrawMainUI(){
+	    //主頁
+	    DrawRect("FP資源索引","22","#ffffff","20","20","1200","30","#000000");
+		//分類
+        global $typeData,$typeData2;
+		global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
+		$x=20;$y=60;$w=100;$h=20;
+		for($i=0;$i<count($typeData);$i++){
+			$Link=$BaseURL."?Stype_1=".$i."&Stype_2=".$Stype_2;
+			$BgColor="#000000";
+			if($Stype_1==$i)$BgColor="#aa2222";
+		    DrawLinkRect($typeData[$i][2],12,"#ffffff",$x,$y,$w,$h,$BgColor,$Link,"1");
+			$x+=110;
+		}
+		$y+=10;$h=12; $w=50;
+	    for($i=0;$i<count($typeData2);$i++){
+		    $Link=$BaseURL."?Stype_1=".$Stype_1."&Stype_2=".$i;
+			$BgColor="#000000";
+			if($Stype_2==$i)$BgColor="#aa2222";
+		    DrawLinkRect($typeData2[$i][2],10,"#ffffff",$x,$y,$w,$h,$BgColor,$Link,"1");
+			$x+=60;
+		}
 	}
 ?>
