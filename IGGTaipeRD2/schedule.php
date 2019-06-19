@@ -55,9 +55,10 @@
    include('mysqlApi.php');
    include('scheduleApi.php');
      defineData_v2();   //定義基礎資料(scheduleApi)
-	  DrawWarring();
+	
      GetCalendarData(); //取得日曆資料(scheduleApi)
      DrawBaseCalendar_v2(); //列印基礎日期資料(scheduleApi)
+	 DrawWarring();
      DrawType_v2();//進度表類型
 	 DrawTypeCont();//判斷印出內容
 	// DrawPlan_v2();
@@ -66,7 +67,7 @@
      DrawMembersLinkArea( 30,6,  $BaseURL); 
 	 DrawOutLinkArea(30,52,$BaseURL);
 	 DrawUserData( 820, 11);   //使用者資料(PubApi)
-	 
+
 ?>
  
 <?php  //主要資料
@@ -85,7 +86,8 @@
 		 global $data_library,$tableName,$MainPlanData;
 				$tableName="fpschedule";
 			    $data_library="iggtaiperd2";
-				$MainPlanData=getMysqlDataArray($tableName); 
+				$MainPlanDataT=getMysqlDataArray($tableName); 
+				$MainPlanData=filterArray($MainPlanDataT,0,"data"); 
 		 //共用資料表
 	     global $OutsData,$memberData;
 		 global $WarringDatas;
@@ -139,9 +141,6 @@
 	          global $TargetYear,$TargetMonth,$YearRange,$MonthRange,$showMonthNum;
 			  global $BaseURL,$BackURL, $Stype_1,$Stype_2;
 			  global $colorCodes;
-			//  global $VacationDays;
-			 // $YearRange=array($TargetYear,$TargetYear+1);
-			 // $VacationDays=getVacationDays($YearRange,$MonthRange);
 			  echo "<div   style='position: -webkit-sticky; position:sticky; top:0; z-index: 100;'>";
 			  $pos="absolute";
 			  for($i=0;$i<count($monthLoc);$i++){
@@ -196,6 +195,7 @@
 	 function  CollectWarring(){
 	           global $WarringDatas;
 	           global $MainPlanData;
+		 
 			   for( $i=0;$i<count($MainPlanData);$i++){
 			       if(isPlaneWarring($MainPlanData[$i])=="true"){
 				      array_push($WarringDatas,$MainPlanData[$i]);
@@ -203,12 +203,13 @@
 			   }
 	 }
 	 function isPlaneWarring($plansArray){
+		        global $VacationDays; //年 月 日
 		         if($plansArray[5]=="工項" or $plansArray[5]=="目標") return "false";
-	              $startDayArray=explode("_",$plansArray[2]);
+	              $startDay=explode("_",$plansArray[2]);
 				  $nowDayArray=array(date(Y),date(m),date(d));
-				  $passDays= getPassDays($startDayArray,$nowDayArray);
-				 
-	              if($passDays>$plansArray[6] && $plansArray[7]!="已完成") return "true";
+				  $passDays= getPassDays($startDay,$nowDayArray);
+				  $realDays=ReturnWorkDaysV2($startDay[0],$startDay[1],$startDay[2],$plansArray[6],$VacationDays);
+	              if($passDays>=$realDays && $plansArray[7]!="已完成") return "true";
 	              return "false";
 	 }
 ?>
