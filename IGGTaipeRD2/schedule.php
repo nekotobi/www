@@ -381,12 +381,11 @@
 			   //細部規劃
 			   if ($plan_type=="工項"){
 				    $t=strlen($info);
-					if($t<14)$t=14;
-				    $w= 10* (($t/2));
+					$add="";
+			        if($plansArray[12]!=""){   $add="　　　"; $t+=5;}
+				    $w= 6*$t ;
 				    $sx=$x-$w-20;
-				    $add="　　　";
-					if($plansArray[12]=="") $add="";
-					DrawLinkRect($add.$info,"10","#ffffff",$sx,$y,$w ,"16", "#666666",$Link,"1");
+					DrawLinkRect(  $add . $info,"10","#ffffff",$sx,$y,$w ,"16", "#666666",$Link,"1");
 					$Link=$BackURL."&PhpInputType=AddPlanType&Ecode=".$plansArray[1];
 					if($plansArray[12]!=""){
 				        $JilaLink="http://bzbfzjira.iggcn.com/browse/FP-".$plansArray[12]  ;
