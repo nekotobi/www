@@ -260,18 +260,21 @@
 	  }
 	  function DrawListBar($plansArray,$i){
 		       global $colorCodes;
-			   global $StartX, $StartY,$OneDayWidth,$daysLoc,$MainPlanData;
+			   global $VacationDays;
+			   global $StartX, $StartY,$OneDayWidth,$daysLoc,$MainPlanData,$OneDayWidth;
 		       $startDay=explode("_",$plansArray[2]);
+			   $realDays=ReturnWorkDaysV2($startDay[0],$startDay[1],$startDay[2],$plansArray[6],$VacationDays);
 		       $d=returnDateString($startDay[0],$startDay[1],$startDay[2]);
 			   $x=RetrunXpos($daysLoc,$d);
 	           $y= $StartY+90+($i+1)*20;
 			   $codeA=returnDataArray( $MainPlanData,1,$plansArray[3] );//取得主資料array
 			   $msg=$plansArray[12]."_".$codeA[3].">".$plansArray[5] ;
 			   $color=$colorCodes[6][2];
-			   $w=10* ((strlen($msg)/2));
+			   //$w=10* ((strlen($msg)/2));
+		       $w= $OneDayWidth*$realDays;
 			   DrawLinkRectAutoLength( $msg,"10","#000000",$x, $y,$w ,"16", $color,$Link,"1");
 				//狀態圖
-			   DrawStatePics($plansArray,$x,$y);
+			   DrawStatePics($plansArray,$x,$y,$realDays);
 	  }
       function DrawListInfo($UserArray,$JobsArray ){
 		       global $List; 
@@ -407,7 +410,7 @@
                 
 				$realDays=ReturnWorkDaysV2($startDay[0],$startDay[1],$startDay[2],$plansArray[6],$VacationDays);
 			    $workDays=$plansArray[6] ;
-			     $w= $OneDayWidth*$realDays;
+			    $w= $OneDayWidth*$realDays;
 				$NameBackAdd="[".$workDays."][".$plansArray[9]."]";
 				if($plansArray[9]=="" or $plansArray[9]=="未定義"){
 							$NameBackAdd="[".$workDays."][".$plansArray[8]."]";
@@ -416,9 +419,9 @@
 				}
                 DrawLinkRectAutoLength($NameAdd.">".$plan_type.$NameBackAdd,"10","#000000",$x, $y,$w ,"16", $color,$Link,"1");
 				//狀態圖
-			    DrawStatePics($plansArray,$x,$y);
+			    DrawStatePics($plansArray,$x,$y,$realDays);
 	  }
-	  function DrawStatePics($plansArray,$x,$y){
+	  function DrawStatePics($plansArray,$x,$y,$realDays){
 		  		 global $OutsData,$memberData;
 				 //global $WarringDatas;
 				 $pic="";
@@ -429,7 +432,7 @@
 				  $startDayArray=explode("_",$plansArray[2]);
 				  $nowDayArray=array(date(Y),date(m),date(d));
 				  $passDays= getPassDays($startDayArray,$nowDayArray);
-	              if($passDays>$plansArray[6] && $plansArray[7]!="已完成"){
+	              if($passDays>=$realDays && $plansArray[7]!="已完成"){
 					 $pic="Pics/warring.gif";
 				  }
 				  if( $pic!="")
@@ -586,7 +589,6 @@
 		      	  echo $stmt;
 	 }
 ?>
-
 
 <?php //Oder
    function EditPlanTypeEditor_v2($ex,$ey,$w,$h){

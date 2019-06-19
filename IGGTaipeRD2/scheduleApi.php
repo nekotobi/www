@@ -114,17 +114,13 @@
 			  global $colorCodes;
 			  global $SelectScheduleType, $SelectType,$State,$SelectScheduleType2;
 			  global $LinkURL;
-			 
 			  if($SelectType=="")$SelectType=0;
 	          $plansTmp=getMysqlDataArray("rpgartschedule");
-			  
 			  $plansTmp2=  filterArray( $plansTmp ,14,$SelectScheduleType[$SelectType]);
-			  
 			  $plans= sortArrays( $plansTmp2 ,5 ,"false");
 			  $ColorJump=array(0,0,0,0,0);
 			  $LinkURL="scheduleAll.php?PhpInputType=EditPlan&SelectType=".$SelectType;
 			  $color_num=2;
-			
 			  for($i=0;$i<count($plans);$i++){
 			      $d=returnDateString($plans[$i][0],$plans[$i][1],$plans[$i][2]);
 				  $x=RetrunXpos($daysLoc,$d);	
