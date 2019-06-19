@@ -4,16 +4,18 @@
       function GetCalendarData(){
 	          global $StartX, $StartY,$OneDayWidth,$daysLoc,$monthLoc, $YearLoc; 
 	          global $TargetYear,$TargetMonth,$YearRange,$MonthRange,$showMonthNum;
-			  global  $colorCodes;
+			  global $colorCodes;
+			  global $VacationDays; 
 	          SetCalendarRange("","");
 			  $MonthTotalWidth=0;
 			  for($i=0;$i<count($MonthRange);$i++){
 			       getDaysLoc( $YearRange[$i], $MonthRange[$i]);
 			  }
 			  $daysLoc= getDayLocVacationDays($daysLoc);
+			  $VacationDays= getVacationDays($YearRange,$MonthRange);
 	  }
 	  function getDaysLoc($y,$m){ //取得日期資料$daysLo[]=$daydata=array($y年,$m月,$i日,$CurrentX位置,$假期0 否 1假期)
-	            global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX,$monthLoc ; 
+	            global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX,$monthLoc ;
 				$MonthEnd=getMonthDay($m,$y);
 				$sx=$CurrentX+$OneDayWidth;
 				for($i=1;$i<=$MonthEnd;$i++){

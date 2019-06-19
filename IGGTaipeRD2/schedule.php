@@ -66,9 +66,9 @@
      DrawMembersLinkArea( 30,6,  $BaseURL); 
 	 DrawOutLinkArea(30,52,$BaseURL);
 	 DrawUserData( 820, 11);   //使用者資料(PubApi)
-	
+	 
 ?>
-
+ 
 <?php  //主要資料
 	 function  defineData_v2(){
 		 //基礎數值
@@ -139,6 +139,9 @@
 	          global $TargetYear,$TargetMonth,$YearRange,$MonthRange,$showMonthNum;
 			  global $BaseURL,$BackURL, $Stype_1,$Stype_2;
 			  global $colorCodes;
+			//  global $VacationDays;
+			 // $YearRange=array($TargetYear,$TargetYear+1);
+			 // $VacationDays=getVacationDays($YearRange,$MonthRange);
 			  echo "<div   style='position: -webkit-sticky; position:sticky; top:0; z-index: 100;'>";
 			  $pos="absolute";
 			  for($i=0;$i<count($monthLoc);$i++){
@@ -308,10 +311,8 @@
 				  DrawTargetLine($plansLine2[$i]);
 			  }
 		   }
-        
-		   
 		   for($i=0;$i<count($plans);$i++){
-			  DrawPlanBar($color_num,$y,$plans[$i] );
+              DrawPlanBar($color_num,$y,$plans[$i] );
 			  $color_num+=1;
 			  if( $color_num>7)$color_num=3;
 		   }
@@ -340,12 +341,15 @@
 				}
 		   }
 	  }
+
       function DrawPlanBar( $color_num,$y,$plansArray ){
 		       global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX,$monthLoc,$showMonthNum ;
 		       global $colorCodes;
 			   global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1, $SelectType_2;
 			   global $user,$List;
 			   global $data_library,$tableName,$MainPlanData;
+			   global $VacationDays; //年 月 日
+			 
 		       $fontColor="#222222";
 			   $startDay=explode("_",$plansArray[2]);
 		       $d=returnDateString($startDay[0],$startDay[1],$startDay[2]);
@@ -363,56 +367,56 @@
 				         case "工項":
 						 DrawLinkRect($info,"10",$fontColor,$x,$y,$w ,"16", $color,$Link,"1");
 				         break;
-						 
 						 case "目標":
 						 $color="#772233";
 				         $fontColor="#eeeeee";
-						 //DrawabsoluteRect("","0",$fontColor, $x, $y-20*$line,"2" ,$line*20 , $color,  "absolute", $Link );
 						 DrawLinkRect($info,"10",$fontColor,$x,$y,$w ,"16", $color,$Link,"1");
-						 break;
-						 
+						 break; 
 				  }
 				  return;
 			   }
+			   //細部規劃
 			   if ($plan_type=="工項"){
 				    $t=strlen($info);
 					if($t<14)$t=14;
 				    $w= 10* (($t/2));
-					 
 				    $sx=$x-$w-20;
 				    $add="　　　";
-					 if($plansArray[12]=="") $add="";
+					if($plansArray[12]=="") $add="";
 					DrawLinkRect($add.$info,"10","#ffffff",$sx,$y,$w ,"16", "#666666",$Link,"1");
 					$Link=$BackURL."&PhpInputType=AddPlanType&Ecode=".$plansArray[1];
-					 if($plansArray[12]!=""){
+					if($plansArray[12]!=""){
 				        $JilaLink="http://bzbfzjira.iggcn.com/browse/FP-".$plansArray[12]  ;
 					    DrawLinkRect_newtab($plansArray[12],"9","#000000",$sx+2,$y+2,"25" ,"11", $colorCodes[0][3],$JilaLink,"1" );
 					}
 					DrawLinkRect("+","10","#ffffff",$x-20,$y+2,"12" ,"12", "#555555",$Link,"1");
 					return;
 				}
-               if ($plan_type!="工項" or $plan_type!="目標" ){ 
-				     $codeA=returnDataArray( $MainPlanData,1,$plansArray[3] );//取得主資料array
-					 if($codeA==null)return;
-				     $y=($StartY+90+$codeA[4]*20);
-				}
+			   //分工
+                $codeA=returnDataArray( $MainPlanData,1,$plansArray[3] );//取得主資料array
+			    if($codeA==null)return;
+				$y=($StartY+90+$codeA[4]*20);
 				$Link=$BackURL."&PhpInputType=DrawEditPlanType&Ecode=".$plansArray[1];
 				$color=$colorCodes[9][0];
 			    for($i=0;$i<count($SelectType_2);$i++){
 					if($SelectType_2[$i]==$plan_type){
 						$color=$colorCodes[9][$i];
 						   if($plansArray[7]=="已完成")	$color=$colorCodes[10][$i];
-							 
 					}
 				}
-				$NameBackAdd= "[".$plansArray[9]."]";
+                
+				$realDays=ReturnWorkDaysV2($startDay[0],$startDay[1],$startDay[2],$plansArray[6],$VacationDays);
+			    $workDays=$plansArray[6] ;
+			     $w= $OneDayWidth*$realDays;
+				$NameBackAdd="[".$workDays."][".$plansArray[9]."]";
 				if($plansArray[9]=="" or $plansArray[9]=="未定義"){
-					 $NameBackAdd="[".$plansArray[8]."]"; 
+							$NameBackAdd="[".$workDays."][".$plansArray[8]."]";
+							if($plansArray[7]=="" or $plansArray[7]=="未定義") 
+								$NameBackAdd="[?][".$plansArray[8]."]";
 				}
                 DrawLinkRectAutoLength($NameAdd.">".$plan_type.$NameBackAdd,"10","#000000",$x, $y,$w ,"16", $color,$Link,"1");
 				//狀態圖
 			    DrawStatePics($plansArray,$x,$y);
-			
 	  }
 	  function DrawStatePics($plansArray,$x,$y){
 		  		 global $OutsData,$memberData;
