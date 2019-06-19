@@ -180,7 +180,7 @@
 			    // DrawDragRect($x,$y,$w,$h,$BGColor,$id);
 			    }
 		}
-	 function  DrawWarring(){ //錯誤
+	 function  DrawWarring(){ //收集錯誤
 		 	   global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX,$monthLoc,$showMonthNum ;
 		       global $WarringDatas;
 			   global $BaseURL;
@@ -202,7 +202,7 @@
 				   }
 			   }
 	 }
-	 function isPlaneWarring($plansArray){
+	 function  isPlaneWarring($plansArray){
 		        global $VacationDays; //年 月 日
 		         if($plansArray[5]=="工項" or $plansArray[5]=="目標") return "false";
 	              $startDay=explode("_",$plansArray[2]);
@@ -345,7 +345,6 @@
 				}
 		   }
 	  }
-
       function DrawPlanBar( $color_num,$y,$plansArray ){
 		       global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX,$monthLoc,$showMonthNum ;
 		       global $colorCodes;
@@ -353,7 +352,7 @@
 			   global $user,$List;
 			   global $data_library,$tableName,$MainPlanData;
 			   global $VacationDays; //年 月 日
-			 
+			   
 		       $fontColor="#222222";
 			   $startDay=explode("_",$plansArray[2]);
 		       $d=returnDateString($startDay[0],$startDay[1],$startDay[2]);
@@ -404,7 +403,8 @@
 				$color=$colorCodes[9][0];
 			    for($i=0;$i<count($SelectType_2);$i++){
 					if($SelectType_2[$i]==$plan_type){
-						$color=$colorCodes[9][$i];
+						$c=$i%8;
+						$color=$colorCodes[9][$c];
 						   if($plansArray[7]=="已完成")	$color=$colorCodes[10][$i];
 					}
 				}
@@ -419,12 +419,18 @@
 								$NameBackAdd="[?][".$plansArray[8]."]";
 				}
                 DrawLinkRectAutoLength($NameAdd.">".$plan_type.$NameBackAdd,"10","#000000",$x, $y,$w ,"16", $color,$Link,"1");
+				//jilar
+				if($plansArray[12]!=$codeA[12] && $plansArray[12]!=""){
+				        $JilaLink="http://bzbfzjira.iggcn.com/browse/FP-".$plansArray[12]  ;
+					    DrawLinkRect_newtab($plansArray[12],"8","#000000",$x+5, $y+10,"20" ,"8", $colorCodes[0][3],$JilaLink,"0" );
+					}
+				
 				//狀態圖
 			    DrawStatePics($plansArray,$x,$y,$realDays);
 	  }
 	  function DrawStatePics($plansArray,$x,$y,$realDays){
 		  		 global $OutsData,$memberData;
-				 //global $WarringDatas;
+
 				 $pic="";
 			     if($plansArray[7]=="" or $plansArray[7]=="未定義")$pic="Pics/question";
 				 if($plansArray[7]=="已完成")$pic="Pics/finish";
@@ -515,6 +521,7 @@
 			   global $year,$month,$day;
 			   global $submit;
 			   global $del;
+ 
 			   $p=$tableName;
 			   $tables=returnTables($data_library,$p);
 	           $t= count( $tables);
@@ -526,7 +533,7 @@
 				   		  $startDay=$year."_".$month."_".$day;
 				          array_push($Base,$tables[$i]);
                           array_push($up,$$tables[$i]);
-				         // echo  "</br>".$tables[$i].">".$$tables[$i];
+				        //  echo  "</br>".$tables[$i].">".$$tables[$i];
 		       }
 			   
 			   $WHEREtable=array( "data_type", "code" );
@@ -537,6 +544,7 @@
 			   }
 		       if($submit=="送出修改"){
 			    $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
+				echo $stmt;
                 SendCommand($stmt,$data_library);			   
 			   }   
 			   if($submit=="刪除計畫"){
@@ -566,28 +574,25 @@
 				    echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 		      	// echo $stmt;
 	 }
-       function AddTypeData( ){
+     function AddTypeData( ){
 		       global $data_library,$tableName;
 			   global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1;
-			    global $year,$month,$day;
+			   global $year,$month,$day;
 			       $p=$tableName;
 				   $tables=returnTables($data_library,$p);
 	               $t= count( $tables);
-			      
 				   $WHEREtable=array();
 				   $WHEREData=array();
 		           for($i=0;$i<$t;$i++){
 	       	            global $$tables[$i];
 					    $startDay=$year."_".$month."_".$day;
-					 
 				        array_push($WHEREtable,$tables[$i]);
 					    array_push($WHEREData,$$tables[$i]);
-					 //   echo  "</br>".$tables[$i].">".$$tables[$i];
 		              }
 					$stmt=   MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
 				    SendCommand($stmt,$data_library);
-			    echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
-		      	  echo $stmt;
+			  echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+		      echo $stmt;
 	 }
 ?>
 
@@ -597,28 +602,26 @@
 	        global $colorCodes;
 		    global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$stateType;
 			global $Ecode;
-			 $planstmp=getMysqlDataArray($tableName);
-			 $plansArray=returnDataArray($planstmp,1,$Ecode);
-			 $rootName= returnDataArray($planstmp,1,$plansArray[3]);
-			 $title="修改 [". $rootName[3]."] [".$plansArray[5]."]內容";
-		     DrawPopBG($ex,$ey,$w,$h,$title ,"12",$BackURL);
-		     $startDay=explode("_",$plansArray[2]);
-			 //From
-		      echo   "<form id='AddPlan'  name='Show' action='".$BackURL."' method='post'  enctype='multipart/form-data'>";
-			  //基礎資料
-			  $p=$tableName;
-			  $tables=returnTables($data_library,$p);
-			  for($i=0;$i<count($tables);$i++){
-			      echo   "<input type=hidden name=".$tables[$i]." value=".$plansArray[$i].">";
-			  }
-			  //Log
-			  echo   "<input type=hidden name=code value=".$Ecode.">";
-		   	  echo   "<input type=hidden name=PhpInputType value=upEditPlanType >";
-			 
-		    //  echo   "<input type=hidden name=plan value=".$plansArray[5].">"; 	
-			  $lastUpdate=date(Y_m_d_H_i,time()+(8*3600));
-		      echo   "<input type=hidden name=lastUpdate value=".$lastUpdate.">"; 
-			  $ey+=20;
+			$planstmp=getMysqlDataArray($tableName);
+			$plansArray=returnDataArray($planstmp,1,$Ecode);
+			$rootName= returnDataArray($planstmp,1,$plansArray[3]);
+			$title="修改 [". $rootName[3]."] [".$plansArray[5]."]內容";
+		    DrawPopBG($ex,$ey,$w,$h,$title ,"12",$BackURL);
+		    $startDay=explode("_",$plansArray[2]);
+			//From
+		    echo   "<form id='AddPlan'  name='Show' action='".$BackURL."' method='post'  enctype='multipart/form-data'>";
+			//基礎資料
+			$p=$tableName;
+			$tables=returnTables($data_library,$p);
+			for($i=0;$i<count($tables);$i++){
+			    echo   "<input type=hidden name=".$tables[$i]." value=".$plansArray[$i].">";
+			}
+ 
+			echo   "<input type=hidden name=code value=".$Ecode.">";
+		   	echo   "<input type=hidden name=PhpInputType value=upEditPlanType >";	
+			$lastUpdate=date(Y_m_d_H_i,time()+(8*3600));
+		    echo   "<input type=hidden name=lastUpdate value=".$lastUpdate.">"; 
+			$ey+=20;
 			 //年
 	         $input="<input type=text name=year value='".$startDay[0]."'  size=4>年";
 	         DrawInputRect("開始","12","#ffffff",($ex),$ey ,120,16, $colorCodes[4][2],"top",$input);
@@ -630,7 +633,10 @@
 	         DrawInputRect("","14","#ffffff",($ex+130),$ey ,220,16, $colorCodes[4][2],"top",$input);
 			 //天數
 			 $workDayinput="<input type=text name=workingDays  value='".$plansArray[6]."'  size=2   >";
-	         DrawInputRect("天數","12","#ffffff",($ex+190),$ey ,120,18, $colorCodes[4][2],"top",$workDayinput); 
+	         DrawInputRect("天數","12","#ffffff",($ex+190),$ey ,120,18, $colorCodes[4][2],"top",$workDayinput);
+	        //JilaLink
+		     $jirainput="<input type=text name=remark  value='".$plansArray[12]."'  size=4   >";
+	         DrawInputRect("副jila單","12","#ffffff",($ex+280),$ey ,120,18, $colorCodes[4][2],"top",$jirainput);			 
 			 $ey+=40;
 			 //外包負責
 			 $OutsDatatmp=getMysqlDataArray("outsourcing");
@@ -646,14 +652,14 @@
 			 //狀態
 			 $selectTable= MakeSelectionV2( $stateType,$plansArray[7],"state" ,10);
 			 DrawInputRect( "目前狀態","10","#ffffff",($ex+250),$ey ,120,16, $colorCodes[4][2],"top", $selectTable);
-			 
+		
 			 //送出
 		     $submitP="<input type=submit name=submit value=送出修改>";
 	         DrawInputRect("",$ey-120 ,"#ffffff",($ex+320),60,120,18, $colorCodes[4][2],"top",$submitP);
 			 //圖檔
 			 $ey+=50;
-			 $input="<input type=text name=remark value='".$plansArray[12]."'  size=32>";
-	         DrawInputRect("輸入完成圖檔連結","12","#ffffff",($ex ),$ey ,320,16, $colorCodes[4][2],"top",$input);
+			  $input="<input type=text name=info value='".$plansArray[13]."'  size=32>";
+	          DrawInputRect("輸入完成圖檔連結","12","#ffffff",($ex ),$ey ,320,16, $colorCodes[4][2],"top",$input);
 			 
 			 
 			 //刪除
@@ -663,12 +669,11 @@
 	         DrawInputRect("",$ey-20 ,"#ffffff",($ex+320),60,120,18, $colorCodes[4][2],"top",$submitP);
    }
 
- function AddPlanTypeEditor_v2($ex,$ey,$w,$h,$y,$m,$d){
+     function AddPlanTypeEditor_v2($ex,$ey,$w,$h,$y,$m,$d){
          global $data_library,$tableName;   
 	     global $colorCodes;
 		 global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2;
 		 global $Ecode;
-		 
          DrawPopBG($ex,$ey,$w,$h,$title ,"12",$BackURL);
 		 $planstmp=getMysqlDataArray($tableName);
 		 $plansArray=returnDataArray($planstmp,1,$Ecode);
@@ -697,16 +702,16 @@
 	     $input="<input type=text name=day value='".$startDay[2]."'  size=2>日".$plansArray[3];
 	     DrawInputRect("","14","#ffffff",($ex+130),$ey ,220,16, $colorCodes[4][2],"top",$input);
 		 //類別計畫
- 
 	     $select=MakeSelectionV2($SelectType_2,"設定","type",140);
 	     DrawInputRect("","14","#ffffff",($ex+310 ),$ey,140,18, $colorCodes[4][2],"top",  $select."計畫");
 	     $workDayinput="<input type=text name=workingDays  value='5'  size=2   >";
 	     DrawInputRect("天數","12","#ffffff",($ex+240),$ey+40,120,18, $colorCodes[4][2],"top",$workDayinput);
+
 		 $submitP="<input type=submit name=submit value=新增規畫>";
 	     DrawInputRect("",$ey-22 ,"#ffffff",($ex+320),60,120,18, $colorCodes[4][2],"top",$submitP);
  
  }
- function AddPlanEditor_v2($ex,$ey,$w,$h,$y,$m,$d){
+     function AddPlanEditor_v2($ex,$ey,$w,$h,$y,$m,$d){
 	     global $data_library,$tableName;   
 	     global $colorCodes;
 		 global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1;
@@ -754,23 +759,15 @@
 	     DrawInputRect("",$ey-20 ,"#ffffff",($ex+320),60,120,18, $colorCodes[4][2],"top",$submitP);
 
   }
-function EditPlan_v2($ex,$ey,$w,$h){
+     function EditPlan_v2($ex,$ey,$w,$h){
 	        global $data_library,$tableName;   
 			global $Ecode;
 		    global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1;
-		 
 			$planstmp=getMysqlDataArray($tableName);
 			$plansArray=returnDataArray($planstmp,1,$Ecode);
-		//	for($i=0;$i<count($plansArray);$i++)
-		    	//echo $codeData[$i];
-	        //From
-			 // echo $BackURL;
 		    echo   "<form id='EditPlan'  name='Show' action='".$BackURL."' method='post'>";
-		   //Hides
-	       // echo   "<input type=hidden name=BackURL  value=".$BackURL.">"; 
 			echo   "<input type=hidden name=data_type value=data>"; 
 		    echo   "<input type=hidden name=tablename value=".$tablename.">"; 
-		 
 	  	    echo   "<input type=hidden name=PhpInputType value=upEdit >"; 
 		    $lastUpdate=date(Y_m_d_H_i,time()+(8*3600));
 		    echo   "<input type=hidden name=lastUpdate value=".$lastUpdate.">"; 
@@ -792,12 +789,12 @@ function EditPlan_v2($ex,$ey,$w,$h){
 	        $Planinput="<input type=text name=plan value='".$plansArray[3]."'  size=30 >";
 	        DrawInputRect("計畫","12","#ffffff",($ex),$ey+40,300,18, $colorCodes[4][2],"top",$Planinput);
 			 if($Stype_1==0 or  $Stype_1==""){
-		      $workDayinput="<input type=text name=workingDays  value='5'  size=2   >";
-	          DrawInputRect("天數","12","#ffffff",($ex+240),$ey+40,120,18, $colorCodes[4][2],"top",$workDayinput);
+		        $workDayinput="<input type=text name=workingDays  value='5'  size=2   >";
+	            DrawInputRect("天數","12","#ffffff",($ex+240),$ey+40,120,18, $colorCodes[4][2],"top",$workDayinput);
 		     }else{
 		    	$jirainput="<input type=text name=remark  value='".$plansArray[12]."'  size=4   >";
 	            DrawInputRect("jila單","12","#ffffff",($ex+240),$ey+40,120,18, $colorCodes[4][2],"top",$jirainput);
-		      }
+		     }
  
 		 
 		    $Lineinput="<input type=text name=line value='".$plansArray[4]."'  size=2   >";
