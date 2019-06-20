@@ -48,7 +48,7 @@
 </script>
 </script>
 <body bgcolor="#b5c4b1">
-<?php
+<?php //主控台
    $id=$_COOKIE['IGG_id'];
    include('PubApi.php');
    include('CalendarApi.php');  
@@ -67,6 +67,7 @@
      DrawMembersLinkArea( 30,6,  $BaseURL); 
 	 DrawOutLinkArea(30,52,$BaseURL);
 	 DrawUserData( 820, 11);   //使用者資料(PubApi)
+	 DrawMemo();
 
 ?>
  
@@ -211,6 +212,12 @@
 				  $realDays=ReturnWorkDaysV2($startDay[0],$startDay[1],$startDay[2],$plansArray[6],$VacationDays);
 	              if($passDays>=$realDays && $plansArray[7]!="已完成") return "true";
 	              return "false";
+	 }
+	 function DrawMemo(){
+		     $Rect=array(1024,10,50,12);
+	         $Link= "https://docs.google.com/document/d/1B8UBHJAsMGcSxbgN5yHyWQn4KkLwlfKz_tAOU2lS44E/edit?usp=sharing";
+		     DrawLinkRect_newtab("memo","10","#ffffff",$Rect[0],$Rect[1],$Rect[2],$Rect[3],"#000000",$Link,"1");
+			 
 	 }
 ?>
 
@@ -657,7 +664,7 @@
 	         DrawInputRect("",$ey-120 ,"#ffffff",($ex+320),60,120,18, $colorCodes[4][2],"top",$submitP);
 			 //圖檔
 			 $ey+=50;
-			  $input="<input type=text name=info value='".$plansArray[13]."'  size=32>";
+			  $input="<input type=text name=log value='".$plansArray[13]."'  size=32>";
 	          DrawInputRect("輸入完成圖檔連結","12","#ffffff",($ex ),$ey ,320,16, $colorCodes[4][2],"top",$input);
 			 
 			 
