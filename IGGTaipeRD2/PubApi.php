@@ -264,8 +264,6 @@
 			$seletProject=$seletProject."</select>";
 	        return $seletProject;
 	   }
-
-
 	   function MakeSelection($items,$arrayNum,$selectItem,$selectName){
 		  //  echo $selectName;
 	        $seletProject= "<select  style=width:100px; name=".$selectName."   >";
@@ -322,9 +320,6 @@
 				 }
 				return $color;
 	   }
-	   
-
-
 	   function DrawMembersDragArea( $StartX,$startY ){
 		     global $memberId;
 			 $memberTmp=getMysqlDataArray("members");
@@ -361,14 +356,14 @@
 ?>
 
 <?php  //PHP區域
-        function DrawDragRect($x,$y,$w,$h,$BgColor,$id){
+       function DrawDragRect($x,$y,$w,$h,$BgColor,$id){
 	          echo "<div  id=".$id." ";
 			  echo " ondrop='Drop(event)' ondragover='AllowDrop(event)' ondragleave ='DragLeave(event)'   ";
               echo  " style='   " ;
 			  echo "position:absolute;  top:".$y."px; z-index:-1; left:".$x."px;  width:".$w."px;height:".$h."px; background-color:".$BgColor.";  '  >";
 	          echo "</div>";
 	    }
-	    function DrawDragbox($x,$y,$w,$h,$BgColor,$id,$info,$fontSize){
+	   function DrawDragbox($x,$y,$w,$h,$BgColor,$id,$info,$fontSize){
 	          echo "<div  id=".$id." ";
 			  echo " draggable='true' ondragstart='Drag(event)' ";
               echo " style=' " ; //align=left
@@ -409,7 +404,7 @@
 				       top:".$x."px;Left:".$y."px; width:".$w."px;height:".$h."px;
 				      '><img src=".$pic." width=".$w." height=".$h."></div>";
 	   }
-	   	   function DrawPicwithID($pic,$x,$y,$w,$h,$id){
+	   function DrawPicwithID($pic,$x,$y,$w,$h,$id){
 		     	echo "<div id=".$id  ;
 				echo " draggable='true' ondragstart='Drag(event)' ";
 				echo "' style='position:absolute; 

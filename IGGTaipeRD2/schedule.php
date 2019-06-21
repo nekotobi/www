@@ -48,41 +48,41 @@
 </script>
 </script>
 <body bgcolor="#b5c4b1">
-<?php //主控台
+<?php  //主控台
    $id=$_COOKIE['IGG_id'];
    include('PubApi.php');
    include('CalendarApi.php');  
    include('mysqlApi.php');
    include('scheduleApi.php');
      defineData_v2();   //定義基礎資料(scheduleApi)
-	
      GetCalendarData(); //取得日曆資料(scheduleApi)
      DrawBaseCalendar_v2(); //列印基礎日期資料(scheduleApi)
 	 DrawWarring();
      DrawType_v2();//進度表類型
 	 DrawTypeCont();//判斷印出內容
-	// DrawPlan_v2();
 	 CheckinputType_v2();//判斷輸入
 	 global   $BaseURL;
      DrawMembersLinkArea( 30,6,  $BaseURL); 
 	 DrawOutLinkArea(30,52,$BaseURL);
 	 DrawUserData( 820, 11);   //使用者資料(PubApi)
-	 DrawMemo();
-
+	 DrawMemo();//臨時紀錄
+     DrawInsertLine( );//
 ?>
  
 <?php  //主要資料
 	 function  defineData_v2(){
 		 //基礎數值
-		 global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX,$monthLoc,$showMonthNum ;
+		 global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX,$monthLoc,$showMonthNum,$LineHeight,$LineRec ;
 		        $StartX=20;
 	            $StartY=90;
 	            $MonthWidth=200;
 	            $OneDayWidth=15;
+				$LineHeight=30;
 	            $CurrentX= $StartX;
 				$showMonthNum=8;
 				$daysLoc=array();//(year,m,d,x軸位置)
                 $monthLoc=array();//($y,m,x軸位置,Siz)
+				$LineRec=array();//紀錄哪行有排列
 		 //資料表
 		 global $data_library,$tableName,$MainPlanData;
 				$tableName="fpschedule";
@@ -113,32 +113,33 @@
 	 }
      function  DrawType_v2(){ //類別
 		 	  global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX,$monthLoc,$showMonthNum ;
-	    	  global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1;
+	    	  global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2;
 			  global $colorCodes;
+			  global $CheckState;
 			  $y=$StartY+10;
 			  $x=120;
 	          for ($i=0;$i<count( $SelectType_1);$i++){
                    $BackURL2= $BaseURL."?Stype_1=".$i."&Stype_2=".$Stype_2;
 				   $msg=" ".$SelectType_1[$i];
 				   $color= "#222222";
-				   if($Stype_1==$i)$color= "#dd2212";
-			       DrawLinkRect($msg,"12","#ffffff",$x,$y,"60","16",$color,$BackURL2,1);
-				   $x += 70;
+				   if($Stype_1==$i and $Stype_1!="")$color= "#dd2212";
+			       DrawLinkRect($msg,"11","#ffffff",$x,$y,"50","16",$color,$BackURL2,1);
+				   $x += 60;
 			  }
 			  DrawState();
 			  global $stateType;
 			  $x+=100;
 			  for ($i=0;$i<count( $stateType);$i++){
-			       $BackURL2= $BaseURL."?CheckState=".$i;
+			       $BackURL2= $BaseURL."?List=CheckState&CheckState=".$i;
 				   $msg=" ".$stateType[$i];
 				   $color= "#222222";
-				   if($CheckState==$i and  $CheckState!="" )$color= "#cc2212";
-			       DrawLinkRect($msg,"10","#ffffff",$x,$y,"60","14",$color,$BackURL2,1);
-				   $x+=70;
+				   if($CheckState==$i and  $CheckState!="")$color= "#cc2212";
+			       DrawLinkRect($msg,"10","#ffffff",$x,$y,"40","14",$color,$BackURL2,1);
+				   $x+=50;
 			  }
 	 }
      function  DrawBaseCalendar_v2(){  //日曆格
-		      global $StartX, $StartY,$OneDayWidth,$daysLoc,$monthLoc, $YearLoc; 
+		      global $StartX, $StartY,$OneDayWidth,$daysLoc,$monthLoc, $YearLoc ,$LineHeight ; 
 	          global $TargetYear,$TargetMonth,$YearRange,$MonthRange,$showMonthNum;
 			  global $BaseURL,$BackURL, $Stype_1,$Stype_2;
 			  global $colorCodes;
@@ -165,7 +166,7 @@
 				  }       
 			  DrawSprint($StartY+80 );
               echo "</div>"	;	
-			  DrawDragArea(25);
+			  DrawDragArea($LineHeight);
 	 }
 	 function  DrawDragHorArea($height ){//橫排區
 	         global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX  ; 
@@ -213,15 +214,44 @@
 	              if($passDays>=$realDays && $plansArray[7]!="已完成") return "true";
 	              return "false";
 	 }
-	 function DrawMemo(){
-		     $Rect=array(1024,10,50,12);
-	         $Link= "https://docs.google.com/document/d/1B8UBHJAsMGcSxbgN5yHyWQn4KkLwlfKz_tAOU2lS44E/edit?usp=sharing";
-		     DrawLinkRect_newtab("memo","10","#ffffff",$Rect[0],$Rect[1],$Rect[2],$Rect[3],"#000000",$Link,"1");
+	 function  DrawMemo(){
+		       $Rect=array(1024,10,50,12);
+	           $Link= "https://docs.google.com/document/d/1B8UBHJAsMGcSxbgN5yHyWQn4KkLwlfKz_tAOU2lS44E/edit?usp=sharing";
+		       DrawLinkRect_newtab("memo","10","#ffffff",$Rect[0],$Rect[1],$Rect[2],$Rect[3],"#000000",$Link,"1");
 			 
+	 }
+	 function  DrawInsertLine( ){
+		       global $BackURL,$ELine,$LineRec;
+		       global $LineHeight; 
+			   global $StartY,$startX;
+		 	 		  $w= 20;//$OneDayWidth*count($daysLoc);
+			          $y= $StartY+90;
+				      $x=$startX ;
+				      $h=16;
+					  
+	           for($i=1;$i<$LineHeight;$i++){
+				    $Link=$BackURL."&ELine=".$i;
+					$y+=20;
+					if($i==$ELine and $ELine!=""){
+						$xAdd=0;
+						 DrawLinkRect(" ","10","#ffffff",$x+40,$y+10,$w+1200,"6","#ff8888",$Link2,"1");
+					    if(!in_array($i,$LineRec)){
+							$xAdd=50;
+						    $Link3=$BackURL."&PhpInputType=DeleteLine&DeletNum=".$i;
+						    DrawLinkRect("刪除一行","10","#ffffff",$x+40,$y ,"45","20","#ff8888",$Link3,"1");
+					    }
+						$Link2=$BackURL."&PhpInputType=Insert&insertNum=".$i;
+						DrawLinkRect("插入一行","10","#ffffff",$x+40+$xAdd,$y ,"45","20","#8888ff",$Link2,"1");
+						DrawLinkPic($pic,$y,$x+130 ,"16","16",$BackURL);
+					}
+			        DrawLinkRect($i,"10","#ffffff",$x,$y,$w,$h,"#aaaaaa",$Link,"1");
+					$pic="Pics/Cancel.png";
+					
+			   }
 	 }
 ?>
 
-<?php //繪製計畫
+<?php  //繪製計畫
       function DrawTypeCont(){
 		       global $List,$Stype_1,$Stype_2 ;
 			   if($List!=""){
@@ -353,7 +383,7 @@
 		   }
 	  }
       function DrawPlanBar( $color_num,$y,$plansArray ){
-		       global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX,$monthLoc,$showMonthNum ;
+		       global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX,$monthLoc,$showMonthNum ,$LineRec ;
 		       global $colorCodes;
 			   global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1, $SelectType_2;
 			   global $user,$List;
@@ -387,6 +417,7 @@
 			   }
 			   //細部規劃
 			   if ($plan_type=="工項"){
+				    Array_Push($LineRec,$plansArray[4]);
 				    $t=strlen($info);
 					$add="";
 			        if($plansArray[12]!=""){   $add="　　　"; $t+=5;}
@@ -477,9 +508,9 @@
 	  }
 ?>
 
-<?php //輸入
+<?php  //輸入
       function CheckinputType_v2(){
-	       global $epy,$epm,$epd,$epLine,$epDay,$eptype;
+	       global $epy,$epm,$epd,$epLine,$epDay,$eptype,$LineHeight;
 	       global $ed,$em,$ey,$dx,$dy;
 		   global $PhpInputType;
 		   if($PhpInputType=="")return;
@@ -514,24 +545,65 @@
 				case $PhpInputType=="DrawEditPlanType":
 			         DrawWorkDetail("400","260","400","170");
 			    break;
+				case $PhpInputType=="Insert":
+				     MoveLines("Insert");
+				break;
+				case $PhpInputType=="DeleteLine":
+				      MoveLines("Delete");
+				break;
 		   }
 	 
 	 }
 ?>
 
-<?php //Updata
-     
+<?php  //Updata
+ 
+      
+     function MoveLines($MoveType){
+	          global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
+			  global $LineHeight,$insertNum,$DeletNum;
+              global $data_library,$tableName,$MainPlanData;
+			  $sT=$SelectType_1[$Stype_1];
+              $WorkOrderstmp=filterArray($MainPlanData,10,$sT); 
+			  $WorkOrders=filterArray($WorkOrderstmp,5,"工項"); 
+			  for($i=1;$i<count($WorkOrders);$i++){
+				  $L=$WorkOrders[$i][4];//行數
+				  switch($MoveType){
+					  case $MoveType=="Insert":
+				  	       if($L>=$insertNum){
+					         $Move2Line=$L+1;
+				             MoveLine($WorkOrders[$i][1],$Move2Line);
+						   }
+					    break;
+				   	   case $MoveType=="Delete":
+				  	       if($L>=$DeletNum){
+					         $Move2Line=$L-1;
+				             MoveLine($WorkOrders[$i][1],$Move2Line);
+						   }
+					   break; 
+				  }
+			  }
+		     echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+	 }
+	 function MoveLine($code,$Move2Line){
+		      global $data_library,$tableName;
+			  $WHEREtable=array( "data_type", "code" );
+		      $WHEREData=array( "data",$code );
+			  $Base=array("line");
+			  $up=array($Move2Line);
+			  $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
+              SendCommand($stmt,$data_library);			   
+	 }
+	 
      function UpEditData( ){
 		       global $data_library,$tableName;
 			   global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1;
 			   global $year,$month,$day;
 			   global $submit;
 			   global $del;
- 
 			   $p=$tableName;
 			   $tables=returnTables($data_library,$p);
 	           $t= count( $tables);
-			   
 			   $Base=array();
 			   $up=array();
 		       for($i=0;$i<$t;$i++){
@@ -541,7 +613,6 @@
                           array_push($up,$$tables[$i]);
 				        //  echo  "</br>".$tables[$i].">".$$tables[$i];
 		       }
-			   
 			   $WHEREtable=array( "data_type", "code" );
 		       $WHEREData=array( "data",$code );
 			   if($submit=="修改計畫"){
@@ -602,8 +673,8 @@
 	 }
 ?>
 
-<?php //Oder
-   function EditPlanTypeEditor_v2($ex,$ey,$w,$h){
+<?php  //Oder
+     function EditPlanTypeEditor_v2($ex,$ey,$w,$h){
             global $data_library,$tableName;   
 	        global $colorCodes;
 		    global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$stateType;
@@ -664,8 +735,8 @@
 	         DrawInputRect("",$ey-120 ,"#ffffff",($ex+320),60,120,18, $colorCodes[4][2],"top",$submitP);
 			 //圖檔
 			 $ey+=50;
-			  $input="<input type=text name=log value='".$plansArray[13]."'  size=32>";
-	          DrawInputRect("輸入完成圖檔連結","12","#ffffff",($ex ),$ey ,320,16, $colorCodes[4][2],"top",$input);
+			 $input="<input type=text name=log value='".$plansArray[13]."'  size=32>";
+	         DrawInputRect("輸入完成圖檔連結","12","#ffffff",($ex ),$ey ,320,16, $colorCodes[4][2],"top",$input);
 			 
 			 
 			 //刪除
@@ -674,7 +745,6 @@
 		     $submitP="<input type=submit name=submit value=刪除計畫>";
 	         DrawInputRect("",$ey-20 ,"#ffffff",($ex+320),60,120,18, $colorCodes[4][2],"top",$submitP);
    }
-
      function AddPlanTypeEditor_v2($ex,$ey,$w,$h,$y,$m,$d){
          global $data_library,$tableName;   
 	     global $colorCodes;
@@ -822,3 +892,4 @@
 	        DrawInputRect("",$ey+60 ,"#ffffff",($ex+320),60,120,18, $colorCodes[4][2],"top",$submitP);
 	 }
 ?>
+
