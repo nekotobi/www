@@ -211,6 +211,7 @@
 				  $nowDayArray=array(date(Y),date(m),date(d));
 				  $passDays= getPassDays($startDay,$nowDayArray);
 				  $realDays=ReturnWorkDaysV2($startDay[0],$startDay[1],$startDay[2],$plansArray[6],$VacationDays);
+				   if($realDays<1)$realDays=1;
 	              if($passDays>=$realDays && $plansArray[7]!="已完成") return "true";
 	              return "false";
 	 }
@@ -439,16 +440,20 @@
 				$Link=$BackURL."&PhpInputType=DrawEditPlanType&Ecode=".$plansArray[1];
 				$color=$colorCodes[9][0];
 			    for($i=0;$i<count($SelectType_2);$i++){
+				 
 					if($SelectType_2[$i]==$plan_type){
 						$c=$i%8;
 						$color=$colorCodes[9][$c];
 						   if($plansArray[7]=="已完成")	$color=$colorCodes[10][$i];
 					}
 				}
-                
+				$realDays= $workDays;
+				$workDays=$plansArray[6] ;
+                if($workDays>=1)	{
 				$realDays=ReturnWorkDaysV2($startDay[0],$startDay[1],$startDay[2],$plansArray[6],$VacationDays);
-			    $workDays=$plansArray[6] ;
+				}
 			    $w= $OneDayWidth*$realDays;
+				if($realDays<1)$w=8;
 				$NameBackAdd="[".$workDays."][".$plansArray[9]."]";
 				if($plansArray[9]=="" or $plansArray[9]=="未定義"){
 							$NameBackAdd="[".$workDays."][".$plansArray[8]."]";
@@ -467,7 +472,6 @@
 	  }
 	  function DrawStatePics($plansArray,$x,$y,$realDays){
 		  		 global $OutsData,$memberData;
-
 				 $pic="";
 			     if($plansArray[7]=="" or $plansArray[7]=="未定義")$pic="Pics/question";
 				 if($plansArray[7]=="已完成")$pic="Pics/finish";
@@ -475,6 +479,7 @@
 				 //狀態問題
 				  $startDayArray=explode("_",$plansArray[2]);
 				  $nowDayArray=array(date(Y),date(m),date(d));
+				  if($realDays<1)$realDays=1;
 				  $passDays= getPassDays($startDayArray,$nowDayArray);
 	              if($passDays>=$realDays && $plansArray[7]!="已完成"){
 					 $pic="Pics/warring.gif";
