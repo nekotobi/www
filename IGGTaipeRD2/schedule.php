@@ -77,7 +77,7 @@
 	            $StartY=90;
 	            $MonthWidth=200;
 	            $OneDayWidth=15;
-				$LineHeight=30;
+				$LineHeight=40;
 	            $CurrentX= $StartX;
 				$showMonthNum=8;
 				$daysLoc=array();//(year,m,d,x軸位置)
