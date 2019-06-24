@@ -562,8 +562,6 @@
 ?>
 
 <?php  //Updata
- 
-      
      function MoveLines($MoveType){
 	          global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
 			  global $LineHeight,$insertNum,$DeletNum;
@@ -599,7 +597,6 @@
 			  $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
               SendCommand($stmt,$data_library);			   
 	 }
-	 
      function UpEditData( ){
 		       global $data_library,$tableName;
 			   global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1;

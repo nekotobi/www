@@ -412,18 +412,17 @@
 				      '><img src=".$pic." width=".$w." height=".$h."></div>";
 	   }
 	   function DrawLinkRectAutoLength($msg,$fontSize,$fontColor,$x,$y,$w,$h,$BgColor,$Link,$border){
-		
 	            $c=strlen($msg);
-			   
 				if($c*$fontSize<$w){
-				DrawLinkRect($msg,$fontSize,$fontColor,$x,$y,$w,$h,$BgColor,$Link,$border);
+				DrawLinkRect_Layer($msg,$fontSize,$fontColor,array($x,$y,$w,$h),$BgColor,$Link,$border,0);
 				return;
 				}
 			 
 				$w2=$c*($fontSize/2);
-				
-				 DrawRect( "",$fontSize,$fontColor,$x,$y,$w2,$h,"#aaaaaa" );
-				 DrawRect( "",$fontSize,$fontColor,$x,$y,$w,$h,$BgColor );
+				DrawRect_Layer( "",$fontSize,$fontColor,array($x,$y,$w2,$h),"#aaaaaa",-1 );
+			    DrawRect_Layer( "",$fontSize,$fontColor,array($x,$y,$w,$h),$BgColor ,0);
+				// DrawRect( "",$fontSize,$fontColor,$x,$y,$w2,$h,"#aaaaaa" );
+				// DrawRect( "",$fontSize,$fontColor,$x,$y,$w,$h,$BgColor );
 				 DrawLinkText($msg,$x,$y,$c*$fontSize,$h,$fontSize,$fontColor,$Link);
 	   }
 	   function DrawLinkRect_newtab($msg,$fontSize,$fontColor,$x,$y,$w,$h,$BgColor,$Link,$border){
@@ -464,13 +463,32 @@
 			  echo  $msg;
 	          echo "</div>";
 	   }
- 	   function DrawInputRect($msg,$fontSize,$fontColor,$x,$y,$w,$h,$BgColor,$WorldAlign,$input){
+ 	   function DrawInputRect($msg,$fontSize,$fontColor,$x,$y,$w,$h,$BgColor,$WorldAlign,$input){ 
 	          echo "<div  style=' color:".$fontColor."; " ;
 			  echo "text-align:".$WorldAlign." ; font-weight:bolder ;font-family:Microsoft JhengHei; font-size:".$fontSize."px;";
 			  echo "position:absolute;  top:".$y."px; left:".$x."px;  width:".$w."px;height:".$h."px;  '>";
 			  echo  $msg.$input ;
 	          echo "</div>";
 	   }
+	   function DrawLinkRect_Layer($msg,$fontSize,$fontColor,$Rect,$BgColor,$Link,$border,$Layer){
+	          echo "<div   style=' cursor:pointer ; color:".$fontColor."; " ;
+			  echo $border;
+			  echo " z-index:".$Layer ."; ";
+			  echo " text-align:center ; font-weight:bolder ;font-family:Microsoft JhengHei; font-size:".$fontSize."px;";
+			  echo " position:absolute;  top:".$Rect[1]."px; left:".$Rect[0]."px;  width:".$Rect[2]."px;height:".$Rect[3]."px; background-color:".$BgColor."; ' "; 
+			  echo " onClick=window.open('".$Link."','_newtab'); >";
+			  echo $msg;
+	          echo "</div>";
+	   }
+	   function DrawRect_Layer($msg,$fontSize,$fontColor,$Rect,$BgColor,$Layer){ 
+	          echo "<div  style=' color:".$fontColor."; " ;
+			  echo " z-index:".$Layer ."; ";
+			  echo "text-align:center ; line-height:".($h)."px ; font-weight:bolder ;font-family:Microsoft JhengHei; font-size:".$fontSize."px;";
+			  echo "position:absolute;  top:".$Rect[1]."px; left:".$Rect[0]."px;  width:".$Rect[2]."px;height:".$Rect[3]."px; background-color:".$BgColor."; '>";
+			  echo $msg;
+	          echo "</div>";
+	   }
+	   
 ?>
 
  
