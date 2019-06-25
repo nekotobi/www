@@ -57,11 +57,9 @@
      defineData_v2();   //定義基礎資料(scheduleApi)
      GetCalendarData(); //取得日曆資料(scheduleApi)
      DrawBaseCalendar_v2(); //列印基礎日期資料(scheduleApi)
-	
 	 DrawWarring();
      DrawType_v2();//進度表類型
 	 DrawTypeCont();//判斷印出內容
-	
 	 CheckinputType_v2();//判斷輸入
 	 global   $BaseURL;
      DrawMembersLinkArea_Simple( 30, 6,  $BaseURL); 
@@ -131,11 +129,11 @@
 			  DrawState();
 			  global $stateType;
 			  $x+=100;
-			  for ($i=0;$i<count( $stateType);$i++){
-			       $BackURL2= $BaseURL."?List=CheckState&CheckState=".$i;
-				   $msg=" ".$stateType[$i];
+			  for ($i=0;$i<count($SelectType_2);$i++){
+			       $BackURL2= $BaseURL."?List=CheckState&Stype_2=".$i;
+				   $msg=" ".$SelectType_2[$i];
 				   $color= "#222222";
-				   if($CheckState==$i and  $CheckState!="")$color= "#cc2212";
+				   if($Stype_2==$i and  $Stype_2!="")$color= "#cc2212";
 			       DrawLinkRect($msg,"10","#ffffff",$x,$y,"40","14",$color,$BackURL2,1);
 				   $x+=50;
 			  }
@@ -285,10 +283,13 @@
 				        $plans= filterArray($plansTmp,9,$id);
 				  break;
 				  case "Warring";
-				   //     echo count(  $WarringDatas);
 				        $plans= $WarringDatas;
 				  break;
+				  case "CheckState";
+				        $plans=  filterArray($plansTmp,5,$SelectType_2[$Stype_2]);
+				  break;
 			  }
+			
               $JobsArray=array( );
 		      for($i=0;$i<count($plans);$i++){
 				   DrawListBar($plans[$i],$i);
@@ -296,7 +297,10 @@
 			       if( $color_num>7)$color_num=3;
 				   $codeA=returnDataArray( $plansTmp,1,$plans[$i][3]);//取得主資料array
 				   $job=$codeA[3]."[".$plans[$i][5]."][".$plans[$i][7]."]".$plans[$i][6]."天";
-				   array_push($JobsArray,$job);
+				   $color="#aaaaaa";
+				   if ($plans[$i][7]=="已完成")$color="#777777";
+				   if ($plans[$i][7]=="進行中")$color="#ffccff";
+				   array_push($JobsArray,array($job,$color));
 		          }
 			
 			  DrawListInfo( $idtmp,$JobsArray);
@@ -323,9 +327,9 @@
 		       global $List; 
 			   global $BackURL;
 		       $ex=20;
-	           $ey=260;
-			   $w=130;
-			   $h=200;
+	           $ey=240;
+			   $w=230;
+			   $h=count( $JobsArray)*30;
 			   $title="";
 			   if( $List=="ArtWork"){
 			       $title=$UserArray[1]."排程";
@@ -336,10 +340,10 @@
 			   DrawPopBG($ex,$ey,$w,$h,$title ,"12",$BackURL);
 			   
 	           for($i=0;$i<count( $JobsArray);$i++){
-				 //   echo $i;
 				    $ey+=20;
-					$info=$i.".". $JobsArray[$i];
-				    DrawRect($info,"11","#322222",$ex-10,$ey,150 ,"20","#ffffff");
+					$info=$i.".". $JobsArray[$i][0];
+					$color=$JobsArray[$i][1];
+				    DrawRect($info,"11","#322222",$ex-10,$ey,240 ,"20",$color);
 			   }
 	  }
       function DrawPlan_v2(){
