@@ -14,15 +14,13 @@
 ?>
 
 <?php //功能
-    function returnArrayNum($BaseArray,$string){
+       function returnArrayNum($BaseArray,$string){
 	        for($i=0;$i<count($BaseArray);$i++){
 				if($BaseArray[$i]==$string)return $i;
 			}
 			return  0;
 	}
-
-
-    function returnOrdersNumArray($BaseArray,$BaseNum,$SortArray,$sortNum){
+       function returnOrdersNumArray($BaseArray,$BaseNum,$SortArray,$sortNum){
 	         $newArray= array();
 			  for($i=0;$i<count($SortArray);$i++){
 				  $num=returnnumDatas($BaseArray,$BaseNum,$SortArray[$i][$sortNum],$newArray);
@@ -31,7 +29,7 @@
 			  }
 			 return  $newArray;
 	  }
- 	  function returnnumDatas($BaseArray,$BaseNum,$Name ){
+ 	   function returnnumDatas($BaseArray,$BaseNum,$Name ){
 		   $num=0;
 		  for($i=0;$i<count($BaseArray);$i++){
 			  $s=$BaseArray[$i][$BaseNum];
@@ -41,7 +39,7 @@
 		  }
 		  return  $num;
 	  }
-	  function returnProjectColor($projects,$name){
+	   function returnProjectColor($projects,$name){
 			   $n=0;
 			    for($i=0;$i<count($projects);$i++){
 				    if($projects[$i][0]==$name){
@@ -50,7 +48,7 @@
 			  }
 			  return $n;
 	  }
-	  function sortArrays($BaseArray ,$ArrayNum ,$forwardBool){
+	   function sortArrays($BaseArray ,$ArrayNum ,$forwardBool){
   		  $newArray=array();
 		  $lastSn=  getLastSN2($BaseArray,$ArrayNum);
 		  if($forwardBool=="true"){//正向
@@ -115,7 +113,7 @@
 ?>
 
 <?php //MysQl資料
- 	  function getAll_num($SElectTable){
+ 	   function getAll_num($SElectTable){
 		  $data_library="IGGTaipeRD2";
 	      $db = mysql_connect("localhost","root","1406");
 	      mysql_select_db( $data_library,$db);
@@ -166,7 +164,7 @@
 					}
 			   return $returnData;
 	  }
-	   function  getMysqlDataArray($name){
+	   function getMysqlDataArray($name){
  
 	            $all_num= getAll_num( $name );
 				$fieldnum=mysql_num_fields( $all_num);
@@ -187,7 +185,7 @@
 ?>
 
 <?php //會員相關資料
-	   function DrawUserData($x,$startY){
+	  function DrawUserData($x,$startY){
 	        global $id,$colorCodes,$startY;
 	        DrawRect("" ,"12","#ffffff",$x+10,$startY+10,160,20, $colorCodes[0][0]);
 	        DrawText("使用者",$x+30,$startY+12,100,20,12, $colorCodes[5][2]);
@@ -218,6 +216,33 @@
 			  }
 		   }
 	   } 
+	  function DrawMembersLinkArea_Simple( $StartX,$startY ,$BaseURL){
+		     global $memberId;
+			 $memberTmp=getMysqlDataArray("members");
+			 $members=filterArray($memberTmp,"3","Art");
+			 $memberId=array();
+			 $x= $StartX;
+			// $startY=-2;
+			 DrawRect("",10,$color, $StartX-10, $StartY,( 70*count($members)),"20","#000000");
+			 DrawText("內部",$StartX-6 , $StartY+11,"100",20,9,"#dddddd");
+			 $x+=24;
+			 for($i=0;$i<count($members);$i++){
+			  if($members[$i][4]!="Other"){  
+				 $color="#000000";
+				 $id=$members[$i][0] ;
+				 $pic="Pics/Members/".$id.".png";
+				 if( !file_exists( $pic)){
+					  $pic="Outsourcing/pic/Defuse.png";
+				 }
+				 $Link=$BaseURL."?List=ArtWork&user=".$members[$i][0];
+				 DrawLinkRect($members[$i][1],"9","#000000",  $x-5, $startY+5 ,60 ,11,"#dddddd",$Link,"");
+			     DrawLinkPic($pic, $startY+2 , $x-5  ,12 ,12,$Link); 
+			   //  DrawMemberLinkRect($members[$i][1],"10","#cccccc", $x+2, $startY , "60","40",$color,$members[$i][4],$id, $Link,$pic);
+			     $memberId[$members[$i][0]]=$members[$i][1] ;
+				 $x+=  64;
+			  }
+		   }
+	   } 
 	  function DrawMemberLinkRect($Name,$fontSize,$fontColor,$x,$y,$w,$h,$BgColor,$Job,$id,$Link,$pic){
 		      //color
 			  echo "<div  id=User-".$id." ";
@@ -229,13 +254,59 @@
 			  DrawLinkRect("　".$Name,$fontSize,"#000000",$x,$y+20,$w-6,$h-42,"#ffffff",$Link,1);
 			  DrawPosPic($pic,$y+20,$x,"14","14","absolute");
 	   }
-      function DrawOutsGruop(){
-		  
-	  }
+      function DrawOutLinkArea($StartX,$startY ,$BaseURL){
+                global $colorCodes;
+                $outTmp1=getMysqlDataArray("outsourcing");
+			    $outTmp=filterArray($outTmp1,"0","data");
+				$Out_Types=array("2D","3D","Fx&UI");
+				$filter_addition=array(array("概念","角色","場景"),array( "3D"),array("特效","UI"));//包含 
+				$filter_Except=array(array("3D"),array("概念"),array("xx"));//不包含 
+				$x= $StartX;
+				$y= $startY-22;
+				for($i=0;$i<count($Out_Types);$i++){
+				    $ListArray=filterArray_add_ExcArray($outTmp,$filter_addition[$i],$filter_Except[$i],7);
+				    DrawOuts(array($x,$y,200,20),$ListArray,$BaseURL,$Out_Types[$i],$colorCodes[11][$i]);
+					$y+=22;
+				}
+	   }
+	  function DrawOuts($Rect,$outTmp,$BaseURL ,$TypeName,$color){
+		        DrawRect("",10,$color,$Rect[0]-10,$Rect[1],120+70*count($outTmp),"20",$color);
+			    DrawText($TypeName,$Rect[0]-7,$Rect[1]+3,"100",20,9,"#dddddd");
+		        for($i=0;$i<count( $outTmp);$i++){
+					$picLink=str_replace(' ','',$outTmp[$i][13]);
+		            $Link=$BaseURL."?List=Out&user=".$outTmp[$i][1];
+				    $pic="Outsourcing/pic/Defuse.png";
+					if($picLink!=""){
+					  if( file_exists("Outsourcing/pic/".$picLink)) $pic="Outsourcing/pic/".$picLink;
+					}
+				    
+					$outName="___".$outTmp[$i][2];
+					DrawLinkRectAutoLength($outName,"9","#000000", $Rect[0]+20 , $Rect[1]+5 ,60 ,10,"#dddddd",$Link,"");
+					DrawLinkPic($pic,$Rect[1]+3,$Rect[0]+20  ,12 ,12,$Link); 
+				    $Rect[0]+= 70;
+				}
+	   }
+	  function filterArray_add_ExcArray($BaseArray,$filter_addition,$filter_Except,$num){ //分析陣列中含有字串
+	            $finArray=array();
+	 
+	            for($i=0;$i<count($BaseArray);$i++){
+				    if((isArrayContain($BaseArray[$i],$filter_addition,$num))=="true"){//含有
+						 if((isArrayContain($BaseArray[$i],$filter_Except,$num))=="false"){//未含有
+						 array_push($finArray,$BaseArray[$i]);
+						  }
+					}
+				}
+				return $finArray;
+	   }
+	  function isArrayContain($BaseArray_single, $filterArray,$num){
+		        for($i=0;$i<count($filterArray);$i++){
+	               if(strpos( $BaseArray_single[$num],$filterArray[$i] ) !== false )return "true";  
+				}
+				return "false";
+	   }
 ?>
 
 <?php  //公用
-
 	  function GetColorCode(){
 	          $all_num= getAll_num( "colorcodes");
 	          $t=mysql_num_rows($all_num); 
@@ -251,6 +322,7 @@
 	  
 	  
 ?>
+
 <?php   //php表格用
 	   function MakeSelectionV2($items,$selectItem,$selectName,$size){
 	        $seletProject= "<select  style=width:100px; name=".$selectName."   >";
@@ -287,21 +359,7 @@
 		    if($pic) DrawLinkPic($pic,$x,$y,$w,$h,$Link);
 			DrawText($title,$x-20,$y-20,300,50,24,"#ffffff");
 	   }
-	   function DrawOutLinkArea($StartX,$startY ,$BaseURL){
-                $outTmp1=getMysqlDataArray("outsourcing");
-				 $outTmp=filterArray($outTmp1,"0","data");
-				 $x= $StartX;
-	            for($i=0;$i<count( $outTmp);$i++){
-					$Link=$BaseURL."?List=Out&user=".$outTmp[$i][1];
-					$color="#444444";
-				    $pic="Outsourcing/pic/".$outTmp[$i][13];
-					$outName=substr($outTmp[$i][2],0,7);
-					$color=getTypeColor($outTmp[$i][7]);
-				    DrawMemberLinkRect(	$outName,"9","#ffffff", $x-2, $startY ,"70","40",$color,$outTmp[$i][7],$outTmp[$i][2], $Link,$pic);
-				    $x+=  74;
-			    }
-			
-	   }
+
 	   function getTypeColor($name){
 		        global $colorCodes;
 				$color="#000000";

@@ -57,14 +57,16 @@
      defineData_v2();   //定義基礎資料(scheduleApi)
      GetCalendarData(); //取得日曆資料(scheduleApi)
      DrawBaseCalendar_v2(); //列印基礎日期資料(scheduleApi)
+	
 	 DrawWarring();
      DrawType_v2();//進度表類型
 	 DrawTypeCont();//判斷印出內容
+	
 	 CheckinputType_v2();//判斷輸入
 	 global   $BaseURL;
-     DrawMembersLinkArea( 30,6,  $BaseURL); 
+     DrawMembersLinkArea_Simple( 30, 6,  $BaseURL); 
 	 DrawOutLinkArea(30,52,$BaseURL);
-	 DrawUserData( 820, 11);   //使用者資料(PubApi)
+	 DrawUserData( 1120, 5);   //使用者資料(PubApi)
 	 DrawMemo();//臨時紀錄
      DrawInsertLine( );//
 ?>
@@ -245,7 +247,9 @@
 						DrawLinkRect("插入一行","10","#ffffff",$x+40+$xAdd,$y ,"45","20","#8888ff",$Link2,"1");
 						DrawLinkPic($pic,$y,$x+130 ,"16","16",$BackURL);
 					}
-			        DrawLinkRect($i,"10","#ffffff",$x,$y,$w,$h,"#aaaaaa",$Link,"1");
+					 DrawLinkRect_Layer($i,"10","#ffffff",array($x,$y,$w,$h),"#aaaaaa",$Link," ",-1);
+		 
+			      //DrawLinkRect($i,"10","#ffffff",$x,$y,$w,$h,"#aaaaaa",$Link,"1");
 					$pic="Pics/Cancel.png";
 					
 			   }
@@ -281,7 +285,7 @@
 				        $plans= filterArray($plansTmp,9,$id);
 				  break;
 				  case "Warring";
-				        echo count(  $WarringDatas);
+				   //     echo count(  $WarringDatas);
 				        $plans= $WarringDatas;
 				  break;
 			  }
@@ -332,7 +336,7 @@
 			   DrawPopBG($ex,$ey,$w,$h,$title ,"12",$BackURL);
 			   
 	           for($i=0;$i<count( $JobsArray);$i++){
-				    echo $i;
+				 //   echo $i;
 				    $ey+=20;
 					$info=$i.".". $JobsArray[$i];
 				    DrawRect($info,"11","#322222",$ex-10,$ey,150 ,"20","#ffffff");
