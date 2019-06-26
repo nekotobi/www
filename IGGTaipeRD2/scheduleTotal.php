@@ -176,8 +176,9 @@
 					       DrawRect("",2,"#ffffff",$x,$y ,$w,$hi,"#ff2222");
 				        
                            if($maxDay==$DaysData[$i][3] and  $show=="false"){
-							     $show="true";
-						       DrawRect("最高".$maxDay."工單同時進行",10,"#ffffff",$x,$y-20,"100","15","#660000");
+							   $show="true";
+							   $msg=$DaysData[$i][1]."月".$DaysData[$i][2]."日";  
+						       DrawRect($msg."最高".$maxDay."工單同時進行",10,"#ffffff",$x,$y-20,"200","15","#660000");
 					
 						   }
 						}
