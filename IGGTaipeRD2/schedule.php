@@ -54,7 +54,7 @@
    include('CalendarApi.php');  
    include('mysqlApi.php');
    include('scheduleApi.php');
-     defineData_v2();   //定義基礎資料(scheduleApi)
+     defineData_schedule();   //定義基礎資料(scheduleApi)
      GetCalendarData(); //取得日曆資料(scheduleApi)
      DrawBaseCalendar_v2(); //列印基礎日期資料(scheduleApi)
 	 DrawWarring();
@@ -70,7 +70,7 @@
 ?>
  
 <?php  //主要資料
-	 function  defineData_v2(){
+ 	 function  defineData_schedule(){
 		 //基礎數值
 		 global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX,$monthLoc,$showMonthNum,$LineHeight,$LineRec ;
 		        $StartX=20;
@@ -138,36 +138,6 @@
 				   $x+=50;
 			  }
 	 }
-     function  DrawBaseCalendar_v2(){  //日曆格
-		      global $StartX, $StartY,$OneDayWidth,$daysLoc,$monthLoc, $YearLoc ,$LineHeight ; 
-	          global $TargetYear,$TargetMonth,$YearRange,$MonthRange,$showMonthNum;
-			  global $BaseURL,$BackURL, $Stype_1,$Stype_2;
-			  global $colorCodes;
-			  echo "<div   style='position: -webkit-sticky; position:sticky; top:0; z-index: 100;'>";
-			  $pos="absolute";
-			  for($i=0;$i<count($monthLoc);$i++){
-			       DrawabsoluteRect($monthLoc[$i][1],"10","#ffffff",  $monthLoc[$i][2]-8, $StartY+40 ,  $monthLoc[$i][3]-1 ,"20",  $colorCodes[2][2],$pos, $Link );
-				   DrawabsoluteRect($monthLoc[$i][0],"10","#ffffff",  $monthLoc[$i][2]-8, $StartY+20 ,  $monthLoc[$i][3]-1 ,"20",  $colorCodes[2][1],$pos, $Link);
-			  } 
-			  $startM=$monthLoc[0][1]-1;
-			  $starty=$monthLoc[0][0];
-			  for($i=0;$i<count($daysLoc);$i++){//日格
-			  	  if($daysLoc[$i][2]==1){
-					  $startM+=1;
-					  if(  $startM==13){
-					  $StartM=1;
-					   $starty+=1;
-					  }
-				  }
-			      $color=$colorCodes[2][4];
-		          $Link= $BackURL."&PhpInputType=AddPlan&ed=".$daysLoc[$i][2]."&em=".$startM."&ey=".$starty."&dx=".($daysLoc[$i][3]-8)."&dy=".($StartY+60);
-			      if($daysLoc[$i][4]!="0")$color=$colorCodes[1][1];
-			       DrawabsoluteRect($daysLoc[$i][2],"8","#000000",  $daysLoc[$i][3]-8, $StartY+60 ,  $OneDayWidth-1 ,"20",$color,$pos, $Link);
-				  }       
-			  DrawSprint($StartY+80 );
-              echo "</div>"	;	
-			  DrawDragArea($LineHeight);
-	 }
 	 function  DrawDragHorArea($height ){//橫排區
 	         global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX  ; 
 			 	 $w= 40;//$OneDayWidth*count($daysLoc);
@@ -228,8 +198,7 @@
 		 	 		  $w= 20;//$OneDayWidth*count($daysLoc);
 			          $y= $StartY+90;
 				      $x=$startX ;
-				      $h=16;
-					  
+				      $h=16; 
 	           for($i=1;$i<$LineHeight;$i++){
 				    $Link=$BackURL."&ELine=".$i;
 					$y+=20;
@@ -246,10 +215,7 @@
 						DrawLinkPic($pic,$y,$x+130 ,"16","16",$BackURL);
 					}
 					 DrawLinkRect_Layer($i,"10","#ffffff",array($x,$y,$w,$h),"#aaaaaa",$Link," ",-1);
-		 
-			      //DrawLinkRect($i,"10","#ffffff",$x,$y,$w,$h,"#aaaaaa",$Link,"1");
 					$pic="Pics/Cancel.png";
-					
 			   }
 	 }
 ?>

@@ -1,5 +1,5 @@
 <?php
-      function getPassDaysDay($dateData,$Workday){//給予開始日 工作天,取得結束日 陣列
+       function getPassDaysDay($dateData,$Workday){//給予開始日 工作天,取得結束日 陣列
 	          $y=$dateData[0];
 			  $m=$dateData[1];
 			  $d=$dateData[2];
@@ -20,9 +20,7 @@
 			  }
 			  return Array($y,$m,$d);
 	  }
-
-
-      function getPassDays($startDayArray,$nowDayArray){ //從開始結束 計算經過日期 2019_9_12  >>> 2019_9_14
+       function getPassDays($startDayArray,$nowDayArray){ //從開始結束 計算經過日期 2019_9_12  >>> 2019_9_14
 			  $y=$startDayArray[0];
 			  $m=$startDayArray[1];
 			  $d=$startDayArray[2];
@@ -47,9 +45,7 @@
 			  }
              return $td;
 	  }
-
-
-      function getVacationDays($YearRange,$MonthRange){
+       function getVacationDays($YearRange,$MonthRange){
 	          $VacationDays=array();
 			  for($i=0;$i<count($YearRange);$i++){
 			     $VacationDays=  getMonthVacationDays($YearRange[$i],$MonthRange[$i],$VacationDays);
@@ -57,7 +53,7 @@
  
 	          return  $VacationDays;
 	  }
-      function getMonthVacationDays($y,$m,$VacationDays){
+       function getMonthVacationDays($y,$m,$VacationDays){
 	              $monthEnd= getMonthDay($m,$y);
 				  $weekStart=GetMonthFirstDay($y,$m);
 				  for($i=1;$i<=$monthEnd;$i++){
@@ -69,8 +65,7 @@
 				  }
 				  return $VacationDays;
 	  }
-
-      function ReturnWorkDaysV2($y,$m,$startday,$workd,$VacationDays){
+       function ReturnWorkDaysV2($y,$m,$startday,$workd,$VacationDays){
 				$AccumulatekDays=1;
 				$CurrentDay=$startday;
 				//echo $CurrentDay.">";
@@ -105,15 +100,13 @@
 					 }
 				}
 	   }
-
-	    function getMonthDay($m,$TargetYear){
+	   function getMonthDay($m,$TargetYear){
 		//   global $TargetYear;
 		   $m_data=array(0,31,28,31,30,31,30,31,31,30,31,30,31);
 	       $d_end=$m_data[$m];
 		   if (($TargetYear+$y)%4==0 and $m==2) $d_end=29 ;
 		   return $d_end;
-	   }
-	   
+	   }	   
        function GetMonthFirstDay($year,$month){
 	       $start=2010;//2010年開始
 	       $base_newday=5;//2010年的元旦
