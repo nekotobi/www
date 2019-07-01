@@ -62,8 +62,8 @@
 	 DrawTypeCont();//判斷印出內容
 	 CheckinputType_v2();//判斷輸入
 	 global   $BaseURL;
-     DrawMembersLinkArea_Simple( 30, 6,  $BaseURL); 
-	 DrawOutLinkArea(30,52,$BaseURL);
+      DrawMembersLinkArea_Simple( 30, 6,  $BaseURL); 
+	  DrawOutLinkArea(30,52,$BaseURL);
 	 DrawUserData( 1120, 5);   //使用者資料(PubApi)
 	 DrawMemo();//臨時紀錄
      DrawInsertLine( );//
@@ -175,14 +175,17 @@
 			   }
 	 }
 	 function  isPlaneWarring($plansArray){
-		        global $VacationDays; //年 月 日
-		         if($plansArray[5]=="工項" or $plansArray[5]=="目標") return "false";
+		         global $VacationDays; //年 月 日
+		          if($plansArray[5]=="工項" or $plansArray[5]=="目標") return "false";
 	              $startDay=explode("_",$plansArray[2]);
 				  $nowDayArray=array(date(Y),date(m),date(d));
 				  $passDays= getPassDays($startDay,$nowDayArray);
 				  $realDays=ReturnWorkDaysV2($startDay[0],$startDay[1],$startDay[2],$plansArray[6],$VacationDays);
-				   if($realDays<1)$realDays=1;
+				  if($realDays<1)$realDays=1;
+				 
 	              if($passDays>=$realDays && $plansArray[7]!="已完成") return "true";
+				//  echo $startDay[1]."-".$startDay[2]."=".$passDays.">".$realDays."]";
+				  
 	              return "false";
 	 }
 	 function  DrawMemo(){
@@ -596,6 +599,13 @@
                 SendCommand($stmt,$data_library);			   
 			   }
 		       if($submit=="送出修改"){
+				   //上傳檔案
+				   $temp = explode(".", $_FILES["file"]["name"]);
+				  $finName="ResourceData/"."h001.".$temp[1];
+				   
+				 echo  $_FILES["file"]["name"];
+			     move_uploaded_file($_FILES["file"]["tmp_name"], $finName);
+				 //
 			    $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
 				echo $stmt;
                 SendCommand($stmt,$data_library);			   
@@ -605,7 +615,7 @@
 				     SendCommand($stmt,$data_library);
 			   }
 			 //  SendCommand($stmt,$data_library);
-			  echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+			//  echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	 }
      function AddData( ){
 		       global $data_library,$tableName;
@@ -711,9 +721,11 @@
 	         DrawInputRect("",$ey-120 ,"#ffffff",($ex+320),60,120,18, $colorCodes[4][2],"top",$submitP);
 			 //圖檔
 			 $ey+=50;
-			 $input="<input type=text name=log value='".$plansArray[13]."'  size=32>";
-	         DrawInputRect("輸入完成圖檔連結","12","#ffffff",($ex ),$ey ,320,16, $colorCodes[4][2],"top",$input);
-			 
+			// $input="<input type=text name=log value='".$plansArray[13]."'  size=32>";
+	       //  DrawInputRect("輸入完成圖檔連結","12","#ffffff",($ex ),$ey ,320,16, $colorCodes[4][2],"top",$input);
+		      $input="<input type=file name=file 	id=file    size=60   >";
+				    $y+=30;
+				    DrawInputRect("上傳完成檔案","12","#ffffff", ($ex ),$ey ,320,16, $colorCodes[4][2],"top", $input);
 			 
 			 //刪除
 	         $input="<input type=text name=del value=''  size=3>";

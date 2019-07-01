@@ -13,13 +13,13 @@
  
 ?>
 
-<?php //功能
+<?php //Array功能
        function returnArrayNum($BaseArray,$string){
 	        for($i=0;$i<count($BaseArray);$i++){
 				if($BaseArray[$i]==$string)return $i;
 			}
 			return  0;
-	}
+	 }
        function returnOrdersNumArray($BaseArray,$BaseNum,$SortArray,$sortNum){
 	         $newArray= array();
 			  for($i=0;$i<count($SortArray);$i++){
@@ -29,7 +29,7 @@
 			  }
 			 return  $newArray;
 	  }
- 	   function returnnumDatas($BaseArray,$BaseNum,$Name ){
+	   function returnnumDatas($BaseArray,$BaseNum,$Name ){
 		   $num=0;
 		  for($i=0;$i<count($BaseArray);$i++){
 			  $s=$BaseArray[$i][$BaseNum];
@@ -38,15 +38,6 @@
 			  }
 		  }
 		  return  $num;
-	  }
-	   function returnProjectColor($projects,$name){
-			   $n=0;
-			    for($i=0;$i<count($projects);$i++){
-				    if($projects[$i][0]==$name){
-						$n=$projects[$i][1];
-					}
-			  }
-			  return $n;
 	  }
 	   function sortArrays($BaseArray ,$ArrayNum ,$forwardBool){
   		  $newArray=array();
@@ -83,6 +74,18 @@
 			  }
 	       return $data;
 	   }
+?>
+
+<?php //功能
+	   function returnProjectColor($projects,$name){
+			   $n=0;
+			    for($i=0;$i<count($projects);$i++){
+				    if($projects[$i][0]==$name){
+						$n=$projects[$i][1];
+					}
+			  }
+			  return $n;
+	  }
        function getLastSN2($SQLData,$SnNum){
 	      $lastSN=0;
 		  for($i=0;$i<count($SQLData);$i++){
@@ -359,7 +362,6 @@
 		    if($pic) DrawLinkPic($pic,$x,$y,$w,$h,$Link);
 			DrawText($title,$x-20,$y-20,300,50,24,"#ffffff");
 	   }
-
 	   function getTypeColor($name){
 		        global $colorCodes;
 				$color="#000000";

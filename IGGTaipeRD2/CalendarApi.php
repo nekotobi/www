@@ -27,16 +27,17 @@
 			  $ny= $nowDayArray[0];
 			  $nm= $nowDayArray[1];
 			  $nd= $nowDayArray[2];
-			  $td=0;
+			  $td=0;//總日
 			  if($ny==$y){//同一年
 			      if($nowDayArray[1]>$startDayArray[1]){//跨月
-				    $td+=getMonthDay($m,$y)-$d;
+				     $td+=getMonthDay($m,$y)-$d;
+					 $m+=1;
 				     while($m<$nm){
 			            $td+=getMonthDay($m,$y);
 				        $m+=1;
 				       }
-				    $td+=$nd;
-					    return $td;
+				       $td+=$nd;
+					   return $td;
 				    }
 		          if($nm==$startDayArray[1]){//同月
 				    $td=$nd-$d;
