@@ -62,8 +62,8 @@
 	 DrawTypeCont();//判斷印出內容
 	 CheckinputType_v2();//判斷輸入
 	 global   $BaseURL;
-      DrawMembersLinkArea_Simple( 30, 6,  $BaseURL); 
-	  DrawOutLinkArea(30,52,$BaseURL);
+     DrawMembersLinkArea_Simple( 30, 6,  $BaseURL); 
+     DrawOutLinkArea(30,52,$BaseURL);
 	 DrawUserData( 1120, 5);   //使用者資料(PubApi)
 	 DrawMemo();//臨時紀錄
      DrawInsertLine( );//
@@ -165,6 +165,7 @@
 			   $msg="　進度問題x".count($WarringDatas);
 			   DrawRect($msg,"10","#ffffff",$StartX+10,$StartY+10,80,14,"#ee3333");
 			   DrawLinkPic($pic,$StartY+10,$StartX+10,16,16 ,$Link);
+			   
 	 }
 	 function  CollectWarring(){
 	           global $WarringDatas;
@@ -280,16 +281,18 @@
 		       global $colorCodes;
 			   global $VacationDays;
 			   global $StartX, $StartY,$OneDayWidth,$daysLoc,$MainPlanData,$OneDayWidth;
+			   global $BaseURL,$BackURL;
 		       $startDay=explode("_",$plansArray[2]);
 			   $realDays=ReturnWorkDaysV2($startDay[0],$startDay[1],$startDay[2],$plansArray[6],$VacationDays);
 		       $d=returnDateString($startDay[0],$startDay[1],$startDay[2]);
 			   $x=RetrunXpos($daysLoc,$d);
 	           $y= $StartY+90+($i+1)*20;
 			   $codeA=returnDataArray( $MainPlanData,1,$plansArray[3] );//取得主資料array
-			   $msg=$plansArray[12]."_".$codeA[3].">".$plansArray[5] ;
+			   $msg="[".$plansArray[10]."]".$plansArray[12]."_".$codeA[3].">".$plansArray[5] ;
 			   $color=$colorCodes[6][2];
 			   //$w=10* ((strlen($msg)/2));
 		       $w= $OneDayWidth*$realDays;
+			   $Link=$BaseURL."?PhpInputType=DrawEditPlanType&Ecode=".$plansArray[1];
 			   DrawLinkRectAutoLength( $msg,"10","#000000",$x, $y,$w ,"16", $color,$Link,"1");
 				//狀態圖
 			   DrawStatePics($plansArray,$x,$y,$realDays);
@@ -667,6 +670,8 @@
 	        global $colorCodes;
 		    global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$stateType;
 			global $Ecode;
+            echo  ">>>>>>>>>>>>".$Ecode;
+	 
 			$planstmp=getMysqlDataArray($tableName);
 			$plansArray=returnDataArray($planstmp,1,$Ecode);
 			$rootName= returnDataArray($planstmp,1,$plansArray[3]);
@@ -829,6 +834,7 @@
 	        global $data_library,$tableName;   
 			global $Ecode;
 		    global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1;
+						
 			$planstmp=getMysqlDataArray($tableName);
 			$plansArray=returnDataArray($planstmp,1,$Ecode);
 		    echo   "<form id='EditPlan'  name='Show' action='".$BackURL."' method='post'>";
