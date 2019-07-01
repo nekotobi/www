@@ -80,13 +80,14 @@
 				return  $CurrentDay-$startday ;
 	   } 
  	   function SetCalendarRange( $TargetYear,$TargetMonth){
-	            global $YearRange,$MonthRange,$showMonthNum;
+	            global $YearRange,$MonthRange,$showMonthNum,$UpMonth;
 				if( $TargetYear=="") $TargetYear=  date("Y");
 				if( $TargetMonth!="") $m=$TargetMonth;
 				if( $TargetMonth=="")
 				  {
+					if($UpMonth=="")$UpMonth=-1;
 				    $TargetMonth=  date("m");
-					$m=$TargetMonth-1;
+					$m=$TargetMonth+$UpMonth;
 				  }
 				if($showMonthNum==0)$showMonthNum=5;
 				$y=$TargetYear;

@@ -73,6 +73,7 @@
  	 function  defineData_schedule(){
 		 //基礎數值
 		 global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX,$monthLoc,$showMonthNum,$LineHeight,$LineRec ;
+	     global $UpMonth;
 		        $StartX=20;
 	            $StartY=90;
 	            $MonthWidth=200;
@@ -80,6 +81,7 @@
 				$LineHeight=40;
 	            $CurrentX= $StartX;
 				$showMonthNum=8;
+				$UpMonth=-2;
 				$daysLoc=array();//(year,m,d,x軸位置)
                 $monthLoc=array();//($y,m,x軸位置,Siz)
 				$LineRec=array();//紀錄哪行有排列
