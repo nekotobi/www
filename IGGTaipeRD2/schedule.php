@@ -494,8 +494,9 @@
 			  DrawRect($info,12,$fontColor,$ex,$ey,200,16,$BgColor);
 			  //連結
 			  $paths= getResfilePath($rootName[3],$plansArray[5] );
-			   if( file_exists( $paths[0])){
-				   if( file_exists( $paths[2])){
+ 
+			   if( file_exists( $paths[0]) or file_exists( $paths[1])){
+				   if( file_exists( $paths[2]) ){
 					   $pic=$paths[2];
 				       $Link=  $paths[1];
 			           DrawLinkPic($pic,$ey-60,$ex+220 ,128,128,$Link);
