@@ -641,7 +641,7 @@
 			      if($del!="") $stmt= MakeDeleteStmt($tableName,$WHEREtable,$WHEREData); 
 				     SendCommand($stmt,$data_library);
 			   }
-	         //echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+	         echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	 }
      function AddData( ){
 		       global $data_library,$tableName;
