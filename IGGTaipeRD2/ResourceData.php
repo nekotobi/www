@@ -47,7 +47,7 @@
     }
     function DrawMainUI(){
 	    //主頁
-	   // DrawRect("FP資源索引","22","#ffffff","20","20","1200","30","#000000");
+	 //  DrawRect("FP資源索引","22","#ffffff","20","20","1200","30","#000000");
 		//分類
         global $typeData,$typeData2;
 		global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
@@ -88,7 +88,6 @@
                    $w=$ListSize[4];
 			       DrawRect($mainData[$i][4],12,"#000000",$x,$y,$w,$h,$BgColor);
 		           $x+=$w+5;
-				
 				   $w=$ListSize[5];
 				   $state=findState($mainData[$i][2],$Lists[5 ]);
 				   DrawRect( $state,12,"#000000",$x,$y,$w,$h,$BgColor);

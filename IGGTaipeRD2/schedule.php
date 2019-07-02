@@ -62,8 +62,8 @@
 	 DrawTypeCont();//判斷印出內容
 	 CheckinputType_v2();//判斷輸入
 	 global   $BaseURL;
-     DrawMembersLinkArea_Simple( 30, 6,  $BaseURL); 
-     DrawOutLinkArea(30,52,$BaseURL);
+     //DrawMembersLinkArea_Simple( 30, 6,  $BaseURL); 
+    // DrawOutLinkArea(30,52,$BaseURL);
 	 DrawUserData( 1120, 5);   //使用者資料(PubApi)
 	 DrawMemo();//臨時紀錄
      DrawInsertLine( );//
@@ -492,6 +492,29 @@
 			  $info="狀態".$plansArray[7];
 			  $ey+=30;
 			  DrawRect($info,12,$fontColor,$ex,$ey,200,16,$BgColor);
+			  //連結
+			  $paths= getResfilePath($rootName[3],$plansArray[5] );
+			   if( file_exists( $paths[0])){
+				   if( file_exists( $paths[2])){
+					   $pic=$paths[2];
+				       $Link=  $paths[1];
+			           DrawLinkPic($pic,$ey-60,$ex+220 ,128,128,$Link);
+			         } 
+					 $pic="Pics/file.png";
+				     $Link=  $paths[0];
+				     DrawLinkPic($pic,$ey+28,$ex +165  ,20,20,$Link);	 
+			  }
+		       
+			  
+			  if($plansArray[14]=="")return;
+			  $ey+=30;
+			  $info="完成連結 " ;
+			  $Link=$plansArray[14];
+			  DrawLinkRect_newtab( $info,12,$fontColor,$ex,$ey,160,16,$BgColor,$Link,"");
+ 
+		
+			  
+			//  DrawRect($info,12,$fontColor,$ex,$ey,200,16,$BgColor);
 	  }
 ?>
 
@@ -580,16 +603,18 @@
               SendCommand($stmt,$data_library);			   
 	 }
      function UpEditData( ){
-		       global $data_library,$tableName;
+		       global $data_library,$tableName,$MainPlanData;
 			   global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1;
 			   global $year,$month,$day;
 			   global $submit;
 			   global $del;
 			   $p=$tableName;
 			   $tables=returnTables($data_library,$p);
+			   $plansArray=returnDataArray($MainPlanData,1,$Ecode);
 	           $t= count( $tables);
 			   $Base=array();
 			   $up=array();
+			   
 		       for($i=0;$i<$t;$i++){
 	       	       global $$tables[$i];
 				   		  $startDay=$year."_".$month."_".$day;
@@ -604,23 +629,19 @@
                 SendCommand($stmt,$data_library);			   
 			   }
 		       if($submit=="送出修改"){
+				   $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
+                    SendCommand($stmt,$data_library);			
 				   //上傳檔案
-				   $temp = explode(".", $_FILES["file"]["name"]);
-				  $finName="ResourceData/"."h001.".$temp[1];
-				   
-				 echo  $_FILES["file"]["name"];
-			     move_uploaded_file($_FILES["file"]["tmp_name"], $finName);
-				 //
-			    $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
-				echo $stmt;
-                SendCommand($stmt,$data_library);			   
+				   $plansArray=returnDataArray($MainPlanData,1,$up[3]);
+				   UpFiles($up,$plansArray[3]);
+ 
+			      
 			   }   
 			   if($submit=="刪除計畫"){
 			      if($del!="") $stmt= MakeDeleteStmt($tableName,$WHEREtable,$WHEREData); 
 				     SendCommand($stmt,$data_library);
 			   }
-			  //  SendCommand($stmt,$data_library);
-			   echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+	         //echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	 }
      function AddData( ){
 		       global $data_library,$tableName;
@@ -641,6 +662,34 @@
 				    SendCommand($stmt,$data_library);
 				    echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 		      	// echo $stmt;
+	 }
+	 function UpFiles($datas,$gdnamet){
+			   $gdname=trim($gdnamet);
+			   $typepath=returnResDirbyGDname($gdname);
+		       if($typepath=="")return;
+			   $Gd=substr($gdname, 0, 5);
+			   $temp = explode(".", $_FILES["file"]["name"]);
+			   if($temp[1]=="")return;
+			   $dirs=returntypeDir($datas[5]);
+			   if($dirs=="")return;
+			   for($i=0;$i<count($dirs);$i++){
+				   $ex=$temp[1];
+				   if($i>0)$ex="png";
+				   $path[$i]="ResourceData/". $typepath."/".$dirs[$i]."/".$Gd.".".$ex;
+				   if($i==0){
+				     move_uploaded_file($_FILES["file"]["tmp_name"], $path[0]);  
+				   }
+				   if($i==1){
+				     $cmd="convert      $path[0]    -flatten   $path[1] ";
+					   exec($cmd);
+				   }
+				   if($i==2){
+				     $cmd="convert      $path[1]    -flatten -resize 64  $path[2] ";
+					   exec($cmd);
+				   }
+			   }
+ 
+			 
 	 }
      function AddTypeData( ){
 		       global $data_library,$tableName;
@@ -728,17 +777,19 @@
 	         DrawInputRect("",$ey-120 ,"#ffffff",($ex+320),60,120,18, $colorCodes[4][2],"top",$submitP);
 			 //圖檔
 			 $ey+=50;
-			// $input="<input type=text name=log value='".$plansArray[13]."'  size=32>";
-	       //  DrawInputRect("輸入完成圖檔連結","12","#ffffff",($ex ),$ey ,320,16, $colorCodes[4][2],"top",$input);
-		      $input="<input type=file name=file 	id=file    size=60   >";
-				    $y+=30;
-				    DrawInputRect("上傳完成檔案","12","#ffffff", ($ex ),$ey ,320,16, $colorCodes[4][2],"top", $input);
+			 $input="<input type=file name=file 	id=file    size=60   >";
+		     DrawInputRect("上傳完成檔案","12","#ffffff", ($ex ),$ey ,320,16, $colorCodes[4][2],"top", $input);
+			 		 $ey+=30;
+			 $fininput="<input type=text name=finLink  value='".$plansArray[14]."'  size=50   >";
+
+	
+	         DrawInputRect("完成連結","12","#ffffff",($ex ),$ey  ,420,18, $colorCodes[4][2],"top",$fininput);
 			 
 			 //刪除
 	         $input="<input type=text name=del value=''  size=3>";
-	         DrawInputRect("輸入刪除碼","12","#ffffff",($ex+222),$ey+50,220,16, $colorCodes[4][2],"top",$input);	
+	         DrawInputRect("輸入刪除碼","12","#ffffff",($ex+200),$ey+30,220,16, $colorCodes[4][2],"top",$input);	
 		     $submitP="<input type=submit name=submit value=刪除計畫>";
-	         DrawInputRect("",$ey-20 ,"#ffffff",($ex+320),60,120,18, $colorCodes[4][2],"top",$submitP);
+	         DrawInputRect("",$ey-40 ,"#ffffff",($ex+320),60,120,18, $colorCodes[4][2],"top",$submitP);
    }
      function AddPlanTypeEditor_v2($ex,$ey,$w,$h,$y,$m,$d){
          global $data_library,$tableName;   

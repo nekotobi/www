@@ -191,6 +191,61 @@
 	 }
 ?>
 
-
+<?php //圖檔放置查找
+     function getResfilePath($gdnamet,$typename ){
+ 
+		  $gdname=trim($gdnamet);
+		  $Gd=substr($gdname, 0, 5);
+	      $respath=returnResDirbyGDname($gdname);
+	      $typeDir=returntypeDir($typename);
+		  $paths=array();
+ 
+		 
+		  for($i=0;$i<count($typeDir);$i++){
+			  $ex="png";
+			  if($typeDir[$i]=="psd")$ex="psd";
+			    if($typeDir[$i]=="model")$ex="rar";
+				   if($typeDir[$i]=="animation")$ex="rar";
+		  	      $path="ResourceData/".$respath."/". $typeDir[$i]."/".$Gd.".".$ex;
+				//  echo $path;
+			   array_push($paths,$path);
+		  }
+	      return $paths;
+	 }
+     function returnResDirbyGDname($gdname){
+			  $type=substr($gdname, 0, 1);
+			  $typepath="";
+	          switch ($type){
+			         case "h":
+					  $typepath="hero";
+					 break;
+			         case "m":
+					  $typepath="summon";
+					 break;
+					 case "m":
+					 $typepath="summon";
+					 break;
+			   }
+			   return  $typepath;
+	 }
+	  function returntypeDir($typename){
+	          switch ($typename){
+			          case "設定":
+					  return array("psd","pic","spic");
+					  break;
+					  case "建模":
+					  return array("model");
+					  break;
+					  case "動作":
+					  return array("animation");
+					  break;
+					  case "立繪":
+					  return array("Promotionalpsd","Promotionalpic","Promotionalspic");
+					  break; 
+			  }				  
+	          return null;
+	  }
+	 
+?>
 
 
