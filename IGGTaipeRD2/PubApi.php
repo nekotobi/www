@@ -328,12 +328,16 @@
 
 <?php   //php表格用
 	   function MakeSelectionV2($items,$selectItem,$selectName,$size){
+		    $selectItemf=trim(  $selectItem);
 	        $seletProject= "<select  style=width:100px; name=".$selectName."   >";
 			$seletProject=$seletProject."<option value=未定義 >未定義</option>";
 			for($i=0;$i<count($items);$i++){
 				//echo $items[$i];
+				 $itemf=trim( $items[$i]);
 			     $seletProject=$seletProject."<option value=".$items[$i];
-				 if($items[$i]==$selectItem) $seletProject=$seletProject." selected=true ";
+				 if($itemf== $selectItemf){
+					 $seletProject=$seletProject." selected=true ";
+				 }
 				 $seletProject=$seletProject.">".$items[$i]."</option>";
 			}
 			$seletProject=$seletProject."</select>";

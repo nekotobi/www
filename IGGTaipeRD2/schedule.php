@@ -62,8 +62,8 @@
 	 DrawTypeCont();//判斷印出內容
 	 CheckinputType_v2();//判斷輸入
 	 global   $BaseURL;
-      DrawMembersLinkArea_Simple( 30, 6,  $BaseURL); 
-   DrawOutLinkArea(30,52,$BaseURL);
+     // DrawMembersLinkArea_Simple( 30, 6,  $BaseURL); 
+    // DrawOutLinkArea(30,52,$BaseURL);
 	 DrawUserData( 1120, 5);   //使用者資料(PubApi)
 	 DrawMemo();//臨時紀錄
      DrawInsertLine( );//
@@ -685,7 +685,7 @@
 					   exec($cmd);
 				   }
 				   if($i==2){
-				     $cmd="convert      $path[1]    -flatten -resize 64  $path[2] ";
+				     $cmd="convert      $path[1]    -flatten -resize 128  $path[2] ";
 					   exec($cmd);
 				   }
 			   }
@@ -720,7 +720,7 @@
 	        global $colorCodes;
 		    global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$stateType;
 			global $Ecode;
-            echo  ">>>>>>>>>>>>".$Ecode;
+            //echo  ">>>>>>>>>>>>".$Ecode;
 	 
 			$planstmp=getMysqlDataArray($tableName);
 			$plansArray=returnDataArray($planstmp,1,$Ecode);
