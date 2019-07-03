@@ -228,7 +228,7 @@
 			   }
 			   return  $typepath;
 	 }
-	  function returntypeDir($typename){
+	 function returntypeDir($typename){
 	          switch ($typename){
 			          case "設定":
 					  return array("psd","pic","spic");

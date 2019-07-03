@@ -7,9 +7,12 @@
 <?php //主控台
     include('PubApi.php');
 	include('mysqlApi.php');
+    include('scheduleApi.php');
+	 include('CalendarApi.php');  
 	DefineData();
+	DefineDate();
 	DrawMainUI();
-	getListScheduleData();
+//	getListScheduleData();
 	DrawType();
 	DrawList();
 	DrawEdit();
@@ -45,6 +48,15 @@
 		$mileStonet= filterArray($typeDatat,0,"milestone");
 		$mileStone=returnArraybySort($mileStonet,2);
     }
+	function DefineDate(){
+	        global $VacationDays; 
+            global $YearRange,$MonthRange,$showMonthNum,$UpMonth;
+			$showMonthNum=6;
+            $UpMonth=-3;
+			SetCalendarRange( date(Y),date(m));
+           $VacationDays=    getVacationDays($YearRange,$MonthRange)	;
+	}
+	
     function DrawMainUI(){
 	    //主頁
 	 //  DrawRect("FP資源索引","22","#ffffff","20","20","1200","30","#000000");
@@ -74,43 +86,105 @@
 	function DrawList(){
 	          global $ScheduleData,$mainData;
 			  global $Lists,$ListSize;
-	          $x=20;$y=120;$w=100;$h=40;
+	         // $x=20;$y=120;$w=100;$h=40;
+			  $rect=array(20,120,100,50);
 			  $BgColor="#cccccc";
 			  global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
+ 
 			  for($i=0;$i<count($mainData);$i++){
-				   $x=20;
-				   $w=$ListSize[2];
-				   DrawRect($mainData[$i][2],12,"#000000",$x,$y,$w,$h,$BgColor);
-				   $x+=$w+5;
-				   $w=$ListSize[3];
-			       DrawRect($mainData[$i][3],12,"#000000",$x,$y,$w,$h,$BgColor);
-				   $x+=$w+5;
-                   $w=$ListSize[4];
-			       DrawRect($mainData[$i][4],12,"#000000",$x,$y,$w,$h,$BgColor);
-		           $x+=$w+5;
-				   $w=$ListSize[5];
-				   $state=findState($mainData[$i][2],$Lists[5 ]);
-				   DrawRect( $state,12,"#000000",$x,$y,$w,$h,$BgColor);
-				      $x+=$w+5;
-				   $w=$ListSize[6];
-				   $state=findState($mainData[$i][2],$Lists[6]);
-				   DrawRect( $state,12,"#000000",$x,$y,$w,$h,$BgColor);
-				   
-				      $Link=$BackURL."&Edit=".$i;
-			       // DrawLinkRect("Edit",12,"#ffffff",$x,$y,$w,$h,"#ff9999",$Link,"1");
-				     $y+=45;
+				  DrawStateBar($rect,$mainData[$i] );
+				  $rect[1]+=55;
+			 
 			  }
 	}
-
+    function DrawStateBar($rect,$tableData ){
+	    	 global $Lists,$ListSize,$mileStone;
+			 global $ScheduleData;
+		     $BgColor="#cccccc";
+			 $GDcode="";
+	         for($i=2;$i<count($Lists);$i++){
+			     switch($Lists[$i]){
+				       case "企劃編碼":
+					   $GDcode=$tableData[$i];
+					  
+					   DrawRect($tableData[$i] ,12,"#000000",$rect[0],$rect[1],$ListSize[$i],$rect[3],$BgColor);
+					   break;
+				       case "中文名":
+					   DrawRect($tableData[$i] ,12,"#000000",$rect[0],$rect[1],$ListSize[$i],$rect[3],"#dddddd");
+					   break;	
+				       case "英文名":
+					   DrawRect($tableData[$i] ,12,"#000000",$rect[0],$rect[1],$ListSize[$i],$rect[3],$BgColor);
+					   break;
+					   case "設定":
+					   $h=$rect[3]/2;
+					   $y=$rect[1]+$h;
+					   $state=findState($GDcode,"設定");
+					   $filePaths=getResfilePath($GDcode,"設定");
+					   $info="null";
+					   $w=$ListSize[$i];
+					  
+					   $worker="未定義";
+					   if(count($state)>1){
+					      $info=$state[0];
+						  $worker=$state[3];
+					   }
+					   if( file_exists( $filePaths[2])){
+					       DrawLinkPic($filePaths[2], $rect[1],$rect[0],$rect[3],$rect[3],$filePaths[1]);
+						   DrawRect( $info ,12,"#000000",$rect[0]+$rect[3],$rect[1],$ListSize[$i]-+$rect[3],$rect[3],getColor($state));
+						   $rect[0]+=$ListSize[$i]/2;
+						   $w/=2;
+					   }  // 0狀態 1工作開始 2工作結束日 3外包 4百分比
+					    DrawRect( $worker ,12,"#ffffff",$rect[0],$rect[1],$w,$h,"#666666" );//繪師
+					   if($state[4]==0){
+						   DrawRect( $info ,12,"#000000",$rect[0],$y,$w,$h,getColor($state[0]));//完成狀況
+						  }else{
+							   $w2=$w*$state[4];
+							   $recta=$rect;
+							   $recta[1]=$y;
+							   $recta[3]=$h;
+							   $msg=$info."..(".floor($state[4]*100)."%)";
+							   $colors=array("#77aa77","#88ff88","#000000");
+							   $per=$state[4];
+							   if($per>1){
+								   $msg="延誤中..(".floor($state[4]*100)."%)";
+								   $per=1;
+						       $colors=array("#ffaa77","#ff8888","#000000");
+							   }
+							   DrawProgress($msg,$per,$recta,$colors,"11");
+						 
+						   }
+	 
+					   break;
+					   
+				 }
+			     $rect[0]+=$ListSize[$i]+5;
+			 
+			 }
+	
+	
+	}
+	function getColor($state){
+	         switch($state){
+				 case "已完成":
+				 return "#bbaabb";
+				 case "進行中":
+				 return "#aaffaa";
+				 case "未製作":
+				 return "#cccc88";
+		     }
+			 return "#000000";
+	}
 	
 ?>
 
 <?php //資料處理
-       function findState($GDsn,$state){
+       function findState($GDsn,$type){
+	
 	            global $ScheduleData,$mainData;
 	            $code=GetScheduleMainPlanCode($ScheduleData,$GDsn,3);
+ 
 				if($code==-1)return "null";
-				return findCodeAndState($ScheduleData,$code );
+				return findCodeAndState($ScheduleData,$code,$type );
 				 
 	   }
        
@@ -120,14 +194,14 @@
 					$GDsn=$mainData[$i][2];
 					//echo $GDsn;
 			        $code=GetScheduleMainPlanCode($ScheduleData,$GDsn,3);
-				    //echo $code;
+				     echo $code;
 				}
 	   }
-	   function GetScheduleMainPlanCode($ScheduleData,$keyStr,$num){
+	   function GetScheduleMainPlanCode($ScheduleData,$keyStr,$num){ //比對物件名稱包含GDCode 回傳文件編碼
 	            for($i=0;$i<count($ScheduleData);$i++){
 					//  echo  $i;
 					//echo $ScheduleData[$i][$num];
-					//echo "</br>".$ScheduleData[$i][$num].">".$keyStr;
+					// echo "</br>".$ScheduleData[$i][$num].">".$keyStr;
 				    if(strpos($ScheduleData[$i][$num],$keyStr) !== false){ 
 				       return $ScheduleData[$i][1];
 				    }
@@ -135,11 +209,26 @@
 				return -1;
 	   }
 	   
-	   function findCodeAndState($ScheduleData,$code ){
+	   function findCodeAndState($ScheduleData,$code ,$type ){ //比對文件編碼 工作類別回傳 0狀態 1工作開始 2工作結束日 3外包 4百分比
 		         for($i=0;$i<count($ScheduleData);$i++){
-			     if( $ScheduleData[$i][3]==$code)return $ScheduleData[$i][7];
+			        if( $ScheduleData[$i][3]==$code &&  $ScheduleData[$i][5]==$type ){
+						 $percentage=0;
+						if($ScheduleData[$i][7]=="進行中") $percentage=	getprogress($ScheduleData[$i][2],$ScheduleData[$i][6]);
+					  
+						return array($ScheduleData[$i][7],$ScheduleData[$i][2],$ScheduleData[$i][6],$ScheduleData[$i][9],$percentage);
+					}
 				 }
-				 return "null";
+				 return array("null");
+	   }
+	   function getprogress($startDays,$workDays){
+		        global $VacationDays;  
+		        $startDay=explode("_",$startDays);
+			    $nowDayArray=array(date(Y),date(m),date(d));
+				$passDays= getPassDays($startDay,$nowDayArray);
+			    $realDays=ReturnWorkDaysV2($startDay[0],$startDay[1],$startDay[2],$workDays,$VacationDays);
+			//	echo ">".($passDays / $realDays);
+				return ($passDays / $realDays);
+				 
 	   }
 ?>
 

@@ -68,7 +68,10 @@
 	   function filterArray($BaseArray,$Num,$checkName){
                 $data=array();		     
 		  for($i=0;$i<count($BaseArray);$i++){
-			  if($BaseArray[$i][$Num]==$checkName){
+			  $strBase=trim($BaseArray[$i][$Num]);
+			  $srtCheck=trim($checkName);
+			 //   if($BaseArray[$i][$Num]==$checkName){
+			  if($strBase==$srtCheck){
 			     array_push($data,$BaseArray[$i]);
 			     }
 			  }
@@ -552,7 +555,12 @@
 			  echo $msg;
 	          echo "</div>";
 	   }
-	   
+	   function DrawProgress($msg,$perc,$rect,$colors,$fontSize){
+	            DrawRect("",11,"#ffffff",$rect[0],$rect[1],$rect[2],$rect[3],$colors[0]);
+				$w=$rect[2]*$perc;
+				DrawRect("",11,"#ffffff",$rect[0],$rect[1],$w,$rect[3],$colors[1]);
+				DrawText($msg,$rect[0],$rect[1],$rect[2],$rect[3] ,$fontSize,$colors[2]);
+	   }
 ?>
 
  
