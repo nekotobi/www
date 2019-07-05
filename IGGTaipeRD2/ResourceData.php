@@ -12,7 +12,6 @@
 	DefineData();
 	DefineDate();
 	DrawMainUI();
-//	getListScheduleData();
 	DrawType();
 	DrawList();
 	DrawEdit();
@@ -65,7 +64,7 @@
 		global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
 		$x=20;$y=60;$w=100;$h=20;
 		for($i=0;$i<count($typeData);$i++){
-			$Link=$BaseURL;//."?Stype_1=".$i."&Stype_2=".$Stype_2;
+			$Link=$BaseURL."?Stype_1=".$i."&Stype_2=".$Stype_2;
 			$BgColor="#000000";
 			if($Stype_1==$i)$BgColor="#aa2222";
 		    DrawLinkRect($typeData[$i],12,"#ffffff",$x,$y,$w,$h,$BgColor,$Link,"1");
