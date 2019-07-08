@@ -261,7 +261,8 @@
 				        $plans=  filterArray($plansTmp,5,$SelectType_2[$Stype_2]);
 				  break;
 		  	  }
-		   	  $plans=  SortbyDate($plans);
+			  $plans= RemoveArray($plans,7,"已完成");
+		   	  $plans= SortbyDate($plans);
 		 
               $JobsArray=array( );
 		      for($i=0;$i<count($plans);$i++){

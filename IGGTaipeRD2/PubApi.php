@@ -14,6 +14,14 @@
 ?>
 
 <?php //Array功能
+       function RemoveArray($BaseArray,$num,$RemoveStr){
+	            $returnArray=array();
+				 for($i=0;$i<count($BaseArray);$i++){
+					 if($BaseArray[$i][$num]!=$RemoveStr)array_push($returnArray,$BaseArray[$i] );
+				 }
+	            return $returnArray;
+	   }
+  
        function returnArrayNum($BaseArray,$string){
 	        for($i=0;$i<count($BaseArray);$i++){
 				if($BaseArray[$i]==$string)return $i;
