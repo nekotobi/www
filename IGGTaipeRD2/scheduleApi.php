@@ -256,13 +256,13 @@
             $startDay=explode("_",$BaseData[$i][2]);
 		    $d=returnDateString($startDay[0],$startDay[1],$startDay[2]);
 			 $x=RetrunXpos($daysLoc,$d);
-			 $BaseData[$i]["DayLoc"]=$x;
+			 $BaseData[$i]['DayLoc']=$x;
 			// array_push($BaseData[$i],$x);
 		     array_push($sortLocs,$x); 
 		 }
 	     $score = array();
          foreach ($BaseData as $user) {
-                  $score[] = $user["DayLoc"];
+                  $score[] = $user['DayLoc'];
                   }
 		 array_multisort($score, SORT_ASC, $BaseData);
 		// array_multisort( $BaseData[count($BaseData[0])-1], SORT_ASC );

@@ -63,7 +63,7 @@
 	 CheckinputType_v2();//判斷輸入
 	 global   $BaseURL;
      DrawMembersLinkArea_Simple( 30, 6,  $BaseURL); 
-     DrawOutLinkArea(30,52,$BaseURL);
+      DrawOutLinkArea(30,52,$BaseURL);
 	 DrawUserData( 1120, 5);   //使用者資料(PubApi)
 	 DrawMemo();//臨時紀錄
      DrawInsertLine( );//
@@ -261,7 +261,7 @@
 				        $plans=  filterArray($plansTmp,5,$SelectType_2[$Stype_2]);
 				  break;
 		  	  }
-		   	  $plansSort=  SortbyDate($plans);
+		   	  $plans=  SortbyDate($plans);
 		 
               $JobsArray=array( );
 		      for($i=0;$i<count($plans);$i++){
