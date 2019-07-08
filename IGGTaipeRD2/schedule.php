@@ -63,7 +63,7 @@
 	 CheckinputType_v2();//判斷輸入
 	 global   $BaseURL;
      DrawMembersLinkArea_Simple( 30, 6,  $BaseURL); 
-      DrawOutLinkArea(30,52,$BaseURL);
+     DrawOutLinkArea(30,52,$BaseURL);
 	 DrawUserData( 1120, 5);   //使用者資料(PubApi)
 	 DrawMemo();//臨時紀錄
      DrawInsertLine( );//
@@ -224,6 +224,14 @@
 					$pic="Pics/Cancel.png";
 			   }
 	 }
+	 function  SortPlan($BasePlans){//整理資料
+	           $MainPlan=array();
+	           for($i=1;$i<count($BasePlans);$i++){
+	               if($BasePlans[$i][5]=="工項"){
+				      array_push($MainPlan,$BasePlans[$i]);
+				   }
+			   }
+	 }
 ?>
 
 <?php  //繪製計畫
@@ -374,7 +382,6 @@
 			   global $user,$List;
 			   global $data_library,$tableName,$MainPlanData;
 			   global $VacationDays; //年 月 日
-			   
 		       $fontColor="#222222";
 			   $startDay=explode("_",$plansArray[2]);
 		       $d=returnDateString($startDay[0],$startDay[1],$startDay[2]);

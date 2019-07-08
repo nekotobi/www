@@ -52,18 +52,21 @@
 	 function DrawDragArea($height ){//拖曳灰區
 		       global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX  ; 
 			   global $DeadLine;
+			   $PassColor="#999999";
 	           for($i=0;$i<count($daysLoc);$i++){
 				   $d=$daysLoc[$i][2];
 				   if($d<10)$d="0".$d;
 				   $id="Area-".$daysLoc[$i][0]."/".$daysLoc[$i][1]."/".$d."-".$daysLoc[$i][3];
 				   $x=$daysLoc[$i][3];
 				   $h=($height+1)*20 ;
-				   $BGColor="#aaaaaa";
+                   $BGColor= $PassColor;
 				   if($daysLoc[$i][1]==  $DeadLine[0] && $daysLoc[$i][2]== $DeadLine[1] ){
 				    $BGColor="#a27e7e";
+				
 				   }
 				   if($daysLoc[$i][1]==date("m") && $daysLoc[$i][2]==date("d") ){
 				    $BGColor="#C99899";
+						$PassColor="#aaaaaa";
 				   }
 			       DrawDragRect($x, $StartY+80,($OneDayWidth-2),$h,$BGColor,$id);
 			  }  
