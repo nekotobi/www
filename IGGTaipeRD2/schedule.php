@@ -62,9 +62,9 @@
 	 DrawTypeCont();//判斷印出內容
 	 CheckinputType_v2();//判斷輸入
 	 global   $BaseURL;
-     DrawMembersLinkArea_Simple( 30, 6,  $BaseURL); 
-     DrawOutLinkArea(30,52,$BaseURL);
-	 DrawUserData( 1120, 5);   //使用者資料(PubApi)
+    // DrawMembersLinkArea_Simple( 30, 6,  $BaseURL); 
+    // DrawOutLinkArea(30,52,$BaseURL);
+	// DrawUserData( 1120, 5);   //使用者資料(PubApi)
 	 DrawMemo();//臨時紀錄
      DrawInsertLine( );//
 ?>
@@ -260,8 +260,8 @@
 				  case "CheckState";
 				        $plans=  filterArray($plansTmp,5,$SelectType_2[$Stype_2]);
 				  break;
-			  }
-			
+		  	  }
+		   	  $plans=  SortbyDate($plans);
               $JobsArray=array( );
 		      for($i=0;$i<count($plans);$i++){
 				   DrawListBar($plans[$i],$i);
