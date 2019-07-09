@@ -24,7 +24,9 @@
 			      $color=$colorCodes[2][4];
 		          $Link= $BackURL."&PhpInputType=AddPlan&ed=".$daysLoc[$i][2]."&em=".$startM."&ey=".$starty."&dx=".($daysLoc[$i][3]-8)."&dy=".($StartY+60);
 			      if($daysLoc[$i][4]!="0")$color=$colorCodes[1][1];
-			       DrawabsoluteRect($daysLoc[$i][2],"8","#000000",  $daysLoc[$i][3]-8, $StartY+60 ,  $OneDayWidth-1 ,"20",$color,$pos, $Link);
+			   
+				   DrawabsoluteRect($daysLoc[$i][2],"8","#000000",  $daysLoc[$i][3]-8, $StartY+60 ,  $OneDayWidth-1 ,"20",$color,$pos, $Link);
+				
 				  }       
 			  DrawSprint($StartY+80 );
               echo "</div>"	;	
@@ -68,7 +70,9 @@
 				    $BGColor="#C99899";
 						$PassColor="#aaaaaa";
 				   }
-			       DrawDragRect($x, $StartY+80,($OneDayWidth-2),$h,$BGColor,$id);
+				   	$Rect=array($x, $StartY+80,($OneDayWidth-2),$h);
+				    DrawRect_Layer("",$fontSize,$fontColor,$Rect,$BGColor,-100); 
+			         //DrawDragRect($x, $StartY+80,($OneDayWidth-2),$h,$BGColor,$id);
 			  }  
 	 
 	 }
@@ -168,7 +172,7 @@
 			   }
 		      return $StartX;
      }
-    function returnDateString($y,$m,$d){
+     function returnDateString($y,$m,$d){
 	          $dd="";
 			  if($d<10)$dd="0" ;
               $d=$y."/".$m."/".$dd.$d;
@@ -260,25 +264,14 @@
 		    $d=returnDateString($startDay[0],$startDay[1],$startDay[2]);
 			 $x=RetrunXpos($daysLoc,$d);
 			 $BaseData[$i]['DayLoc']=$x;
-			// array_push($BaseData[$i],$x);
 		     array_push($sortLocs,$x); 
+		 
 		 }
 	     $score = array();
          foreach ($BaseData as $user) {
                   $score[] = $user['DayLoc'];
                   }
 		 array_multisort($score, SORT_ASC, $BaseData);
-		// array_multisort( $BaseData[count($BaseData[0])-1], SORT_ASC );
-		 /*
-		  sort($sortLocs);
-		  $sortArray=array();
-		  for($i=0;$i<count($sortLocs);$i++){
-			 $arrayTmp= returnDataArray($BaseData,count($BaseData[0])-1,  $sortLocs[$i]);
-			 
-		     array_push( $sortArray,$arrayTmp);
-			  echo "[".$sortArray[$i][2];
-		 }
-		 */
 		 return $BaseData;
 	 }
  

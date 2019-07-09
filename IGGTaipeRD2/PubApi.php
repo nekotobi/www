@@ -453,6 +453,13 @@
 			  position:absolute; top:".$y."px; left:".$x."px ;width:".$width."px;height:".$height."px;
 	          '>".$text."</div>";
 	   }
+	   function DrawText_Layer($text,$x,$y,$width,$height,$Size,$Color,$Layer){
+	            echo"<div   style=' text-align:left  ;color:".$Color."; ";
+			    echo " z-index:".$Layer ."; ";
+			    echo " font-family:Microsoft JhengHei; font-size:".$Size."px;
+			    position:absolute; top:".$y."px; left:".$x."px ;width:".$width."px;height:".$height."px;
+	            '>".$text."</div>";
+	   }
 	   function DrawLinkText($text,$x,$y,$width,$height,$Size,$Color,$Link){
 	      echo"<div  onclick=location.href='".$Link."' style=' text-align:left  ;color:".$Color.";
 			  font-weight:bolder ;font-family:Microsoft JhengHei; font-size:".$Size."px;
@@ -470,9 +477,15 @@
 				      '></div>";
 	   }
 	   function DrawPicBG($pic,$x,$y,$w,$h){
-		       echo "<div style='position:absolute; background-image:url(".$pic.");
+		        echo "<div style='position:absolute; background-image:url(".$pic.");
 				      top:".$x."px;Left:".$y."px; width:".$w."px;height:".$h."px;
 				      '></div>";
+	   }
+	   function DrawPic_Layer($pic,$x,$y,$w,$h,$Layer){
+		        echo "<div    style='position:absolute;  ";
+				  echo " z-index:".$Layer ."; ";
+				echo "  top:".$y."px;Left:".$x."px; width:".$w."px;height:".$h."px;
+				      '><img src=".$pic." width=".$w." height=".$h."></div>";
 	   }
 	   function DrawLinkPic($pic,$x,$y,$w,$h,$Link){
 		     	echo "<div  onclick=location.href='".$Link."' style='position:absolute; 
@@ -551,6 +564,26 @@
 			  echo " z-index:".$Layer ."; ";
 			  echo " text-align:center ; font-weight:bolder ;font-family:Microsoft JhengHei; font-size:".$fontSize."px;";
 			  echo " position:absolute;  top:".$Rect[1]."px; left:".$Rect[0]."px;  width:".$Rect[2]."px;height:".$Rect[3]."px; background-color:".$BgColor."; ' "; 
+			  echo " onClick=window.open('".$Link."',''); >";
+			  echo $msg;
+	          echo "</div>";
+	   }
+	   function DrawLinkRect_Layer_Left($msg,$fontSize,$fontColor,$Rect,$BgColor,$Link,$border,$Layer){
+	          echo "<div   style=' cursor:pointer ; color:".$fontColor."; " ;
+			  echo $border;
+			  echo " z-index:".$Layer ."; ";
+			  echo " text-align:left ; font-weight:bolder ;font-family:Microsoft JhengHei; font-size:".$fontSize."px;";
+			  echo " position:absolute;  top:".$Rect[1]."px; left:".$Rect[0]."px;  width:".$Rect[2]."px;height:".$Rect[3]."px; background-color:".$BgColor."; ' "; 
+			  echo " onClick=window.open('".$Link."',''); >";
+			  echo $msg;
+	          echo "</div>";
+	   }
+	   function DrawLinkRect_LayerNew($msg,$fontSize,$fontColor,$Rect,$BgColor,$Link,$border,$Layer){
+	          echo "<div   style=' cursor:pointer ; color:".$fontColor."; " ;
+			  echo $border;
+			  echo " z-index:".$Layer ."; ";
+			  echo " text-align:center ; font-weight:bolder ;font-family:Microsoft JhengHei; font-size:".$fontSize."px;";
+			  echo " position:absolute;  top:".$Rect[1]."px; left:".$Rect[0]."px;  width:".$Rect[2]."px;height:".$Rect[3]."px; background-color:".$BgColor."; ' "; 
 			  echo " onClick=window.open('".$Link."','_newtab'); >";
 			  echo $msg;
 	          echo "</div>";
@@ -563,6 +596,7 @@
 			  echo $msg;
 	          echo "</div>";
 	   }
+    
 	   function DrawProgress($msg,$perc,$rect,$colors,$fontSize){
 	            DrawRect("",11,"#ffffff",$rect[0],$rect[1],$rect[2],$rect[3],$colors[0]);
 				$w=$rect[2]*$perc;

@@ -5,48 +5,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
    <title>工作分類排程區</title>
 </head>
-<script type="text/javascript">
-	function AllowDrop(event) {
-	    	event.preventDefault();
-		    var overID = event.currentTarget.id;
-				document.Show.sendData.value= document.getElementById(overID).style.backgroundColor;
-		    if (document.Show.upID.value!=overID){
-				document.Show.upID.value=overID
-			    document.Show.upColor.value= document.getElementById(document.Show.upID.value).style.backgroundColor;   
-			}	
-
-			document.getElementById(overID).style.backgroundColor= 'rgb(211,111,111)' //"#ef7e62"
-	}
-
-	function Drag(event) {
-		   event.dataTransfer.setData("text", event.currentTarget.id);
-	       document.Show.DragID.value=event.currentTarget.id;
-		   var DragID  = event.currentTarget.id;
-		 	if(DragID.indexOf("Scale")>-1){
-			   var tmp= DragID.split("-")
-	     	   document.Show.startpx.value= tmp[4];
-			   }
-	}
-    
-     function  DragLeave(event) {
-          var LeaveID = event.currentTarget.id;
-		      document.getElementById(LeaveID).style.backgroundColor =  document.Show.upColor.value;  
-	 }
-	function Drop(event) {
-		event.preventDefault();
-		var DragID  = event.dataTransfer.getData("text");
-		var targetID = 	event.currentTarget.id
-		var tmp= targetID.split("-");
-		var endpos= parseInt(document.Show.Xoffset.value=tmp[2]);
-		var stpos=parseInt( document.Show.startpx.value);
-		    document.Show.Xoffset.value=(endpos-stpos);
-	        document.Show.sendData.value="DragWorkOrder";
-            document.Show.DragArea.value=targetID;
-		    document.Show.DragID.value=DragID;
-			Show.submit();
-	}
-</script>
-</script>
+ 
 <body bgcolor="#b5c4b1">
 <?php  //主控台
    $id=$_COOKIE['IGG_id'];
@@ -62,8 +21,8 @@
 	 DrawTypeCont();//判斷印出內容
 	 CheckinputType_v2();//判斷輸入
 	 global   $BaseURL;
-     DrawMembersLinkArea_Simple( 30, 6,  $BaseURL); 
-     DrawOutLinkArea(30,52,$BaseURL);
+    // DrawMembersLinkArea_Simple( 30, 6,  $BaseURL); 
+    // DrawOutLinkArea(30,52,$BaseURL);
 	 DrawUserData( 1120, 5);   //使用者資料(PubApi)
 	 DrawMemo();//臨時紀錄
      DrawInsertLine( );//
@@ -224,24 +183,145 @@
 					$pic="Pics/Cancel.png";
 			   }
 	 }
-	 function  SortPlan($BasePlans){//整理資料
-	           $MainPlan=array();
-	           for($i=1;$i<count($BasePlans);$i++){
-	               if($BasePlans[$i][5]=="工項"){
-				      array_push($MainPlan,$BasePlans[$i]);
-				   }
-			   }
-	 }
-?>
 
-<?php  //繪製計畫
+	  
+?>
+<?php //新版摺疊
+	  function   DrawPlan_v3( ){//整理資料
+	           	 global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2;
+		         global $data_library,$tableName,$MainPlanData;
+		         $type1=$SelectType_1[$Stype_1];
+		         $plansTmp2 =  filterArray( $MainPlanData ,10, $type1);
+		         $plansLine= filterArray($plansTmp2,5,"工項");
+	             DrawMainPlan($plansLine);
+	  }
+	  function DrawMainPlan($plansLine){
+		       global  $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2;
+			   global  $MainPlanData;
+			   global  $Expand ,$SLine,$colNum;
+			   global  $colorCodes;
+		       $BgColor="#444444";
+	           for($i=0;$i<count($plansLine);$i++){
+				   $plansLinet= filterArray($MainPlanData,3,$plansLine[$i][1]);
+				   $Lines=count($plansLinet);
+				   $Rect= returnRect($plansLine[$i],$yAddLnie,$yAddStartLine);
+				   $line=$plansLine[$i][4];
+				   $info=$plansLine[$i][3];//."[".count($plansLinet)."]";
+				   $pic="Pics/triangleLeft.png";
+				   $ExLink=$BackURL."&Expand=".$plansLine[$i][1]."&SLine=".$plansLine[$i][4]."&colNum=".$Lines ;
+				   $ELink=$BackURL."&PhpInputType=EditPlan&Ecode=".$plansLine[$i][1];
+				   //展開
+				   $Exp="false";
+				   if($Expand!=""){
+				      if($line>$SLine)$Rect[1]+=20*$colNum;
+					  if($line==$SLine){
+						  $Exp="true";
+						  $pic="Pics/triangleDown.png";
+						  $ExLink=$BackURL ;
+					  }
+				   }
+				   DrawLinkRect_Layer($info,10,"#ffffff",$Rect,$BgColor,$ELink,"",0);
+				   if( $Lines>1) DrawLinkPic($pic,$Rect[1],($Rect[0]+$Rect[2]  ),14,14,$ExLink);
+				   //jilar
+				   $Link=$BackURL."&PhpInputType=AddPlanType&Ecode=".$plansLine[$i][1];
+					if( $plansLine[$i][12]!=""){
+				        $JilaLink="http://bzbfzjira.iggcn.com/browse/FP-".$plansLine[$i][12]  ;
+					    DrawLinkRect_newtab($plansLine[$i][12],"9","#000000", $Rect[0],$Rect[1]+2,"22" ,"11", $colorCodes[0][3],$JilaLink,"1" );
+					}   //jilar
+					DrawLinkRect("+","10","#ffffff",$Rect[0]+$Rect[2]-12,$Rect[1]+2,"12" ,"12", "#555555",$Link,"1");
+				    DrawWorks($plansLine[$i][1],$Rect[0]+$Rect[2],$Rect[1],$Exp );
+			   }
+	  }
+	  function DrawWorks($Code,$x,$y, $Exp ){
+		       global  $MainPlanData,$BackURL;
+		       $plansLinet= filterArray($MainPlanData,3,$Code);
+			   $plansLine= SortbyDate($plansLinet);
+               if( count($plansLine)==0)return;
+               $length=$plansLine[count($plansLine)-1]['DayLoc']-$x;
+			   if($Exp=="false")  
+				   DrawRect_Layer("",1,"#000000",array($x,$y+10,$length,1),"#444444",-12);
+			   if($Exp=="true") {
+				   $pic="Pics/Black20Bg.png";
+				 //  $l=
+				   DrawPic_Layer($pic,$x,$y+16,$length+200,count($plansLine)*20+5,-10);
+				   $x+=6;
+			       DrawRect_Layer("",1,"#000000",array($x,$y+10,2,count($plansLine)*20),"#444444",-11);
+			   }
+			   for($i=0;$i<count($plansLine);$i++){
+				    $BgColor= GetBarColor($plansLine[$i][5],$plansLine[$i][7]);
+				    $Rect=returnRect($plansLine[$i] ,$yAddLnie,$yAddStartLine);
+					$Rect[1]=$y;
+					if($Exp=="true")$Rect[1]+=($i+1)*20;
+					$p=$plansLine[$i][9];
+					if($p=="")$plansLine[$i][8];
+					$info= $plansLine[$i][5] ."[".$plansLine[$i][6]."]".$p;
+				    $Layer= $i-count($plansLine);
+					$Link=$BackURL."&PhpInputType=DrawEditPlanType&Ecode=".$plansLine[$i][1];
+					if($Exp=="true") 
+					   	DrawRect_Layer("",1,"#000000",array($x,$Rect[1]+10,$length,1),"#444444",-12);
+				    DrawRect_Layer( "",10,"#000000",$Rect,$BgColor ,$Layer);
+                    $w=311;
+					DrawText_Layer( $info,$Rect[0],$Rect[1],$w ,11,11,"#000000",$Layer);
+				    DrawLinkRect_Layer_Left( "",10,"#000000",$Rect,"",$Link,"",$Layer);
+					$realDays=getRealDay($plansLine[$i]);
+				    DrawStatePics($plansLine[$i],$Rect[0],$Rect[1],$realDays);
+			   }
+	  }
+      function getRealDay($SinglePlanData){
+	  	       global $VacationDays;
+			   $startDay=explode("_",$SinglePlanData[2]);
+			   $workDays=$SinglePlanData[6] ;
+			   $realDays=$workDays;
+               if($workDays>=1)	{
+				  $realDays=ReturnWorkDaysV2($startDay[0],$startDay[1],$startDay[2], $workDays ,$VacationDays);
+		      }
+			  return  $realDays;
+	  }
+      function returnRect($SinglePlanData,$yAddLnie,$yAddStartLine){
+	          global $StartX, $StartY,$OneDayWidth,$daysLoc,$MainPlanData,$OneDayWidth;
+	          global $VacationDays;
+			  $startDay=explode("_",$SinglePlanData[2]);
+			  $d=returnDateString($startDay[0],$startDay[1],$startDay[2]);
+			  $x=RetrunXpos($daysLoc,$d);
+			  $y= $StartY+90+($SinglePlanData[4]+1)*20;
+			  if($SinglePlanData[5]=="工項"){
+				 $t=strlen($SinglePlanData[3]);
+				 $w= 6*$t +20 ;
+				 $sx=$x-$w-20 ;
+				 return array($sx,$y,$w,16);
+				}
+			    $realDays= getRealDay($SinglePlanData);
+			    $w= $OneDayWidth*$realDays;
+				if($realDays<1)$w=8;
+			    return array($x,$y,$w,16); 
+	  }		  
+      function GetBarColor($plan_type,$State){
+		       global  $colorCodes,$SelectType_2;
+	           $color=$colorCodes[9][0];
+			    for($i=0;$i<count($SelectType_2);$i++){
+					if($SelectType_2[$i]==$plan_type){
+						$c=$i%8;
+						$color=$colorCodes[9][$c];
+						   if($State=="已完成")	$color=$colorCodes[10][$i];
+					}
+				}
+				return $color;
+	  }
+?>
+<?php  //繪製計畫 
+
       function DrawTypeCont(){
-		       global $List,$Stype_1,$Stype_2 ;
+		       global $List,$SelectType_1,$Stype_1,$Stype_2 ;
+			    $type1=$SelectType_1[$Stype_1];
 			   if($List!=""){
 				   DrawListWorks();
 			       return;
 			   }
-			   DrawPlan_v2();
+			   if($type1=="總規劃"){
+			     DrawPlan_v2();
+			     return;
+			   }
+			   DrawPlan_v3();
       }
       function DrawListWorks(){
 	  	      global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2;
