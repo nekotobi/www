@@ -21,8 +21,8 @@
 	 DrawTypeCont();//判斷印出內容
 	 CheckinputType_v2();//判斷輸入
 	 global   $BaseURL;
-    // DrawMembersLinkArea_Simple( 30, 6,  $BaseURL); 
-    // DrawOutLinkArea(30,52,$BaseURL);
+    DrawMembersLinkArea_Simple( 30, 6,  $BaseURL); 
+    DrawOutLinkArea(30,52,$BaseURL);
 	 DrawUserData( 1120, 5);   //使用者資料(PubApi)
 	 DrawMemo();//臨時紀錄
      DrawInsertLine( );//
