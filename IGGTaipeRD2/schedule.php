@@ -385,7 +385,7 @@
 			   $Link=$BaseURL."?PhpInputType=DrawEditPlanType&Ecode=".$plansArray[1];
 			   DrawLinkRectAutoLength( $msg,"10","#000000",$x, $y,$w ,"16", $color,$Link,"1");
 				//狀態圖
-			   DrawStatePics($plansArray,$x,$y,$realDays);
+			   DrawStatePics($plansArray,$x,$y,$realDays,$Link);
 	  }
       function DrawListInfo($UserArray,$JobsArray ){
 		       global $List; 
