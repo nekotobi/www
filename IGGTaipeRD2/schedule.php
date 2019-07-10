@@ -21,9 +21,9 @@
 	 DrawTypeCont();//判斷印出內容
 	 CheckinputType_v2();//判斷輸入
 	 global   $BaseURL;
-    DrawMembersLinkArea_Simple( 30, 6,  $BaseURL); 
-    DrawOutLinkArea(30,52,$BaseURL);
-	 DrawUserData( 1120, 5);   //使用者資料(PubApi)
+      DrawMembersLinkArea_Simple( 30, 6,  $BaseURL); 
+      DrawOutLinkArea(30,52,$BaseURL);
+	  DrawUserData( 1120, 5);   //使用者資料(PubApi)
 	 DrawMemo();//臨時紀錄
      DrawInsertLine( );//
 ?>
@@ -179,7 +179,7 @@
 						DrawLinkRect("插入一行","10","#ffffff",$x+40+$xAdd,$y ,"45","20","#8888ff",$Link2,"1");
 						DrawLinkPic($pic,$y,$x+130 ,"16","16",$BackURL);
 					}
-					 DrawLinkRect_Layer($i,"10","#ffffff",array($x,$y,$w,$h),"#aaaaaa",$Link," ",-1);
+					DrawLinkRect_Layer($i,"10","#ffffff",array($x,$y,$w,$h),"#aaaaaa",$Link," ",-1);
 					$pic="Pics/Cancel.png";
 			   }
 	 }
@@ -198,10 +198,12 @@
 	  function DrawMainPlan($plansLine){
 		       global  $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2;
 			   global  $MainPlanData;
-			   global  $Expand ,$SLine,$colNum;
+			   global  $Expand ,$SLine,$colNum,$LineRec;
 			   global  $colorCodes;
 		       $BgColor="#444444";
+			   $LineRec=array();
 	           for($i=0;$i<count($plansLine);$i++){
+				   Array_Push($LineRec,$plansLine[$i][4]);
 				   $plansLinet= filterArray($MainPlanData,3,$plansLine[$i][1]);
 				   $Lines=count($plansLinet);
 				   $Rect= returnRect($plansLine[$i],$yAddLnie,$yAddStartLine);
@@ -283,7 +285,7 @@
 			  $startDay=explode("_",$SinglePlanData[2]);
 			  $d=returnDateString($startDay[0],$startDay[1],$startDay[2]);
 			  $x=RetrunXpos($daysLoc,$d);
-			  $y= $StartY+90+($SinglePlanData[4]+1)*20;
+			  $y= $StartY+90+($SinglePlanData[4])*20;
 			  if($SinglePlanData[5]=="工項"){
 				 $t=strlen($SinglePlanData[3]);
 				 $w= 6*$t +20 ;

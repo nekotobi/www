@@ -564,7 +564,7 @@
 			  echo " z-index:".$Layer ."; ";
 			  echo " text-align:center ; font-weight:bolder ;font-family:Microsoft JhengHei; font-size:".$fontSize."px;";
 			  echo " position:absolute;  top:".$Rect[1]."px; left:".$Rect[0]."px;  width:".$Rect[2]."px;height:".$Rect[3]."px; background-color:".$BgColor."; ' "; 
-			  echo " onClick=window.open('".$Link."',''); >";
+			  echo " onclick=location.href='".$Link."'; >";
 			  echo $msg;
 	          echo "</div>";
 	   }
