@@ -187,7 +187,7 @@
 	  
 ?>
 <?php //新版摺疊
-	  function   DrawPlan_v3( ){//整理資料
+	  function DrawPlan_v3( ){//整理資料
 	           	 global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2;
 		         global $data_library,$tableName,$MainPlanData;
 		         $type1=$SelectType_1[$Stype_1];
@@ -253,7 +253,7 @@
 					$Rect[1]=$y;
 					if($Exp=="true")$Rect[1]+=($i+1)*20;
 					$p=$plansLine[$i][9];
-					if($p=="")$plansLine[$i][8];
+					if($p=="" or $p=="未定義")$p=$plansLine[$i][8];
 					$info= $plansLine[$i][5] ."[".$plansLine[$i][6]."]".$p;
 				    $Layer= $i-count($plansLine);
 					$Link=$BackURL."&PhpInputType=DrawEditPlanType&Ecode=".$plansLine[$i][1];
