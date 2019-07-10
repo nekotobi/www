@@ -51,12 +51,17 @@
 				$MainPlanDataT=getMysqlDataArray($tableName); 
 				$MainPlanData=filterArray($MainPlanDataT,0,"data"); 
 		 //共用資料表
-	     global $OutsData,$memberData;
+	     global $OutsData,$memberData, $milestoneSelect;
 		 global $WarringDatas;
 			    $WarringDatas= array();
                 $OutsData=getMysqlDataArray("outsourcing");	 
       	        $memberData=getMysqlDataArray("members");
-	            defineTypeData_v2();
+				$mt=getMysqlDataArray( "scheduletype"); 
+	            $mt2=filterArray($mt,0,"milestone"); 
+			    $milestoneSelect=returnArraybySort($mt2,2);
+		 
+				defineTypeData_v2();
+				
 	 }
 	 function  defineTypeData_v2(){ //類別資料
 	 		    global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
@@ -208,7 +213,18 @@
 				   $Lines=count($plansLinet);
 				   $Rect= returnRect($plansLine[$i],$yAddLnie,$yAddStartLine);
 				   $line=$plansLine[$i][4];
-				   $info="　　 ".$plansLine[$i][3];//."[".count($plansLinet)."]";
+				   $add="　　 ";
+				   //M底色
+				   $BgColor="#555555";
+				   $milestonepic=$plansLine[$i][15];
+				   
+				   if($milestonepic!=""){
+					     $add="　　　　";
+					    $n=substr($plansLine[$i][15], 1, 1);
+						 $BgColor=$colorCodes[11][$n];
+					    $milecolor=$colorCodes[10][$n];
+				   }
+				   $info=$add.$plansLine[$i][3];//."[".count($plansLinet)."]";
 				   $pic="Pics/triangleLeft.png";
 				   $ExLink=$BackURL."&Expand=".$plansLine[$i][1]."&SLine=".$plansLine[$i][4]."&colNum=".$Lines ;
 				   $ELink=$BackURL."&PhpInputType=EditPlan&Ecode=".$plansLine[$i][1];
@@ -225,13 +241,17 @@
 				   DrawLinkRect_Layer_Left($info,10,"#ffffff",$Rect,$BgColor,$ELink,"",0);
 				   if( $Lines>1) DrawLinkPic($pic,$Rect[1],($Rect[0]+$Rect[2]  ),14,14,$ExLink);
 				   //jilar
-				   $Link=$BackURL."&PhpInputType=AddPlanType&Ecode=".$plansLine[$i][1];
+				    $Link=$BackURL."&PhpInputType=AddPlanType&Ecode=".$plansLine[$i][1];
 					if( $plansLine[$i][12]!=""){
 				        $JilaLink="http://bzbfzjira.iggcn.com/browse/FP-".$plansLine[$i][12]  ;
 					    DrawLinkRect_newtab($plansLine[$i][12],"9","#000000", $Rect[0],$Rect[1]+2,"22" ,"11", $colorCodes[0][3],$JilaLink,"1" );
 					}   //jilar
-					DrawLinkRect("+","10","#ffffff",$Rect[0]+$Rect[2]-12,$Rect[1]+2,"12" ,"12", "#555555",$Link,"1");
+					if($milestonepic!=""){
+						DrawRect($milestonepic,"9","#000000", $Rect[0]+23,$Rect[1]+2,"18" ,"11",$milecolor);
+					}
+					DrawLinkRect("+","10","#ffffff",$Rect[0]+$Rect[2]-12,$Rect[1]+2,"12" ,"12", $BgColor,$Link,"1");
 				    DrawWorks($plansLine[$i][1],$Rect[0]+$Rect[2],$Rect[1],$Exp );
+					
 			   }
 	  }
 	  function DrawWorks($Code,$x,$y, $Exp ){
@@ -244,12 +264,12 @@
 				   DrawRect_Layer("",1,"#000000",array($x,$y+10,$length,1),"#444444",-12);
 			   if($Exp=="true") {
 				   $pic="Pics/Black20Bg.png";
-				 //  $l=
 				   DrawPic_Layer($pic,$x,$y+16,$length+200,count($plansLine)*20+5,-10);
 				   $x+=6;
 			       DrawRect_Layer("",1,"#000000",array($x,$y+10,2,count($plansLine)*20),"#444444",-11);
 			   }
 			   for($i=0;$i<count($plansLine);$i++){
+
 				    $BgColor= GetBarColor($plansLine[$i][5],$plansLine[$i][7]);
 				    $Rect=returnRect($plansLine[$i] ,$yAddLnie,$yAddStartLine);
 					$Rect[1]=$y;
@@ -263,12 +283,14 @@
 					   	DrawRect_Layer("",1,"#000000",array($x,$Rect[1]+10,$length,1),"#444444",-12);
 				    DrawRect_Layer( "",10,"#000000",$Rect,$BgColor ,$Layer);
                     $w=311;
-					 DrawText_Layer( $info,$Rect[0],$Rect[1],$w ,11,11,"#000000",$Layer);
+					DrawText_Layer( $info,$Rect[0],$Rect[1],$w ,11,11,"#000000",$Layer);
 				    DrawLinkRect_Layer_Left( "",10,"#000000",$Rect,"",$Link,"",$Layer);
 					$realDays=getRealDay($plansLine[$i]);
 				    DrawStatePics($plansLine[$i],$Rect[0],$Rect[1],$realDays,$Link);
+
 			   }
 	  }
+
       function getRealDay($SinglePlanData){
 	  	       global $VacationDays;
 			   $startDay=explode("_",$SinglePlanData[2]);
@@ -288,8 +310,8 @@
 			  $y= $StartY+90+($SinglePlanData[4])*20;
 			  if($SinglePlanData[5]=="工項"){
 				 $t=strlen($SinglePlanData[3]);
-				 $w= 6*$t +20 ;
-				 $sx=$x-$w-20 ;
+				 $w= 6*$t +45 ;
+				 $sx=$x-$w-45 ;
 				 return array($sx,$y,$w,16);
 				}
 			    $realDays= getRealDay($SinglePlanData);
@@ -698,6 +720,9 @@
               SendCommand($stmt,$data_library);			   
 	 }
      function UpEditData( ){
+		 
+		     //  global $milestone;
+		      // echo "[".count($milestone)."]";
 		       global $data_library,$tableName,$MainPlanData;
 			   global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1;
 			   global $year,$month,$day;
@@ -715,13 +740,14 @@
 				   		  $startDay=$year."_".$month."_".$day;
 				          array_push($Base,$tables[$i]);
                           array_push($up,$$tables[$i]);
-				        //  echo  "</br>".$tables[$i].">".$$tables[$i];
+				          echo  "</br>".$tables[$i].">".$$tables[$i];
 		       }
 			   $WHEREtable=array( "data_type", "code" );
 		       $WHEREData=array( "data",$code );
 			   if($submit=="修改計畫"){
 			    $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
-                SendCommand($stmt,$data_library);			   
+                SendCommand($stmt,$data_library);		
+ 	
 			   }
 		       if($submit=="送出修改"){
 				   $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
@@ -736,7 +762,7 @@
 			      if($del!="") $stmt= MakeDeleteStmt($tableName,$WHEREtable,$WHEREData); 
 				     SendCommand($stmt,$data_library);
 			   }
-	         echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+	          echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	 }
      function AddData( ){
 		       global $data_library,$tableName;
@@ -929,7 +955,7 @@
  
  }
      function AddPlanEditor_v2($ex,$ey,$w,$h,$y,$m,$d){
-	     global $data_library,$tableName;   
+	     global $data_library,$tableName,$milestone;   
 	     global $colorCodes;
 		 global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1;
 	     if($Stype_1=="")$Stype_1=0;
@@ -955,8 +981,7 @@
 		 //input
 	     $Planinput="<input type=text name=plan value='".$plan."'  size=30 >";
 	     DrawInputRect("計畫","12","#ffffff",($ex),$ey+40,300,18, $colorCodes[4][2],"top",$Planinput);
-		 //
-	 
+		
 		 if($Stype_1==0 or  $Stype_1==""){
 		      $workDayinput="<input type=text name=workingDays  value='5'  size=2   >";
 	          DrawInputRect("天數","12","#ffffff",($ex+240),$ey+40,120,18, $colorCodes[4][2],"top",$workDayinput);
@@ -971,13 +996,14 @@
 		 $types=array("工項","目標","Sprint");
 	     $select=MakeSelectionV2($types,"工項","type",160);
 	     DrawInputRect("類型","10","#ffffff",($ex ),$ey+70,120,18, $colorCodes[4][2],"top",  $select);
- 	 
+ 	   
+		 
 		 $submitP="<input type=submit name=submit value=新增計畫>";
 	     DrawInputRect("",$ey-20 ,"#ffffff",($ex+320),60,120,18, $colorCodes[4][2],"top",$submitP);
 
   }
      function EditPlan_v2($ex,$ey,$w,$h){
-	        global $data_library,$tableName;   
+	        global $data_library,$tableName, $milestoneSelect;    
 			global $Ecode;
 		    global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1;
 						
@@ -1021,10 +1047,14 @@
 		    $types=array("工項","目標","Sprint");
 	        $select=MakeSelectionV2($types,$plansArray[5],"type",160);
 	        DrawInputRect("類型","10","#ffffff",($ex ),$ey+70,120,18, $colorCodes[4][2],"top",  $select);
- 	 
+			
+ 	 	    //milestone
+	   	    $select2=MakeSelectionV2( $milestoneSelect,$plansArray[15],"milestone",160);
+	        DrawInputRect("Milestone","10","#ffffff",($ex ),$ey+110,120,18, $colorCodes[4][2],"top",  $select2);
+			
 		    $submitP="<input type=submit name=submit value=修改計畫>";
 	        DrawInputRect("",$ey-60 ,"#ffffff",($ex+320),60,120,18, $colorCodes[4][2],"top",$submitP);
-				
+
              
 			//刪除
 	        $input="<input type=text name=del value=''  size=3>";
