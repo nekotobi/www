@@ -206,7 +206,7 @@
 				   $Lines=count($plansLinet);
 				   $Rect= returnRect($plansLine[$i],$yAddLnie,$yAddStartLine);
 				   $line=$plansLine[$i][4];
-				   $info=$plansLine[$i][3];//."[".count($plansLinet)."]";
+				   $info="　　 ".$plansLine[$i][3];//."[".count($plansLinet)."]";
 				   $pic="Pics/triangleLeft.png";
 				   $ExLink=$BackURL."&Expand=".$plansLine[$i][1]."&SLine=".$plansLine[$i][4]."&colNum=".$Lines ;
 				   $ELink=$BackURL."&PhpInputType=EditPlan&Ecode=".$plansLine[$i][1];
@@ -220,7 +220,7 @@
 						  $ExLink=$BackURL ;
 					  }
 				   }
-				   DrawLinkRect_Layer($info,10,"#ffffff",$Rect,$BgColor,$ELink,"",0);
+				   DrawLinkRect_Layer_Left($info,10,"#ffffff",$Rect,$BgColor,$ELink,"",0);
 				   if( $Lines>1) DrawLinkPic($pic,$Rect[1],($Rect[0]+$Rect[2]  ),14,14,$ExLink);
 				   //jilar
 				   $Link=$BackURL."&PhpInputType=AddPlanType&Ecode=".$plansLine[$i][1];
