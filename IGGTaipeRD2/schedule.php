@@ -68,9 +68,13 @@
 			    global $stateType;
 		        $BaseURL="schedule.php";
                 $BackURL= $BaseURL."?Stype_1=".$Stype_1."&Stype_2=".$Stype_2;
+				//類別1
 				$sTypeTmp= getMysqlDataArray("scheduletype");	
 				$SelectType_1tmp= filterArray($sTypeTmp ,0,"data");
-			    $SelectType_1=   returnArraybySort($SelectType_1tmp,2);
+				$SelectType_1sort=sortArrays($SelectType_1tmp ,5 ,"true");
+				
+			    $SelectType_1=   returnArraybySort($SelectType_1sort,2);
+				//
 			    $SelectType_2tmp= filterArray($sTypeTmp ,0,"data2");
 				$SelectType_2=   returnArraybySort($SelectType_2tmp,2);
 				$stateTypetmp= filterArray($sTypeTmp ,0,"data3");
@@ -740,7 +744,7 @@
 				   		  $startDay=$year."_".$month."_".$day;
 				          array_push($Base,$tables[$i]);
                           array_push($up,$$tables[$i]);
-				          echo  "</br>".$tables[$i].">".$$tables[$i];
+				         // echo  "</br>".$tables[$i].">".$$tables[$i];
 		       }
 			   $WHEREtable=array( "data_type", "code" );
 		       $WHEREData=array( "data",$code );
