@@ -261,10 +261,10 @@
 					   	DrawRect_Layer("",1,"#000000",array($x,$Rect[1]+10,$length,1),"#444444",-12);
 				    DrawRect_Layer( "",10,"#000000",$Rect,$BgColor ,$Layer);
                     $w=311;
-					DrawText_Layer( $info,$Rect[0],$Rect[1],$w ,11,11,"#000000",$Layer);
+					 DrawText_Layer( $info,$Rect[0],$Rect[1],$w ,11,11,"#000000",$Layer);
 				    DrawLinkRect_Layer_Left( "",10,"#000000",$Rect,"",$Link,"",$Layer);
 					$realDays=getRealDay($plansLine[$i]);
-				    DrawStatePics($plansLine[$i],$Rect[0],$Rect[1],$realDays);
+				    DrawStatePics($plansLine[$i],$Rect[0],$Rect[1],$realDays,$Link);
 			   }
 	  }
       function getRealDay($SinglePlanData){
@@ -504,6 +504,7 @@
 					DrawLinkRect("+","10","#ffffff",$x-20,$y+2,"12" ,"12", "#555555",$Link,"1");
 					return;
 				}
+				/*
 			   //分工
                 $codeA=returnDataArray( $MainPlanData,1,$plansArray[3] );//取得主資料array
 			    if($codeA==null)return;
@@ -540,8 +541,9 @@
 				
 				//狀態圖
 			    DrawStatePics($plansArray,$x,$y,$realDays);
+				*/
 	  }
-	  function DrawStatePics($plansArray,$x,$y,$realDays){
+	  function DrawStatePics($plansArray,$x,$y,$realDays,$Link){
 		  		 global $OutsData,$memberData;
 				 $pic="";
 			     if($plansArray[7]=="" or $plansArray[7]=="未定義")$pic="Pics/question";
@@ -556,7 +558,8 @@
 					 $pic="Pics/warring.gif";
 				  }
 				  if( $pic!="")
-			      DrawPosPic($pic, $y,$x-6,16,16,"absolute" );
+			      //DrawPosPic($pic, $y,$x-6,16,16,"absolute" );
+			       DrawLinkPic($pic,$y,$x-6,16,16,$Link);
 	  }  
 	  function DrawWorkDetail($ex,$ey,$w,$h){
 	          global $data_library,$tableName;   

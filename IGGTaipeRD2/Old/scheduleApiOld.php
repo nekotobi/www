@@ -258,6 +258,7 @@
 ?> 
 
 <?php  //類別總規劃
+
     function  DrawPlan($sy){
 		      global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX,$monthLoc ; 
 			  global $colorCodes;
@@ -338,5 +339,113 @@
 	 }
 	
 
+
+?>
+
+<?php //廢棄
+ function DrawPlanBarB( $color_num,$y,$plansArray ){
+		       global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX,$monthLoc,$showMonthNum ,$LineRec ;
+		       global $colorCodes;
+			   global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1, $SelectType_2;
+			   global $user,$List;
+			   global $data_library,$tableName,$MainPlanData;
+			   global $VacationDays; //年 月 日
+		       $fontColor="#222222";
+			   $startDay=explode("_",$plansArray[2]);
+		       $d=returnDateString($startDay[0],$startDay[1],$startDay[2]);
+			   $x=RetrunXpos($daysLoc,$d);
+			   $y= $StartY+90+$plansArray[4]*20;
+			   $line=$plansArray[4];
+			   $w= $OneDayWidth*$plansArray[6];
+			   $color= $colorCodes[$color_num][1];
+			   $info=$plansArray[3] ;
+			   $plan_type=$plansArray[5];//工項/目標
+			   $type=$plansArray[10];//總規劃//腳色分類
+			   $Link=$BackURL."&PhpInputType=EditPlan&Ecode=".$plansArray[1];
+			   if($type=="總規劃"){
+			      switch($plan_type){
+				         case "工項":
+						 DrawLinkRect($info,"10",$fontColor,$x,$y,$w ,"16", $color,$Link,"1");
+				         break;
+						 case "目標":
+						 $color="#772233";
+				         $fontColor="#eeeeee";
+						 DrawLinkRect($info,"10",$fontColor,$x,$y,$w ,"16", $color,$Link,"1");
+						 break; 
+				  }
+				  return;
+			   }
+			   //細部規劃
+			   if ($plan_type=="工項"){
+				    Array_Push($LineRec,$plansArray[4]);
+				    $t=strlen($info);
+					$add="";
+			        if($plansArray[12]!=""){   $add="　　　"; $t+=5;}
+				    $w= 6*$t ;
+				    $sx=$x-$w-20;
+					DrawLinkRect(  $add . $info,"10","#ffffff",$sx,$y,$w ,"16", "#666666",$Link,"1");
+					$Link=$BackURL."&PhpInputType=AddPlanType&Ecode=".$plansArray[1];
+					if($plansArray[12]!=""){
+				        $JilaLink="http://bzbfzjira.iggcn.com/browse/FP-".$plansArray[12]  ;
+					    DrawLinkRect_newtab($plansArray[12],"9","#000000",$sx+2,$y+2,"25" ,"11", $colorCodes[0][3],$JilaLink,"1" );
+					}
+					DrawLinkRect("+","10","#ffffff",$x-20,$y+2,"12" ,"12", "#555555",$Link,"1");
+					return;
+				}
+			   //分工
+                $codeA=returnDataArray( $MainPlanData,1,$plansArray[3] );//取得主資料array
+			    if($codeA==null)return;
+				$y=($StartY+90+$codeA[4]*20);
+				$Link=$BackURL."&PhpInputType=DrawEditPlanType&Ecode=".$plansArray[1];
+				$color=$colorCodes[9][0];
+			    for($i=0;$i<count($SelectType_2);$i++){
+				 
+					if($SelectType_2[$i]==$plan_type){
+						$c=$i%8;
+						$color=$colorCodes[9][$c];
+						   if($plansArray[7]=="已完成")	$color=$colorCodes[10][$i];
+					}
+				}
+				$realDays= $workDays;
+				$workDays=$plansArray[6] ;
+                if($workDays>=1)	{
+				$realDays=ReturnWorkDaysV2($startDay[0],$startDay[1],$startDay[2],$plansArray[6],$VacationDays);
+				}
+			    $w= $OneDayWidth*$realDays;
+				if($realDays<1)$w=8;
+				$NameBackAdd="[".$workDays."][".$plansArray[9]."]";
+				if($plansArray[9]=="" or $plansArray[9]=="未定義"){
+							$NameBackAdd="[".$workDays."][".$plansArray[8]."]";
+							if($plansArray[7]=="" or $plansArray[7]=="未定義") 
+								$NameBackAdd="[?][".$plansArray[8]."]";
+				}
+                DrawLinkRectAutoLength($NameAdd.">".$plan_type.$NameBackAdd,"10","#000000",$x, $y,$w ,"16", $color,$Link,"1");
+				//jilar
+				if($plansArray[12]!=$codeA[12] && $plansArray[12]!=""){
+				        $JilaLink="http://bzbfzjira.iggcn.com/browse/FP-".$plansArray[12]  ;
+					    DrawLinkRect_newtab($plansArray[12],"8","#000000",$x+5, $y+10,"20" ,"8", $colorCodes[0][3],$JilaLink,"0" );
+					}
+				
+				//狀態圖
+			    DrawStatePics($plansArray,$x,$y,$realDays);
+	  }
+	  function DrawStatePicsB($plansArray,$x,$y,$realDays,$Link){
+		  		 global $OutsData,$memberData;
+				 $pic="";
+			     if($plansArray[7]=="" or $plansArray[7]=="未定義")$pic="Pics/question";
+				 if($plansArray[7]=="已完成")$pic="Pics/finish";
+				 if($plansArray[7]=="進行中")$pic="Pics/construction";
+				 //狀態問題
+				  $startDayArray=explode("_",$plansArray[2]);
+				  $nowDayArray=array(date(Y),date(m),date(d));
+				  if($realDays<1)$realDays=1;
+				  $passDays= getPassDays($startDayArray,$nowDayArray);
+	              if($passDays>=$realDays && $plansArray[7]!="已完成"){
+					 $pic="Pics/warring.gif";
+				  }
+				  if( $pic!="")
+			      //DrawPosPic($pic, $y,$x-6,16,16,"absolute" );
+			       DrawLinkPic($pic,$y,$x-6,16,16,$Link);
+	  }  
 
 ?>
