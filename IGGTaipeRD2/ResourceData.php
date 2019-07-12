@@ -143,28 +143,7 @@
 	          for($i=2;$i<(count($Lists)-1);$i++){
 				  if($i<5 ) DrawRect($tableData[$i] ,12,"#000000",$rect[0],$rect[1],$ListSize[$i],$rect[3],$milecolor);
 				  if($i>4) DrawTypeArea($rect,$Lists[$i],$planCode,$GDcode);
-				  /*
-				  echo ">".$Lists[$i];
-			     switch($Lists[$i]){
-				       case "企劃編碼":
-					   DrawRect($tableData[$i] ,12,"#000000",$rect[0],$rect[1],$ListSize[$i],$rect[3],$milecolor);
-					   break;
-				       case "中文名":
-					   DrawRect($tableData[$i] ,12,"#000000",$rect[0],$rect[1],$ListSize[$i],$rect[3],$milecolor);
-					   break;	
-				       case "英文名":
-					   DrawRect($tableData[$i] ,12,"#000000",$rect[0],$rect[1],$ListSize[$i],$rect[3],$milecolor);
-					   break;
-					   case "設定":
-					   //DrawTypeArea($rect,"設定",$planCode,$GDcode);
-					   case "建模":
-					   DrawTypeArea($rect,"建模",$planCode,$GDcode);
-					   break;
-					   case "動作":
-					   DrawTypeArea($rect,"動作",$planCode,$GDcode);
-					   break;
-				 }
-				 */
+ 
 			     $rect[0]+=$ListSize[$i]+5;
 			 }
 	}
@@ -222,6 +201,12 @@
 				 return "#aaffaa";
 				 case "未製作":
 				 return "#cccc88";
+				 case "未定義":
+				 return "#ddaa77";
+				 case "":
+				 return "#ddcc88";
+				 case "已排程":
+				 return "#ffaa77";
 		     }
 			 return "#000000";
 	}
