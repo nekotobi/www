@@ -784,34 +784,6 @@
 				    echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 		      	// echo $stmt;
 	 }
-	 function UpFiles($datas,$gdnamet){
-			   $gdname=trim($gdnamet);
-			   $typepath=returnResDirbyGDname($gdname);
-		       if($typepath=="")return;
-			   $Gd=substr($gdname, 0, 5);
-			   $temp = explode(".", $_FILES["file"]["name"]);
-			   if($temp[1]=="")return;
-			   $dirs=returntypeDir($datas[5]);
-			   if($dirs=="")return;
-			   for($i=0;$i<count($dirs);$i++){
-				   $ex=$temp[1];
-				   if($i>0)$ex="png";
-				   $path[$i]="ResourceData/". $typepath."/".$dirs[$i]."/".$Gd.".".$ex;
-				   if($i==0){
-				     move_uploaded_file($_FILES["file"]["tmp_name"], $path[0]);  
-				   }
-				   if($i==1){
-				     $cmd="convert      $path[0]    -flatten   $path[1] ";
-					   exec($cmd);
-				   }
-				   if($i==2){
-				     $cmd="convert      $path[1]    -flatten -resize 128  $path[2] ";
-					   exec($cmd);
-				   }
-			   }
- 
-			 
-	 }
      function AddTypeData( ){
 		       global $data_library,$tableName;
 			   global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1;
