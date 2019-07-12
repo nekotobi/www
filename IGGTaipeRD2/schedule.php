@@ -72,7 +72,6 @@
 				$sTypeTmp= getMysqlDataArray("scheduletype");	
 				$SelectType_1tmp= filterArray($sTypeTmp ,0,"data");
 				$SelectType_1sort=sortArrays($SelectType_1tmp ,5 ,"true");
-				
 			    $SelectType_1=   returnArraybySort($SelectType_1sort,2);
 				//
 			    $SelectType_2tmp= filterArray($sTypeTmp ,0,"data2");
@@ -221,12 +220,11 @@
 				   //M底色
 				   $BgColor="#555555";
 				   $milestonepic=$plansLine[$i][15];
-				   
 				   if($milestonepic!=""){
 					     $add="　　　　";
-					    $n=substr($plansLine[$i][15], 1, 1);
+					     $n=substr($plansLine[$i][15], 1, 1);
 						 $BgColor=$colorCodes[11][$n];
-					    $milecolor=$colorCodes[10][$n];
+					     $milecolor=$colorCodes[10][$n];
 				   }
 				   $info=$add.$plansLine[$i][3];//."[".count($plansLinet)."]";
 				   $pic="Pics/triangleLeft.png";
@@ -273,7 +271,6 @@
 			       DrawRect_Layer("",1,"#000000",array($x,$y+10,2,count($plansLine)*20),"#444444",-11);
 			   }
 			   for($i=0;$i<count($plansLine);$i++){
-
 				    $BgColor= GetBarColor($plansLine[$i][5],$plansLine[$i][7]);
 				    $Rect=returnRect($plansLine[$i] ,$yAddLnie,$yAddStartLine);
 					$Rect[1]=$y;
@@ -284,7 +281,7 @@
 				    $Layer= $i-count($plansLine);
 					$Link=$BackURL."&PhpInputType=DrawEditPlanType&Ecode=".$plansLine[$i][1];
 					if($Exp=="true") 
-					   	DrawRect_Layer("",1,"#000000",array($x,$Rect[1]+10,$length,1),"#444444",-12);
+					 	DrawRect_Layer("",1,"#000000",array($x,$Rect[1]+10,$length,1),"#444444",-12);
 				    DrawRect_Layer( "",10,"#000000",$Rect,$BgColor ,$Layer);
                     $w=311;
 					DrawText_Layer( $info,$Rect[0],$Rect[1],$w ,11,11,"#000000",$Layer);
@@ -294,7 +291,6 @@
 
 			   }
 	  }
-
       function getRealDay($SinglePlanData){
 	  	       global $VacationDays;
 			   $startDay=explode("_",$SinglePlanData[2]);
