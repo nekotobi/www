@@ -51,7 +51,6 @@
 			  for($i=0;$i<count($YearRange);$i++){
 			     $VacationDays=  getMonthVacationDays($YearRange[$i],$MonthRange[$i],$VacationDays);
 			  }
- 
 	          return  $VacationDays;
 	  }
        function getMonthVacationDays($y,$m,$VacationDays){
@@ -127,5 +126,5 @@
 		  }
 		  return  $new_day%7;
 	   }
-
+   
 ?>

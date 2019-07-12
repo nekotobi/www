@@ -8,14 +8,18 @@
     include('PubApi.php');
 	include('mysqlApi.php');
     include('scheduleApi.php');
-	 include('CalendarApi.php');  
+	include('CalendarApi.php');  
 	DefineData();
 	DefineDate();
 	DrawMainUI();
+	
+	SynchronizeButon();
+	if($isSynchronize=="true")return;
 	DrawType();
 	DrawList();
 	DrawEdit();
 	upFile();
+	
 ?>
 <?php //主繪製區
     function DefineData(){
@@ -27,7 +31,7 @@
 		if($Stype_2=="")$Stype_2=0;
 	    //資料庫
       	global $tableName,$data_library, $typeData,$typeData2; 
-		global $ScheduleData,$mainData;
+		global $ScheduleData,$mainData,$mainDatatType,$mainDataBase;
 		
 		$data_library= "iggtaiperd2";
 		$tableName="fpresdata";//"fpschedule";
@@ -42,17 +46,18 @@
 	    $mt2=filterArray($mt,0,"milestone"); 
 	    $milestoneSelect=returnArraybySort($mt2,2);
 		
-		$mainDatat= getMysqlDataArray($tableName); 
-	    $mainDatat2=filterArray($mainDatat,0,$typeDatacode[$Stype_1]);
-		$mainData=GetMileStone($mainDatat2,$milestoneSelect[$Stype_2]);
+		$mainDataBase= getMysqlDataArray($tableName);
+		
+	    $mainDatatType=filterArray($mainDataBase,0,$typeDatacode[$Stype_1]);
+		$mainData=GetMileStone($mainDatatType,$milestoneSelect[$Stype_2]);
 		
 		//表單
 		global $Lists,$ListSize ;
 		
 		$ty=$typeDatacode[$Stype_1]."_type";
-        $Listst=filterArray($mainDatat,0,$ty);
+        $Listst=filterArray($mainDataBase,0,$ty);
 		$Lists= $Listst[0];
-        $ListSizet=filterArray($mainDatat,0,"size");
+        $ListSizet=filterArray($mainDataBase,0,"size");
 	    $ListSize=$ListSizet[0];
  
 		//尺寸
@@ -67,7 +72,6 @@
 			SetCalendarRange( date(Y),date(m));
             $VacationDays=    getVacationDays($YearRange,$MonthRange)	;
 	}
-	
     function DrawMainUI(){
 	    //主頁
 	    //DrawRect("FP資源索引","22","#ffffff","20","20","1200","30","#000000");
@@ -111,8 +115,7 @@
 			     DrawLinkRect($Lists[$i],12,"#ffffff",$x,$y,$w,$h,$BgColor,$Link,"1");
 				 $x+=$ListSize[$i]+5;
 			}
-	}
-	
+	}	
 	function DrawList(){
 	          global $ScheduleData,$mainData;
 			  global $Lists,$ListSize;
@@ -130,7 +133,6 @@
 			 global $colorCodes;
 		     $BgColor="#cccccc";
 			 $GDcode=$tableData[2];
-		 
  	         if($tableData["mileston"]!=""){
 			        $n=substr($tableData["mileston"], 1, 1);
 			        $rootBgColor=$colorCodes[11][$n];
@@ -139,22 +141,20 @@
 				    DrawRect($tableData["mileston"],12,"#000000",$rect[0]-37,$rect[1]+12,32,$rect[3]-20, $milecolor);
 			  }
 			  $planCode=$tableData[PlanCode];
-			  
 	          for($i=2;$i<(count($Lists)-1);$i++){
 				  if($i<5 ) DrawRect($tableData[$i] ,12,"#000000",$rect[0],$rect[1],$ListSize[$i],$rect[3],$milecolor);
 				  if($i>4) DrawTypeArea($rect,$Lists[$i],$planCode,$GDcode);
- 
-			     $rect[0]+=$ListSize[$i]+5;
+			      $rect[0]+=$ListSize[$i]+5;
 			 }
 	}
 	function DrawTypeArea($rect,$type,$planCode,$GDcode){
+		               if($type=="")return;
 			           global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
 		               global $ListSize;
 	                   $h=$rect[3]/2;
 					   $y=$rect[1]+$h;
 				       $x=$rect[0];
 					   $w=$ListSize[2];
-					    //echo $w;
 					   $state= findCodeAndState($planCode,$type );// 0狀態 1工作開始 2工作結束日 3外包 4百分比
 				       if(count($state)==0)return;
 	                   $worker="未定義";
@@ -171,7 +171,7 @@
 						  DrawLinkRect( $state[0],12,"#000000",$x,$y,$w,$h,getColor($state[0]),$Link,"");
 					   }
 					   if($state[4]!=0){ 
-							   $w2=$w*$state[4];
+						 	   $w2=$w*$state[4];
 							   $recta=$rect;
 							   $recta[1]=$y;
 							   $recta[3]=$h;
@@ -185,7 +185,7 @@
 							   }
 							   DrawProgress($msg,$per,$recta,$colors,"11");
 						 }
-					    if( file_exists( $filePaths[2])){
+					   if( file_exists( $filePaths[2])){
 					       DrawLinkPic($filePaths[2], $rect[1],$rect[0],$rect[3],$rect[3],$filePaths[1]);
 						   DrawRect( $info ,12,"#000000",$rect[0]+$rect[3],$rect[1],$ListSize[$i]-+$rect[3],$rect[3],getColor($state));
 						   $rect[0]+=$ListSize[$i]/2;
@@ -193,26 +193,7 @@
 					   }  
 				
 	}
-	function getColor($state){
-	         switch($state){
-				 case "已完成":
-				 return "#bbaabb";
-				 case "進行中":
-				 return "#aaffaa";
-				 case "未製作":
-				 return "#cccc88";
-				 case "未定義":
-				 return "#ddaa77";
-				 case "":
-				 return "#ddcc88";
-				 case "已排程":
-				 return "#ffaa77";
-		     }
-			 return "#000000";
-	}
-	
 ?>
- 
 <?php //資料處理
        function GetMainPlanCodeMile($GDCode){ //比對物件名稱包含GDCode 回傳文件編碼
 	            global $ScheduleData;
@@ -226,21 +207,23 @@
 				return -1;
 	   }
 	   function GetMileStone($mainData,$fillerMilestone){
-		        //echo $fillerMilestone;
 				$reArray= array();
 	            for($i=0;$i<count($mainData);$i++){
-			        $tmp=	GetMainPlanCodeMile($mainData[$i][2]);
-					if($tmp[mileston]==$fillerMilestone or $fillerMilestone=="m1"){
-					 $mainData[$i][11]=$tmp[mileston];
-					 $mainData[$i][PlanCode]=$tmp[code];
-				     $mainData[$i][mileston]=$tmp[mileston];
+					if($mainData[$i][1]!="" or $mainData[$i][1]!=$mainData[$i][1]){
+					   $mainData[$i][PlanCode]=$mainData[$i][1];
+					   $mainData[$i][mileston]=$mainData[$i][11];
+					}else{
+					  $tmp=	GetMainPlanCodeMile($mainData[$i][2]);
+					  $mainData[$i][PlanCode]=$tmp[code];
+				      $mainData[$i][mileston]=$tmp[mileston];
+					}
+					if( $mainData[$i][mileston]==$fillerMilestone or $fillerMilestone=="m1"){
 				   	 array_push( $reArray,$mainData[$i]);
 					}
 				   
 				}
 				return $reArray;
 	   }
-
        function getListScheduleData(){
 	            global $ScheduleData,$mainData;
 	            for($i=0;$i<count($mainData);$i++){
@@ -260,8 +243,7 @@
 				    }
 				}
 				return -1;
-	   }
-	   
+	   }	   
 	   function findCodeAndState( $code ,$type ){ //比對文件編碼 工作類別回傳 0狀態 1工作開始 2工作結束日 3外包 4百分比
 	             global $ScheduleData;
 		         for($i=0;$i<count($ScheduleData);$i++){
@@ -270,6 +252,7 @@
 						if($ScheduleData[$i][7]=="進行中") $percentage=	getprogress($ScheduleData[$i][2],$ScheduleData[$i][6]);
 					    $principal= $ScheduleData[$i][9];
 						if($ScheduleData[$i][9]=="" or $ScheduleData[$i][9]=="未定義")$principal=$ScheduleData[$i][8];
+ 
 						return array($ScheduleData[$i][7],$ScheduleData[$i][2],$ScheduleData[$i][6],  $principal,$percentage);
 					}
 				 }
@@ -281,11 +264,80 @@
 			    $nowDayArray=array(date(Y),date(m),date(d));
 				$passDays= getPassDays($startDay,$nowDayArray);
 			    $realDays=ReturnWorkDaysV2($startDay[0],$startDay[1],$startDay[2],$workDays,$VacationDays);
-		     	//echo "[".$passDays."/".$realDays."=".($passDays / $realDays);
-				return (($passDays-1) / $realDays);
+				return   $passDays   / ($realDays+1);
 				 
 	   }
+	   function getColor($state){
+	         switch($state){
+				 case "已完成":
+				 return "#bbaabb";
+				 case "進行中":
+				 return "#77aa77";
+				 case "未製作":
+				 return "#cccc88";
+				 case "未定義":
+				 return "#555555";
+				 case "":
+				 return "#555555";
+				 case "已排程":
+				 return "#77aa77";
+		     }
+			 return "#000000";
+	}
 ?>
+<?php //資料最佳化
+      function SynchronizeButon(){
+	           global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType ,$typeData; 
+		       $BaseURL="ResourceData.php";
+		       $BackURL= $BaseURL."?Stype_1=".$Stype_1."&Stype_2=".$Stype_2;
+			   $Link=$BackURL."&isSynchronize=true";
+			   $x=1300;
+			   $y=10;
+			   $w=100;
+			   $h=20;
+			   DrawLinkRect("同步",10,"#ffffff",$x,$y,$w,$h,"#000000",$Link,$border);
+			   SynchronizeData( );
+	  }
+      function SynchronizeData( ){
+		      global $isSynchronize;
+		      if($isSynchronize=="")return;
+		      global $ScheduleData,$mainDataBase;
+			  global $Lists;
+			  echo "</br>";
+			  echo "</br>";
+			  echo "</br>".$type;
+              ;
+			  for($i=0;$i<count($mainDataBase);$i++){
+			    upmainData($mainDataBase[$i]);
+				 
+			  }
+	  }
+	  function upmainData($mainDataBaseS){
+	             echo "</br>";
+				 $ar=  GetMainPlanCodeMile( $mainDataBaseS[2]);
+			     $WHEREtable=array( "gdcode", "name_chinese" );
+		         $WHEREData=array(  $mainDataBaseS[2], $mainDataBaseS[3] );
+				 $BaseName="code";
+				 $Upvalue=$ar[code];
+				 Updata($WHEREtable,$WHEREData,$BaseName,$Upvalue);
+				 //milestone
+				 $BaseName="mileStone";
+				 $Upvalue=$ar[mileston];
+				 Updata($WHEREtable,$WHEREData,$BaseName,$Upvalue);
+	  }
+	  
+      function Updata($WHEREtable,$WHEREData,$BaseName,$Upvalue){
+	           global $data_library,$tableName;
+			   $Base=array($BaseName);
+			   $up=array($Upvalue);
+			   $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
+			   echo  $stmt;
+               SendCommand($stmt,$data_library);			   
+	  }
+    
+
+?>
+
 <?php //up
       function upFile(){
 		       global $submit;
@@ -327,7 +379,7 @@
 
 	}
 ?>
-<?php
+<?php //back
 	   /*
 					   $state=findState($GDcode,"設定");
 					   $filePaths=getResfilePath($GDcode,"設定");
