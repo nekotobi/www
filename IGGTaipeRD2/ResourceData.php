@@ -139,7 +139,12 @@
 				    DrawRect($tableData["mileston"],12,"#000000",$rect[0]-37,$rect[1]+12,32,$rect[3]-20, $milecolor);
 			  }
 			  $planCode=$tableData[PlanCode];
-	          for($i=2;$i<count($Lists);$i++){
+			  
+	          for($i=2;$i<(count($Lists)-1);$i++){
+				  if($i<5 ) DrawRect($tableData[$i] ,12,"#000000",$rect[0],$rect[1],$ListSize[$i],$rect[3],$milecolor);
+				  if($i>4) DrawTypeArea($rect,$Lists[$i],$planCode,$GDcode);
+				  /*
+				  echo ">".$Lists[$i];
 			     switch($Lists[$i]){
 				       case "企劃編碼":
 					   DrawRect($tableData[$i] ,12,"#000000",$rect[0],$rect[1],$ListSize[$i],$rect[3],$milecolor);
@@ -151,11 +156,15 @@
 					   DrawRect($tableData[$i] ,12,"#000000",$rect[0],$rect[1],$ListSize[$i],$rect[3],$milecolor);
 					   break;
 					   case "設定":
-					 
-					   DrawTypeArea($rect,"設定",$planCode,$GDcode);
+					   //DrawTypeArea($rect,"設定",$planCode,$GDcode);
+					   case "建模":
+					   DrawTypeArea($rect,"建模",$planCode,$GDcode);
 					   break;
-					   
+					   case "動作":
+					   DrawTypeArea($rect,"動作",$planCode,$GDcode);
+					   break;
 				 }
+				 */
 			     $rect[0]+=$ListSize[$i]+5;
 			 }
 	}
@@ -181,7 +190,6 @@
 					   if($state[4]==0){
 						  $Link=$BackURL."&Edit=".$GDcode."&Etype=".$type;
 						  DrawLinkRect( $state[0],12,"#000000",$x,$y,$w,$h,getColor($state[0]),$Link,"");
-					//	  DrawRect( $state[0] ,12,"#000000",$x,$y,$w,$h,getColor($state[0]));//完成狀況
 					   }
 					   if($state[4]!=0){ 
 							   $w2=$w*$state[4];
@@ -204,43 +212,7 @@
 						   $rect[0]+=$ListSize[$i]/2;
 						   $w/=2;
 					   }  
-					   /*
-					   $state=findState($GDcode,"設定");
-					   $filePaths=getResfilePath($GDcode,"設定");
-					   $info="null";
-					   $w=$ListSize[$i];
-					   $worker="未定義";
-					   if(count($state)>1){
-					      $info=$state[0];
-						  $worker=$state[3];
-					   }
-					   if( file_exists( $filePaths[2])){
-					       DrawLinkPic($filePaths[2], $rect[1],$rect[0],$rect[3],$rect[3],$filePaths[1]);
-						   DrawRect( $info ,12,"#000000",$rect[0]+$rect[3],$rect[1],$ListSize[$i]-+$rect[3],$rect[3],getColor($state));
-						   $rect[0]+=$ListSize[$i]/2;
-						   $w/=2;
-					   }  // 0狀態 1工作開始 2工作結束日 3外包 4百分比
-					     DrawRect( $worker ,12,"#ffffff",$rect[0],$rect[1],$w,$h,"#666666" );//繪師
-					    if($state[4]==0){
-						   DrawRect( $info ,12,"#000000",$rect[0],$y,$w,$h,getColor($state[0]));//完成狀況
-						  }else{
-							   $w2=$w*$state[4];
-							   $recta=$rect;
-							   $recta[1]=$y;
-							   $recta[3]=$h;
-							   $msg=$info."..(".floor($state[4]*100)."%)";
-							   $colors=array("#77aa77","#88ff88","#000000");
-							   $per=$state[4];
-							   if($per>1){
-								   $msg="延誤中..(".floor($state[4]*100)."%)";
-								   $per=1;
-						       $colors=array("#ffaa77","#ff8888","#000000");
-							   }
-							   DrawProgress($msg,$per,$recta,$colors,"11");
-						 
-						   }
-	
-	               */
+				
 	}
 	function getColor($state){
 	         switch($state){
@@ -324,8 +296,8 @@
 			    $nowDayArray=array(date(Y),date(m),date(d));
 				$passDays= getPassDays($startDay,$nowDayArray);
 			    $realDays=ReturnWorkDaysV2($startDay[0],$startDay[1],$startDay[2],$workDays,$VacationDays);
-			//	echo ">".($passDays / $realDays);
-				return ($passDays / $realDays);
+		     	//echo "[".$passDays."/".$realDays."=".($passDays / $realDays);
+				return (($passDays-1) / $realDays);
 				 
 	   }
 ?>
@@ -371,6 +343,43 @@
 	}
 ?>
 <?php
+	   /*
+					   $state=findState($GDcode,"設定");
+					   $filePaths=getResfilePath($GDcode,"設定");
+					   $info="null";
+					   $w=$ListSize[$i];
+					   $worker="未定義";
+					   if(count($state)>1){
+					      $info=$state[0];
+						  $worker=$state[3];
+					   }
+					   if( file_exists( $filePaths[2])){
+					       DrawLinkPic($filePaths[2], $rect[1],$rect[0],$rect[3],$rect[3],$filePaths[1]);
+						   DrawRect( $info ,12,"#000000",$rect[0]+$rect[3],$rect[1],$ListSize[$i]-+$rect[3],$rect[3],getColor($state));
+						   $rect[0]+=$ListSize[$i]/2;
+						   $w/=2;
+					   }  // 0狀態 1工作開始 2工作結束日 3外包 4百分比
+					     DrawRect( $worker ,12,"#ffffff",$rect[0],$rect[1],$w,$h,"#666666" );//繪師
+					    if($state[4]==0){
+						   DrawRect( $info ,12,"#000000",$rect[0],$y,$w,$h,getColor($state[0]));//完成狀況
+						  }else{
+							   $w2=$w*$state[4];
+							   $recta=$rect;
+							   $recta[1]=$y;
+							   $recta[3]=$h;
+							   $msg=$info."..(".floor($state[4]*100)."%)";
+							   $colors=array("#77aa77","#88ff88","#000000");
+							   $per=$state[4];
+							   if($per>1){
+								   $msg="延誤中..(".floor($state[4]*100)."%)";
+								   $per=1;
+						       $colors=array("#ffaa77","#ff8888","#000000");
+							   }
+							   DrawProgress($msg,$per,$recta,$colors,"11");
+						 
+						   }
+	
+	               */
 	   /*
        function findState($GDsn,$type){
 	            global $ScheduleData,$mainData;
