@@ -12,9 +12,9 @@
 	DefineData();
 	DefineDate();
 	DrawMainUI();
-	
-	SynchronizeButon();
-	if($isSynchronize=="true")return;
+
+	//SynchronizeButon();
+	//if($isSynchronize=="true")return;
 	DrawType();
 	DrawList();
 	DrawEdit();
@@ -341,11 +341,13 @@
 <?php //up
       function upFile(){
 		       global $submit;
+			//   echo "xx".$submit;
+			   global $BackURL;
 	           if ($submit=="")return;
 			   global $Ecode,$Etype;
 			   global $file;
 			   UpFiles_Res($Etype,$Ecode,$file);
- 
+           echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	  }
 
 ?>

@@ -222,14 +222,18 @@
      function returnResDirbyGDname($gdname){
 			  $type=substr($gdname, 0, 1);
 			  $typepath="";
+ 
 	          switch ($type){
 			         case "h":
 					  $typepath="hero";
 					 break;
-			         case "m":
-					  $typepath="summon";
+					  case "b":
+					 $typepath="boss";
 					 break;
-					 case "m":
+			         case "m":
+					 $typepath="mob";
+					 break;
+					 case "s":
 					 $typepath="summon";
 					 break;
 			   }
@@ -256,14 +260,16 @@
 ?>
 
 <?php //上傳檔案
-	 function  UpFiles_Res($Etype,$Ecode){
+	 function  UpFiles_Res($Etype,$Ecode,$file){
 			   $gdname=trim($Ecode);
 			   $typepath=returnResDirbyGDname($gdname);
+			
 		       if($typepath=="")return;
 			   $Gd=substr($gdname, 0, 5);
 			   $temp = explode(".", $_FILES["file"]["name"]);
 			   if($temp[1]=="")return;
 			   $dirs=returntypeDir($Etype);
+			   echo $dirs[0];
 			   if($dirs=="")return;
 			   for($i=0;$i<count($dirs);$i++){
 				   $ex=$temp[1];
