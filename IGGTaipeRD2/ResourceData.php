@@ -32,7 +32,6 @@
 	    //資料庫
       	global $tableName,$data_library, $typeData,$typeData2; 
 		global $ScheduleData,$mainData,$mainDatatType,$mainDataBase;
-		
 		$data_library= "iggtaiperd2";
 		$tableName="fpresdata";//"fpschedule";
 		$stmp= getMysqlDataArray("fpschedule");	
@@ -41,6 +40,7 @@
 	    $typeDatat2=  filterArray($typeDatat,0,"ResType");
 		$typeData= returnArraybySort($typeDatat2,2);
         $typeDatacode= returnArraybySort($typeDatat2,4);
+		
 	    global $milestoneSelect;
 		$mt=getMysqlDataArray( "scheduletype"); 
 	    $mt2=filterArray($mt,0,"milestone"); 
@@ -281,6 +281,10 @@
 				 return "#555555";
 				 case "已排程":
 				 return "#77aa77";
+				 case  "暫停":
+				 return "#ffaa77";
+				  case "待優化":
+				 return "#ffaa77";
 		     }
 			 return "#000000";
 	}
