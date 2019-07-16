@@ -85,6 +85,7 @@
 	    	  global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2;
 			  global $colorCodes;
 			  global $CheckState;
+			  global $sort;
 			  $y=$StartY+10;
 			  $x=120;
 	          for ($i=0;$i<count( $SelectType_1);$i++){
@@ -105,7 +106,7 @@
 				   if($Stype_2==$i and  $Stype_2!="")$color= "#cc2212";
 			       DrawLinkRect($msg,"10","#ffffff",$x,$y,"60","14",$color,$BackURL2,1);
 				   DrawLinkRect("▼","10","#ffffff",$x+30,$y,"10","14",$color,$BackURL2."&sort=User",1);
-				   DrawLinkRect("▸","10","#ffffff",$x+40,$y,"10","14",$color,$BackURL2."&E=Out",1);
+				   DrawLinkRect("▸","10","#ffffff",$x+40,$y,"10","14",$color,$BackURL2."&E=Out&sort=".$sort,1);
 				   $x+=66;
 			  }
 	 }
