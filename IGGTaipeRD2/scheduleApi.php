@@ -337,25 +337,41 @@
 		 array_multisort($score, SORT_ASC, $BaseData);
 		 return $BaseData;
 	 }
-     
+     function SortbyUser($BaseData,$users){
+		  $sortUsers=array();
+		  for($i=0;$i<count($users);$i++){
+			//  echo $i."=". $users[$i][user];
+			  $u=trim($users[$i][user]);
+			
+		       for($j=0;$j<count($BaseData);$j++){
+				     $ch=0;
+				   if($BaseData[$j][8]== $u) $ch=1;
+				   if($BaseData[$j][9]== $u) $ch=1;
+				    if($ch==1)array_push( $sortUsers,$BaseData[$j]);
+			   }
+			 
+		  }
+		  return $sortUsers;
+	 }
+	  
 	 function collectUser($planeDatas){
 		  $users=array();
           global $colorCodes;
-		  
 		  $c=0;
 	      for($i=0;$i<count($planeDatas);$i++){
-			  $u="";
-		    // if (!in_array($planeDatas[$i][8], $users)) $u=$planeDatas[$i][8];
-			  if (!in_array($planeDatas[$i][9], $users)) $u=$planeDatas[$i][9]; 
-			  if($u!=""){
-				  $n=$c%count($colorCodes[10]);
-				  $ar=array("user"=>$u,"Color"=>($colorCodes[10][$n]));
-			      array_push($users,$ar); 
-				  $c+=1;
-			  }
- 
+			  $out=trim($planeDatas[$i][9]);
+			  if(in_array($out, $users)) $out="";
+			  if($out!="")array_push($users,$out); 
 		  }
-	      return $users;
+		  $usersf=array();
+		   for($i=0;$i<count($users);$i++){
+		          $ar=array("user"=> $users[$i],"Color"=>(getRandoColor(65,70)));
+				    array_push($usersf,$ar); 
+				  
+		   }
+			   
+		  
+	      return $usersf;
 	 }
      function getUserColors($planeData,$users){
 		 if($planeData[9]=="" or $planeData[9]=="未定義")	  return "#ff5555";
@@ -365,5 +381,13 @@
 		      }
 			  return "#ff5555";
 	 }
- 
+     function getRandoColor($s,$e){
+	          $str="#";
+			  for($i=0;$i<6;$i++){
+			      $c=rand($s,$e);
+				   $b=chr($c);
+				  $str=$str.$b;
+			  }
+			  return $str;
+	 }
 ?>

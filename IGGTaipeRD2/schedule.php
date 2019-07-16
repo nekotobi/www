@@ -21,7 +21,7 @@
 	 DrawTypeCont();//判斷印出內容
 	 CheckinputType_v2();//判斷輸入
 	 global   $BaseURL;
-     DrawMembersLinkArea_Simple( 30, 6,  $BaseURL); 
+      DrawMembersLinkArea_Simple( 30, 6,  $BaseURL); 
      DrawOutLinkArea(30,52,$BaseURL);
 	 DrawUserData( 1120, 5);   //使用者資料(PubApi)
 	 DrawMemo();//臨時紀錄
@@ -103,9 +103,10 @@
 				   $msg=" ".$SelectType_2[$i];
 				   $color= "#222222";
 				   if($Stype_2==$i and  $Stype_2!="")$color= "#cc2212";
-			       DrawLinkRect($msg,"10","#ffffff",$x,$y,"40","14",$color,$BackURL2,1);
-				   DrawLinkRect("▸","10","#ffffff",$x+30,$y,"10","14",$color,$BackURL2."&E=Out",1);
-				   $x+=50;
+			       DrawLinkRect($msg,"10","#ffffff",$x,$y,"60","14",$color,$BackURL2,1);
+				   DrawLinkRect("▼","10","#ffffff",$x+30,$y,"10","14",$color,$BackURL2."&sort=User",1);
+				   DrawLinkRect("▸","10","#ffffff",$x+40,$y,"10","14",$color,$BackURL2."&E=Out",1);
+				   $x+=66;
 			  }
 	 }
 	 function  DrawDragHorArea($height ){//橫排區
@@ -358,7 +359,7 @@
 		      global $data_library,$tableName;
 			  global $user,$List;
 			  global $WarringDatas;
-			  global $E;
+			  global $E,$sort;
 			  global $OutsData,$memberData;
 			  $plansTmp=getMysqlDataArray($tableName); 
 			  switch ($List){
@@ -380,8 +381,10 @@
 				  break;
 		  	  }
 			  $plans= RemoveArray($plans,7,"已完成");
-		   	  $plans= SortbyDate($plans);
-			  $users=  collectUser($plans);
+			  $users= collectUser($plans);
+			  if($sort=="")  $plans= SortbyDate($plans);
+		   	  if($sort=="User")  $plans= SortbyUser($plans,$users);
+			 
               $JobsArray=array( );
 		
 			  global $formDatas;
@@ -427,7 +430,7 @@
 			   global $OutsData;
 			          $OutsData2=returnArraybySort(  $OutsData,2);
 					  global $List,$Stype_2;
-					  $BackURL=$BaseURL."?List=".$List."&Stype_2=".$Stype_2;
+					  $BackURL=$BaseURL."?List=".$List."&Stype_2=".$Stype_2."&E=Out";
 			   for($i=0;$i<count($formDatas);$i++){
 				      $size=10;
 				 
