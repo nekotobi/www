@@ -347,7 +347,7 @@
 			   global $Ecode,$Etype;
 			   global $file;
 			   UpFiles_Res($Etype,$Ecode,$file);
-           echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+               echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	  }
 
 ?>

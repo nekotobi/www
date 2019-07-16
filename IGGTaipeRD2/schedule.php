@@ -21,9 +21,9 @@
 	 DrawTypeCont();//判斷印出內容
 	 CheckinputType_v2();//判斷輸入
 	 global   $BaseURL;
-      DrawMembersLinkArea_Simple( 30, 6,  $BaseURL); 
-      DrawOutLinkArea(30,52,$BaseURL);
-	  DrawUserData( 1120, 5);   //使用者資料(PubApi)
+     DrawMembersLinkArea_Simple( 30, 6,  $BaseURL); 
+     DrawOutLinkArea(30,52,$BaseURL);
+	 DrawUserData( 1120, 5);   //使用者資料(PubApi)
 	 DrawMemo();//臨時紀錄
      DrawInsertLine( );//
 ?>
@@ -326,14 +326,15 @@
 	  }		  
       function GetBarColor($plan_type,$State){
 		       global  $colorCodes,$SelectType_2;
+	           if($State=="廢棄")	return "#888888";
 	           $color=$colorCodes[9][0];
 			    for($i=0;$i<count($SelectType_2);$i++){
 					if($SelectType_2[$i]==$plan_type){
 						$c=$i%8;
 						$color=$colorCodes[9][$c];
-						   if($State=="已完成")	$color=$colorCodes[10][$i];
+					  if($State=="已完成")	$color=$colorCodes[10][$i];
 					}
-				}
+				}	   
 				return $color;
 	  }
 ?>
@@ -706,28 +707,35 @@
 	           $t= count( $tables);
 			   $Base=array();
 			   $up=array();
-			   
+			   global $state;
+			   if($state=="廢棄"){
+				  echo "xxxxxxxx";
+				  global $type;
+				  $type=$type."_廢棄";
+			   }
 		       for($i=0;$i<$t;$i++){
 	       	       global $$tables[$i];
 				   		  $startDay=$year."_".$month."_".$day;
 				          array_push($Base,$tables[$i]);
                           array_push($up,$$tables[$i]);
-                           //echo  "</br>".$tables[$i].">".$$tables[$i];
 		       }
+			   //變更屬性
+			
+			 //  if($state=="暫停")$type=$type."_廢棄";
 			   $WHEREtable=array( "data_type", "code" );
 		       $WHEREData=array( "data",$code );
 			   if($submit=="修改計畫"){
 			    $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
                 SendCommand($stmt,$data_library);		
- 	
+ 	        
 			   }
 		       if($submit=="送出修改"){
 				   $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
-                    SendCommand($stmt,$data_library);			
+                   SendCommand($stmt,$data_library);			
 				   //上傳檔案
 				   $plansArray=returnDataArray($MainPlanData,1,$up[3]);
 				   UpFiles($up,$plansArray[3]);
- 
+                   echo $stmt;
 			      
 			   }   
 			   if($submit=="刪除計畫"){
