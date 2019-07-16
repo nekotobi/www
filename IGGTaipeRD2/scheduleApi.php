@@ -318,7 +318,7 @@
 ?>
 
 
-<?php
+<?php  //
      function SortbyDate($BaseData){
 		 global $daysLoc;
 		 $sortLocs=array();
@@ -336,6 +336,34 @@
                   }
 		 array_multisort($score, SORT_ASC, $BaseData);
 		 return $BaseData;
+	 }
+     
+	 function collectUser($planeDatas){
+		  $users=array();
+          global $colorCodes;
+		  
+		  $c=0;
+	      for($i=0;$i<count($planeDatas);$i++){
+			  $u="";
+		    // if (!in_array($planeDatas[$i][8], $users)) $u=$planeDatas[$i][8];
+			  if (!in_array($planeDatas[$i][9], $users)) $u=$planeDatas[$i][9]; 
+			  if($u!=""){
+				  $n=$c%count($colorCodes[10]);
+				  $ar=array("user"=>$u,"Color"=>($colorCodes[10][$n]));
+			      array_push($users,$ar); 
+				  $c+=1;
+			  }
+ 
+		  }
+	      return $users;
+	 }
+     function getUserColors($planeData,$users){
+		 if($planeData[9]=="" or $planeData[9]=="未定義")	  return "#ff5555";
+		      for($i=0;$i<count($users);$i++){
+			       if($planeData[9]==$users[$i][user])return $users[$i][Color];
+				//  if($planeData[8]==$users[$i][user])return $users[$i][Color];  
+		      }
+			  return "#ff5555";
 	 }
  
 ?>

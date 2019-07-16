@@ -340,7 +340,8 @@
 <?php   //php表格用
 	   function MakeSelectionV2($items,$selectItem,$selectName,$size){
 		    $selectItemf=trim(  $selectItem);
-	        $seletProject= "<select  style=width:100px; name=".$selectName."   >";
+	        //$seletProject= "<select   style=width:100px; height:".$size."px;  name=".$selectName."    >";
+			  $seletProject= "<select  class=form-control  style=font-size:".$size."px; color: red;  id=".$selectName."  name=".$selectName."  >";
 			$seletProject=$seletProject."<option value=未定義 >未定義</option>";
 			for($i=0;$i<count($items);$i++){
 				//echo $items[$i];
@@ -354,6 +355,7 @@
 			$seletProject=$seletProject."</select>";
 	        return $seletProject;
 	   }
+ 
 	   function MakeSelection($items,$arrayNum,$selectItem,$selectName){
 		  //  echo $selectName;
 	        $seletProject= "<select  style=width:100px; name=".$selectName."   >";
@@ -554,6 +556,13 @@
  	   function DrawInputRect($msg,$fontSize,$fontColor,$x,$y,$w,$h,$BgColor,$WorldAlign,$input){ 
 	          echo "<div  style=' color:".$fontColor."; " ;
 			  echo "text-align:".$WorldAlign." ; font-weight:bolder ;font-family:Microsoft JhengHei; font-size:".$fontSize."px;";
+			  echo "position:absolute;  top:".$y."px; left:".$x."px;  width:".$w."px;height:".$h."px;  '>";
+			  echo  $msg.$input ;
+	          echo "</div>";
+	   }
+       function DrawInputRect_size($msg,$fontSize,$fontColor,$x,$y,$w,$h,$BgColor,$WorldAlign,$input){ 
+	          echo "<div  style='font-size:".$fontSize."px; color:".$fontColor."; " ;
+			  echo "text-align:".$WorldAlign." ; font-weight:bolder ;  ";
 			  echo "position:absolute;  top:".$y."px; left:".$x."px;  width:".$w."px;height:".$h."px;  '>";
 			  echo  $msg.$input ;
 	          echo "</div>";

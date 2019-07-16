@@ -28,7 +28,7 @@
      DrawInsertLine( );//
 ?>
  
-<?php  //主要資料
+<?php //主要資料
  	 function  defineData_schedule(){
 		 //基礎數值
 		 global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX,$monthLoc,$showMonthNum,$LineHeight,$LineRec ;
@@ -104,6 +104,7 @@
 				   $color= "#222222";
 				   if($Stype_2==$i and  $Stype_2!="")$color= "#cc2212";
 			       DrawLinkRect($msg,"10","#ffffff",$x,$y,"40","14",$color,$BackURL2,1);
+				   DrawLinkRect("▸","10","#ffffff",$x+30,$y,"10","14",$color,$BackURL2."&E=Out",1);
 				   $x+=50;
 			  }
 	 }
@@ -339,7 +340,6 @@
 	  }
 ?>
 <?php  //繪製計畫 
-
       function DrawTypeCont(){
 		       global $List,$SelectType_1,$Stype_1,$Stype_2 ;
 			    $type1=$SelectType_1[$Stype_1];
@@ -358,7 +358,7 @@
 		      global $data_library,$tableName;
 			  global $user,$List;
 			  global $WarringDatas;
-			  //global $memberId;
+			  global $E;
 			  global $OutsData,$memberData;
 			  $plansTmp=getMysqlDataArray($tableName); 
 			  switch ($List){
@@ -381,41 +381,67 @@
 		  	  }
 			  $plans= RemoveArray($plans,7,"已完成");
 		   	  $plans= SortbyDate($plans);
-		 
+			  $users=  collectUser($plans);
               $JobsArray=array( );
+		
+			  global $formDatas;
+			  	  $formDatas=array();
 		      for($i=0;$i<count($plans);$i++){
-				   DrawListBar($plans[$i],$i);
+				   $color= getUserColors($plans[$i],$users);
+				   DrawListBar($plans[$i],$i, $color);
+				  
 			       $color_num+=1;
 			       if( $color_num>7)$color_num=3;
 				   $codeA=returnDataArray( $plansTmp,1,$plans[$i][3]);//取得主資料array
 				   $job=$codeA[3]."[".$plans[$i][5]."][".$plans[$i][7]."]".$plans[$i][6]."天";
-				   $color="#aaaaaa";
 				   if ($plans[$i][7]=="已完成")$color="#777777";
 				   if ($plans[$i][7]=="進行中")$color="#ffccff";
 				   array_push($JobsArray,array($job,$color));
 		          }
-			
 			  DrawListInfo( $idtmp,$JobsArray);
+			 if($E=="Out") DrawChangeOutFrom( );
 	  }
-	  function DrawListBar($plansArray,$i){
+	  function DrawListBar($plansArray,$i,$color){
 		       global $colorCodes;
 			   global $VacationDays;
 			   global $StartX, $StartY,$OneDayWidth,$daysLoc,$MainPlanData,$OneDayWidth;
 			   global $BaseURL,$BackURL;
+			   global $formDatas;
 		       $startDay=explode("_",$plansArray[2]);
 			   $realDays=ReturnWorkDaysV2($startDay[0],$startDay[1],$startDay[2],$plansArray[6],$VacationDays);
 		       $d=returnDateString($startDay[0],$startDay[1],$startDay[2]);
 			   $x=RetrunXpos($daysLoc,$d);
 	           $y= $StartY+90+($i+1)*20;
+			   array_push( $formDatas,array("code"=>$plansArray[1],"out"=>$plansArray[9],"x"=>$x,"y"=>$y));
 			   $codeA=returnDataArray( $MainPlanData,1,$plansArray[3] );//取得主資料array
-			   $msg="[".$plansArray[10]."]".$plansArray[12]."_".$codeA[3].">".$plansArray[5] ;
-			   $color=$colorCodes[6][2];
-			   //$w=10* ((strlen($msg)/2));
+			   $msg="[".$plansArray[10]."[".$plansArray[9]."]".$plansArray[12]."_".$codeA[3].">".$plansArray[5] ;
 		       $w= $OneDayWidth*$realDays;
 			   $Link=$BaseURL."?PhpInputType=DrawEditPlanType&Ecode=".$plansArray[1];
 			   DrawLinkRectAutoLength( $msg,"10","#000000",$x, $y,$w ,"16", $color,$Link,"1");
 				//狀態圖
 			   DrawStatePics($plansArray,$x,$y,$realDays,$Link);
+	  }
+	  function DrawChangeOutFrom( ){
+		       global $BaseURL,$BackURL;
+			   global $formDatas;
+			   global $OutsData;
+			          $OutsData2=returnArraybySort(  $OutsData,2);
+					  global $List,$Stype_2;
+					  $BackURL=$BaseURL."?List=".$List."&Stype_2=".$Stype_2;
+			   for($i=0;$i<count($formDatas);$i++){
+				      $size=10;
+				 
+				      echo   "<form id='ChangeOut'  name='Show' action='".$BackURL."' method='post'>";
+					  echo   "<input type=hidden name=code value=".$formDatas[$i][code].">";
+					  echo   "<input type=hidden name=PhpInputType value=editOut >";
+					  echo   "<input type=hidden name=back value=".$BackURL." >";
+			          $selectTable= MakeSelectionV2($OutsData2,$formDatas[$i][out] ,"outup", $size);
+		              DrawInputRect (  "","8","#ffffff",$formDatas[$i][x]-150,$formDatas[$i][y] ,70,16, "#222222","top", $selectTable);
+					  
+				      $submitP="<input type=submit name=submit value=Up style= font-size:".$size."px; >";
+	                  DrawInputRect("",8 ,"#ffffff",$formDatas[$i][x]-40,$formDatas[$i][y] ,20,18, $colorCodes[4][2],"top",$submitP);
+				      echo   "</form>";
+			   }
 	  }
       function DrawListInfo($UserArray,$JobsArray ){
 		       global $List; 
@@ -651,12 +677,29 @@
 				case $PhpInputType=="DeleteLine":
 				      MoveLines("Delete");
 				break;
+				case $PhpInputType=="editOut":
+				      ChangeOutData();
+				break;
 		   }
 	 
 	 }
 ?>
 
 <?php  //Updata
+     function ChangeOutData(){
+		      global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
+			  global $code,$outup,$back; 
+			  global $data_library,$tableName;
+			  echo $outup;
+			  $WHEREtable=array( "data_type", "code" );
+		      $WHEREData=array( "data",$code );
+			  $Base=array("outsourcing");
+			  $up=array($outup);
+			  $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
+              SendCommand($stmt,$data_library);		
+		      echo " <script language='JavaScript'>window.location.replace('".$back."')</script>";
+	 }
+    
      function MoveLines($MoveType){
 	          global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
 			  global $LineHeight,$insertNum,$DeletNum;
@@ -681,7 +724,7 @@
 					   break; 
 				  }
 			  }
-		     echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+		      echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	 }
 	 function MoveLine($code,$Move2Line){
 		      global $data_library,$tableName;
@@ -1000,11 +1043,11 @@
      	    DrawInputRect("行數","12","#ffffff",($ex+240),$ey+70,120,18, $colorCodes[4][2],"top", $Lineinput);
 	        
 		    $types=array("工項","目標","Sprint");
-	        $select=MakeSelectionV2($types,$plansArray[5],"type",160);
+	        $select=MakeSelectionV2($types,$plansArray[5],"type",14);
 	        DrawInputRect("類型","10","#ffffff",($ex ),$ey+70,120,18, $colorCodes[4][2],"top",  $select);
 			
  	 	    //milestone
-	   	    $select2=MakeSelectionV2( $milestoneSelect,$plansArray[15],"milestone",160);
+	   	    $select2=MakeSelectionV2( $milestoneSelect,$plansArray[15],"milestone",14);
 	        DrawInputRect("Milestone","10","#ffffff",($ex ),$ey+110,120,18, $colorCodes[4][2],"top",  $select2);
 			
 		    $submitP="<input type=submit name=submit value=修改計畫>";
