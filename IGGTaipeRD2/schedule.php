@@ -996,7 +996,7 @@
      	 DrawInputRect("行數","12","#ffffff",($ex+240),$ey+70,120,18, $colorCodes[4][2],"top", $Lineinput);
 	
 		 $types=array("工項","目標","Sprint");
-	     $select=MakeSelectionV2($types,"工項","type",160);
+	     $select=MakeSelectionV2($types,"工項","type",14);
 	     DrawInputRect("類型","10","#ffffff",($ex ),$ey+70,120,18, $colorCodes[4][2],"top",  $select);
  	   
 		 
