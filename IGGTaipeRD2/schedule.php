@@ -947,7 +947,7 @@
 	     $input="<input type=text name=day value='".$startDay[2]."'  size=2>日".$plansArray[3];
 	     DrawInputRect("","14","#ffffff",($ex+130),$ey ,220,16, $colorCodes[4][2],"top",$input);
 		 //類別計畫
-	     $select=MakeSelectionV2($SelectType_2,"設定","type",140);
+	     $select=MakeSelectionV2($SelectType_2,"設定","type",14);
 	     DrawInputRect("","14","#ffffff",($ex+310 ),$ey,140,18, $colorCodes[4][2],"top",  $select."計畫");
 	     $workDayinput="<input type=text name=workingDays  value='5'  size=2   >";
 	     DrawInputRect("天數","12","#ffffff",($ex+240),$ey+40,120,18, $colorCodes[4][2],"top",$workDayinput);
