@@ -385,9 +385,7 @@
 			  $users= collectUser($plans);
 			  if($sort=="")  $plans= SortbyDate($plans);
 		   	  if($sort=="User")  $plans= SortbyUser($plans,$users);
-			 
               $JobsArray=array( );
-		
 			  global $formDatas;
 			  	  $formDatas=array();
 		      for($i=0;$i<count($plans);$i++){
@@ -397,13 +395,14 @@
 			       $color_num+=1;
 			       if( $color_num>7)$color_num=3;
 				   $codeA=returnDataArray( $plansTmp,1,$plans[$i][3]);//取得主資料array
-				   $job=$codeA[3]."[".$plans[$i][5]."][".$plans[$i][7]."]".$plans[$i][6]."天";
+				//   $job=$codeA[3]."[".$plans[$i][5]."][".$plans[$i][7]."]".$plans[$i][6]."天";
+				   $job=$plans[$i][2]."[".$codeA[3]."]";
 				   if ($plans[$i][7]=="已完成")$color="#777777";
 				   if ($plans[$i][7]=="進行中")$color="#ffccff";
-				   array_push($JobsArray,array($job,$color));
+				   array_push($JobsArray,array($job,$color ));
 		          }
 			  DrawListInfo( $idtmp,$JobsArray);
-			 if($E=="Out") DrawChangeOutFrom( );
+			  if($E=="Out") DrawChangeOutFrom( );
 	  }
 	  function DrawListBar($plansArray,$i,$color){
 		       global $colorCodes;
@@ -465,7 +464,8 @@
 			   
 	           for($i=0;$i<count( $JobsArray);$i++){
 				    $ey+=20;
-					$info=$i.".". $JobsArray[$i][0];
+					//$info=$i.".". $JobsArray[$i][0];
+					$info=  $JobsArray[$i][0];
 					$color=$JobsArray[$i][1];
 				    DrawRect($info,"11","#322222",$ex-10,$ey,240 ,"20",$color);
 			   }
