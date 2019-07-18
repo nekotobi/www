@@ -211,7 +211,7 @@
 	            for($i=0;$i<count($mainData);$i++){
 					if($mainData[$i][1]!="" or $mainData[$i][1]!=$mainData[$i][1]){
 					   $mainData[$i][PlanCode]=$mainData[$i][1];
-					   $mainData[$i][mileston]=$mainData[$i][11];
+					   $mainData[$i][mileston]=$mainData[$i][12];
 					}else{
 					  $tmp=	GetMainPlanCodeMile($mainData[$i][2]);
 					  $mainData[$i][PlanCode]=$tmp[code];
