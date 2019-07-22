@@ -45,9 +45,7 @@
 		$mt=getMysqlDataArray( "scheduletype"); 
 	    $mt2=filterArray($mt,0,"milestone"); 
 	    $milestoneSelect=returnArraybySort($mt2,2);
-		
 		$mainDataBase= getMysqlDataArray($tableName);
-		
 	    $mainDatatType=filterArray($mainDataBase,0,$typeDatacode[$Stype_1]);
 		$mainData=GetMileStone($mainDatatType,$milestoneSelect[$Stype_2]);
 		
@@ -79,7 +77,7 @@
 		global $GRect;
         global $typeData,$typeData2;
 		global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
-			global $ScheduleData,$mainData;
+        global $ScheduleData,$mainData;
 		$x=$GRect[x];$y=$GRect[y] ;$w=$GRect[w];$h=$GRect[h];
 		for($i=0;$i<count($typeData);$i++){
 			$Link=$BaseURL."?Stype_1=".$i."&Stype_2=".$Stype_2;
@@ -137,7 +135,7 @@
 			        $n=substr($tableData["mileston"], 1, 1);
 			        $rootBgColor=$colorCodes[11][$n];
 			        $milecolor=$colorCodes[10][$n];
-				    DrawRect("",12,"#000000",$rect[0]-40,$rect[1]-2,1000,$rect[3]+4,$rootBgColor);
+				    DrawRect("",12,"#000000",$rect[0]-40,$rect[1]-2,1200,$rect[3]+4,$rootBgColor);
 				    DrawRect($tableData["mileston"],12,"#000000",$rect[0]-37,$rect[1]+12,32,$rect[3]-20, $milecolor);
 			  }
 			  $planCode=$tableData[PlanCode];
@@ -197,7 +195,7 @@
 <?php //資料處理
        function GetMainPlanCodeMile($GDCode){ //比對物件名稱包含GDCode 回傳文件編碼
 	            global $ScheduleData;
-	     	     $a=array();
+	     	    $a=array();
 	            for($i=0;$i<count($ScheduleData);$i++){
 				    if(strpos($ScheduleData[$i][3],$GDCode) !== false){ 
 					  $a=array("code"=>$ScheduleData[$i][1],"mileston"=>$ScheduleData[$i][15]);
@@ -228,9 +226,8 @@
 	            global $ScheduleData,$mainData;
 	            for($i=0;$i<count($mainData);$i++){
 					$GDsn=$mainData[$i][2];
-					//echo $GDsn;
 			        $code=GetScheduleMainPlanCode($ScheduleData,$GDsn,3);
-				     echo $code;
+				    echo $code;
 				}
 	   }
 	   function GetScheduleMainPlanCode($ScheduleData,$keyStr,$num){ //比對物件名稱包含GDCode 回傳文件編碼
@@ -328,8 +325,7 @@
 				 $BaseName="mileStone";
 				 $Upvalue=$ar[mileston];
 				 Updata($WHEREtable,$WHEREData,$BaseName,$Upvalue);
-	  }
-	  
+	  }	  
       function Updata($WHEREtable,$WHEREData,$BaseName,$Upvalue){
 	           global $data_library,$tableName;
 			   $Base=array($BaseName);
@@ -338,8 +334,6 @@
 			   echo  $stmt;
                SendCommand($stmt,$data_library);			   
 	  }
-    
-
 ?>
 
 <?php //up

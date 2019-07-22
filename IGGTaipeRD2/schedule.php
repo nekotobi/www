@@ -611,6 +611,9 @@
 			  $info="狀態".$plansArray[7];
 			  $ey+=30;
 			  DrawRect($info,12,$fontColor,$ex,$ey,200,16,$BgColor);
+		 	  $info="費用:".$plansArray[17];
+			  $ey+=30;
+			  DrawRect($info,12,$fontColor,$ex,$ey,200,16,$BgColor);
 			  //連結
 			  $paths= getResfilePath($rootName[3],$plansArray[5] );
  
@@ -774,7 +777,7 @@
 			   if($submit=="修改計畫"){
 			    $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
                 SendCommand($stmt,$data_library);		
- 	        
+ 	                 echo $stmt;
 			   }
 		       if($submit=="送出修改"){
 				   $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
@@ -789,7 +792,7 @@
 			      if($del!="") $stmt= MakeDeleteStmt($tableName,$WHEREtable,$WHEREData); 
 				     SendCommand($stmt,$data_library);
 			   }
-	          echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+	           echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	 }
      function AddData( ){
 		       global $data_library,$tableName;
@@ -908,11 +911,16 @@
 			 $fininput2="<input type=text name=remark2   value='".$plansArray[16]."'  size=50   >";
 	         DrawInputRect("備註","12","#ffffff",($ex ),$ey  ,420,18, $colorCodes[4][2],"top",$fininput2);
 			 
+			 //費用
+			 $ey+=30;
+			 $ininput="<input type=text name=Price   value='".$plansArray[17]."'  size=10   >";
+	         DrawInputRect("費用(美金)","12","#ffffff",($ex ),$ey  ,220,18, $colorCodes[4][2],"top",$ininput);
+			 
 			 //刪除
 	         $input="<input type=text name=del value=''  size=3>";
-	         DrawInputRect("輸入刪除碼","12","#ffffff",($ex+200),$ey+30,220,16, $colorCodes[4][2],"top",$input);	
+	         DrawInputRect("輸入刪除碼","12","#ffffff",($ex+200),$ey ,220,16, $colorCodes[4][2],"top",$input);	
 		     $submitP="<input type=submit name=submit value=刪除計畫>";
-	         DrawInputRect("",$ey-40 ,"#ffffff",($ex+320),60,120,18, $colorCodes[4][2],"top",$submitP);
+	         DrawInputRect("",$ey-40  ,"#ffffff",($ex+320),$ey-435,120,18, $colorCodes[4][2],"top",$submitP);
    }
      function AddPlanTypeEditor_v2($ex,$ey,$w,$h,$y,$m,$d){
          global $data_library,$tableName;   

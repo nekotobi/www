@@ -16,7 +16,6 @@
 	        return  date("Y-m-d-His",(time()+8*3600));
 	 }
 	 function returnTables($data_library ,$tableName){ //取得資料表所有欄位名稱
- 
 		    $db = mysql_connect("localhost","root","1406");
 	        $db_selected = mysql_select_db( $data_library,$db);
 			$sql = "SELECT * from ".$tableName;

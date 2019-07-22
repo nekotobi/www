@@ -391,3 +391,33 @@
 			  return $str;
 	 }
 ?>
+
+<?php
+	  function sortMainPlaneCode($PlaneCodes){
+		       $sortString=array("h","m","b");
+			   $sortArray=array();
+			   for ($i=0;$i<count($sortString);$i++){
+				    $add="000";
+				    for($j=0;$j<100;$j++){
+					   if($j>10)$add="00";
+					   $str=$sortString[$i].$add.$j;
+				       $tmp=isname($fillerType,$str,$num);
+	                   if($tmp!=null){
+					      array_push( $sortArray,$tmp);
+					     }
+				   }
+			   } 
+		  
+	  }
+      function isname($fillerType,$str,$num){
+		       echo $str;
+              for ($i=0;$i<count($fillerType);$i++){
+				   if(strpos($fillerType[$i][$num],$str) !== false   ) {
+					   return $fillerType[$i];
+				   }
+			   } 
+			   return null;
+	  }
+?>
+
+
