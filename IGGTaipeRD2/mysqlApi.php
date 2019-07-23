@@ -20,13 +20,11 @@
 	        $db_selected = mysql_select_db( $data_library,$db);
 			$sql = "SELECT * from ".$tableName;
 			$result = mysql_query($sql, $db );
-          // $result = mysql_query("SET NAMES 'utf8'");
-		     $tables=array();
-		      while($property = mysql_fetch_field($result)){
-             //   echo  $property->name ;
-			   array_push($tables, $property->name);
-              }
-			  return $tables;
+		    $tables=array();
+		    while($property = mysql_fetch_field($result)){
+			      array_push($tables, $property->name);
+            }
+			return $tables;
 	 }
 	 function SetMysqldefineData($data_library,$SElectTable,$tableName,$defineStr,$ForceCover){
 	          $all_num= getDBAll_num( $data_library,$SElectTable);

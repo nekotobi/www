@@ -14,9 +14,8 @@
       include('mysqlApi.php');
       include('scheduleApi.php');
 	  defineDataSF();
-	  DrawType_v2();
-      //DrawTypeCell();
-    //  DrawListData();
+	//  DrawType_v2();
+ 
 ?>		
 <?php  //主資料
       function  defineDataSF(){
@@ -27,7 +26,7 @@
 			    $MainPlanDataT=getMysqlDataArray($tableName); 
 				$MainPlanData=filterArray($MainPlanDataT,0,"data"); 
 			    $PlaneCodest=filterArray($MainPlanDataT,4,"工項");
-				$PlaneCodes=sortMainPlaneCode($PlaneCodest);
+				
 				$typeCellt=filterArray($MainPlanDataT,0,"name"); 
 				$typeCell=$typeCellt[0];
 				$typeSizet=filterArray($MainPlanDataT,0,"size"); 
@@ -56,17 +55,36 @@
 			     }
 		 
 	  }
-
+      
 	  
 	  
-	  
-	  function DrawListData(){
-	           global $ListPlans;
-			   echo "</br>";
-			   getTypeOrder();
-	  }
+ 
 ?>
 <?php //陣列
+      function getSortCodes(){
+		//  $PlaneCodes=sortMainPlaneCode($PlaneCodest);
+	           $GdCode=array("h","m","b");
+			   $codes=array();
+			   for ($i=0;$i<count($GdCode);$i++){
+				  for ($j=0;$j<100;$j++){
+					  
+				  }
+			   }
+	  
+	  }
+ 
+
+
+
+
+
+
+
+ 	
+
+?>
+ 
+<?php //不須 
       function getTypeOrder(){
 		       global   $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
 	           global  $MainPlanData,$PlaneCodes;
@@ -87,12 +105,7 @@
 					DrawLinkRect($fillerType[$i][9],"12",$color,$x,$y,200,22,"#ffffff","",1);
 					$y+=30;
 			   }
-	  }
- 	
-
-?>
- 
-<?php //列印  
+	  } 
       function DrawTypeCell(){
 	              global  $typeCell,$typeSize;
 				  

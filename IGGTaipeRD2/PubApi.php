@@ -179,7 +179,6 @@
 			   return $returnData;
 	  }
 	   function getMysqlDataArray($name){
- 
 	            $all_num= getAll_num( $name );
 				$fieldnum=mysql_num_fields( $all_num);
 				$fName=array();
