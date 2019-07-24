@@ -25,6 +25,7 @@
      DrawOutLinkArea(30,52,$BaseURL);
 	 DrawUserData( 1120, 5);   //使用者資料(PubApi)
 	 DrawMemo();//臨時紀錄
+	  DrawHideSwicth();//開關
      DrawInsertLine( );//
 ?>
  
@@ -46,10 +47,13 @@
 				$LineRec=array();//紀錄哪行有排列
 		 //資料表
 		 global $data_library,$tableName,$MainPlanData;
+		 global $EditHide; 
 				$tableName="fpschedule";
 			    $data_library="iggtaiperd2";
 				$MainPlanDataT=getMysqlDataArray($tableName); 
-				$MainPlanData=filterArray($MainPlanDataT,0,"data"); 
+				$MainPlanDataT2=filterArray($MainPlanDataT,0,"data"); 
+				$MainPlanData=$MainPlanDataT2;
+				if($EditHide!="showAll")$MainPlanData=filterArray($MainPlanDataT2,18,""); 
 		 //共用資料表
 	     global $OutsData,$memberData, $milestoneSelect;
 		 global $WarringDatas;
@@ -64,10 +68,10 @@
 				
 	 }
 	 function  defineTypeData_v2(){ //類別資料
-	 		    global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
+	 		    global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType,$EditHide; 
 			    global $stateType;
 		        $BaseURL="schedule.php";
-                $BackURL= $BaseURL."?Stype_1=".$Stype_1."&Stype_2=".$Stype_2;
+                $BackURL= $BaseURL."?Stype_1=".$Stype_1."&Stype_2=".$Stype_2."&EditHide=".$EditHide;
 				//類別1
 				$sTypeTmp= getMysqlDataArray("scheduletype");	
 				$SelectType_1tmp= filterArray($sTypeTmp ,0,"data");
@@ -199,7 +203,19 @@
 					$pic="Pics/Cancel.png";
 			   }
 	 }
-
+     function  DrawHideSwicth(){
+		      $Rect=array(1324,10,30,12);
+		 	   global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType,$EditHide;
+			   if($EditHide==""  ){
+				   $EditHide="on";
+			   }else{
+				     $EditHide="";
+			   }
+			   $BackURL= $BaseURL."?Stype_1=".$Stype_1."&Stype_2=".$Stype_2."&EditHide=".$EditHide;
+			   DrawLinkRect_newtab("Hide","10","#ffffff",$Rect[0],$Rect[1],$Rect[2],$Rect[3],"#aaaaaa",$BackURL,"1");
+			   $BackURL= $BaseURL."?Stype_1=".$Stype_1."&Stype_2=".$Stype_2."&EditHide=showAll";
+			   DrawLinkRect_newtab("Show","10","#ffffff",$Rect[0]+32,$Rect[1],$Rect[2],$Rect[3],"#aaaaaa",$BackURL,"1");
+	 }
 	  
 ?>
 <?php //新版摺疊
@@ -212,7 +228,7 @@
 	             DrawMainPlan($plansLine);
 	  }
 	  function DrawMainPlan($plansLine){
-		       global  $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2;
+		       global  $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$EditHide;
 			   global  $MainPlanData;
 			   global  $Expand ,$SLine,$colNum,$LineRec;
 			   global  $colorCodes;
@@ -249,7 +265,10 @@
 					  }
 				   }
 				   DrawLinkRect_Layer_Left($info,10,"#ffffff",$Rect,$BgColor,$ELink,"",0);
+			       if($EditHide=="on") DrawHidePlan($Rect,$plansLine[$i][1]);   //編輯隱藏
 				   if( $Lines>1) DrawLinkPic($pic,$Rect[1],($Rect[0]+$Rect[2]  ),14,14,$ExLink);
+				
+			
 				   //jilar
 				    $Link=$BackURL."&PhpInputType=AddPlanType&Ecode=".$plansLine[$i][1];
 					if( $plansLine[$i][12]!=""){
@@ -263,6 +282,16 @@
 				    DrawWorks($plansLine[$i][1],$Rect[0]+$Rect[2],$Rect[1],$Exp );
 					
 			   }
+	  }
+	  function DrawHidePlan($Rect,$Ecode){
+		       global  $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2;
+		       $Rect[0]-=12;
+		       $Rect[2]=12;
+		       $Rect[3]=12;
+		       $BgColor="#bbaaaa";
+			   $ELink=$BackURL."&PhpInputType=HidePlan&Ecode=".$Ecode;
+	           DrawLinkRect_Layer("H",10,"#ffffff",$Rect,$BgColor,$ELink,"",2);
+	       
 	  }
 	  function DrawWorks($Code,$x,$y, $Exp ){
 		       global  $MainPlanData,$BackURL;
@@ -687,6 +716,9 @@
 				case $PhpInputType=="editOut":
 				      ChangeOutData();
 				break;
+			    case $PhpInputType=="HidePlan":
+				      HidePlan();
+				break;
 		   }
 	 
 	 }
@@ -706,7 +738,18 @@
               SendCommand($stmt,$data_library);		
 		      echo " <script language='JavaScript'>window.location.replace('".$back."')</script>";
 	 }
-    
+     function HidePlan(){
+	          global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
+			  global $Ecode;
+			  global $data_library,$tableName,$MainPlanData;
+			  $WHEREtable=array( "data_type", "code" );
+		      $WHEREData=array( "data",$Ecode );
+			  $Base=array("group");
+			  $up=array("g1");
+			  $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
+			  SendCommand($stmt,$data_library);		
+			  echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+	 }
      function MoveLines($MoveType){
 	          global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
 			  global $LineHeight,$insertNum,$DeletNum;
