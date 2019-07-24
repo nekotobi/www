@@ -852,12 +852,12 @@
 	       	            global $$tables[$i];
 				        array_push($WHEREtable, $tables[$i] );
 					    array_push($WHEREData,$$tables[$i]);
-					    echo  "</br>".$tables[$i].">".$$tables[$i]."]";
+					 //   echo  "</br>".$tables[$i].">".$$tables[$i]."]";
 		              }
 					$stmt=   MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
 				    SendCommand($stmt,$data_library);
-			//     echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
-		      	  echo $stmt;
+			       echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+		      	//  echo $stmt;
 	 }
      function AddTypeData( ){
 		       global $data_library,$tableName;
