@@ -21,11 +21,11 @@
 	 DrawTypeCont();//判斷印出內容
 	 CheckinputType_v2();//判斷輸入
 	 global   $BaseURL;
-      DrawMembersLinkArea_Simple( 30, 6,  $BaseURL); 
+     DrawMembersLinkArea_Simple( 30, 6,  $BaseURL); 
      DrawOutLinkArea(30,52,$BaseURL);
 	 DrawUserData( 1120, 5);   //使用者資料(PubApi)
 	 DrawMemo();//臨時紀錄
-	  DrawHideSwicth();//開關
+	 DrawHideSwicth();//開關
      DrawInsertLine( );//
 ?>
  
@@ -267,8 +267,6 @@
 				   DrawLinkRect_Layer_Left($info,10,"#ffffff",$Rect,$BgColor,$ELink,"",0);
 			       if($EditHide=="on") DrawHidePlan($Rect,$plansLine[$i][1]);   //編輯隱藏
 				   if( $Lines>1) DrawLinkPic($pic,$Rect[1],($Rect[0]+$Rect[2]  ),14,14,$ExLink);
-				
-			
 				   //jilar
 				    $Link=$BackURL."&PhpInputType=AddPlanType&Ecode=".$plansLine[$i][1];
 					if( $plansLine[$i][12]!=""){
@@ -291,7 +289,12 @@
 		       $BgColor="#bbaaaa";
 			   $ELink=$BackURL."&PhpInputType=HidePlan&Ecode=".$Ecode;
 	           DrawLinkRect_Layer("H",10,"#ffffff",$Rect,$BgColor,$ELink,"",2);
-	       
+			   
+			   //上移
+		       $ELink=$BackURL."&PhpInputType=HidePlan&Ecode=".$Ecode;
+	           DrawLinkRect_Layer("H",10,"#ffffff",$Rect,$BgColor,$ELink,"",2);
+			   
+			   //下移
 	  }
 	  function DrawWorks($Code,$x,$y, $Exp ){
 		       global  $MainPlanData,$BackURL;
@@ -744,7 +747,7 @@
 			  global $data_library,$tableName,$MainPlanData;
 			  $WHEREtable=array( "data_type", "code" );
 		      $WHEREData=array( "data",$Ecode );
-			  $Base=array("group");
+			  $Base=array("hide");
 			  $up=array("g1");
 			  $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
 			  SendCommand($stmt,$data_library);		
@@ -838,24 +841,23 @@
 	           echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	 }
      function AddData( ){
-		       global $data_library,$tableName;
-			   global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1;
+		        global $data_library,$tableName;
+			    global  $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$EditHide;
 			       $p=$tableName;
 				   $tables=returnTables($data_library,$p);
 	               $t= count( $tables);
-			      
 				   $WHEREtable=array();
 				   $WHEREData=array();
 		           for($i=0;$i<$t;$i++){
 	       	            global $$tables[$i];
-				        array_push($WHEREtable,$tables[$i]);
+				        array_push($WHEREtable, $tables[$i] );
 					    array_push($WHEREData,$$tables[$i]);
-					 //   echo  "</br>".$tables[$i].">".$$tables[$i];
+					    echo  "</br>".$tables[$i].">".$$tables[$i]."]";
 		              }
 					$stmt=   MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
 				    SendCommand($stmt,$data_library);
-				    echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
-		      	// echo $stmt;
+			//     echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+		      	  echo $stmt;
 	 }
      function AddTypeData( ){
 		       global $data_library,$tableName;
