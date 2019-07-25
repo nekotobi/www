@@ -28,7 +28,6 @@
 	 DrawHideSwicth();//開關
      DrawInsertLine( );//
 ?>
- 
 <?php //主要資料
  	 function  defineData_schedule(){
 		 //基礎數值
@@ -326,6 +325,7 @@
 					$p=$plansLine[$i][9];
 					if($p=="" or $p=="未定義")$p=$plansLine[$i][8];
 					$info= $plansLine[$i][5] ."[".$plansLine[$i][6]."]".$p;
+					if($plansLine[$i][19]!="")$info=$info."(+".$plansLine[$i][19].")";
 				    $Layer= $i-count($plansLine);
 					$Link=$BackURL."&PhpInputType=DrawEditPlanType&Ecode=".$plansLine[$i][1];
 					if($Exp=="true") 
@@ -453,15 +453,14 @@
 		      for($i=0;$i<count($plans);$i++){
 				   $color= getUserColors($plans[$i],$users);
 				   DrawListBar($plans[$i],$i, $color);
-				  
 			       $color_num+=1;
 			       if( $color_num>7)$color_num=3;
 				   $codeA=returnDataArray( $plansTmp,1,$plans[$i][3]);//取得主資料array
-				//   $job=$codeA[3]."[".$plans[$i][5]."][".$plans[$i][7]."]".$plans[$i][6]."天";
 				   $job=$plans[$i][2]."[".$codeA[3]."]";
 				   if ($plans[$i][7]=="已完成")$color="#777777";
 				   if ($plans[$i][7]=="進行中")$color="#ffccff";
 				   array_push($JobsArray,array($job,$color ));
+				 
 		          }
 			  DrawListInfo( $idtmp,$JobsArray);
 			  if($E=="Out") DrawChangeOutFrom( );
@@ -485,6 +484,11 @@
 			   DrawLinkRectAutoLength( $msg,"10","#000000",$x, $y,$w ,"16", $color,$Link,"1");
 				//狀態圖
 			   DrawStatePics($plansArray,$x,$y,$realDays,$Link);
+               //延誤
+			   global $List;
+			   if($List=="Warring");
+			   $Link=$BaseURL."?PhpInputType=Delay&List=Warring&Ecode=".$plansArray[1]."&BaseDelay=".$plansArray[19]."&BaseWorkday=".$plansArray[6];
+			   DrawLinkRect("+1","9","#ffffff",$x-20,$y,$h,$h,"#ff9999",$Link,$border);
 	  }
 	  function DrawChangeOutFrom( ){
 		       global $BaseURL,$BackURL;
@@ -635,6 +639,7 @@
 				 if($plansArray[7]=="已完成")$pic="Pics/finish";
 			   
 				 if($plansArray[7]=="進行中")$pic="Pics/construction";
+				 if($plansArray[19]!="")$pic="Pics/delay";
 				 //狀態問題
 				  $startDayArray=explode("_",$plansArray[2]);
 				  $nowDayArray=array(date(Y),date(m),date(d));
@@ -645,6 +650,7 @@
 					   if($plansArray[7]=="暫停")$pic="Pics/pause";
 					     if($plansArray[7]=="待優化")$pic="Pics/optimize";
 						    if($plansArray[7]=="廢棄")$pic="Pics/notuse";
+							 if($plansArray[19]!="")$pic="Pics/delay";
 				  }
 				  if( $pic!="")
 			      //DrawPosPic($pic, $y,$x-6,16,16,"absolute" );
@@ -702,7 +708,6 @@
 			//  DrawRect($info,12,$fontColor,$ex,$ey,200,16,$BgColor);
 	  }
 ?>
-
 <?php  //輸入
       function CheckinputType_v2(){
 	       global $epy,$epm,$epd,$epLine,$epDay,$eptype,$LineHeight;
@@ -761,15 +766,29 @@
 			    case $PhpInputType=="OrderAdjust":
 				     AdjustOrder();
 				break;
+			    case $PhpInputType=="Delay":
+				     DelayOrdew();
+				break;
 		   }
-	 
 	 }
 ?>
-
 <?php  //Updata
+     function DelayOrdew(){
+		      global $Ecode,$BaseDelay,$BaseWorkday;
+			  global $data_library,$tableName;
+			  global $BaseURL;
+			  $WHEREtable=array( "data_type", "code" );
+		      $WHEREData=array( "data",$Ecode );
+			  $Base=array("delay","workingDays");
+			  $up=array( $BaseDelay+1,$BaseWorkday+1);
+			  $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
+			  SendCommand($stmt,$data_library);
+		      $BackURL= $BaseURL."?List=Warring";
+			  echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+	 }
      function AdjustOrder(){
 	          global $Ecode,$Startdate,$Adjust,$WorkDays;
-			   global $data_library,$tableName;
+			  global $data_library,$tableName;
 			  $WHEREtable=array( "data_type", "code" );
 		      $WHEREData=array( "data",$Ecode );
 			  global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
@@ -1003,7 +1022,6 @@
 		      echo $stmt;
 	 }
 ?>
-
 <?php  //Oder
      function EditPlanTypeEditor_v2($ex,$ey,$w,$h){
             global $data_library,$tableName;   
