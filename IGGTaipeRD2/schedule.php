@@ -265,7 +265,9 @@
 					  }
 				   }
 				   DrawLinkRect_Layer_Left($info,10,"#ffffff",$Rect,$BgColor,$ELink,"",0);
-			       if($EditHide=="on") DrawHidePlan($Rect,$plansLine[$i][1]);   //編輯隱藏
+			       DrawRect($line,"9","#dddddd", $Rect[0]-14,$Rect[1] ,"14" ,"14","#aaaaaa");
+				   if($EditHide=="on") DrawHidePlan($Rect,$plansLine[$i][1],$line);   //編輯隱藏
+				   
 				   if( $Lines>1) DrawLinkPic($pic,$Rect[1],($Rect[0]+$Rect[2]  ),14,14,$ExLink);
 				   //jilar
 				    $Link=$BackURL."&PhpInputType=AddPlanType&Ecode=".$plansLine[$i][1];
@@ -281,7 +283,7 @@
 					
 			   }
 	  }
-	  function DrawHidePlan($Rect,$Ecode){
+	  function DrawHidePlan($Rect,$Ecode,$line){
 		       global  $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2;
 		       $Rect[0]-=12;
 		       $Rect[2]=12;
@@ -290,11 +292,17 @@
 			   $ELink=$BackURL."&PhpInputType=HidePlan&Ecode=".$Ecode;
 	           DrawLinkRect_Layer("H",10,"#ffffff",$Rect,$BgColor,$ELink,"",2);
 			   
-			   //上移
-		       $ELink=$BackURL."&PhpInputType=HidePlan&Ecode=".$Ecode;
-	           DrawLinkRect_Layer("H",10,"#ffffff",$Rect,$BgColor,$ELink,"",2);
+	
 			   
 			   //下移
+			   $Rect[0]-=24;
+		       $ELink=$BackURL."&PhpInputType=PlanDown&Ecode=".$Ecode."&Line=".$line;
+	           DrawLinkRect_Layer("▼",10,"#ffffff",$Rect,"#9999dd",$ELink,"",2);
+			   if($line==1)return;
+			   //上移
+			   $Rect[0]-=14;
+		       $ELink=$BackURL."&PhpInputType=PlanUp&Ecode=".$Ecode."&Line=".$line;
+	           DrawLinkRect_Layer("▲",10,"#ffffff",$Rect,"#dd9999",$ELink,"",2);
 	  }
 	  function DrawWorks($Code,$x,$y, $Exp ){
 		       global  $MainPlanData,$BackURL;
@@ -722,12 +730,49 @@
 			    case $PhpInputType=="HidePlan":
 				      HidePlan();
 				break;
+				case $PhpInputType=="PlanUp":
+				     MovePlan("Up");
+				break;
+				case $PhpInputType=="PlanDown":
+				     MovePlan("Down");
+				break;
 		   }
 	 
 	 }
 ?>
 
 <?php  //Updata
+     function MovePlan($upDown){
+              global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
+			  global $LineHeight,$insertNum,$DeletNum;
+              global $data_library,$tableName,$MainPlanData;
+			  global $Ecode,$Line;
+			  $sT=$SelectType_1[$Stype_1];
+              $WorkOrderstmp=filterArray($MainPlanData,10,$sT); 
+			  $WorkOrders=filterArray($WorkOrderstmp,5,"工項"); 
+			  $BaseUptoLine=$Line;
+			  if($upDown=="Up")$BaseUptoLine-=1;
+			  if($upDown=="Down")$BaseUptoLine+=1;
+			  $changeLines=filterArray($WorkOrderstmp,4,$BaseUptoLine);
+			  echo count( $changeLines);
+			  $WHEREtable=array( "data_type", "code" );
+		      $WHEREData=array( "data",$Ecode );
+			  $Base=array("line");
+			  $up=array($BaseUptoLine);
+			  $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
+			  SendCommand($stmt,$data_library);
+			
+              for($i=0;$i<count( $changeLines);$i++){
+			      $WHEREtable=array( "data_type", "code" );
+		          $WHEREData=array( "data",$changeLines[$i][1] );
+			      $Base=array("line");
+			      $up=array($Line);
+			      $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
+				   echo $stmt;
+			      SendCommand($stmt,$data_library);
+			  }				  
+		   echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+	 }
      function ChangeOutData(){
 		      global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
 			  global $code,$outup,$back; 

@@ -3,10 +3,58 @@
     include('CalendarApi.php');  
     include('mysqlApi.php');
     include('scheduleApi.php');
-	UpPicEdit();
-    UpPic();
+	global $data_type;
+	$data_type="5678";
+     updata2();
+?>
+<?php
+   function updata2(){
+	         $data_library="iggtaiperd2";
+		     $tableName="fpschedule";
+	          //global $data_library,$tableName;
+ 
+				   $tables=returnTables($data_library,$tableName);
+	               $t= count( $tables);
+				   $WHEREtable=array();
+				   $WHEREData=array();
+		           for($i=0;$i<$t;$i++){
+	       	            global $$tables[$i];
+				        array_push($WHEREtable, $tables[$i] );
+					    array_push($WHEREData,$$tables[$i]);
+					    echo  "</br>".$i.">".$tables[$i].">".$$tables[$i]."]";
+		              }
+					$stmt=   MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
+				    SendCommand($stmt,$data_library);
+			//     echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+		      	  echo $stmt;
+   }
+
+   function updata(){
+	      $data_library="iggtaiperd2";
+	       global $data_library,$tableName;
+   $stmt=" INSERT INTO `fpschedule` ( `data_type` , `code` , `startDay` , `plan` , `line` , `type` , `workingDays` , `state` , `principal` , `outsourcing` , `selecttype` , `lastUpdate` , `remark` , `log` , `finLink` , `milestone` , `remark2` , `Price` , `group` )
+VALUES (
+'test2', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''
+);";
+    SendCommand($stmt,$data_library);
+	echo $stmt;
+   }
 ?>
 
+
+
+<?php //排序測試
+    function SortArray1(){
+	        //$MainPlanDataT=getMysqlDataArray($tableName); 
+		   ///$MainPlanData=filterArray($MainPlanDataT,0,"data");
+	         $p="h0001dapco";
+			  $a=  preg_replace('/\D/', '', $p); 
+		//	$a= filter_var( $p, FILTERSANITIZENUMBERINT); 
+               	echo $a;
+	}
+
+
+?>
 <?php  //上傳縮圖
     function UpPic(){
 	     global $submit;
