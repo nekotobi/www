@@ -336,8 +336,30 @@
 				    DrawLinkRect_Layer_Left( "",10,"#000000",$Rect,"",$Link,"",$Layer);
 					$realDays=getRealDay($plansLine[$i]);
 				    DrawStatePics($plansLine[$i],$Rect[0],$Rect[1],$realDays,$Link);
-
+					//排列
+					
+					DrawOrderAdjust($Rect,$plansLine[$i]);
 			   }
+	  }
+	  function DrawOrderAdjust($Rect,$planData){
+	           global  $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$EditHide;
+			   if( $EditHide=="")return;
+			   $Rect[0]-=20;
+			   $Rect[2]=10;
+			   $Link=$BackURL."&PhpInputType=OrderAdjust&Adjust=Right&Ecode=".$planData[1]."&Startdate=".$planData[2];
+			   DrawLinkRect_Layer_Left( "►",10,"#ffffff",$Rect,"#aa7777",$Link,"#ffaaaa",12);
+			   if($planData[6]>1){
+			   $Rect[0]-=14;
+			   $Link=$BackURL."&PhpInputType=OrderAdjust&Adjust=Less&Ecode=".$planData[1]."&WorkDays=".$planData[6];
+			   DrawLinkRect_Layer_Left( "-",10,"#ffffff",$Rect,"#77aaaa",$Link,"#ffaaaa",12);
+			   }
+			   $Rect[0]-=14;
+			   $Link=$BackURL."&PhpInputType=OrderAdjust&Adjust=Add&Ecode=".$planData[1]."&WorkDays=".$planData[6];
+			   DrawLinkRect_Layer_Left( "+",10,"#ffffff",$Rect,"#77aa77",$Link,"#ffaaaa",12);
+		
+			   $Rect[0]-=14;
+			   $Link=$BackURL."&PhpInputType=OrderAdjust&Adjust=Left&Ecode=".$planData[1]."&Startdate=".$planData[2];
+			   DrawLinkRect_Layer_Left( "◀",10,"#ffffff",$Rect,"#7777aa",$Link,"#ffaaaa",12);
 	  }
       function getRealDay($SinglePlanData){
 	  	       global $VacationDays;
@@ -736,12 +758,68 @@
 				case $PhpInputType=="PlanDown":
 				     MovePlan("Down");
 				break;
+			    case $PhpInputType=="OrderAdjust":
+				     AdjustOrder();
+				break;
 		   }
 	 
 	 }
 ?>
 
 <?php  //Updata
+     function AdjustOrder(){
+	          global $Ecode,$Startdate,$Adjust,$WorkDays;
+			   global $data_library,$tableName;
+			  $WHEREtable=array( "data_type", "code" );
+		      $WHEREData=array( "data",$Ecode );
+			  global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
+			  switch ($Adjust){
+				      case $Adjust=="Right":
+					        $rd=ReturnDay($Startdate,1);
+					        $Base=array("startDay");
+			                $up=array($rd);
+					  break;
+					  case $Adjust=="Left":
+					        $rd=ReturnDay($Startdate,-1);
+					        $Base=array("startDay");
+			                $up=array($rd);
+					  break;
+					  case $Adjust=="Add": 
+					        $Base=array("workingDays");
+			                $up=array($WorkDays+1);
+					  break;
+					  case $Adjust=="Less": 
+					        $Base=array("workingDays");
+			                $up=array($WorkDays-1);
+					  break;
+			  }
+			  $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
+			  SendCommand($stmt,$data_library);
+		    $BackURL= $BaseURL."?Stype_1=".$Stype_1."&Stype_2=".$Stype_2."&EditHide=on";
+			echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+	 }
+	 function ReturnDay($date,$add){
+	          $dateArray= explode("_",$date);//0/1/2
+			  $y=$dateArray[0];
+			  $m=$dateArray[1];
+			  $d=$dateArray[2];
+			  $d+=$add;
+			  $mday= getMonthDay($m,$y);
+			  if( $d>$mday){
+			     $d=0;
+			     $m+=1;
+			     if( $m>12){
+				     $m=0;
+					 $y+=1;
+			       }
+			  }
+			  if($d<1){
+			     $m-=1;
+				 if( $m<1)$y-=1;
+                 $d=  getMonthDay($m,$y);			 
+			  }
+			  return $y."_".$m."_".$d;
+	 }
      function MovePlan($upDown){
               global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
 			  global $LineHeight,$insertNum,$DeletNum;
