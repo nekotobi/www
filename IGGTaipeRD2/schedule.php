@@ -336,6 +336,11 @@
 				    DrawLinkRect_Layer_Left( "",10,"#000000",$Rect,"",$Link,"",$Layer);
 					$realDays=getRealDay($plansLine[$i]);
 				    DrawStatePics($plansLine[$i],$Rect[0],$Rect[1],$realDays,$Link);
+					//jilar
+					if( $plansLine[$i][12]!=""){
+				        $JilaLink="http://bzbfzjira.iggcn.com/browse/FP-".$plansLine[$i][12]  ;
+					    DrawLinkRect_newtab($plansLine[$i][12],"9","#000000", $Rect[0]-20,$Rect[1]+2,"22" ,"11", "#ffaabb",$JilaLink,"1" );
+					}   //jilar
 					//排列
 					
 					DrawOrderAdjust($Rect,$plansLine[$i]);
@@ -901,7 +906,8 @@
               global $data_library,$tableName,$MainPlanData;
 			  $sT=$SelectType_1[$Stype_1];
               $WorkOrderstmp=filterArray($MainPlanData,10,$sT); 
-			  $WorkOrders=filterArray($WorkOrderstmp,5,"工項"); 
+			  $WorkOrderst2=filterArray($WorkOrderstmp,5,"工項"); 
+			  $WorkOrders=filterArray($WorkOrderst2,19,""); 
 			  for($i=1;$i<count($WorkOrders);$i++){
 				  $L=$WorkOrders[$i][4];//行數
 				  switch($MoveType){

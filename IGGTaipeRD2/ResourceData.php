@@ -158,10 +158,12 @@
 	                   $worker="未定義";
 					   $filePaths=getResfilePath($GDcode,$type);
 					   $worker= $state[3] ; 
+					   
                        if( file_exists( $filePaths[2])){
 						   $w=$w/2;
 					       $x+=$h+30;
 					   }
+					   
 					   //繪師條
 					   DrawRect(  $worker ,12,"#ffffff",$x,$rect[1],$w,$h,"#666666" );//繪師
 					   if($state[4]==0){
@@ -183,13 +185,14 @@
 							   }
 							   DrawProgress($msg,$per,$recta,$colors,"11");
 						 }
+						 
 					   if( file_exists( $filePaths[2])){
 					       DrawLinkPic($filePaths[2], $rect[1],$rect[0],$rect[3],$rect[3],$filePaths[1]);
 						   DrawRect( $info ,12,"#000000",$rect[0]+$rect[3],$rect[1],$ListSize[$i]-+$rect[3],$rect[3],getColor($state));
 						   $rect[0]+=$ListSize[$i]/2;
 						   $w/=2;
 					   }  
-				
+				 
 	}
 ?>
 <?php //資料處理

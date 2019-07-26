@@ -128,3 +128,9 @@
 	   }
    
 ?>
+
+
+<?php
+       function DrawSmallCalender(){
+	   }
+?>
