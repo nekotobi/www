@@ -342,14 +342,12 @@
 		  for($i=0;$i<count($users);$i++){
 			//  echo $i."=". $users[$i][user];
 			  $u=trim($users[$i][user]);
-			
 		       for($j=0;$j<count($BaseData);$j++){
 				     $ch=0;
 				   if($BaseData[$j][8]== $u) $ch=1;
 				   if($BaseData[$j][9]== $u) $ch=1;
 				    if($ch==1)array_push( $sortUsers,$BaseData[$j]);
 			   }
-			 
 		  }
 		  return $sortUsers;
 	 }
@@ -374,6 +372,8 @@
 	      return $usersf;
 	 }
      function getUserColors($planeData,$users){
+		 global $List;
+		   if($List=="ArtWork")return "#ffccaa";
 		 if($planeData[9]=="" or $planeData[9]=="未定義")	  return "#ff5555";
 		      for($i=0;$i<count($users);$i++){
 			       if($planeData[9]==$users[$i][user])return $users[$i][Color];

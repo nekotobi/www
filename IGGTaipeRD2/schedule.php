@@ -457,6 +457,7 @@
 			  	  $formDatas=array();
 		      for($i=0;$i<count($plans);$i++){
 				   $color= getUserColors($plans[$i],$users);
+				   
 				   DrawListBar($plans[$i],$i, $color);
 			       $color_num+=1;
 			       if( $color_num>7)$color_num=3;
@@ -486,14 +487,22 @@
 			   $msg="[".$plansArray[10]."[".$plansArray[9]."]".$plansArray[12]."_".$codeA[3].">".$plansArray[5] ;
 		       $w= $OneDayWidth*$realDays;
 			   $Link=$BaseURL."?PhpInputType=DrawEditPlanType&Ecode=".$plansArray[1];
+			
 			   DrawLinkRectAutoLength( $msg,"10","#000000",$x, $y,$w ,"16", $color,$Link,"1");
 				//狀態圖
 			   DrawStatePics($plansArray,$x,$y,$realDays,$Link);
+			   //jilar
+			   $jilaCode=$codeA[12];
+			   if( $plansArray[12]!="") $jilaCode=$plansArray[12];
+			   if(   $jilaCode!=""){
+				        $JilaLink="http://bzbfzjira.iggcn.com/browse/FP-".jilaCode ;
+					    DrawLinkRect_newtab(  $jilaCode,"9","#000000",$x-22, $y,"22" ,"11", $colorCodes[0][3],$JilaLink,"1" );
+			    }   //jilar
                //延誤
 			   global $List;
-			   if($List=="Warring");
+			   if($List!="Warring")return;
 			   $Link=$BaseURL."?PhpInputType=Delay&List=Warring&Ecode=".$plansArray[1]."&BaseDelay=".$plansArray[19]."&BaseWorkday=".$plansArray[6];
-			   DrawLinkRect("+1","9","#ffffff",$x-20,$y,$h,$h,"#ff9999",$Link,$border);
+			   DrawLinkRect("+1","9","#ffffff",$x-40,$y,$h,$h,"#ff9999",$Link,$border);
 	  }
 	  function DrawChangeOutFrom( ){
 		       global $BaseURL,$BackURL;
@@ -641,10 +650,11 @@
 		  		 global $OutsData,$memberData;
 				 $pic="";
 			     if($plansArray[7]=="" or $plansArray[7]=="未定義")$pic="Pics/question";
+				  if($plansArray[19]!="")$pic="Pics/delay";
 				 if($plansArray[7]=="已完成")$pic="Pics/finish";
 			   
 				 if($plansArray[7]=="進行中")$pic="Pics/construction";
-				 if($plansArray[19]!="")$pic="Pics/delay";
+				
 				 //狀態問題
 				  $startDayArray=explode("_",$plansArray[2]);
 				  $nowDayArray=array(date(Y),date(m),date(d));
@@ -655,7 +665,7 @@
 					   if($plansArray[7]=="暫停")$pic="Pics/pause";
 					     if($plansArray[7]=="待優化")$pic="Pics/optimize";
 						    if($plansArray[7]=="廢棄")$pic="Pics/notuse";
-							 if($plansArray[19]!="")$pic="Pics/delay";
+							// if($plansArray[19]!="")$pic="Pics/delay";
 				  }
 				  if( $pic!="")
 			      //DrawPosPic($pic, $y,$x-6,16,16,"absolute" );
