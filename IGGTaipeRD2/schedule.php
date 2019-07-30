@@ -327,7 +327,9 @@
 					$info= $plansLine[$i][5] ."[".$plansLine[$i][6]."]".$p;
 					if($plansLine[$i][19]!="")$info=$info."(+".$plansLine[$i][19].")";
 				    $Layer= $i-count($plansLine);
-					$Link=$BackURL."&PhpInputType=DrawEditPlanType&Ecode=".$plansLine[$i][1];
+					//$Link=$BackURL."&PhpInputType=DrawEditPlanType&Ecode=".$plansLine[$i][1];
+					
+					$Link=$BackURL."&PhpInputType=EditPlanType&Ecode=".$plansLine[$i][1];
 					if($Exp=="true") 
 					 	DrawRect_Layer("",1,"#000000",array($x,$Rect[1]+10,$length,1),"#444444",-12);
 				    DrawRect_Layer( "",10,"#000000",$Rect,$BgColor ,$Layer);
