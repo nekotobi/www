@@ -432,6 +432,15 @@
 ?>
 
 <?php  //PHP區域
+       function DrawIDRect($x,$y,$w,$h,$id,$info, $fontSize,$fontColor,$BgColor,$other){
+	          echo "<div  id=".$id." ";
+              echo " style='   " ;
+			  echo " position:absolute;  top:".$y."px; z-index:-1; left:".$x."px;  width:".$w."px;height:".$h."px;";
+			  echo  $other;
+			  echo " font-size:".$fontSize."px; color:".$fontColor.";   background-color:".$BgColor.";  '  >";
+	          echo $info;
+			  echo "</div>";
+	    }
        function DrawDragRect($x,$y,$w,$h,$BgColor,$id){
 	          echo "<div  id=".$id." ";
 			  echo " ondrop='Drop(event)' ondragover='AllowDrop(event)' ondragleave ='DragLeave(event)'   ";

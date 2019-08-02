@@ -734,7 +734,7 @@
 		   include('scheduleOrder.php');
 		   switch ($PhpInputType){
 			    case $PhpInputType=="AddPlanType":
-			         AddPlanTypeEditor_v2("400","260","400","120",$ey,$em,$ed); 
+			         AddPlanTypeEditor_v2("400","260","400","220",$ey,$em,$ed); 
 			    break;
 		        case $PhpInputType=="AddPlan":
 			     	 DrawDragHorArea(25 );
@@ -1150,23 +1150,25 @@
 		 echo   "<input type=hidden name=lastUpdate value=".$lastUpdate.">"; 
 		 // echo   "<input type=hidden name=type value=細分>"; 
 		 //年
-	     $input="<input type=text name=year value='".$startDay[0]."'  size=4>年";
+	     $input="<input id='year'  type=text name=year value='".$startDay[0]."'  size=4>年";
 	     DrawInputRect("新增","12","#ffffff",($ex),$ey ,120,16, $colorCodes[4][2],"top",$input);
 	     //月
-	     $input="<input type=text name=month value='".$startDay[1]."'  size=2>月";
+	     $input="<input id='month' type=text name=month value='".$startDay[1]."'  size=2>月";
 	     DrawInputRect("","12","#ffffff",($ex+80),$ey ,120,16, $colorCodes[4][2],"top",$input);
 		 //日
-	     $input="<input type=text name=day value='".$startDay[2]."'  size=2>日".$plansArray[3];
+	     $input="<input id='day' type=text name=day value='".$startDay[2]."'  size=2>日".$plansArray[3];
 	     DrawInputRect("","14","#ffffff",($ex+130),$ey ,220,16, $colorCodes[4][2],"top",$input);
 		 //類別計畫
 	     $select=MakeSelectionV2($SelectType_2,"設定","type",14);
 	     DrawInputRect("","14","#ffffff",($ex+310 ),$ey,140,18, $colorCodes[4][2],"top",  $select."計畫");
-	     $workDayinput="<input type=text name=workingDays  value='5'  size=2   >";
+	     $workDayinput="<input id='workingDays' type=text name=workingDays  value='5'  size=2   >";
 	     DrawInputRect("天數","12","#ffffff",($ex+240),$ey+40,120,18, $colorCodes[4][2],"top",$workDayinput);
 
 		 $submitP="<input type=submit name=submit value=新增規畫>";
 	     DrawInputRect("",$ey-22 ,"#ffffff",($ex+320),60,120,18, $colorCodes[4][2],"top",$submitP);
- 
+         //載入小日曆
+		 include('CalendarPlugin.php');
+		  	 DrawSCalender(400,300);
  }
      function AddPlanEditor_v2($ex,$ey,$w,$h,$y,$m,$d){
 	     global $data_library,$tableName,$milestone;   

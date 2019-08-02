@@ -103,6 +103,8 @@
 	   }
 	   function getMonthDay($m,$TargetYear){
 		//   global $TargetYear;
+		$m=(int)$m;
+		 
 		   $m_data=array(0,31,28,31,30,31,30,31,31,30,31,30,31);
 	       $d_end=$m_data[$m];
 		   if (($TargetYear+$y)%4==0 and $m==2) $d_end=29 ;
