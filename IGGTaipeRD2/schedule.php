@@ -488,7 +488,7 @@
 			   $codeA=returnDataArray( $MainPlanData,1,$plansArray[3] );//取得主資料array
 			   $msg="[".$plansArray[10]."[".$plansArray[9]."]".$plansArray[12]."_".$codeA[3].">".$plansArray[5] ;
 		       $w= $OneDayWidth*$realDays;
-			   $Link=$BaseURL."?PhpInputType=DrawEditPlanType&Ecode=".$plansArray[1];
+			   $Link=$BaseURL."?PhpInputType=DrawEditPlanType&Ecode=".$plansArray[1]."&List=Warring";
 			
 			   DrawLinkRectAutoLength( $msg,"10","#000000",$x, $y,$w ,"16", $color,$Link,"1");
 				//狀態圖
@@ -505,6 +505,12 @@
 			   if($List!="Warring")return;
 			   $Link=$BaseURL."?PhpInputType=Delay&List=Warring&Ecode=".$plansArray[1]."&BaseDelay=".$plansArray[19]."&BaseWorkday=".$plansArray[6];
 			   DrawLinkRect("+1","9","#ffffff",$x-40,$y,$h,$h,"#ff9999",$Link,$border);
+			   //後推
+			   $Link=$BaseURL."?PhpInputType=NextDay&List=Warring&Ecode=".$plansArray[1]."&BaseDay=".$plansArray[2] ;
+			   DrawLinkRect(">>","9","#ffffff",$x-60,$y,$h,$h,"#66ff66",$Link,$border);
+			   //完成
+			   $Link=$BaseURL."?PhpInputType=WorkDone&List=Warring&Ecode=".$plansArray[1]."&WorkState=Done" ;
+			   DrawLinkRect("Fin","9","#ffffff",$x-80,$y,$h,$h,"#6666ff",$Link,$border);
 	  }
 	  function DrawChangeOutFrom( ){
 		       global $BaseURL,$BackURL;
@@ -787,10 +793,49 @@
 			    case $PhpInputType=="Delay":
 				     DelayOrdew();
 				break;
+				case $PhpInputType=="NextDay":
+				     NextDayOrdew();
+				break;
+				case $PhpInputType=="WorkDone":
+				      OrderDone();
+				break;
 		   }
 	 }
 ?>
 <?php  //Updata
+     function OrderDone(){
+		      global $Ecode ;
+			  global $data_library,$tableName;
+			  global $BaseURL;
+			  $WHEREtable=array( "data_type", "code" );
+		      $WHEREData=array( "data",$Ecode );
+			  $Base=array("state");
+			  $up=array("已完成");
+			  $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
+			  echo $stmt;
+			  SendCommand($stmt,$data_library);
+		      $BackURL= $BaseURL."?List=Warring";
+		    echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+	 }
+
+     function NextDayOrdew(){
+		      global $Ecode,$BaseDay;
+			  global $data_library,$tableName;
+			  global $BaseURL;
+			  $WHEREtable=array( "data_type", "code" );
+		      $WHEREData=array( "data",$Ecode );
+			  $Base=array("startDay");
+			  $based= explode("_", $BaseDay);
+			  $Rd= getPassDaysDay($based,1);
+			  $fin=$Rd[0]."_".$Rd[1]."_".$Rd[2];
+			 
+			  echo $BaseDay.">".$fin;
+			  $up=array(  $fin);
+			  $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
+			  SendCommand($stmt,$data_library);
+		      $BackURL= $BaseURL."?List=Warring";
+			   echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+	 }
      function DelayOrdew(){
 		      global $Ecode,$BaseDelay,$BaseWorkday;
 			  global $data_library,$tableName;
