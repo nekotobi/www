@@ -260,6 +260,158 @@
 ?>
 
 <?php //上傳檔案
+     function EditPlan_v2($ex,$ey,$w,$h){
+	        global $data_library,$tableName, $milestoneSelect;    
+			global $Ecode;
+		    global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1;
+						
+			$planstmp=getMysqlDataArray($tableName);
+			$plansArray=returnDataArray($planstmp,1,$Ecode);
+		    echo   "<form id='EditPlan'  name='Show' action='".$BackURL."' method='post'>";
+			echo   "<input type=hidden name=data_type value=data>"; 
+		    echo   "<input type=hidden name=tablename value=".$tablename.">"; 
+	  	    echo   "<input type=hidden name=PhpInputType value=upEdit >"; 
+		    $lastUpdate=date(Y_m_d_H_i,time()+(8*3600));
+		    echo   "<input type=hidden name=lastUpdate value=".$lastUpdate.">"; 
+		    echo   "<input type=hidden name=code value=".$Ecode.">"; 
+		    $selecttype= $SelectType_1[$Stype_1];
+		    echo   "<input type=hidden name=selecttype value=".$selecttype.">"; 
+		    DrawPopBG($ex,$ey,$w,$h,"" ,"12",$BackURL);
+			//年
+			$startDay=explode("_",$plansArray[2]);
+			$input="<input type=text name=year value='".$startDay[0]."'  size=4>年";
+	        DrawInputRect("修改","12","#ffffff",($ex),$ey ,120,16, $colorCodes[4][2],"top",$input);
+			//月
+		    $input="<input type=text name=month value='".$startDay[1]."'  size=2>月";
+	        DrawInputRect("","12","#ffffff",($ex+80),$ey ,120,16, $colorCodes[4][2],"top",$input);
+			//日
+		    $input="<input type=text name=day value='".$startDay[2]."'  size=2>日計畫";
+	        DrawInputRect("","12","#ffffff",($ex+130),$ey ,120,16, $colorCodes[4][2],"top",$input);
+			
+	        $Planinput="<input type=text name=plan value='".$plansArray[3]."'  size=30 >";
+	        DrawInputRect("計畫","12","#ffffff",($ex),$ey+40,300,18, $colorCodes[4][2],"top",$Planinput);
+			 if($Stype_1==0 or  $Stype_1==""){
+		        $workDayinput="<input type=text name=workingDays  value='5'  size=2   >";
+	            DrawInputRect("天數","12","#ffffff",($ex+240),$ey+40,120,18, $colorCodes[4][2],"top",$workDayinput);
+		     }else{
+		    	$jirainput="<input type=text name=remark  value='".$plansArray[12]."'  size=4   >";
+	            DrawInputRect("jila單","12","#ffffff",($ex+240),$ey+40,120,18, $colorCodes[4][2],"top",$jirainput);
+		     }
+ 
+		 
+		    $Lineinput="<input type=text name=line value='".$plansArray[4]."'  size=2   >";
+     	    DrawInputRect("行數","12","#ffffff",($ex+240),$ey+70,120,18, $colorCodes[4][2],"top", $Lineinput);
+	        
+		    $types=array("工項","目標","Sprint");
+	        $select=MakeSelectionV2($types,$plansArray[5],"type",14);
+	        DrawInputRect("類型","10","#ffffff",($ex ),$ey+70,120,18, $colorCodes[4][2],"top",  $select);
+			
+ 	 	    //milestone
+	   	    $select2=MakeSelectionV2( $milestoneSelect,$plansArray[15],"milestone",14);
+	        DrawInputRect("Milestone","10","#ffffff",($ex ),$ey+110,120,18, $colorCodes[4][2],"top",  $select2);
+			
+		    $submitP="<input type=submit name=submit value=修改計畫>";
+	        DrawInputRect("",$ey-60 ,"#ffffff",($ex+320),60,120,18, $colorCodes[4][2],"top",$submitP);
+
+             
+			//刪除
+	        $input="<input type=text name=del value=''  size=3>";
+	        DrawInputRect("輸入刪除碼","12","#ffffff",($ex+222),$ey+130 ,220,16, $colorCodes[4][2],"top",$input);	
+			
+		    $submitP="<input type=submit name=submit value=刪除計畫>";
+	        DrawInputRect("",$ey+60 ,"#ffffff",($ex+320),60,120,18, $colorCodes[4][2],"top",$submitP);
+	 }
+     function EditPlanTypeEditor_v2($ex,$ey,$w,$h){
+            global $data_library,$tableName;   
+	        global $colorCodes;
+		    global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$stateType;
+			global $Ecode;
+            //echo  ">>>>>>>>>>>>".$Ecode;
+	     //   echo $Ecode.">".$tableName.">";
+			
+			$planstmp=getMysqlDataArray($tableName);
+	//	 echo  count($planstmp).">";
+			$plansArray=returnDataArray($planstmp,1,$Ecode);
+		//	echo  count($plansArray );
+			$rootName= returnDataArray($planstmp,1,$plansArray[3]);
+			$title="修改 [". $rootName[3]."] [".$plansArray[5]."]內容";
+		    DrawPopBG($ex,$ey,$w,$h,$title ,"12",$BackURL);
+		    $startDay=explode("_",$plansArray[2]);
+			//From
+		    echo   "<form id='AddPlan'  name='Show' action='".$BackURL."' method='post'  enctype='multipart/form-data'>";
+			//基礎資料
+			$p=$tableName;
+			$tables=returnTables($data_library,$p);
+			for($i=0;$i<count($tables);$i++){
+			    echo   "<input type=hidden name=".$tables[$i]." value=".$plansArray[$i].">";
+			}
+ 
+			echo   "<input type=hidden name=code value=".$Ecode.">";
+		   	echo   "<input type=hidden name=PhpInputType value=upEditPlanType >";	
+			$lastUpdate=date(Y_m_d_H_i,time()+(8*3600));
+		    echo   "<input type=hidden name=lastUpdate value=".$lastUpdate.">"; 
+			$ey+=20;
+			 //年
+	         $input="<input id=year type=text name=year value='".$startDay[0]."'  style=font-size:10px; size=4>年";
+	         DrawInputRect("開始","12","#ffffff",($ex),$ey ,120,16, $colorCodes[4][2],"top",$input);
+	         //月
+	         $input="<input id=month type=text name=month value='".$startDay[1]."' style=font-size:10px;  size=2>月";
+	         DrawInputRect("","12","#ffffff",($ex+80),$ey ,60,16, $colorCodes[4][2],"top",$input);
+		     //日
+	         $input="<input id=day type=text name=day value='".$startDay[2]."' style=font-size:10px; size=2>日";
+	         DrawInputRect("","14","#ffffff",($ex+130),$ey ,60,16, $colorCodes[4][2],"top",$input);
+			 //天數
+			 $workDayinput="<input id=workingDays type=text name=workingDays  value='".$plansArray[6]."' style=font-size:10px; size=2   >";
+	         DrawInputRect("天數","12","#ffffff",($ex+190),$ey ,120,18, $colorCodes[4][2],"top",$workDayinput);
+	        //JilaLink
+		     $jirainput="<input type=text name=remark  value='".$plansArray[12]."' style=font-size:10px; size=4   >";
+	         DrawInputRect("副jila單","12","#ffffff",($ex+280),$ey ,120,18, $colorCodes[4][2],"top",$jirainput);			 
+			 $ey+=40;
+			 //外包負責
+			 $OutsDatatmp=getMysqlDataArray("outsourcing");
+	         $OutsDatatmp2=filterArray($OutsDatatmp,0,"data");
+	         $OutsData=returnArraybySort( $OutsDatatmp2,2);
+			 $selectTable= MakeSelectionV2($OutsData,$plansArray[9] ,"outsourcing",10);
+		     DrawInputRect( "選擇負責外包","10","#ffffff",($ex+250),$ey ,220,16, $colorCodes[4][2],"top", $selectTable);
+			 //負責人
+			 $principaltmp=getMysqlDataArray("members");
+			 $principalData=returnArraybySort( $principaltmp,1);
+			 $selectTable= MakeSelectionV2( $principalData,$plansArray[8],"principal" ,10);
+			 DrawInputRect( "選擇內部負責","10","#ffffff",($ex+250),$ey+30 ,220,16, $colorCodes[4][2],"top", $selectTable);
+			 //狀態
+			 $selectTable= MakeSelectionV2( $stateType,$plansArray[7],"state" ,10);
+			 DrawInputRect( "目前狀態","10","#ffffff",($ex+250),$ey+60 ,220,16, $colorCodes[4][2],"top", $selectTable);
+		
+			 //送出
+		     $submitP="<input type=submit name=submit value=送出修改 style=font-size:10px; >";
+	         DrawInputRect("",$ey-120 ,"#ffffff",($ex+320),60,120,18, $colorCodes[4][2],"top",$submitP);
+			 //圖檔
+			 $ey+=150;
+			 $input="<input type=file name=file 	id=file   style=font-size:10px;  size=60   >";
+		     DrawInputRect("上傳完成檔案","12","#ffffff", ($ex ),$ey ,320,16, $colorCodes[4][2],"top", $input);
+			 $ey+=30;
+			 $fininput="<input type=text name=finLink  value='".$plansArray[14]."'  size=50   >";
+	         DrawInputRect("完成連結","12","#ffffff",($ex ),$ey  ,420,18, $colorCodes[4][2],"top",$fininput);
+			 
+			 //備註
+			 $ey+=30;
+			 $fininput2="<input type=text name=remark2   value='".$plansArray[16]."'  size=50   >";
+	         DrawInputRect("備註","12","#ffffff",($ex ),$ey  ,420,18, $colorCodes[4][2],"top",$fininput2);
+			 
+			 //費用
+			 $ey+=30;
+			 $ininput="<input type=text name=Price   value='".$plansArray[17]."'  size=10   >";
+	         DrawInputRect("費用(美金)","12","#ffffff",($ex ),$ey  ,220,18, $colorCodes[4][2],"top",$ininput);
+			 
+			 //刪除
+	         $input="<input type=text name=del value=''  style=font-size:10px; size=3>";
+	         DrawInputRect("輸入刪除碼","12","#ffffff",($ex+200),$ey ,220,16, $colorCodes[4][2],"top",$input);	
+		     $submitP="<input type=submit name=submit value=刪除計畫>";
+	         DrawInputRect("",$ey-40  ,"#ffffff",($ex+320),$ey-635,120,18, $colorCodes[4][2],"top",$submitP);
+			  //載入小日曆
+		     include('CalendarPlugin.php');
+		  	 DrawSCalender(420,300,"Edit");
+   }
 	 function  UpFiles_Res($Etype,$Ecode,$file){
 			   $gdname=trim($Ecode);
 			   $typepath=returnResDirbyGDname($gdname);

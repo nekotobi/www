@@ -17,7 +17,8 @@
 	//if($isSynchronize=="true")return;
 	DrawType();
 	DrawList();
-	DrawEdit();
+	//DrawEdit();
+	TypeGo();
 	upFile();
 	
 ?>
@@ -153,23 +154,28 @@
 					   $y=$rect[1]+$h;
 				       $x=$rect[0];
 					   $w=$ListSize[2];
-					   $state= findCodeAndState($planCode,$type );// 0狀態 1工作開始 2工作結束日 3外包 4百分比
+					   $state= findCodeAndState($planCode,$type );// 0狀態 1工作開始 2工作結束日 3外包 4百分比 5code 6selfcode
 				       if(count($state)==0)return;
 	                   $worker="未定義";
 					   $filePaths=getResfilePath($GDcode,$type);
 					   $worker= $state[3] ; 
-					   
                        if( file_exists( $filePaths[2])){
 						   $w=$w/2;
 					       $x+=$h+30;
 					   }
-					   
 					   //繪師條
-					   DrawRect(  $worker ,12,"#ffffff",$x,$rect[1],$w,$h,"#666666" );//繪師
-					   if($state[4]==0){
-						  $Link=$BackURL."&Edit=".$GDcode."&Etype=".$type;
+					   $Add="&EditType=Uppic";
+					    if($state[0] =="null"){
+						   $Add="&EditType=AddPlan";
+						   $Link=$BackURL.$Add."&Edit=".$GDcode."&Etype=".$type."&planCode=".$planCode;
+					       DrawLinkRect("新增規畫",12,"#993333",$x,$y-20,$w,$h*2,"#662222",$Link,"");
+						   return;
+					      }
+					      DrawRect(  $worker ,12,"#ffffff",$x,$rect[1],$w,$h,"#666666" );//繪師
+	                     if($state[0] !="已完成") $Add="&EditType=EditOrder";
+						  $Link=$BackURL.$Add."&Edit=".$GDcode."&Etype=".$type."&planCode=".$state[5];
 						  DrawLinkRect( $state[0],12,"#000000",$x,$y,$w,$h,getColor($state[0]),$Link,"");
-					   }
+					 
 					   if($state[4]!=0){ 
 						 	   $w2=$w*$state[4];
 							   $recta=$rect;
@@ -244,16 +250,18 @@
 				}
 				return -1;
 	   }	   
-	   function findCodeAndState( $code ,$type ){ //比對文件編碼 工作類別回傳 0狀態 1工作開始 2工作結束日 3外包 4百分比
+	   function findCodeAndState( $code ,$type ){ //比對文件編碼 工作類別回傳 0狀態 1工作開始 2工作結束日 3外包 4百分比 5code
 	             global $ScheduleData;
 		         for($i=0;$i<count($ScheduleData);$i++){
 			        if( $ScheduleData[$i][3]==$code &&  $ScheduleData[$i][5]==$type ){
+					 
 						$percentage=0;
 						if($ScheduleData[$i][7]=="進行中") $percentage=	getprogress($ScheduleData[$i][2],$ScheduleData[$i][6]);
 					    $principal= $ScheduleData[$i][9];
 						if($ScheduleData[$i][9]=="" or $ScheduleData[$i][9]=="未定義")$principal=$ScheduleData[$i][8];
  
-						return array($ScheduleData[$i][7],$ScheduleData[$i][2],$ScheduleData[$i][6],  $principal,$percentage);
+						return array($ScheduleData[$i][7],$ScheduleData[$i][2],$ScheduleData[$i][6],
+						$principal,$percentage,$ScheduleData[$i][1] );
 					}
 				 }
 				 return array("null");
@@ -345,26 +353,148 @@
 			//   echo "xx".$submit;
 			   global $BackURL;
 	           if ($submit=="")return;
+			   if($submit=="上傳"){  
 			   global $Ecode,$Etype;
 			   global $file;
 			   UpFiles_Res($Etype,$Ecode,$file);
                echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+			   return;
+			   }
+			   if($submit=="新增規畫"){  
+			    UpAddTypeData( );
+				 return;
+			   }
 	  }
+      function UpAddTypeData( ){
+		       global $data_library,$tableName;
+			   global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1;
+			   global $year,$month,$day;
+			       $tableName="fpschedule";
+				echo $data_library;
+			       $p=$tableName;
+				   $tables=returnTables( $data_library_Base,$p);
+	               $t= count( $tables);
+				   $WHEREtable=array();
+				   $WHEREData=array();
+		           for($i=0;$i<$t;$i++){
+	       	            global $$tables[$i];
+					    $startDay=$year."_".$month."_".$day;
+				        array_push($WHEREtable,$tables[$i]);
+					    array_push($WHEREData,$$tables[$i]);
+		              }
+					$stmt=   MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
+				    SendCommand($stmt, $data_library);
+			//  echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+		      echo $stmt;
+	 }
 
 ?>
 <?php //Orther
+     
+    function DrawAddNewOrder(){
+	     global $data_library,$tableName,$milestone,$typeData;   
+	     global $colorCodes;
+		 global $Etype,$Ecode,$planCode,$Edit;
+		 global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1;
+	     if($Stype_1=="")$Stype_1=0;
+		 $ex=300;
+		 $ey=200;
+		 $w=400;
+		 $h=200;
+         $title ="新增[".$Edit."[". $typeData[$Stype_1]."]".$Etype.">".$planCode;
+         DrawPopBG($ex,$ey,$w,$h,$title ,"12",$BackURL);
+		 $planstmp=getMysqlDataArray($tableName);
+		 $plansArray=returnDataArray($planstmp,1,$Ecode);
+		 $startDay=explode("_",$plansArray[2]);
+     	 $ex+=20;
+		 $ey+=20;
+		 //From
+		 echo   "<form id='AddPlan'  name='Show' action='".$BackURL."' method='post'>";
+		 $code=returnDataCode( );
+		 echo   "<input type=hidden name=code value=".$code.">";
+	 	 echo   "<input type=hidden name=plan value=".$Ecode.">"; 		
+         echo   "<input type=hidden name=type value=".$Etype.">";		 
+		 echo   "<input type=hidden name=PhpInputType value=upAddType >";
+		 echo   "<input type=hidden name=line value=".$plansArray[4]." >";
+		 echo   "<input type=hidden name=data_type value=data>"; 
+	   //  $selecttype= $SelectType_1[$Stype_1];
+	     echo   "<input type=hidden name=selecttype value=".$Etype.">"; 
+		 $lastUpdate=date(Y_m_d_H_i,time()+(8*3600));
+		 echo   "<input type=hidden name=lastUpdate value=".$lastUpdate.">"; 
+         echo   "<input type=hidden name=plan value=".$planCode.">"; 
+		 //年
+	     $input="<input id='year'  type=text name=year value='".$startDay[0]."'  size=4>年";
+	     DrawInputRect("新增","12","#ffffff",($ex),$ey ,120,16, $colorCodes[4][2],"top",$input);
+	     //月
+	     $input="<input id='month' type=text name=month value='".$startDay[1]."'  size=2>月";
+	     DrawInputRect("","12","#ffffff",($ex+80),$ey ,120,16, $colorCodes[4][2],"top",$input);
+		 //日
+	     $input="<input id='day' type=text name=day value='".$startDay[2]."'  size=2>日".$plansArray[3];
+	     DrawInputRect("","14","#ffffff",($ex+130),$ey ,220,16, $colorCodes[4][2],"top",$input);
+         //天數
+	     $workDayinput="<input id='workingDays' type=text name=workingDays  value='5'  size=2   >";
+	     DrawInputRect("天數","12","#ffffff",($ex+240),$ey ,120,18, $colorCodes[4][2],"top",$workDayinput);
+		 //外包負責
+			 $OutsDatatmp=getMysqlDataArray("outsourcing");
+	         $OutsDatatmp2=filterArray($OutsDatatmp,0,"data");
+	         $OutsData=returnArraybySort( $OutsDatatmp2,2);
+			 $selectTable= MakeSelectionV2($OutsData,$plansArray[9] ,"outsourcing",10);
+		     DrawInputRect( "選擇負責外包","10","#ffffff",($ex+160 ),$ey+40 ,220,16, $colorCodes[4][2],"top", $selectTable);
+			 //負責人
+			 $principaltmp=getMysqlDataArray("members");
+			 $principalData=returnArraybySort( $principaltmp,1);
+			 $selectTable= MakeSelectionV2( $principalData,$plansArray[8],"principal" ,10);
+			 DrawInputRect( "選擇內部負責","10","#ffffff",($ex+160),$ey+60 ,220,16, $colorCodes[4][2],"top", $selectTable);
+		 //費用
+			 $ey+=30;
+			 $ininput="<input type=text name=Price   value='".$plansArray[17]."'  size=10   >";
+	         DrawInputRect("費用(美金)","12","#ffffff",($ex+160),$ey+70  ,220,18, $colorCodes[4][2],"top",$ininput);
+		 
+		 $submitP="<input type=submit name=submit value=新增規畫>";
+	     DrawInputRect("",$ey+40  ,"#ffffff",($ex+220),60,120,18, $colorCodes[4][2],"top",$submitP);
+		 
+         //載入小日曆
+		  include('CalendarPlugin.php');
+		  DrawSCalender( $ex,$ey+20,"new");
+	}
+    function TypeGo(){
+	         global $EditType;
+		     if($EditType=="AddPlan"){
+				 DrawAddNewOrder();
+			     return;
+			  }
+			  if($EditType=="Uppic"){
+				  DrawEdit();
+			     return;
+			  }
+			  if($EditType=="EditOrder"){
+			  	 global $planCode;
+				 global $Ecode;
+				 global $tableName;
+				 $Ecode= trim($planCode);
+				  $tableName="fpschedule"; 
+				 EditPlanTypeEditor_v2(400,250,400,300);
+				
+			     return;
+			  }
+	}
 	function DrawEdit(){
-		      global $Edit,$Etype;
-			  if($Edit=="")return;
+		      global $Edit,$Etype,$planCode;
+			 // if($Edit=="")return;
+
 		      global $tableName,$data_library, $typeData,$typeData2; 
-		      global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
+		      global $BaseURL,$BackURL, $Stype_1,$Stype_2,$Stype_2,$SelectType_2,$stateType; 
 			  global $ScheduleData,$mainData,$mileStone;
 			  global $colorCodes,$Lists;
 		      $x=200;
 		   	  $y=100;
 			  $w=300;
 			  $h=100;
+			  $fontSize=12;
+			  $fontColor="#ffffff";
+			  $title=$SelectType_2[$Stype_2]."[".$Edit."]";
 	          DrawPopBG($x,$y,$w,$h,"編輯".$Edit."[".$Etype."]資料" ,"12",$BackURL);
+			  DrawRect("[".$BaseCode."]",$fontSize,"#ffffff",$x,$y+20,$w,20,$colorCodes[3][1]);
 			  $EditData=$mainData[$Edit];
 			  $info=$EditData[2].$EditData[3];
 			  $BgColor="#ffffff";
@@ -373,7 +503,7 @@
 			  echo   "<form id='EditRes'  name='Show' action='".$BackURL."' method='post'  enctype='multipart/form-data'>";
 			  echo   "<input type=hidden name=Etype value=".$Etype.">";
 			  echo   "<input type=hidden name=Ecode value=".$Edit.">";
-			  $y+=30;
+			   $y+=30;
 	          $input="<input type=file name=file 	id=file  size=60   >";
 			  DrawInputRect("設定檔案"." ","12","#ffffff", $x  ,$y,420,20, $colorCodes[4][2],"top", $input);
 			  $submit ="<input type=submit name=submit value=上傳>";
@@ -382,64 +512,4 @@
 
 	}
 ?>
-<?php //back
-	   /*
-					   $state=findState($GDcode,"設定");
-					   $filePaths=getResfilePath($GDcode,"設定");
-					   $info="null";
-					   $w=$ListSize[$i];
-					   $worker="未定義";
-					   if(count($state)>1){
-					      $info=$state[0];
-						  $worker=$state[3];
-					   }
-					   if( file_exists( $filePaths[2])){
-					       DrawLinkPic($filePaths[2], $rect[1],$rect[0],$rect[3],$rect[3],$filePaths[1]);
-						   DrawRect( $info ,12,"#000000",$rect[0]+$rect[3],$rect[1],$ListSize[$i]-+$rect[3],$rect[3],getColor($state));
-						   $rect[0]+=$ListSize[$i]/2;
-						   $w/=2;
-					   }  // 0狀態 1工作開始 2工作結束日 3外包 4百分比
-					     DrawRect( $worker ,12,"#ffffff",$rect[0],$rect[1],$w,$h,"#666666" );//繪師
-					    if($state[4]==0){
-						   DrawRect( $info ,12,"#000000",$rect[0],$y,$w,$h,getColor($state[0]));//完成狀況
-						  }else{
-							   $w2=$w*$state[4];
-							   $recta=$rect;
-							   $recta[1]=$y;
-							   $recta[3]=$h;
-							   $msg=$info."..(".floor($state[4]*100)."%)";
-							   $colors=array("#77aa77","#88ff88","#000000");
-							   $per=$state[4];
-							   if($per>1){
-								   $msg="延誤中..(".floor($state[4]*100)."%)";
-								   $per=1;
-						       $colors=array("#ffaa77","#ff8888","#000000");
-							   }
-							   DrawProgress($msg,$per,$recta,$colors,"11");
-						 
-						   }
-	
-	               */
-	   /*
-       function findState($GDsn,$type){
-	            global $ScheduleData,$mainData;
-	            $code=GetScheduleMainPlanCode($ScheduleData,$GDsn,3);
-				if($code==-1)return "null";
-				return findCodeAndState($ScheduleData,$code,$type );
-	   }
-       */
-	         /*
-			  for($i=0;$i<count($tables);$i++){
-			      echo   "<input type=hidden name=".$tables[$i]." value=".$EditData[$i].">";
-		    	 }
-		      $select=MakeSelectionV2($mileStone,$EditData[10],"stateCode_6",80);
-	          DrawInputRect("里程碑","10","#ffffff", $x+155,$y,220,18, $colorCodes[4][2],"top",  $select);
-		      for($i=5;$i<count($tables);$i++){
-			     if($Lists[$i]!=""){
-				    $input="<input type=file name=".$tables[$i]." 	id=".$tables[$i]."  size=60   >";
-				    $y+=30;
-				    DrawInputRect($Lists[$i]." ","12","#ffffff", $x  ,$y,420,20, $colorCodes[4][2],"top", $input);
-			       }
-		      }
-		      */
-?>
+ 

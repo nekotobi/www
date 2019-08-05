@@ -131,8 +131,25 @@
    
 ?>
 
-
-<?php
-       function DrawSmallCalender(){
-	   }
-?>
+ <?php //上傳
+      function AddTypeData( ){
+		       global $data_library,$tableName;
+			   global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1;
+			   global $year,$month,$day;
+			       $p=$tableName;
+				   $tables=returnTables($data_library,$p);
+	               $t= count( $tables);
+				   $WHEREtable=array();
+				   $WHEREData=array();
+		           for($i=0;$i<$t;$i++){
+	       	            global $$tables[$i];
+					    $startDay=$year."_".$month."_".$day;
+				        array_push($WHEREtable,$tables[$i]);
+					    array_push($WHEREData,$$tables[$i]);
+		              }
+					$stmt=   MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
+				    SendCommand($stmt,$data_library);
+			 // echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+		      echo $stmt;
+	 }
+ ?>
