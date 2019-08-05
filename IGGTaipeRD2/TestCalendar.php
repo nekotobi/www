@@ -8,6 +8,6 @@
 <body>
 <?php
    include('CalendarPlugin.php');
-        DrawSCalender(222,222);
+        DrawSCalender(222,222,"none");
 ?>
 </body>

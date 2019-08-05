@@ -11,20 +11,61 @@
 		 var clickEnd="";
 		 var Workdays=1;
 		 var click=0;
-		 DefuseDate();
+		 var type="";
+	     DefuseDate("");
 	     function upfrom(){
-			 	  document.getElementById("workingDays").value= Workdays ;
-		          document.getElementById("year").value=  currentY;
-				  document.getElementById("month").value=  currentM;
-				  document.getElementById("day").value=  clickStartD;
+	 
+				           document.getElementById("workingDays").value= Workdays ;
+		                   document.getElementById("year").value=  currentY;
+				           document.getElementById("month").value=  currentM;
+				           document.getElementById("day").value=  clickStartD;
+				  
+			 	
 	
 		 }
-	     function DefuseDate(){
+	     function DefuseDate(Ctype){
+			     type=Ctype;
+				 currentY=dt.getFullYear();
+		         currentM=dt.getMonth()+1;
+				 if(type=='Edit'){
+					       currentY= parseInt( document.getElementById("year").value) ;
+						   currentM=  parseInt(  document.getElementById("month").value ) ;
+						   clickStartD=  parseInt( document.getElementById("day").value  ) ;
+					       var passDays= parseInt(document.getElementById("workingDays").value)  ;
+						   currentD=clickStartD;
+						   clickStart= currentY+"-"+currentM+"-"+ currentD;
+					       First_day=returnDay( new Date(currentY,currentM,0).getDay()) ;
+	                       end_day=new Date(currentY,currentM,0).getDate();
+						   UpCalendar(); 
+						    var endDay= getPassDaysDay(currentY,currentM,clickStartD,passDays);
+						     document.getElementById("TargetDate").innerHTML =currentY+"-"+currentM; 
+						    UpCalendarColor( clickStartD, endDay);// clickStartD, clickStartD);
+                           
+                            return;							
+				 }
+			     var   Title=currentY+"-"+currentM; 
 		         var s = document.getElementById("TargetDate");
-			         s.innerHTML = currentY+"-"+currentM; 
-					 	 UpCalendar();
-						 upfrom();
+			     s.innerHTML =Title;
+				 UpCalendar();
+				 upfrom();
 		 }
+		 function getPassDaysDay(y,m,d,passDays){
+		         var p=parseInt( passDays)-1;
+                 var mDay=new Date(y,m,0).getDate();
+				 while(p>0){
+					  var wd=returnDay( new Date(y,m,d).getDay());
+				      if(wd!=0 && wd!=6) p-=1;
+					  d+=1;
+					  if(d> mDay){
+					     d=1;
+						 m+=1;
+						 mDay=new Date(y,m,0).getDate();
+					  }
+					  
+				 }
+		         return  d ;
+		 }
+		 
 	     function MonthLeft(add){
 		     var s = document.getElementById("TargetDate");
 			 currentM+=add;
@@ -51,6 +92,7 @@
 			      var w=0;
 				  var s=0;
 				  var BgColor='#eeeeee';
+			
 				  for(var j=0;j<6;j++){
 		              for(var i=0;i<7;i++){
 					      BgColor='#eeeeee';
@@ -69,22 +111,22 @@
 						  }
 					 }
 				  }
+		
 		}
 		 function UpCalendarColor(sd ,ed){
-			     BgColor='#aaffaa';
-				 		sd=parseInt(sd);
-						ed=parseInt(ed);
-						var log="";
+			    //  document.getElementById("TargetDate").innerHTML  ="dd"; 
+			      BgColor='#aaffaa';
+				  sd=parseInt(sd);
+				  ed=parseInt(ed);
 		          for(var j=0;j<6;j++){
 		              for(var i=0;i<7;i++){
 						  var id=i+"-"+j;
 						   var o= document.getElementById(id);
 						   var c= parseInt( o.innerHTML);  //parseInt(o.value);
-						   log+=id+":"+c;
-						   if(c>=sd && c<=ed) o.style.backgroundColor=BgColor;
+						   if(c>=sd && c<=ed)if(o!=null) o.style.backgroundColor=BgColor;
 					     }
 		           }
-				   // document.getElementById("debug").value= log;
+				   	
 		 }
 		 function ClickCalendar(e){
 			     e = e || window.event;

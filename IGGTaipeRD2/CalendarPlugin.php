@@ -1,14 +1,28 @@
 
 <?php
 
-	 function DrawSCalender($startX,$startY){
-
+	 function DrawSCalender($startX,$startY,$type){
 		  DrawSmallCalendar( $startX,$startY);
 	      DrawDateTitle($startX,$startY);
 	      DrawBtu($startX,$startY);
 		  DrawCalendarBase($startX,$startY+40);
-		  echo "<script> DefuseDate();</script> "; 
-		  	
+		 // DrawOtherButton($startX,$startY);
+		//  echo "<script> DefuseDate(".$type.");</script> "; 
+		  echo "<script> DefuseDate('".$type."');</script> "; 
+	 }
+	 function DrawOtherButton($startX,$startY){
+	         $x=$startX;
+			 $y=$startY+20;
+			 $h=20;
+			 $fontSize=10;
+			 $fontColor="#ffffff";
+			 $BgColor="#000000";
+			 $msg="delay";
+             $other="line-height:".($h )."px; text-align:center;   ";
+			 $Event=" onmousedown='MonthLeft(+1)'";
+			 $id="delay";
+			 DrawIDRectEvent($x+120,$y,$h-1,$h-1,$id,$info, $fontSize, $fontColor,$BgColor,$other,$Event,1);
+
 	 }
 	  function DrawSmallCalendar($startX,$startY){
 			 $x=$startX;
