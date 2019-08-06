@@ -484,13 +484,12 @@
 			   }	 
 	 }
 	  function UpEditData( ){
-		 
-		     //  global $milestone;
-		      // echo "[".count($milestone)."]";
+		
 		       global $data_library,$tableName,$MainPlanData;
 			   global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1;
 			   global $year,$month,$day;
 			   global $submit;
+			     echo $submit;
 			   global $del;
 			   $p=$tableName;
 			   $tables=returnTables($data_library,$p);
@@ -511,14 +510,13 @@
                           array_push($up,$$tables[$i]);
 		       }
 			   //變更屬性
-			
-			 //  if($state=="暫停")$type=$type."_廢棄";
+	 
 			   $WHEREtable=array( "data_type", "code" );
 		       $WHEREData=array( "data",$code );
 			   if($submit=="修改計畫"){
 			    $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
                 SendCommand($stmt,$data_library);		
- 	                 echo $stmt;
+ 	            echo $stmt;
 			   }
 		       if($submit=="送出修改"){
 				   $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);

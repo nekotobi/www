@@ -749,7 +749,9 @@
 			    	 UpEditData( );
 			    break;
 				case $PhpInputType=="upAddType":
-			    	 AddTypeData( );
+				     
+			    	  AddTypeData( );
+					   echo "XX";
 			    break;
 				case $PhpInputType=="EditPlanType":
 			    	 EditPlanTypeEditor_v2("400","260","400","310");
@@ -986,7 +988,7 @@
 			  $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
               SendCommand($stmt,$data_library);			   
 	 }
-  
+ 
      function AddData( ){
 		        global $data_library,$tableName;
 			    global  $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$EditHide;
@@ -1009,7 +1011,7 @@
 
 ?>
 <?php  //Oder
-  
+     
      function AddPlanTypeEditor_v2($ex,$ey,$w,$h,$y,$m,$d){
          global $data_library,$tableName;   
 	     global $colorCodes;
@@ -1023,6 +1025,7 @@
 
 		 //From
 		 echo   "<form id='AddPlan'  name='Show' action='".$BackURL."' method='post'>";
+		 echo $BackURL;
 		 $code=returnDataCode( );
 		 echo   "<input type=hidden name=code value=".$code.">";
 	 	 echo   "<input type=hidden name=plan value=".$Ecode.">"; 		 

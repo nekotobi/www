@@ -149,7 +149,7 @@
 		              }
 					$stmt=   MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
 				    SendCommand($stmt,$data_library);
-			 // echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+			   echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 		      echo $stmt;
 	 }
  ?>
