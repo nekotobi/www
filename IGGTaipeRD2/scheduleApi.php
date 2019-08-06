@@ -260,6 +260,20 @@
 ?>
 
 <?php //上傳檔案
+	 function  getTypes(){
+		  global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType,$EditHide;
+		 		$sTypeTmp= getMysqlDataArray("scheduletype");	
+				$SelectType_1tmp= filterArray($sTypeTmp ,0,"data");
+				$SelectType_1sort=sortArrays($SelectType_1tmp ,5 ,"true");
+			    $SelectType_1=   returnArraybySort($SelectType_1sort,2);
+				//
+			    $SelectType_2tmp= filterArray($sTypeTmp ,0,"data2");
+				$SelectType_2=   returnArraybySort($SelectType_2tmp,2);
+				$stateTypetmp= filterArray($sTypeTmp ,0,"data3");
+				$stateType=   returnArraybySort($stateTypetmp,2);
+				if($Stype_1=="")$Stype_1=0;
+	 }
+
      function EditPlan_v2($ex,$ey,$w,$h){
 	        global $data_library,$tableName, $milestoneSelect;    
 			global $Ecode;
@@ -330,7 +344,7 @@
 	     //   echo $Ecode.">".$tableName.">";
 			
 			$planstmp=getMysqlDataArray($tableName);
-	//	 echo  count($planstmp).">";
+	   //	 echo  count($planstmp).">";
 			$plansArray=returnDataArray($planstmp,1,$Ecode);
 		//	echo  count($plansArray );
 			$rootName= returnDataArray($planstmp,1,$plansArray[3]);
@@ -378,7 +392,9 @@
 			 $principalData=returnArraybySort( $principaltmp,1);
 			 $selectTable= MakeSelectionV2( $principalData,$plansArray[8],"principal" ,10);
 			 DrawInputRect( "選擇內部負責","10","#ffffff",($ex+250),$ey+30 ,220,16, $colorCodes[4][2],"top", $selectTable);
-			 //狀態
+	         	  global $stateType;
+			  if(count($stateType)==0)gettypes();
+        	//狀態
 			 $selectTable= MakeSelectionV2( $stateType,$plansArray[7],"state" ,10);
 			 DrawInputRect( "目前狀態","10","#ffffff",($ex+250),$ey+60 ,220,16, $colorCodes[4][2],"top", $selectTable);
 		
@@ -466,6 +482,58 @@
 					   exec($cmd);
 				   }
 			   }	 
+	 }
+	    function UpEditData( ){
+		 
+		     //  global $milestone;
+		      // echo "[".count($milestone)."]";
+		       global $data_library,$tableName,$MainPlanData;
+			   global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1;
+			   global $year,$month,$day;
+			   global $submit;
+			   global $del;
+			   $p=$tableName;
+			   $tables=returnTables($data_library,$p);
+			   $plansArray=returnDataArray($MainPlanData,1,$Ecode);
+	           $t= count( $tables);
+			   $Base=array();
+			   $up=array();
+			   global $state;
+			   if($state=="廢棄"){
+				  echo "xxxxxxxx";
+				  global $type;
+				  $type=$type."_廢棄";
+			   }
+		       for($i=0;$i<$t;$i++){
+	       	       global $$tables[$i];
+				   		  $startDay=$year."_".$month."_".$day;
+				          array_push($Base,$tables[$i]);
+                          array_push($up,$$tables[$i]);
+		       }
+			   //變更屬性
+			
+			 //  if($state=="暫停")$type=$type."_廢棄";
+			   $WHEREtable=array( "data_type", "code" );
+		       $WHEREData=array( "data",$code );
+			   if($submit=="修改計畫"){
+			    $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
+                SendCommand($stmt,$data_library);		
+ 	                 echo $stmt;
+			   }
+		       if($submit=="送出修改"){
+				   $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
+                   SendCommand($stmt,$data_library);			
+				   //上傳檔案
+				   $plansArray=returnDataArray($MainPlanData,1,$up[3]);
+				   UpFiles($up,$plansArray[3]);
+                   echo $stmt;
+			      
+			   }   
+			   if($submit=="刪除計畫"){
+			      if($del!="") $stmt= MakeDeleteStmt($tableName,$WHEREtable,$WHEREData); 
+				     SendCommand($stmt,$data_library);
+			   }
+	        echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	 }
 ?>
 

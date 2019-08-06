@@ -364,6 +364,13 @@
 			    UpAddTypeData( );
 				 return;
 			   }
+			    if($submit=="送出修改"){  
+				      global  $tableName;
+				 $tableName="fpschedule";
+		    
+		         UpEditData( );
+				 return;
+			   }
 	  }
       function UpAddTypeData( ){
 		       global $data_library,$tableName;
@@ -384,10 +391,11 @@
 		              }
 					$stmt=   MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
 				    SendCommand($stmt, $data_library);
-			//  echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+			  echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 		      echo $stmt;
 	 }
 
+	 
 ?>
 <?php //Orther
      
@@ -449,7 +457,12 @@
 			 $ey+=30;
 			 $ininput="<input type=text name=Price   value='".$plansArray[17]."'  size=10   >";
 	         DrawInputRect("費用(美金)","12","#ffffff",($ex+160),$ey+70  ,220,18, $colorCodes[4][2],"top",$ininput);
-		 
+			  global $stateType;
+			 gettypes();
+			
+		  //狀態
+			 $selectTable= MakeSelectionV2( $stateType,$plansArray[7],"state" ,10);
+			 DrawInputRect( "目前狀態","10","#ffffff",($ex+160),$ey+90 ,220,16, $colorCodes[4][2],"top", $selectTable);
 		 $submitP="<input type=submit name=submit value=新增規畫>";
 	     DrawInputRect("",$ey+40  ,"#ffffff",($ex+220),60,120,18, $colorCodes[4][2],"top",$submitP);
 		 

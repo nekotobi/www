@@ -72,17 +72,9 @@
 		        $BaseURL="schedule.php";
                 $BackURL= $BaseURL."?Stype_1=".$Stype_1."&Stype_2=".$Stype_2."&EditHide=".$EditHide;
 				//類別1
-				$sTypeTmp= getMysqlDataArray("scheduletype");	
-				$SelectType_1tmp= filterArray($sTypeTmp ,0,"data");
-				$SelectType_1sort=sortArrays($SelectType_1tmp ,5 ,"true");
-			    $SelectType_1=   returnArraybySort($SelectType_1sort,2);
-				//
-			    $SelectType_2tmp= filterArray($sTypeTmp ,0,"data2");
-				$SelectType_2=   returnArraybySort($SelectType_2tmp,2);
-				$stateTypetmp= filterArray($sTypeTmp ,0,"data3");
-				$stateType=   returnArraybySort($stateTypetmp,2);
-				if($Stype_1=="")$Stype_1=0;
+	             getTypes();
 	 }
+
      function  DrawType_v2(){ //類別
 		 	  global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX,$monthLoc,$showMonthNum ;
 	    	  global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2;
@@ -994,58 +986,7 @@
 			  $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
               SendCommand($stmt,$data_library);			   
 	 }
-     function UpEditData( ){
-		 
-		     //  global $milestone;
-		      // echo "[".count($milestone)."]";
-		       global $data_library,$tableName,$MainPlanData;
-			   global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1;
-			   global $year,$month,$day;
-			   global $submit;
-			   global $del;
-			   $p=$tableName;
-			   $tables=returnTables($data_library,$p);
-			   $plansArray=returnDataArray($MainPlanData,1,$Ecode);
-	           $t= count( $tables);
-			   $Base=array();
-			   $up=array();
-			   global $state;
-			   if($state=="廢棄"){
-				  echo "xxxxxxxx";
-				  global $type;
-				  $type=$type."_廢棄";
-			   }
-		       for($i=0;$i<$t;$i++){
-	       	       global $$tables[$i];
-				   		  $startDay=$year."_".$month."_".$day;
-				          array_push($Base,$tables[$i]);
-                          array_push($up,$$tables[$i]);
-		       }
-			   //變更屬性
-			
-			 //  if($state=="暫停")$type=$type."_廢棄";
-			   $WHEREtable=array( "data_type", "code" );
-		       $WHEREData=array( "data",$code );
-			   if($submit=="修改計畫"){
-			    $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
-                SendCommand($stmt,$data_library);		
- 	                 echo $stmt;
-			   }
-		       if($submit=="送出修改"){
-				   $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
-                   SendCommand($stmt,$data_library);			
-				   //上傳檔案
-				   $plansArray=returnDataArray($MainPlanData,1,$up[3]);
-				   UpFiles($up,$plansArray[3]);
-                   echo $stmt;
-			      
-			   }   
-			   if($submit=="刪除計畫"){
-			      if($del!="") $stmt= MakeDeleteStmt($tableName,$WHEREtable,$WHEREData); 
-				     SendCommand($stmt,$data_library);
-			   }
-	           echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
-	 }
+  
      function AddData( ){
 		        global $data_library,$tableName;
 			    global  $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$EditHide;
