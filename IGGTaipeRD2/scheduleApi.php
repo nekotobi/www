@@ -483,7 +483,7 @@
 				   }
 			   }	 
 	 }
-	    function UpEditData( ){
+	  function UpEditData( ){
 		 
 		     //  global $milestone;
 		      // echo "[".count($milestone)."]";

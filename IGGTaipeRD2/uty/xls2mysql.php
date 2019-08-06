@@ -25,6 +25,7 @@
           echo "<p><label>";
           echo "<input type=submit name=submit value=新增全新表格 />";
 		  echo "<input type=submit name=submit value=追加內容 />";
+		  echo "<input type=submit name=submit value=修改內容 />";
 	      echo "<input type=hidden name=data_library value=$data_library >";
           echo "</label>";
           echo "</div></label></form>";
@@ -36,6 +37,7 @@
 	    $data=getTxtArray();
 	   if($submit=="新增全新表格") newTable( $data);
 	   if($submit=="追加內容") AddTable( $data); 
+	   if($submit=="修改內容") changedata($data);
    }
    function newTable( $data){
            $data_library=$data[0][1];
@@ -58,7 +60,29 @@
 	       $re = mysql_query($stmt,$db) ;
 		   
    }
-   
+   function changedata($data){
+	        $data_library=$data[0][1];
+			$tableName=$data[0][0];
+           // $tables=returnTables($data_library ,$tableName);
+	        $WHEREtable=array( $data[1][0], $data[1][1]);
+			//echo $WHEREtable[0]."=".$WHEREtable[1];
+			$Base=array();
+			for($i=2;$i<count($data[1]);$i++){
+				
+			    array_push( $Base,$data[1][$i]);
+			}
+ 
+			for($i=2;$i<count($data);$i++){ 
+		        $WHEREData=array( $data[$i][0], $data[$i][1] );
+				$up=array();
+			 	for($j=2;$j<count($data[$i]);$j++){
+			         array_push( $up,$data[$i][$j]);
+		        	}
+			    $stmt= MakeUpdateStmtv2 ($tableName,$Base,$up,$WHEREtable,$WHEREData);
+				 echo "</br>".$stmt;
+		         SendCommand($stmt,$data_library);
+			}
+   }
    
    function AddTable($data){
 	   		$data_library=$data[0][1];
@@ -104,7 +128,7 @@
 			}
 			return $data;
   }
-   
+ 
 ?>
 <?php //pubapi
   	 function returnTables($data_library ,$tableName){ //取得資料表所有欄位名稱
@@ -140,7 +164,22 @@
 		  echo ">".$re;
 		 // echo $stmt;
 	  }
-
+     function MakeUpdateStmtv2($tableName,$Base,$up,$WHEREtable,$WHEREData){
+ 
+	       $stmt="UPDATE `".$tableName."` SET ";
+           for($i=0;$i<count($Base);$i++){
+	 
+		         $stmt=$stmt." `".$Base[$i]."` = '".$up[$i]."'";
+				 if($i!=(count($Base)-1)) $stmt=$stmt.",";
+		   }
+		   $stmt=$stmt." WHERE ";
+		   for($i=0;$i<count($WHEREtable);$i++){
+			   if($i!=0)$stmt=$stmt." AND ";
+			     $stmt=$stmt." CONVERT( `".$tableName."`.`".$WHEREtable[$i]."` USING utf8 ) = '".$WHEREData[$i]."' ";
+		   }
+		   $stmt=$stmt." LIMIT 1 ;";
+	    return $stmt;
+	  }
 ?>
 </body>
 </html>
