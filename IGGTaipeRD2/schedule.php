@@ -298,6 +298,7 @@
 	  function DrawWorks($Code,$x,$y, $Exp ){
 		       global  $MainPlanData,$BackURL;
 		       $plansLinet= filterArray($MainPlanData,3,$Code);
+			   DrawWorkLinkBg($plansLinet);/////////////////
 			   $plansLine= SortbyDate($plansLinet);
                if( count($plansLine)==0)return;
                $length=$plansLine[count($plansLine)-1]['DayLoc']-$x;
@@ -339,6 +340,9 @@
 					
 					DrawOrderAdjust($Rect,$plansLine[$i]);
 			   }
+	  }
+	  function DrawWorkLinkBg($plansLinet){
+	           
 	  }
 	  function DrawOrderAdjust($Rect,$planData){
 	           global  $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$EditHide;
