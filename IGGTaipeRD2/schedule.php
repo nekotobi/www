@@ -298,12 +298,13 @@
 	  function DrawWorks($Code,$x,$y, $Exp ){
 		       global  $MainPlanData,$BackURL;
 		       $plansLinet= filterArray($MainPlanData,3,$Code);
-			   DrawWorkLinkBg($plansLinet);/////////////////
+		 
 			   $plansLine= SortbyDate($plansLinet);
                if( count($plansLine)==0)return;
-               $length=$plansLine[count($plansLine)-1]['DayLoc']-$x;
-			   if($Exp=="false")  
-				   DrawRect_Layer("",1,"#000000",array($x,$y+10,$length,1),"#444444",-12);
+			   DrawWorkLinkBg($plansLine,$x,$y, $Exp );
+            //   $length=$plansLine[count($plansLine)-1]['DayLoc']-$x;
+			  // if($Exp=="false")  
+			//	   DrawRect_Layer("",1,"#000000",array($x,$y+10,$length,1),"#444444",-12);
 			   if($Exp=="true") {
 				   $pic="Pics/Black20Bg.png";
 				   DrawPic_Layer($pic,$x,$y+16,$length+200,count($plansLine)*20+5,-10);
@@ -341,8 +342,19 @@
 					DrawOrderAdjust($Rect,$plansLine[$i]);
 			   }
 	  }
-	  function DrawWorkLinkBg($plansLinet){
-	           
+	  function DrawWorkLinkBg($plansLine,$x,$y, $Exp ){
+		       $sy=$y;
+	           for($i=0;$i<count($plansLine);$i++){
+				   $sx=$plansLine[$i]['DayLoc'];
+				   $ex=$x;
+				   if($sx>$x){
+					   $sx=$x;
+				       $ex=$sx;
+				   }
+				   $l=$ex-$sx;
+				   if($Exp=="true")$sy=$y+($i+1)*20; 
+				      DrawRect_Layer("",1,"#000000",array($sx,$sy+10,$l,1),"#444444",-12);
+			   }
 	  }
 	  function DrawOrderAdjust($Rect,$planData){
 	           global  $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$EditHide;
