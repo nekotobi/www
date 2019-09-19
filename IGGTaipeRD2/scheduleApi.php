@@ -42,7 +42,7 @@
 			    $x=RetrunXpos($daysLoc,$d);		
 				$info="Sprint".$SprintData[$i][5];
 				$color="#cccccc";
-				$nowMilestone=2;
+				$nowMilestone=3;
 				if( $SprintData[$i][6]==$nowMilestone)	$color="#123451";
 				$w= $SprintData[$i][4]*$OneDayWidth;
 			   // DrawabsoluteRect($info,"10","#ffffff", $x-8,  $sy ,$w ,"20", $color,  "absolute" ,"");
