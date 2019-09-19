@@ -50,8 +50,9 @@
 	   function sortArrays($BaseArray ,$ArrayNum ,$forwardBool){
   		  $newArray=array();
 		  $lastSn=  getLastSN2($BaseArray,$ArrayNum);
-		  if($forwardBool=="true"){//正向
-		  	  for($i=0;$i< $lastSn;$i++){
+      		 
+		 if($forwardBool=="true"){//正向
+		  	  for($i=0;$i<= $lastSn;$i++){
                  $tmpArray= GetArraySn($BaseArray, $ArrayNum ,$i);
 				 if(count($tmpArray)>0)$newArray=  array_merge( $newArray,$tmpArray); 
 			  } 

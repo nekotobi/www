@@ -48,7 +48,8 @@
 	    $milestoneSelect=returnArraybySort($mt2,2);
 		$mainDataBase= getMysqlDataArray($tableName);
 	    $mainDatatType=filterArray($mainDataBase,0,$typeDatacode[$Stype_1]);
-		$mainData=GetMileStone($mainDatatType,$milestoneSelect[$Stype_2]);
+		$SortmainData=SortList( $mainDatatType,0);
+		$mainData=GetMileStone($SortmainData,$milestoneSelect[$Stype_2]);
 		
 		//表單
 		global $Lists,$ListSize ;
@@ -216,16 +217,21 @@
 	   function GetMileStone($mainData,$fillerMilestone){
 				$reArray= array();
 	            for($i=0;$i<count($mainData);$i++){
-					if($mainData[$i][1]!="" or $mainData[$i][1]!=$mainData[$i][1]){
+				 	//echo "[".$mainData[$i][2]."]=".$mainData[$i][mileston];
+				//	if($mainData[$i][1]!="" or $mainData[$i][1]!=$mainData[$i][1]){
+					  $mainData[$i][mileston]=$mainData[$i][12];
+				    if($mainData[$i][1]!=""){
 					   $mainData[$i][PlanCode]=$mainData[$i][1];
-					   $mainData[$i][mileston]=$mainData[$i][12];
+					 
 					}else{
 					  $tmp=	GetMainPlanCodeMile($mainData[$i][2]);
+					  if($mainData[$i][12]=="")     $mainData[$i][mileston]=$tmp[mileston];
 					  $mainData[$i][PlanCode]=$tmp[code];
-				      $mainData[$i][mileston]=$tmp[mileston];
+				 
 					}
-					if( $mainData[$i][mileston]==$fillerMilestone or $fillerMilestone=="m1"){
-				   	 array_push( $reArray,$mainData[$i]);
+					//if( $mainData[$i][mileston]==$fillerMilestone or $fillerMilestone=="m1"){
+					if( $mainData[$i][mileston]==$fillerMilestone or $fillerMilestone=="m1"){	
+				   	   array_push( $reArray,$mainData[$i]);
 					}
 				   
 				}
@@ -398,7 +404,26 @@
 	 
 ?>
 <?php //Orther
-     
+    function SortList($base,$num){
+	      $sorta=array();
+		  $nums=array();
+		  for($i=0;$i<count($base);$i++){
+			 $base[$i][13]=codeRnum($base[$i][2]);
+		  }
+           $sorta=sortArrays( $base ,13 ,"true");
+		  for($i=0;$i<count( $sorta);$i++){
+	     //	echo	  $sorta[$i][13]."=". $sorta[$i][2]."</br>";
+		  }
+		  return $sorta;
+	}
+	function  sort_GD($a,$b){
+            if($a['sortgd'] == $b['sortgd']) return 0;
+           return ($a['sortgd'] > $b['sortgd']) ? 1 : -1;
+         }
+	function codeRnum($string){
+	        $a= ereg_replace("[a-zA-Z]","",$string);
+			return(int) $a;
+	}
     function DrawAddNewOrder(){
 	     global $data_library,$tableName,$milestone,$typeData;   
 	     global $colorCodes;
