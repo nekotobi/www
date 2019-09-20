@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-   <title>FP資源索引v2</title>
+   <title>FP資源索引優化</title>
 </head>
 <?php //主控台
     include('PubApi.php');
@@ -21,7 +21,7 @@
 	    //分頁
 		 
 	  	global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
-		$BaseURL="ResourceData.php";
+		$BaseURL="ResourceDataOpt.php";
 		$BackURL= $BaseURL."?Stype_1=".$Stype_1."&Stype_2=".$Stype_2;
 		if($Stype_1=="")$Stype_1=0;
 		if($Stype_2=="")$Stype_2=0;
