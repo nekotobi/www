@@ -286,7 +286,15 @@
 
 <?php
 
-
+    function getprogress($startDays,$workDays){
+		        global $VacationDays;  
+		        $startDay=explode("_",$startDays);
+			    $nowDayArray=array(date(Y),date(m),date(d));
+				$passDays= getPassDays($startDay,$nowDayArray);
+			    $realDays=ReturnWorkDaysV2($startDay[0],$startDay[1],$startDay[2],$workDays,$VacationDays);
+				return   $passDays   / ($realDays+1);
+				 
+	 }
 	function codeRnum($string){
 	        $a= ereg_replace("[a-zA-Z]","",$string);
 			return(int) $a;
