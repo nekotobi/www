@@ -15,6 +15,8 @@
 	DrawMainUI();
 	DrawType();
 	DrawList();
+    TypeGo();
+	upFile();
 ?>
 <?php //定義資料區
     function  DefineBaseData(){
@@ -285,7 +287,7 @@
 ?>
 
 <?php
-
+ 
     function getprogress($startDays,$workDays){
 		        global $VacationDays;  
 		        $startDay=explode("_",$startDays);
@@ -295,10 +297,7 @@
 				return   $passDays   / ($realDays+1);
 				 
 	 }
-	function codeRnum($string){
-	        $a= ereg_replace("[a-zA-Z]","",$string);
-			return(int) $a;
-	}
+ 
     function GetMainPlanCodeMile($GDCode){ //比對物件名稱包含GDCode 回傳文件編碼
 	         global $ScheduleDataTitle;
 	         for($i=0;$i<count($ScheduleDataTitle);$i++){
@@ -319,4 +318,192 @@
 				return $reArray;
     }
 ?>
+
+<?php //Orther
+ 
+	function sort_GD($a,$b){
+            if($a['sortgd'] == $b['sortgd']) return 0;
+           return ($a['sortgd'] > $b['sortgd']) ? 1 : -1;
+         }
+	function codeRnum($string){
+	        $a= ereg_replace("[a-zA-Z]","",$string);
+			return(int) $a;
+	}
+    function DrawAddNewOrder(){
+	     global $data_library,$tableName,$milestone,$typeData;   
+	     global $colorCodes;
+		 global $Etype,$Ecode,$planCode,$Edit;
+		 global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1;
+	     if($Stype_1=="")$Stype_1=0;
+		 $ex=300;
+		 $ey=200;
+		 $w=400;
+		 $h=200;
+         $title ="新增[".$Edit."[". $typeData[$Stype_1]."]".$Etype.">".$planCode;
+         DrawPopBG($ex,$ey,$w,$h,$title ,"12",$BackURL);
+		 $planstmp=getMysqlDataArray($tableName);
+		 $plansArray=returnDataArray($planstmp,1,$Ecode);
+		 $startDay=explode("_",$plansArray[2]);
+     	 $ex+=20;
+		 $ey+=20;
+		 //From
+		 echo   "<form id='AddPlan'  name='Show' action='".$BackURL."' method='post'>";
+		 $code=returnDataCode( );
+		 echo   "<input type=hidden name=code value=".$code.">";
+	 	 echo   "<input type=hidden name=plan value=".$Ecode.">"; 		
+         echo   "<input type=hidden name=type value=".$Etype.">";		 
+		 echo   "<input type=hidden name=PhpInputType value=upAddType >";
+		 echo   "<input type=hidden name=line value=".$plansArray[4]." >";
+		 echo   "<input type=hidden name=data_type value=data>"; 
+	   //  $selecttype= $SelectType_1[$Stype_1];
+	     echo   "<input type=hidden name=selecttype value=".$Etype.">"; 
+		 $lastUpdate=date(Y_m_d_H_i,time()+(8*3600));
+		 echo   "<input type=hidden name=lastUpdate value=".$lastUpdate.">"; 
+         echo   "<input type=hidden name=plan value=".$planCode.">"; 
+		 //年
+	     $input="<input id='year'  type=text name=year value='".$startDay[0]."'  size=4>年";
+	     DrawInputRect("新增","12","#ffffff",($ex),$ey ,120,16, $colorCodes[4][2],"top",$input);
+	     //月
+	     $input="<input id='month' type=text name=month value='".$startDay[1]."'  size=2>月";
+	     DrawInputRect("","12","#ffffff",($ex+80),$ey ,120,16, $colorCodes[4][2],"top",$input);
+		 //日
+	     $input="<input id='day' type=text name=day value='".$startDay[2]."'  size=2>日".$plansArray[3];
+	     DrawInputRect("","14","#ffffff",($ex+130),$ey ,220,16, $colorCodes[4][2],"top",$input);
+         //天數
+	     $workDayinput="<input id='workingDays' type=text name=workingDays  value='5'  size=2   >";
+	     DrawInputRect("天數","12","#ffffff",($ex+240),$ey ,120,18, $colorCodes[4][2],"top",$workDayinput);
+		 //外包負責
+			 $OutsDatatmp=getMysqlDataArray("outsourcing");
+	         $OutsDatatmp2=filterArray($OutsDatatmp,0,"data");
+	         $OutsData=returnArraybySort( $OutsDatatmp2,2);
+			 $selectTable= MakeSelectionV2($OutsData,$plansArray[9] ,"outsourcing",10);
+		     DrawInputRect( "選擇負責外包","10","#ffffff",($ex+160 ),$ey+40 ,220,16, $colorCodes[4][2],"top", $selectTable);
+			 //負責人
+			 $principaltmp=getMysqlDataArray("members");
+			 $principalData=returnArraybySort( $principaltmp,1);
+			 $selectTable= MakeSelectionV2( $principalData,$plansArray[8],"principal" ,10);
+			 DrawInputRect( "選擇內部負責","10","#ffffff",($ex+160),$ey+60 ,220,16, $colorCodes[4][2],"top", $selectTable);
+		 //費用
+			 $ey+=30;
+			 $ininput="<input type=text name=Price   value='".$plansArray[17]."'  size=10   >";
+	         DrawInputRect("費用(美金)","12","#ffffff",($ex+160),$ey+70  ,220,18, $colorCodes[4][2],"top",$ininput);
+			  global $stateType;
+			 gettypes();
+			
+		  //狀態
+			 $selectTable= MakeSelectionV2( $stateType,$plansArray[7],"state" ,10);
+			 DrawInputRect( "目前狀態","10","#ffffff",($ex+160),$ey+90 ,220,16, $colorCodes[4][2],"top", $selectTable);
+		 $submitP="<input type=submit name=submit value=新增規畫>";
+	     DrawInputRect("",$ey+40  ,"#ffffff",($ex+220),60,120,18, $colorCodes[4][2],"top",$submitP);
+		 
+         //載入小日曆
+		  include('CalendarPlugin.php');
+		  DrawSCalender( $ex,$ey+20,"new");
+	}
+    function TypeGo(){
+	         global $EditType;
+		     if($EditType=="AddPlan"){
+				 DrawAddNewOrder();
+			     return;
+			  }
+			 if($EditType=="Uppic"){
+				  DrawEdit();
+			     return;
+			  }
+			 if($EditType=="EditOrder"){
+			  	 global $planCode;
+				 global $Ecode;
+				 global $tableName;
+				 $Ecode= trim($planCode);
+				  $tableName="fpschedule"; 
+				 EditPlanTypeEditor_v2(400,250,400,300);
+				
+			     return;
+			  }
+	}
+	function DrawEdit(){
+		      global $Edit,$Etype,$planCode;
+			 // if($Edit=="")return;
+
+		      global $tableName,$data_library, $typeData,$typeData2; 
+		      global $BaseURL,$BackURL, $Stype_1,$Stype_2,$Stype_2,$SelectType_2,$stateType; 
+			  global $ScheduleData,$mainData,$mileStone;
+			  global $colorCodes,$Lists;
+		      $x=200;
+		   	  $y=100;
+			  $w=300;
+			  $h=100;
+			  $fontSize=12;
+			  $fontColor="#ffffff";
+			  $title=$SelectType_2[$Stype_2]."[".$Edit."]";
+	          DrawPopBG($x,$y,$w,$h,"編輯".$Edit."[".$Etype."]資料" ,"12",$BackURL);
+			  DrawRect("[".$BaseCode."]",$fontSize,"#ffffff",$x,$y+20,$w,20,$colorCodes[3][1]);
+			  $EditData=$mainData[$Edit];
+			  $info=$EditData[2].$EditData[3];
+			  $BgColor="#ffffff";
+			  $y+=30;
+			  $tables=returnTables($data_library,$tableName);
+			  echo   "<form id='EditRes'  name='Show' action='".$BackURL."' method='post'  enctype='multipart/form-data'>";
+			  echo   "<input type=hidden name=Etype value=".$Etype.">";
+			  echo   "<input type=hidden name=Ecode value=".$Edit.">";
+			   $y+=30;
+	          $input="<input type=file name=file 	id=file  size=60   >";
+			  DrawInputRect("設定檔案"." ","12","#ffffff", $x  ,$y,420,20, $colorCodes[4][2],"top", $input);
+			  $submit ="<input type=submit name=submit value=上傳>";
+	          DrawInputRect("","12","#ffffff",($x+250),$y ,120,18, $colorCodes[4][2],"上傳",$submit );
+              echo "</form>";
+
+	}
+?>
+<?php //up
+      function upFile(){
+		       global $submit;
+			//   echo "xx".$submit;
+			   global $BackURL;
+	           if ($submit=="")return;
+			   if($submit=="上傳"){  
+			   global $Ecode,$Etype;
+			   global $file;
+			   UpFiles_Res($Etype,$Ecode,$file);
+               echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+			   return;
+			   }
+			   if($submit=="新增規畫"){  
+			    UpAddTypeData( );
+				 return;
+			   }
+			    if($submit=="送出修改"){  
+				      global  $tableName;
+				 $tableName="fpschedule";
+		    
+		         UpEditData( );
+				 return;
+			   }
+	  }
+      function UpAddTypeData( ){
+		       global $data_library,$tableName;
+			   global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1;
+			   global $year,$month,$day;
+			       $tableName="fpschedule";
+				echo $data_library;
+			       $p=$tableName;
+				   $tables=returnTables( $data_library_Base,$p);
+	               $t= count( $tables);
+				   $WHEREtable=array();
+				   $WHEREData=array();
+		           for($i=0;$i<$t;$i++){
+	       	            global $$tables[$i];
+					    $startDay=$year."_".$month."_".$day;
+				        array_push($WHEREtable,$tables[$i]);
+					    array_push($WHEREData,$$tables[$i]);
+		              }
+					$stmt=   MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
+				    SendCommand($stmt, $data_library);
+			  echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+		      echo $stmt;
+	 }
+
+	 
+?>
+
  
