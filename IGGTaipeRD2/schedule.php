@@ -302,9 +302,9 @@
 			   $plansLine= SortbyDate($plansLinet);
                if( count($plansLine)==0)return;
 			   DrawWorkLinkBg($plansLine,$x,$y, $Exp );
-            //   $length=$plansLine[count($plansLine)-1]['DayLoc']-$x;
-			  // if($Exp=="false")  
-			//	   DrawRect_Layer("",1,"#000000",array($x,$y+10,$length,1),"#444444",-12);
+               $length=$plansLine[count($plansLine)-1]['DayLoc']-$x;
+			   if($Exp=="false")  
+		   	   DrawRect_Layer("",1,"#000000",array($x,$y+10,$length,1),"#444444",-12);
 			   if($Exp=="true") {
 				   $pic="Pics/Black20Bg.png";
 				   DrawPic_Layer($pic,$x,$y+16,$length+200,count($plansLine)*20+5,-10);
