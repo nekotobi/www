@@ -85,6 +85,24 @@
 			  }
 	       return $data;
 	   }
+	   function filterArraycontain($BaseArray,$Num,$containName){
+                $data=array();		     
+		  for($i=0;$i<count($BaseArray);$i++){
+			  		  $strBase=trim($BaseArray[$i][$Num]);
+			  $srtCheck=trim($containName);
+			//  $strBase=$BaseArray[$i][$Num];
+			//  $srtCheck=$containName;
+			//  echo   "</br>".$strBase.">".$srtCheck;
+		//	  if( $strBase!="" && $srtCheck!=""){
+			      if(strpos($strBase,$srtCheck) !== false){ 
+				//  echo "xxxxxxx";
+			     array_push($data,$BaseArray[$i]);
+			     }
+			 // }
+          
+			  }
+	       return $data;
+	   }
 ?>
 
 <?php //功能
@@ -354,7 +372,6 @@
 			$seletProject=$seletProject."</select>";
 	        return $seletProject;
 	   }
- 
 	   function MakeSelection($items,$arrayNum,$selectItem,$selectName){
 		  //  echo $selectName;
 	        $seletProject= "<select  style=width:100px; name=".$selectName."   >";

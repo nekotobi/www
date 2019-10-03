@@ -36,6 +36,7 @@
 		        $StartX=20;
 	            $StartY=90;
 	            $MonthWidth=200;
+	            $MonthWidth=200;
 	            $OneDayWidth=15;
 				$LineHeight=40;
 	            $CurrentX= $StartX;
@@ -827,7 +828,6 @@
 		      $BackURL= $BaseURL."?List=Warring";
 		    echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	 }
-
      function NextDayOrdew(){
 		      global $Ecode,$BaseDay;
 			  global $data_library,$tableName;

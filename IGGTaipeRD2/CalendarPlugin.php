@@ -24,7 +24,7 @@
 			 DrawIDRectEvent($x+120,$y,$h-1,$h-1,$id,$info, $fontSize, $fontColor,$BgColor,$other,$Event,1);
 
 	 }
-	  function DrawSmallCalendar($startX,$startY){
+	 function DrawSmallCalendar($startX,$startY){
 			 $x=$startX;
 			 $y=$startY+20;
 			 $h=20;
@@ -46,7 +46,7 @@
 			 $y+=20;
           
 	 }
-	  function DrawDateTitle($startX,$startY){
+	 function DrawDateTitle($startX,$startY){
 	           $x=$startX;
 			   $y=$startY;
 			   $h=20;
