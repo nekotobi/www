@@ -49,7 +49,6 @@
 	}
  
 ?>
-
 <?php  //處理表格類別
     function filterSubmit(){
 			  global $submit;
@@ -57,7 +56,7 @@
 			  if($submit=="搜尋") ListTableDatas();
 			  if($submit=="輸出") {
 				 global $data_library, $selectable;
-			     $go="Mysql2xlsOut.php?data_library=".$data_library."&selectable=".$selectable;
+			     $go="Mysql2xlsOut.php?data_library=".$data_library."&selectable=".$selectable."";
 				  echo " <script language='JavaScript'>window.location.replace('".$go."')</script>";
 			  }
 	}
