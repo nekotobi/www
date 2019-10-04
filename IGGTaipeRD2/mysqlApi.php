@@ -46,8 +46,19 @@
 				  }
 			  }
 	 }
-     
-     function  getMysqlArray($data_library,$SElectTable){
+     function getlibraryTables($data_library){ //取得資料表格內所有table
+	        $db = mysql_connect("localhost","root","1406");
+	        $db_selected = mysql_select_db( $data_library,$db);
+			$sql = "SHOW TABLES FROM $data_library";
+			$result = mysql_query($sql);
+			$tables=array();
+			while ($row = mysql_fetch_row($result)) {
+				   Array_Push($tables, $row[0] );
+                 //  echo "</br>Table: {$row[0]}\n";
+            }
+			return $tables;
+	}
+     function getMysqlArray($data_library,$SElectTable){
 	            $all_num= getDBAll_num( $data_library,$SElectTable);
 				$fName=getTableNames($all_num);
 				$returnData=array();
@@ -62,7 +73,7 @@
 				}
 				return $returnData;
 	  }
-     function  getTableNames($all_num){
+     function getTableNames($all_num){
 	            $fName=array();
 				$fieldnum=mysql_num_fields( $all_num);
 				for ($x=0 ;$x<$fieldnum;$x++)	array_push($fName, mysql_field_name($all_num,$x));
@@ -93,7 +104,7 @@
 			  
 	  }
 	 function getDBLastSn( $data_library,$SElectTable,$table_sn){
-		      //  $all_num= getAll_num("calendardata");
+	 
 			   $all_num= getAll_num($SElectTable);
 			   $t=mysql_num_rows($all_num); 
 			   $sn=0;
@@ -119,11 +130,10 @@
           mysql_query("SET NAMES 'utf8'");
 	      return  mysql_query("SELECT * FROM ".$SElectTable,$db);	  
 	  }
-	  
-	  //Stmt
+
+
 
 ?>
-
 
 <?php //Stmt
      function MakeUpdateStmtv2($tableName,$Base,$up,$WHEREtable,$WHEREData){

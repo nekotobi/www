@@ -150,7 +150,24 @@
 ?>
 
 <?php //MysQl資料
- 	   function getAll_num($SElectTable){
+	   function getMysqlDataArray($name){
+	            $all_num= getAll_num( $name );
+				$fieldnum=mysql_num_fields( $all_num);
+				$fName=array();
+				for ($x=0 ;$x<$fieldnum;$x++)	array_push($fName, mysql_field_name($all_num,$x));
+				$returnData=array();
+				 $t=mysql_num_rows($all_num); 
+				for($i=0;$i<$t;$i++){
+				    $data=array();
+					for ($x=0 ;$x<count($fName);$x++){
+						 $d=mysql_result(  $all_num,$i,$fName[$x]);
+						 array_push($data,$d);
+					}
+					 array_push($returnData,$data);
+				}
+				return $returnData;
+	  }
+	   function getAll_num($SElectTable){
 		  $data_library="IGGTaipeRD2";
 	      $db = mysql_connect("localhost","root","1406");
 	      mysql_select_db( $data_library,$db);
@@ -201,24 +218,7 @@
 					}
 			   return $returnData;
 	  }
-	   function getMysqlDataArray($name){
- 
-	            $all_num= getAll_num( $name );
-				$fieldnum=mysql_num_fields( $all_num);
-				$fName=array();
-				for ($x=0 ;$x<$fieldnum;$x++)	array_push($fName, mysql_field_name($all_num,$x));
-				$returnData=array();
-				 $t=mysql_num_rows($all_num); 
-				for($i=0;$i<$t;$i++){
-				    $data=array();
-					for ($x=0 ;$x<count($fName);$x++){
-						 $d=mysql_result(  $all_num,$i,$fName[$x]);
-						 array_push($data,$d);
-					}
-					 array_push($returnData,$data);
-				}
-				return $returnData;
-	  }
+
 ?>
 
 <?php //會員相關資料
