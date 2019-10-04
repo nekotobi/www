@@ -24,7 +24,7 @@
 			 $BaseURL="OutCost.php";
              $BackURL=$BaseURL."?SortType=".$SortType."&ListType=".$ListType;
 			 //表單資料
-		     global $ListNames,$ListSize,$OutCosts;
+		     global $ListNames,$ListSize,$OutCosts,$OutsLastSort;
 			 global $data_library,$tableName,$pregressData;
 	         $tableName="fpoutsourcingcost";
 			 $data_library="iggtaiperd2"; 
@@ -32,10 +32,14 @@
 			 $ListNames=filterArray($MainPlanDataT,0,"title");
 			 $ListSize=filterArray($MainPlanDataT,0,"size");
 			 $OutCostst=filterArray($MainPlanDataT,3,"FP");
+			 $OutsLastSort= getLastSN2($OutCostst,1);
 			 //排序
 			 $forward="true";
 			 if($SortType=="Reverse") $forward="false";
 		     $OutCosts= sortArrays($OutCostst ,1,$forward) ;
+			 
+			 
+			 
              //請款進程資料
 			 global $pregress,$PreList,$PreListSize;
 			 $pregressData="fpoutpregress";
@@ -45,6 +49,7 @@
 			 $pregressT2=filterArray($pregressT,0,"pregress");
 			 $pregress= sortArrays( $pregressT2 ,1,"true") ;
 			 
+			 getPregressLastState();
 	}
 	function sortcontact(){  //整理聯絡人
          	 global $OutCosts;
@@ -65,9 +70,21 @@
 			     $contacts[$i]=$i."_".$contacts[$i];
 			 }
 	}
-
+    function getPregressLastState(){
+	         global $pregress,$OutCosts;
+			 for($i=0;$i<count($pregress);$i++){
+			     $pregress[$i][process]= returnPregress($pregress[$i]);
+			 }
+			 for($i=0;$i<count($OutCosts);$i++){
+				 $sn=$OutCosts[$i][1];
+				 //echo $sn;
+			     $pdata= returnArraySingel( $pregress,1,$sn);  
+		         $OutCosts[$i][process]=$pdata[process];
+				// echo $OutCosts[$i][process];
+			 }
+	}
 ?>
-<?php //選項
+<?php //選項按鈕
     function DrawButtons(){
 	         global $BaseURL,$BackURL,$SortType,$ListType;
 			 $x=20;
@@ -101,6 +118,8 @@
 <?php //處理表格類別
       function filterListType(){
              global $ListType;
+			   global $submit;
+		     if($submit!="")return;
 	         if($ListType==""){
 				 DrawContacts();
                  DrawTitle();
@@ -112,13 +131,18 @@
 			 if($ListType=="prepressUpdate"){
 			 PregressUpdate();
 			 }
-             if($ListType=="prepressUpdate"){
+             if($ListType=="AddOuts"){
+				 CreatNewOuts();
 			 }
 	}
       function filterSubmit(){
+		 
+			  global $submit;
 	          global $ListNames,$ListSize,$OutCosts;
+			       echo $submit;
 			  if($submit=="")return;
 			  if($submit=="搜尋") filterContacts();
+			  if($submit=="新增外包表單")AddNewMysqlData();
 	
 	}
 ?>
@@ -157,7 +181,7 @@
 	  function Drawfiled($BaseData,$ListSize,$x,$y,$h, $showField,$fontColor,$bgColor,$sort){
 		       global $BaseURL,$BackURL;
 			   global $ListType;
-		       if($bgColor=="") $lastsn=returnPregress($BaseData);
+		       if($bgColor=="")$lastsn=$BaseData[process] ; // $lastsn=returnPregress($BaseData);
 			   $bgc=$bgColor;
 	           for($i=0;$i<count($showField);$i++){
 				   $n=$showField[$i];
@@ -217,7 +241,7 @@
 			 }
 	}
 ?>
-<?php //列印資料
+<?php //列印總表資料
      function DrawContacts(){
 	          global $contacts ;
 			  global $BaseURL;
@@ -257,16 +281,26 @@
 			  }
 	 }
 	 function DrawLines($Data,$y ){
-		      global  $ListSize;
+		      global  $ListSize,$PreList;
 			  $x=20;
 			  $h=20;
-		      for($i=1;$i<count($Data);$i++){
+		      for($i=1;$i<(count($Data)-2);$i++){
 				  $w= $ListSize[0][$i];
+			      $msg=  $Data[$i];
 				  if($w!=""){
-			         DrawRect($Data[$i],10,"#000000",$x,$y,$w,$h,"#DDDDDD");
+			         DrawRect($msg,10,"#000000",$x,$y,$w,$h,"#DDDDDD");
 					 $x+=$w+2;
 				  }
 			  }
+			  $n= $Data[process];
+			  $msg=$PreList[0][$n];
+			  $BGcolor="#FFDDDD";
+              if($msg=="付款日")  {
+				  $BGcolor="#DDFFDD";
+			     $msg="完成付款";
+			  }
+			
+			  DrawRect($msg,10,"#000000",$x,$y,$w,$h, $BGcolor);
 	 }
      function DrawLinesField($Data,$y,$showField){
 		      global  $ListSize;
@@ -305,6 +339,92 @@
 				  SendCommand($stmt,$data_library);
 			 echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	 }
+     function AddNewMysqlData(){
+	          global  $data_library,$tableName,$OutCosts;
+			  global  $BaseURL;
+			  global  $selectOut;
+			  		  $p=$tableName;
+				      $tables=returnTables($data_library,$p);
+					  //外包基礎資料
+					  echo $selectOut;
+	                  $t= count( $tables);
+				      $c= explode("_",$selectOut);
+					  $outs=$c[1];
+					  $con=$c[2];
+				     
+					  if(count($c)==2) $con=$c[1];
+					  	  //國家
+					  $cou= SearchArray($OutCosts,7,$con,6);
+					  
+					  $WHEREtable=array();
+				      $WHEREData=array();
+					  
+					  
+		              for($i=0;$i<$t;$i++){
+	       	               global $$tables[$i];
+						   if($tables[$i]=="outsourcing")$$tables[$i]=$outs;
+						   if($tables[$i]=="contact")$$tables[$i]= $con;
+						   if($tables[$i]=="country")$$tables[$i]=$cou;
+				           array_push($WHEREtable, $tables[$i] );
+					       array_push($WHEREData,$$tables[$i]);
+		              }
+					  $stmt=   MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
+					 //echo $stmt;
+				      SendCommand($stmt,$data_library);
+			           echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
+				 
+	 }
+    
+	 
+?>
+<?php //上傳前表單
+function CreatNewOuts(){
+		      global  $BaseURL,$BackURL;
+			  global  $OutsLastSort,$contacts;
+		      $ex=100;
+			  $ey=100;
+			  $w=600;
+			  $h=400;
+			  $sn=$OutsLastSort+1;
+			  $title="新增外包表單 編號[".$sn."]";
+	          DrawPopBG($ex,$ey,$w,$h,$title ,"12",$BaseURL);
+		      echo   "<form id='ChangeOut'  name='Show' action='".$BaseURL."' method='post'>";
+			  $x=$ex;
+			  $y=$ey+30;
+			  $w=300;
+			  $h=20;
+			  //隱藏
+			  $project="FP";
+			  $department="台北二部";
+			  echo "<input type=hidden name=data_type value='cost'   >";
+			  echo "<input type=hidden name=sn value='".$sn."'   >";
+			  echo "<input type=hidden name=code value='".$sn."'  >";
+			  echo "<input type=hidden name=project value='". $project."'   >";
+			  echo "<input type=hidden name=department value='". $department."'   >";
+			  			   //送出
+			  $submitP="<input type=submit name=submit value=新增外包表單 style= font-size:10px; >";
+              DrawInputRect("",8 ,"#ffffff",$x+($w+200),$y-30,$w,$h, $colorCodes[4][2],"top",$submitP);
+			  //外包
+			  $input=MakeSelectionV2($contacts,$selectOut,"selectOut",10);
+			  DrawInputRect("選擇外包_",10,"#ffffff",$x,$y,$w,$h,"",$WorldAlign,$input);
+			  //內容
+			  $y+=30;
+			  $w=600;
+			  
+			  
+			  $input="<input type=text name=content value='".$content."'size=80  style= font-size:10px; >";
+			  DrawInputRect_size("製作內容_",10,"#ffffff",$x,$y,$w,$h,$BgColor,$WorldAlign,$input);
+			  //金額
+			  $y+=30;
+			  $w=120;
+			  $input="<input type=text name=nt value='".$nt."'size=10  style= font-size:10px; >";
+			  DrawInputRect_size("台幣_",10,"#ffffff",$x,$y,$w,$h,$BgColor,$WorldAlign,$input);
+			  $input="<input type=text name=usdollar value='".$usdollar."'size=10  style= font-size:10px; >";
+			  DrawInputRect_size("美金_",10,"#ffffff",$x+$w+20,$y,$w,$h,$BgColor,$WorldAlign,$input);
+			  $input="<input type=text name=CNY value='".$CNY."'size=10  style= font-size:10px; >";
+			  DrawInputRect_size("人民幣_",10,"#ffffff", $x+$w*2+20,$y,$w,$h,$BgColor,$WorldAlign,$input);
+			  
 
-
+			  echo "</form>";
+	 }
 ?>

@@ -14,6 +14,11 @@
 ?>
 
 <?php //Array功能
+       function SearchArray($BaseArray,$searchSort,$searchString,$getsort){
+		   for($i=0;$i<count($BaseArray);$i++){
+		   if($BaseArray[$i][$searchSort]==$searchString)return $BaseArray[$i][$getsort];
+		   }
+	   }
        function RemoveArray($BaseArray,$num,$RemoveStr){
 	            $returnArray=array();
 				 for($i=0;$i<count($BaseArray);$i++){
@@ -197,6 +202,7 @@
 			   return $returnData;
 	  }
 	   function getMysqlDataArray($name){
+ 
 	            $all_num= getAll_num( $name );
 				$fieldnum=mysql_num_fields( $all_num);
 				$fName=array();
@@ -363,13 +369,13 @@
 			for($i=0;$i<count($items);$i++){
 				//echo $items[$i];
 				 $itemf=trim( $items[$i]);
-			     $seletProject=$seletProject."<option value=".$items[$i];
+			     $seletProject=$seletProject."<option value='".$items[$i];
 				 if($itemf== $selectItemf){
-					 $seletProject=$seletProject." selected=true ";
+					 $seletProject=$seletProject."' selected=true ";
 				 }
-				 $seletProject=$seletProject.">".$items[$i]."</option>";
+				 $seletProject=$seletProject."'>".$items[$i]."</option>";
 			}
-			$seletProject=$seletProject."</select>";
+			$seletProject="'".$seletProject."'</select>";
 	        return $seletProject;
 	   }
 	   function MakeSelection($items,$arrayNum,$selectItem,$selectName){
