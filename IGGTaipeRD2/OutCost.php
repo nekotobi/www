@@ -119,7 +119,7 @@
       function filterListType(){
              global $ListType;
 			   global $submit;
-		     if($submit!="")return;
+		  //   if($submit!="搜尋" or $submit!="")return;
 	         if($ListType==""){
 				 DrawContacts();
                  DrawTitle();
@@ -139,7 +139,6 @@
 		 
 			  global $submit;
 	          global $ListNames,$ListSize,$OutCosts;
-			       echo $submit;
 			  if($submit=="")return;
 			  if($submit=="搜尋") filterContacts();
 			  if($submit=="新增外包表單")AddNewMysqlData();
@@ -217,6 +216,7 @@
 			 global $selectName;
 			 global $OutCosts;
 			 $tmp= explode("_",$selectName);
+			 
 			 $n=$tmp[0];
 			 $tmp2=  $contacts[$n];
 			 $tmp3= explode("_",$tmp2);
@@ -224,7 +224,6 @@
 				 $OutCosts=filterArraycontain($OutCosts,7, $tmp3[1]);
 			 }
 			 if(count($tmp3)>2){
-				// echo "X";
 				 $OutCosts1=filterArraycontain($OutCosts,7,$tmp3[1]);
 			     $OutCosts2=filterArraycontain($OutCosts,5,$tmp3[2]);
 				 $OutCosts = array_merge($OutCosts1,$OutCosts2) ;
@@ -239,6 +238,7 @@
 				 }
 				 $OutCosts= $ost; 
 			 }
+			 
 	}
 ?>
 <?php //列印總表資料
