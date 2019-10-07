@@ -93,6 +93,7 @@
 			 $outsBaseSelects=array();
 			 for($i=0;$i<count($outs);$i++){
 				 $name=$outs[$i][15];
+		    	 if($name!=$outs[$i][2])$name=$name."(".$outs[$i][2].")";
 				 if($name!=$outs[$i][16])$name=$name."(".$outs[$i][16].")";
 			     $tmp=array($outs[$i][17],$outs[$i][1],$name); //0code 1序號 2名稱
 				 $sel= $outs[$i][17]."-".$name;
