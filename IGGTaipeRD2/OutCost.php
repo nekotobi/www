@@ -38,8 +38,6 @@
 			 if($SortType=="Reverse") $forward="false";
 		     $OutCosts= sortArrays($OutCostst ,1,$forward) ;
 			 
-			 
-			 
              //請款進程資料
 			 global $pregress,$PreList,$PreListSize;
 			 $pregressData="fpoutpregress";
@@ -48,6 +46,10 @@
 			 $PreListSize=filterArray($pregressT,0,"size");
 			 $pregressT2=filterArray($pregressT,0,"pregress");
 			 $pregress= sortArrays( $pregressT2 ,1,"true") ;
+			 
+			 //外包資料
+			 global $outsBaseData,$outsBaseSelects;
+		     getOutsData();
 			 
 			 getPregressLastState();
 	}
@@ -81,6 +83,21 @@
 			     $pdata= returnArraySingel( $pregress,1,$sn);  
 		         $OutCosts[$i][process]=$pdata[process];
 				// echo $OutCosts[$i][process];
+			 }
+	}
+	function getOutsData(){
+		     global $outsBaseData,$outsBaseSelects;
+			 $outsT= getMysqlDataArray("outsourcing"); 
+			 $outs=filterArray($outsT,0,"data");
+			 $outsBaseData=array();
+			 $outsBaseSelects=array();
+			 for($i=0;$i<count($outs);$i++){
+				 $name=$outs[$i][15];
+				 if($name!=$outs[$i][16])$name=$name."(".$outs[$i][16].")";
+			     $tmp=array($outs[$i][17],$outs[$i][1],$name);
+				 $sel= $outs[$i][17]."-".$name;
+				 array_push($outsBaseData,$tmp);
+				 array_push($outsBaseSelects,$sel);
 			 }
 	}
 ?>
@@ -408,9 +425,11 @@
 	 
 ?>
 <?php //上傳前表單
-function CreatNewOuts(){
+    function  CreatNewOuts(){
 		      global  $BaseURL,$BackURL;
+			  global $outsBaseData;
 			  global  $OutsLastSort,$contacts;
+			   global $outsBaseData,$outsBaseSelects;
 		      $ex=100;
 			  $ey=100;
 			  $w=600;
@@ -431,11 +450,11 @@ function CreatNewOuts(){
 			  echo "<input type=hidden name=code value='".$sn."'  >";
 			  echo "<input type=hidden name=project value='". $project."'   >";
 			  echo "<input type=hidden name=department value='". $department."'   >";
-			  			   //送出
+			  //送出
 			  $submitP="<input type=submit name=submit value=新增外包表單 style= font-size:10px; >";
               DrawInputRect("",8 ,"#ffffff",$x+($w+200),$y-30,$w,$h, $colorCodes[4][2],"top",$submitP);
 			  //外包
-			  $input=MakeSelectionV2($contacts,$selectOut,"selectOut",10);
+			  $input=MakeSelectionV2($outsBaseSelects,$selectOut,"selectOut",10);
 			  DrawInputRect("選擇外包_",10,"#ffffff",$x,$y,$w,$h,"",$WorldAlign,$input);
 			  //內容
 			  $y+=30;
