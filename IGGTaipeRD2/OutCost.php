@@ -212,7 +212,7 @@
 	  }
 	  function Drawfiled($BaseData,$ListSize,$x,$y,$h, $showField,$fontColor,$bgColor,$sort){
 		       global $BaseURL,$BackURL;
-			   global $ListType;
+			   global $ListType,$SortType;
 		       if($bgColor=="")$lastsn=$BaseData[process] ; // $lastsn=returnPregress($BaseData);
 			   $bgc=$bgColor;
 	           for($i=0;$i<count($showField);$i++){
@@ -226,7 +226,7 @@
 				   if($bgColor==""){
 				        $bgc="#cccccc";
 				        if($n<=$lastsn)  $bgc="#ccffaa";
-						$Link=$BaseURL."?ListType=prepressUpdate&sn=".$sort."&Column=".$n."&info=".$msg;
+						$Link=$BaseURL."?ListType=prepressUpdate&SortType=".$SortType."&sn=".$sort."&Column=".$n."&info=".$msg;
 						$Rect=array($x,$y,$w,$h);
 						DrawLinkRect_Layer($msg,10,$fontColor,$Rect,$bgc,$Link,$border,0);
 						   //  DrawRect($msg,10,$fontColor,$x,$y,$w,$h, $bgc);
@@ -371,7 +371,9 @@
 			 $stmt= MakeUpdateStmt(  $data_library,$pregressData,$Base,$up,$WHEREtable,$WHEREData);
 			      echo $stmt;
 				  SendCommand($stmt,$data_library);
-			  echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+				     global $BaseURL,$BackURL,$SortType,$ListType;
+					   $Link=$BaseURL."?SortType=".$SortType."&ListType=prepress";
+			  echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
 	 }
      function AddNewMysqlData(){
 	          global  $data_library,$tableName,$OutCosts;
@@ -413,12 +415,12 @@
 						   array_push($WHEREtable, $tables[$i] );
 					       array_push($WHEREData,$inside);
 					  }
-					   $stmt=   MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
+					  $stmt=   MakeNewStmtv2($pregressData,$WHEREtable,$WHEREData);
 					  echo $stmt;
 				      SendCommand($stmt,$data_library);
-					  
-					  
-			          echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
+					   global $BaseURL,$BackURL,$SortType,$ListType;
+					   $BackURL=$BaseURL."?SortType=".$SortType."&ListType=".$ListType;
+			           echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	 }
     
 	 
