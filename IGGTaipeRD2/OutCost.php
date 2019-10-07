@@ -268,7 +268,7 @@
 			  global $selectName;
 			  $x=20;
 			  $y=20;
-			  $w=300;
+			  $w=500;
 			  $h=20;
 			  $BgColor="#ffcccc";
 			  echo   "<form id='ChangeOut'  name='Show' action='".$BaseURL."' method='post'>";
