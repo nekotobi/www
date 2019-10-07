@@ -394,6 +394,7 @@
 						   if($tables[$i]=="outsourcing")$$tables[$i]=$OutData[0][15];
 						   if($tables[$i]=="contact")$$tables[$i]=$OutData[0][16];
 						   if($tables[$i]=="country")$$tables[$i]=$OutData[0][4];
+						    if($tables[$i]=="outcode")$$tables[$i]=$OutData[0][1];
 				           array_push($WHEREtable, $tables[$i] );
 					       array_push($WHEREData,$$tables[$i]);
 		              }
@@ -432,6 +433,7 @@
 			  echo "<input type=hidden name=code value='".$sn."'  >";
 			  echo "<input type=hidden name=project value='". $project."'   >";
 			  echo "<input type=hidden name=department value='". $department."'   >";
+		 
 			  //送出
 			  $submitP="<input type=submit name=submit value=新增外包表單 style= font-size:10px; >";
               DrawInputRect("",8 ,"#ffffff",$x+($w),$y-30,$w,$h, $colorCodes[4][2],"top",$submitP);
