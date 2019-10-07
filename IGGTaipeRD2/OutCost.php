@@ -131,9 +131,14 @@
 			 if($ListType=="prepressUpdate"){
 			 PregressUpdate();
 			 }
+			  
              if($ListType=="AddOuts"){
 				 CreatNewOuts();
 			 }
+			 if($ListType=="EditRemark"){
+			    EditRemark();
+			 }
+			 
 	}
       function filterSubmit(){
 		 
@@ -142,13 +147,14 @@
 			  if($submit=="")return;
 			  if($submit=="搜尋") filterContacts();
 			  if($submit=="新增外包表單")AddNewMysqlData();
-	
+	           if($submit=="更新註解")RemarkUpdate();
 	}
 ?>
 <?php //列印請款進程
       function ListPregress(){
-		  	   global $ListNames,$ListSize,$OutCosts;
+		  	   global $ListNames,$ListSize,$OutCosts,$SortType;
 		       global $pregress,$PreList,$PreListSize;
+			   global $BaseURL,$BackURL;
 	           $costList=array(1,5,8);
 			   $pregressList=array(3,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28);
 			   $ListSn=array();
@@ -170,12 +176,14 @@
 				   $data= returnArraySingel( $pregress,1,$ListSn[$i]);  
 				   $y+=22;
 				   $nextx=Drawfiled($data,$PreListSize[0],$x,$y,$h, $pregressList,"#222222", "",$ListSn[$i]); 
-				 
-				   $Link=$BaseURL."?ListType=prepressUpdate&sn=".$sort."&Column=".$n."&info=".$msg;
-				   $Rect=array( $nextx,$y,30,$h);
+ 
+				   //註解
+				   $remstr=$data[28];
 				   $bgc="#ffccaa";
-				   DrawLinkRect_Layer("+re",10,$fontColor,$Rect,$bgc,$Link,$border,0);
-				   if($data)
+				   $Rect=array( $nextx,$y,20,$h);
+				   $Link=$BaseURL."?SortType=".$SortType."&ListType=EditRemark&sn=".$ListSn[$i]."&Rx=".$Rect[0]."&Ry=".$Rect[1]."&info=".$remstr;
+				   DrawLinkRect_Layer("+R",10,$fontColor,$Rect,$bgc,$Link,$border,0);
+				   //if($data)
 			   }
 			 
 	  }
@@ -326,6 +334,20 @@
 ?>
 
 <?php //上傳
+     function RemarkUpdate(){
+	       global $sn,$Column,$info;
+		   global $data_library, $pregressData;
+		   global $BaseURL,$Remark;
+		   $WHEREtable=array( "data_type", "sn" );
+		   $WHEREData=array( "pregress",$sn);
+		   $Base=array("Remark");
+		   $up=array($Remark);
+		   $Link=$BaseURL."?SortType=".$SortType."&ListType=prepress";
+		   $stmt= MakeUpdateStmt(  $data_library,$pregressData,$Base,$up,$WHEREtable,$WHEREData);
+			      echo $stmt;
+			  SendCommand($stmt,$data_library);
+		   echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
+	 }
      function PregressUpdate(){
 	         global $sn,$Column,$info;
 			 global $data_library, $pregressData;
@@ -345,7 +367,7 @@
 			 $stmt= MakeUpdateStmt(  $data_library,$pregressData,$Base,$up,$WHEREtable,$WHEREData);
 			      echo $stmt;
 				  SendCommand($stmt,$data_library);
-			 echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+			  echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	 }
      function AddNewMysqlData(){
 	          global  $data_library,$tableName,$OutCosts;
@@ -435,4 +457,25 @@ function CreatNewOuts(){
 
 			  echo "</form>";
 	 }
+	function   EditRemark(){
+		       ListPregress();
+	           global  $BaseURL,$BackURL;
+			   global  $OutsLastSort,$contacts;
+			   global $Rx,$Ry,$sn,$info;
+			   $ex= $Rx;
+			   $ey=$Ry;
+			   $w=200;
+			   $h=40;
+			  // $sn=$OutsLastSort+1;
+			   $title="編輯註解[".$sn."]";
+			   $Link=$BaseURL."?SortType=".$SortType."&ListType=prepress";
+	           DrawPopBG($ex,$ey-22,$w,$h,$title ,"12",$Link);
+			   echo   "<form id='ChangeOut'  name='Show' action='".$BaseURL."' method='post'>";
+			    echo "<input type=hidden name=sn value='".$sn."'   >";
+			   $submitP="<input type=submit name=submit value=更新註解 style= font-size:10px; >";
+			   DrawInputRect("",8 ,"#ffffff",$ex+150 ,$ey+32 ,100,20, $colorCodes[4][2],"top",$submitP);
+			   $input="<input type=text name=Remark value='".$info."'size=30  style= font-size:10px; >";
+			   DrawInputRect_size("註解",10,"#ffffff",$ex,$ey,200,20,$BgColor,$WorldAlign,$input);
+			   echo "</form>";
+	  }
 ?>
