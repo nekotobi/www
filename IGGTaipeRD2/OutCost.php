@@ -422,7 +422,7 @@
 		      echo   "<form id='ChangeOut'  name='Show' action='".$BaseURL."' method='post'>";
 			  $x=$ex;
 			  $y=$ey+30;
-			  $w=300;
+			  $w=500;
 			  $h=20;
 			  //隱藏
 			  $project="FP";
@@ -434,13 +434,13 @@
 			  echo "<input type=hidden name=department value='". $department."'   >";
 			  //送出
 			  $submitP="<input type=submit name=submit value=新增外包表單 style= font-size:10px; >";
-              DrawInputRect("",8 ,"#ffffff",$x+($w+200),$y-30,$w,$h, $colorCodes[4][2],"top",$submitP);
+              DrawInputRect("",8 ,"#ffffff",$x+($w),$y-30,$w,$h, $colorCodes[4][2],"top",$submitP);
 			  //外包
 			  $input=MakeSelectionV2($outsBaseSelects,$selectOut,"selectOut",10);
 			  DrawInputRect("選擇外包_",10,"#ffffff",$x,$y,$w,$h,"",$WorldAlign,$input);
 			  //第幾包
-			  $input="<input type=text name=count value='".$OutsCount." 'size=30  style= font-size:10px; >";
-			  DrawInputRect_size("第幾包_",10,"#ffffff",$x+$w+20,$y,200,20,$BgColor,$WorldAlign,$input);
+			  $input="<input type=text name=count value='".$OutsCount." 'size=20  style= font-size:10px; >";
+			  DrawInputRect_size("第幾包_",10,"#ffffff",$x+$w-20 ,$y,150,20,$BgColor,$WorldAlign,$input);
   
 			  //內容
 			  $y+=30;
