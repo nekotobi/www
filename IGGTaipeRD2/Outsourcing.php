@@ -208,8 +208,8 @@
 	
 	function EditData(){
 	      global $tableName,$data_library;
-          global $Edit;	
-		  global $BackURL;
+          global $code;	
+		  global $BaseURL;
 		  global $colorCodes;
 		  global $BaseData;
 	      global $width,$TableType,$Names;
@@ -217,9 +217,9 @@
 		  $x=600;
 		  $y=100;
 		  $w=400;
-		  $h=100+count( $Names)*20;
-	      DrawPopBG($x,$y,$w,$h,"修正外包資料" ,"12",$BackURL);
-		  $data= returnDataArray($BaseData,1,$Edit)   ;
+		  $h=200+count( $Names)*20;
+	      DrawPopBG($x,$y,$w,$h,"修正外包資料" ,"12",$BaseURL);
+		  $data= returnDataArray($BaseData,1,$code)   ;
 		  $tables=returnTables($data_library, $tableName );
 		  $y-=60;
           echo   "<form id='EditOut'  name='Show' action='Outsourcing.php'  method='post'  enctype='multipart/form-data'>";
