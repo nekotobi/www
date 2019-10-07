@@ -75,6 +75,7 @@
 	     global $radio_1,$radio_2;
 	   		    $x=20;
 				$h=40;
+				$bc=$color;
 	      for($i=0;$i<count($Data);$i++){
 		      if($TableType[$i]!="hide")  $w= $width[$i];
 		 	  switch($TableType[$i]){
@@ -115,8 +116,8 @@
 						  $color="#444444";
 						  if($bool=="true")$color="#eeffee";
 					      $Link=$BaseURL."?Edit=DNA&code=".$Data[1]."&bool=".$bool;
-						  
 						  DrawLinkRect($bool,"12",$fontColor,$x,$y,$w,$h,$color,$Link,1);
+						  $color=$bc;
 					      break;
 						  }
 	    	    $x+=$w+2;
