@@ -86,7 +86,7 @@
 			 }
 	}
 	function getOutsData(){
-		     global $outsBaseData,$outsBaseSelects;
+		     global $outs, $outsBaseData,$outsBaseSelects;
 			 $outsT= getMysqlDataArray("outsourcing"); 
 			 $outs=filterArray($outsT,0,"data");
 			 $outsBaseData=array();
@@ -94,7 +94,7 @@
 			 for($i=0;$i<count($outs);$i++){
 				 $name=$outs[$i][15];
 				 if($name!=$outs[$i][16])$name=$name."(".$outs[$i][16].")";
-			     $tmp=array($outs[$i][17],$outs[$i][1],$name);
+			     $tmp=array($outs[$i][17],$outs[$i][1],$name); //0code 1序號 2名稱
 				 $sel= $outs[$i][17]."-".$name;
 				 array_push($outsBaseData,$tmp);
 				 array_push($outsBaseSelects,$sel);
@@ -245,38 +245,24 @@
 ?>
 <?php //過濾
 	function filterContacts(){
-		     global $contacts ;
+		     global $outsBaseData,$outsBaseSelects;
 			 global $selectName;
 			 global $OutCosts;
-			 $tmp= explode("_",$selectName);
-			 
-			 $n=$tmp[0];
-			 $tmp2=  $contacts[$n];
-			 $tmp3= explode("_",$tmp2);
-			 if(count($tmp3)==2){
-				 $OutCosts=filterArraycontain($OutCosts,7, $tmp3[1]);
-			 }
-			 if(count($tmp3)>2){
-				 $OutCosts1=filterArraycontain($OutCosts,7,$tmp3[1]);
-			     $OutCosts2=filterArraycontain($OutCosts,5,$tmp3[2]);
-				 $OutCosts = array_merge($OutCosts1,$OutCosts2) ;
-				 $sn=array();
-				 $ost=array();
-				 for($i=0;$i<count( $OutCosts );$i++){
-					 $s= $OutCosts[$i][1] ;
-				     if(!in_array($s, $sn) ){
-					  array_push($sn,$s);
-					  array_push($ost,$OutCosts[$i]); 
-					 } 
-				 }
-				 $OutCosts= $ost; 
-			 }
-			 
+			 $code=getOutCode($selectName);
+			 $OutCosts=filterArraycontain($OutCosts,15,  $code);
+	}
+	function getOutCode($selectName){
+	      global $outsBaseData,$outsBaseSelects;
+		  $tmp= explode("-",$selectName); //0code 1序號 2名稱
+		  $sn=$tmp[0];
+		  for($i=0;$i<count($outsBaseData);$i++){
+		      if($outsBaseData[$i][0]==$sn)return $outsBaseData[$i][1];
+		  }
 	}
 ?>
 <?php //列印總表資料
      function DrawContacts(){
-	          global $contacts ;
+	          global $outsBaseData,$outsBaseSelects;//    global $contacts ;
 			  global $BaseURL;
 			  global $selectName;
 			  $x=20;
@@ -285,7 +271,7 @@
 			  $h=20;
 			  $BgColor="#ffcccc";
 			  echo   "<form id='ChangeOut'  name='Show' action='".$BaseURL."' method='post'>";
-		      $input=	MakeSelectionV2($contacts,$selectName,"selectName",10);
+		      $input=	MakeSelectionV2($outsBaseSelects,$selectName,"selectName",10);
 			  DrawInputRect("顯示外包",10,"#222222",$x,$y,$w,$h,$BgColor,$WorldAlign,$input);
 			  $x+=$w+2;
 			  $w=100;
@@ -390,35 +376,30 @@
 	          global  $data_library,$tableName,$OutCosts;
 			  global  $BaseURL;
 			  global  $selectOut;
+			  global  $outsBaseData,$outsBaseSelects,$outs;
 			  		  $p=$tableName;
 				      $tables=returnTables($data_library,$p);
+					  $t= count( $tables);
 					  //外包基礎資料
-					  echo $selectOut;
-	                  $t= count( $tables);
-				      $c= explode("_",$selectOut);
-					  $outs=$c[1];
-					  $con=$c[2];
-				     
-					  if(count($c)==2) $con=$c[1];
-					  	  //國家
-					  $cou= SearchArray($OutCosts,7,$con,6);
-					  
+					  $code= getOutCode($selectOut);
+					  $OutData=filterArray($outs,1, $code); 
+					  $OutData[0][2];  
+					 //國家
+ 
 					  $WHEREtable=array();
 				      $WHEREData=array();
-					  
-					  
 		              for($i=0;$i<$t;$i++){
 	       	               global $$tables[$i];
-						   if($tables[$i]=="outsourcing")$$tables[$i]=$outs;
-						   if($tables[$i]=="contact")$$tables[$i]= $con;
-						   if($tables[$i]=="country")$$tables[$i]=$cou;
+						   if($tables[$i]=="outsourcing")$$tables[$i]=$OutData[0][15];
+						   if($tables[$i]=="contact")$$tables[$i]=$OutData[0][16];
+						   if($tables[$i]=="country")$$tables[$i]=$OutData[0][4];
 				           array_push($WHEREtable, $tables[$i] );
 					       array_push($WHEREData,$$tables[$i]);
 		              }
 					  $stmt=   MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
-					 //echo $stmt;
+					  echo $stmt;
 				      SendCommand($stmt,$data_library);
-			           echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
+			         echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
 				 
 	 }
     
@@ -456,11 +437,13 @@
 			  //外包
 			  $input=MakeSelectionV2($outsBaseSelects,$selectOut,"selectOut",10);
 			  DrawInputRect("選擇外包_",10,"#ffffff",$x,$y,$w,$h,"",$WorldAlign,$input);
+			  //第幾包
+			  $input="<input type=text name=count value='".$OutsCount." 'size=30  style= font-size:10px; >";
+			  DrawInputRect_size("第幾包_",10,"#ffffff",$x+$w+20,$y,200,20,$BgColor,$WorldAlign,$input);
+  
 			  //內容
 			  $y+=30;
 			  $w=600;
-			  
-			  
 			  $input="<input type=text name=content value='".$content."'size=80  style= font-size:10px; >";
 			  DrawInputRect_size("製作內容_",10,"#ffffff",$x,$y,$w,$h,$BgColor,$WorldAlign,$input);
 			  //金額
@@ -497,4 +480,37 @@
 			   DrawInputRect_size("註解",10,"#ffffff",$ex,$ey,200,20,$BgColor,$WorldAlign,$input);
 			   echo "</form>";
 	  }
+?>
+<?php //old
+/*
+	function filterContacts(){
+		     global $contacts ;
+			 global $selectName;
+			 global $OutCosts;
+			 $tmp= explode("_",$selectName);
+			 
+			 $n=$tmp[0];
+			 $tmp2=  $contacts[$n];
+			 $tmp3= explode("_",$tmp2);
+			 if(count($tmp3)==2){
+				 $OutCosts=filterArraycontain($OutCosts,7, $tmp3[1]);
+			 }
+			 if(count($tmp3)>2){
+				 $OutCosts1=filterArraycontain($OutCosts,7,$tmp3[1]);
+			     $OutCosts2=filterArraycontain($OutCosts,5,$tmp3[2]);
+				 $OutCosts = array_merge($OutCosts1,$OutCosts2) ;
+				 $sn=array();
+				 $ost=array();
+				 for($i=0;$i<count( $OutCosts );$i++){
+					 $s= $OutCosts[$i][1] ;
+				     if(!in_array($s, $sn) ){
+					  array_push($sn,$s);
+					  array_push($ost,$OutCosts[$i]); 
+					 } 
+				 }
+				 $OutCosts= $ost; 
+			 }
+			 
+	}
+	*/
 ?>
