@@ -386,7 +386,6 @@
 					  $OutData=filterArray($outs,1, $code); 
 					  $OutData[0][2];  
 					 //國家
- 
 					  $WHEREtable=array();
 				      $WHEREData=array();
 		              for($i=0;$i<$t;$i++){
@@ -394,15 +393,32 @@
 						   if($tables[$i]=="outsourcing")$$tables[$i]=$OutData[0][15];
 						   if($tables[$i]=="contact")$$tables[$i]=$OutData[0][16];
 						   if($tables[$i]=="country")$$tables[$i]=$OutData[0][4];
-						    if($tables[$i]=="outcode")$$tables[$i]=$OutData[0][1];
+						   if($tables[$i]=="outcode")$$tables[$i]=$OutData[0][1];
 				           array_push($WHEREtable, $tables[$i] );
 					       array_push($WHEREData,$$tables[$i]);
 		              }
 					  $stmt=   MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
 					  echo $stmt;
 				      SendCommand($stmt,$data_library);
-			         echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
-				 
+					  //新增進度表
+					  $pregressData="fpoutpregress";
+					  $tables=returnTables($data_library,  $pregressData);
+					  $WHEREtable=array();
+				      $WHEREData=array();
+					  for($i=0;$i<count( $tables);$i++){
+						   $inside="";
+						   if($tables[$i]=="data_type")$inside="pregress";
+						   if($tables[$i]=="sn")$inside=$sn;
+						   if($tables[$i]=="code")$inside=$sn;
+						   array_push($WHEREtable, $tables[$i] );
+					       array_push($WHEREData,$inside);
+					  }
+					   $stmt=   MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
+					  echo $stmt;
+				      SendCommand($stmt,$data_library);
+					  
+					  
+			          echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
 	 }
     
 	 
