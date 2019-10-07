@@ -169,8 +169,15 @@
 			   for($i=0;$i<count($ListSn);$i++){
 				   $data= returnArraySingel( $pregress,1,$ListSn[$i]);  
 				   $y+=22;
-				   Drawfiled($data,$PreListSize[0],$x,$y,$h, $pregressList,"#222222", "",$ListSn[$i]); 
+				   $nextx=Drawfiled($data,$PreListSize[0],$x,$y,$h, $pregressList,"#222222", "",$ListSn[$i]); 
+				 
+				   $Link=$BaseURL."?ListType=prepressUpdate&sn=".$sort."&Column=".$n."&info=".$msg;
+				   $Rect=array( $nextx,$y,30,$h);
+				   $bgc="#ffccaa";
+				   DrawLinkRect_Layer("+re",10,$fontColor,$Rect,$bgc,$Link,$border,0);
+				   if($data)
 			   }
+			 
 	  }
 	  function returnArraySingel($baseArray,$ArrayNum,$matchString){
 		       for($i=0;$i<count($baseArray);$i++){
@@ -201,6 +208,7 @@
 				   
 				   $x+=$w+2;
 			   }
+			   return $x;
 	  }
 	  function returnPregress($data){
 		   $n=0;

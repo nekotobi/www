@@ -17,7 +17,7 @@
 		global $tableName;
 		global $data_library;
 		global $width,$TableType,$Names;
-		global $BackURL;
+		global $BaseURL, $BackURL;
 		global $BaseData;
 		global $radio_1,$radio_2;
 		$data_library= "iggtaiperd2";
@@ -32,7 +32,7 @@
 		$radio_2=array("差","稍差","普通","可","優");
 		$x=20;
 		$y=60;
-	    $BackURL="Outsourcing.php";
+	   $BaseURL="Outsourcing.php";
 	    DrawRect("外包資源列表","22","#ffffff","20","20","1400","30","#000000");
 		DrawTitle($Names,$x,$y,"#222222","#ffffff");
  
@@ -70,6 +70,7 @@
 	
     function DrawOutsourcing($Data,$x,$y,$color,$fontColor){
 	     global $width,$TableType;
+		 global $BaseURL, $BackURL;
 	     global $LastSn;
 	     global $radio_1,$radio_2;
 	   		    $x=20;
@@ -93,11 +94,7 @@
 						   }else{
 							  for($s=0;$s<=$n;$s++) 
 							      DrawPosPic($pic,( $y+16),$x +($s*12),12,12,"absolute" );
-						   
 							}
-					
-					     
-				          
 			              break;
 				     case $TableType[$i]=="time" :
   						   $time_d=date("d日H時",(time()+(8+$Data[$i])*3600));
@@ -110,14 +107,22 @@
 					case  $TableType[$i]=="pic" :
 			        	  $pic="Outsourcing/pic/".$Data[$i];
 					      DrawPosPic($pic, $y,$x,$h,$h,"absolute" );
-					       
 						  break;
-		        	}
+		        	
+					case  $TableType[$i]=="bool" :
+					      $bool=$Data[$i];
+						  if($bool=="")$bool="null";
+						  $color="#444444";
+						  if($bool=="true")$color="#eeffee";
+					      $Link=$BaseURL."?Edit=DNA&code=".$Data[1]."&bool=".$bool;
+						  
+						  DrawLinkRect($bool,"12",$fontColor,$x,$y,$w,$h,$color,$Link,1);
+					      break;
+						  }
 	    	    $x+=$w+2;
-				
-				
+ 
 	         }
-			 $Link=$BackURL."?Edit=".$Data[1];
+			 $Link=$BackURL."?Edit=form&code=".$Data[1];
 			 DrawLinkRect("Edit","10","#ffffff",$x,$y,$h,$h,"#441122",$Link,1);
     }
 	
@@ -142,15 +147,30 @@
 		   AddData();
 	    }
 		if($Edit!=""){
-		   EditData();
+			if($Edit=="form") EditData();
+		    if($Edit=="DNA") ChangeDNA();
 		}
 		if($submit=="修改"){
 		 UpEdit();
 		}
 	}
+	function  ChangeDNA(){
+	          global $code,$bool;
+		      global	 $BaseURL,  $tableName,$data_library;
+			  $WHEREtable=array("data_type", "Code");					 
+              $WHEREData=array("data",$code);	
+			  $upbool="false";
+			  if($bool=="null" or $bool=="false" )$upbool="true";
+			  $Base=array("NDA");
+			  $up=array($upbool);
+			   $stmt= MakeUpdateStmtv2(  $tableName,$Base,$up,$WHEREtable,$WHEREData);	
+			 //  echo $stmt;
+			   SendCommand($stmt,$data_library);
+			   echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
+	}		
 	function UpEdit(){
 		      global $tableName,$data_library;
-			  global $BackURL;
+			 global	 $BaseURL, $BackURL;
 			  	  global $BaseData;
 		      $tables=returnTables($data_library, $tableName );
 			  $Base=array();
@@ -183,7 +203,7 @@
 	         $stmt= MakeUpdateStmtv2(  $tableName,$Base,$up,$WHEREtable,$WHEREData);	
 			 SendCommand($stmt,$data_library);
 		     // echo $stmt;
-			  echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+			  echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
 	}
 	
 	function EditData(){
