@@ -156,7 +156,9 @@
 			 if($ListType=="EditRemark"){
 			    EditRemark();
 			 }
-			 
+			 if($ListType=="EditOutsForm"){
+			    EditOutsForm();
+			 }
 	}
       function filterSubmit(){
 		 
@@ -276,11 +278,10 @@
 			  DrawInputRect("顯示外包",10,"#222222",$x,$y,$w,$h,$BgColor,$WorldAlign,$input);
 			  $x+=$w+2;
 			  $w=100;
-			//  $Outinput="<input type=text name=Outinput value='".$Outinput."'  size=10 >";
-			 // DrawInputRect("",10,"#222222",$x,$y,$w,$h,$BgColor,$WorldAlign,$Outinput);
-			//  $x+=$w+2;
+			//$Outinput="<input type=text name=Outinput value='".$Outinput."'  size=10 >";
+			//DrawInputRect("",10,"#222222",$x,$y,$w,$h,$BgColor,$WorldAlign,$Outinput);
+			//$x+=$w+2;
 			  $submitP="<input type=submit name=submit value=搜尋 style= font-size:10px; >";
-			 
 	          DrawInputRect("",8 ,"#ffffff",$x,$y,$w,$h, $colorCodes[4][2],"top",$submitP);
 			  echo "</form>";
 	 }
@@ -289,7 +290,7 @@
 	          $x=20;
 			  $y=60;
 			  $h=20;
-			  for($i=1;$i<count($ListNames[0]);$i++){
+			  for($i=1;$i<count($ListNames[0]) ;$i++){
 				  $w= $ListSize[0][$i];
 				  if($w!=""){
 			         DrawRect($ListNames[0][$i],10,"#FFFFFF",$x,$y,$w,$h,"#000000");
@@ -302,14 +303,23 @@
 	 }
 	 function DrawLines($Data,$y ){
 		      global  $ListSize,$PreList;
+			  global  $BaseURL,$SortType;
 			  $x=20;
 			  $h=20;
-		      for($i=1;$i<(count($Data)-2);$i++){
+			  $BgColor="#DDDDDD";
+			  $fontColor="#000000";
+		      for($i=1;$i<(count($Data)-3);$i++){
 				  $w= $ListSize[0][$i];
 			      $msg=  $Data[$i];
-				  if($w!=""){
-			         DrawRect($msg,10,"#000000",$x,$y,$w,$h,"#DDDDDD");
-					 $x+=$w+2;
+				  if($i==1){
+				       $Link=$BaseURL."?SortType=".$SortType."&ListType=EditOutsForm&sn=".$msg;
+				       DrawLinkRect( $msg,10,$fontColor,$x,$y,$w,$h,$BgColor,$Link,$border);
+					   $x+=$w+2;
+				  }else{
+				    if($w!=""){
+			           DrawRect($msg,10,"#000000",$x,$y,$w,$h,"#DDDDDD");
+					   $x+=$w+2;
+				     }
 				  }
 			  }
 			  $n= $Data[process];
@@ -317,26 +327,13 @@
 			  $BGcolor="#FFDDDD";
               if($msg=="付款日")  {
 				  $BGcolor="#DDFFDD";
-			     $msg="完成付款";
+			      $msg="完成付款";
 			  }
 			
 			  DrawRect($msg,10,"#000000",$x,$y,$w,$h, $BGcolor);
 	 }
-     function DrawLinesField($Data,$y,$showField){
-		      global  $ListSize;
-			  $x=20;
-			  $h=20;
-		      for($i=1;$i<count($Data);$i++){
-				  $w= $ListSize[0][$i];
-				  if($w!=""){
-			         DrawRect($Data[$i],10,"#000000",$x,$y,$w,$h,"#DDDDDD");
-					 $x+=$w+2;
-				  }
-			  }
-	 }
- 
-?>
 
+?>
 <?php //上傳
      function RemarkUpdate(){
 	       global $sn,$Column,$info;
@@ -396,6 +393,7 @@
 						   if($tables[$i]=="contact")$$tables[$i]=$OutData[0][16];
 						   if($tables[$i]=="country")$$tables[$i]=$OutData[0][4];
 						   if($tables[$i]=="outcode")$$tables[$i]=$OutData[0][1];
+						   if($tables[$i]=="state")$$tables[$i]=date("Y/m/d");
 				           array_push($WHEREtable, $tables[$i] );
 					       array_push($WHEREData,$$tables[$i]);
 		              }
@@ -426,7 +424,7 @@
 	 
 ?>
 <?php //上傳前表單
-    function  CreatNewOuts(){
+      function  CreatNewOuts(){
 		      global  $BaseURL,$BackURL;
 			  global $outsBaseData;
 			  global  $OutsLastSort,$contacts;
@@ -480,7 +478,7 @@
 
 			  echo "</form>";
 	 }
-	function   EditRemark(){
+	  function   EditRemark(){
 		       ListPregress();
 	           global  $BaseURL,$BackURL;
 			   global  $OutsLastSort,$contacts;
@@ -501,6 +499,65 @@
 			   DrawInputRect_size("註解",10,"#ffffff",$ex,$ey,200,20,$BgColor,$WorldAlign,$input);
 			   echo "</form>";
 	  }
+	  function EditOutsForm(){
+		       global  $BaseURL,$BackURL;
+			   global  $sn;
+			   global  $OutCosts;
+			   $currentDataT= filterArray( $OutCosts,1,$sn);
+			   $currentData= filterArray( $currentDataT,2,$sn);
+			   $ex=100;
+			   $ey=100;
+			   $w=800;
+			   $h=800;
+	           $Link=$BaseURL."?SortType=".$SortType;
+			   $c="(第".$currentData[0][14]."包)";
+			   $title ="編輯".$currentData[0][1]."-".$currentData[0][5].$c."[".$currentData[0][8]."]製作內容";
+	           DrawPopBG($ex,$ey,$w,$h,$title ,"12",$Link);
+			   ExportForms($sn);
+               
+		
+	  }
+	  function ExportForms($sn){
+	           $outsDetialT=getMysqlDataArray("outsdetail"); 
+			   $outsDetial= filterArray( $outsDetialT,1,$sn);
+			   $ListTitle=filterArray( $outsDetialT,0,"資料類別");
+			   $List=array(4,5,6,7,8,9);
+			   $rect=array(100,120,120,20);
+			   $fontColor="#ffffff";$BGcolor="#000000";
+			   Drawsingel($ListTitle[0],$List,$rect,$fontColor,$BGcolor);
+			   $rect[1]+=22;
+			   $fontColor="#222222";$BGcolor="#cccccc";
+			   for($i=0;$i<count($outsDetial);$i++){
+			       Drawsingel($outsDetial[$i],$List,$rect,$fontColor,$BGcolor);
+				     $rect[1]+=22;
+			   }
+			   //輸出
+			   $Link="../../IGGTaipeRD2/Outsourcing/ExportMat.php?Exporttype=mat1&sn=".$sn;
+			   $msg="產生 [材料1：项目外包需求申请单.xls]";
+			   $fontColor="#ffffff";$BGcolor="#99aa99";
+			   $rect[1]+=42;
+		       $rect[2]=300;
+			   DrawLinkRect_LayerNew($msg,12,$fontColor,$rect,$BGcolor,$Link,$border,$Layer);
+			   //mat2
+			   $Link="../../IGGTaipeRD2/Outsourcing/ExportMatDoc.php?Exporttype=mat2&sn=".$sn;
+			   $msg="產生 [材料2：申请资料.docx]";
+			   $rect[1]+=32;
+			   DrawLinkRect_LayerNew($msg,12,$fontColor,$rect,$BGcolor,$Link,$border,$Layer);
+			   //mat3
+			   $Link="../../IGGTaipeRD2/Outsourcing/ExportMat.php?Exporttype=mat3&sn=".$sn;
+			   $msg="產生 [材料3：合同报价单.xls]";
+			   $rect[1]+=32;
+			   DrawLinkRect_LayerNew($msg,12,$fontColor,$rect,$BGcolor,$Link,$border,$Layer);
+			   
+	  }
+	  function Drawsingel($data,$List,$rect,$fontColor,$BGcolor){
+		    
+		    for($i=0;$i<count($List);$i++){
+			      DrawRect($data[$List[$i]],10,$fontColor,$rect[0],$rect[1],$rect[2],$rect[3],$BGcolor);
+				  $rect[0]+=$rect[2]+2;
+			   }
+	  }
+	  
 ?>
 <?php //old
 /*
@@ -533,5 +590,17 @@
 			 }
 			 
 	}
+	     function DrawLinesField($Data,$y,$showField){
+		      global  $ListSize;
+			  $x=20;
+			  $h=20;
+		      for($i=1;$i<count($Data);$i++){
+				  $w= $ListSize[0][$i];
+				  if($w!=""){
+			         DrawRect( .$Data[$i],10,"#000000",$x,$y,$w,$h,"#DDDDDD");
+					 $x+=$w+2;
+				  }
+			  }
+	 }
 	*/
 ?>

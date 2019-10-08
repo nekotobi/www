@@ -68,10 +68,21 @@
 		 $objPHPExcel->getActiveSheet()->getStyle($LineArea)->applyFromArray($styleArray);
 		}
 }
- 
-       function saveExcel($objPHPExcel){
+ function DrawLineOut($objPHPExcel,$LineArea,$borderStyle){
+	   $styleArray = array(
+           'borders' => array(
+           'outline' => array(
+           'style' => PHPExcel_Style_Border::BORDER_MEDIUM,
+           'color' => array('argb' => 'ff000000'),
+           ),
+           ),
+           );
+		 $objPHPExcel->getActiveSheet()->getStyle($LineArea)->applyFromArray($styleArray);
+ }
+       function saveExcel($objPHPExcel,$Filename){
+		header("Content-type: text/html; charset=charset=unicode");
         header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="01simple.xls"');
+        header('Content-Disposition: attachment;filename='.$Filename);
         header('Cache-Control: max-age=0');
         $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
         $objWriter->save('php://output');
