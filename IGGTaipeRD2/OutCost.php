@@ -167,7 +167,8 @@
 			  if($submit=="")return;
 			  if($submit=="搜尋") filterContacts();
 			  if($submit=="新增外包表單")AddNewMysqlData();
-	           if($submit=="更新註解")RemarkUpdate();
+	          if($submit=="更新註解")RemarkUpdate();
+			  if($submit=="上傳圖檔") UpPic();
 	}
 ?>
 <?php //列印請款進程
@@ -420,7 +421,24 @@
 					   $BackURL=$BaseURL."?SortType=".$SortType."&ListType=".$ListType;
 			           echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	 }
-    
+     function UpPic(){
+	          global $sn,$picNum;
+			  echo $sn.";".$picNum;
+			  for($i=0;$i<$picNum;$i++){
+				  $fn="pic".$i;
+				  $dir="Outsourcing/SortPic/".$sn;
+				   if (!is_dir($dir) ) mkdir($dir, 0700);
+				  if($_FILES[$fn]["name"]!=null){
+				     $temp = explode(".", $_FILES[$fn]["name"]);
+				     $path=$dir."/pic".$i.".".$temp[1];
+					 $Npath=$dir."/spic".$i.".jpg";
+					//echo $path;
+					 move_uploaded_file($_FILES[$fn]["tmp_name"], $path);  
+				     $cmd="convert       $path   -flatten -resize 256  $Npath ";
+					 exec($cmd);
+				  }
+			  }
+	 }
 	 
 ?>
 <?php //上傳前表單
@@ -474,11 +492,9 @@
 			  DrawInputRect_size("美金_",10,"#ffffff",$x+$w+20,$y,$w,$h,$BgColor,$WorldAlign,$input);
 			  $input="<input type=text name=CNY value='".$CNY."'size=10  style= font-size:10px; >";
 			  DrawInputRect_size("人民幣_",10,"#ffffff", $x+$w*2+20,$y,$w,$h,$BgColor,$WorldAlign,$input);
-			  
-
 			  echo "</form>";
 	 }
-	  function   EditRemark(){
+	  function  EditRemark(){
 		       ListPregress();
 	           global  $BaseURL,$BackURL;
 			   global  $OutsLastSort,$contacts;
@@ -499,7 +515,7 @@
 			   DrawInputRect_size("註解",10,"#ffffff",$ex,$ey,200,20,$BgColor,$WorldAlign,$input);
 			   echo "</form>";
 	  }
-	  function EditOutsForm(){
+	  function  EditOutsForm(){
 		       global  $BaseURL,$BackURL;
 			   global  $sn;
 			   global  $OutCosts;
@@ -507,7 +523,7 @@
 			   $currentData= filterArray( $currentDataT,2,$sn);
 			   $ex=100;
 			   $ey=100;
-			   $w=800;
+			   $w=1200;
 			   $h=800;
 	           $Link=$BaseURL."?SortType=".$SortType;
 			   $c="(第".$currentData[0][14]."包)";
@@ -517,7 +533,8 @@
                
 		
 	  }
-	  function ExportForms($sn){
+	  function  ExportForms($sn){
+		       global $BaseURL;
 	           $outsDetialT=getMysqlDataArray("outsdetail"); 
 			   $outsDetial= filterArray( $outsDetialT,1,$sn);
 			   $ListTitle=filterArray( $outsDetialT,0,"資料類別");
@@ -527,10 +544,22 @@
 			   Drawsingel($ListTitle[0],$List,$rect,$fontColor,$BGcolor);
 			   $rect[1]+=22;
 			   $fontColor="#222222";$BGcolor="#cccccc";
+			   //列印
+			   $Link=$BaseURL."?sn=".$sn."&picNum=".count($outsDetial);
+			   echo  "<form method=post enctype=multipart/form-data action=".$Link.">";
 			   for($i=0;$i<count($outsDetial);$i++){
-			       Drawsingel($outsDetial[$i],$List,$rect,$fontColor,$BGcolor);
-				     $rect[1]+=22;
+			        Drawsingel($outsDetial[$i],$List,$rect,$fontColor,$BGcolor);
+					$input= "<input type=file name=pic".$i." style= font-size:10px;>";
+					$pic="Outsourcing/SortPic/".$sn."/spic".$i.".jpg" ;
+					DrawPosPic($pic,$rect[1],$rect[0]+740,20,20,"absolute" );
+					
+			        DrawInputRect_size("效果图例",10,"#ffffff",$rect[0]+770,$rect[1],300,$rect[3],$BGcolor,$WorldAlign,$input);
+				    $rect[1]+=22;
 			   }
+			   //送出
+			   $submitP="<input type=submit name=submit value=上傳圖檔  style= font-size:10px; >";
+               DrawInputRect("",8 ,"#ffffff",$rect[0]+750,$rect[1],200,$rect[3], $colorCodes[4][2],"top",$submitP);
+			   echo "</form>";
 			   //輸出
 			   $Link="../../IGGTaipeRD2/Outsourcing/ExportMat.php?Exporttype=mat1&sn=".$sn;
 			   $msg="產生 [材料1：项目外包需求申请单.xls]";
@@ -550,7 +579,7 @@
 			   DrawLinkRect_LayerNew($msg,12,$fontColor,$rect,$BGcolor,$Link,$border,$Layer);
 			   
 	  }
-	  function Drawsingel($data,$List,$rect,$fontColor,$BGcolor){
+	  function  Drawsingel($data,$List,$rect,$fontColor,$BGcolor){
 		    
 		    for($i=0;$i<count($List);$i++){
 			      DrawRect($data[$List[$i]],10,$fontColor,$rect[0],$rect[1],$rect[2],$rect[3],$BGcolor);
