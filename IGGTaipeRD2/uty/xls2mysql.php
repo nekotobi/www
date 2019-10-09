@@ -8,6 +8,9 @@
 <body bgcolor="#b5c4b1">
 <?php //主控台
      // include('PubApi.php');
+ 
+	  require_once  dirname(dirname(__FILE__))  .'\PubApi.php';
+	  require_once('xls2mysqlApi.php');
       input();
       updata();
 ?>
@@ -29,7 +32,6 @@
 	      echo "<input type=hidden name=data_library value=$data_library >";
           echo "</label>";
           echo "</div></label></form>";
-	 
    }
    function updata(){
 	   global $submit;
@@ -60,77 +62,10 @@
 	       $re = mysql_query($stmt,$db) ;
 		   
    }
-   function changedata($data){
-	        $data_library=$data[0][1];
-			$tableName=$data[0][0];
-           // $tables=returnTables($data_library ,$tableName);
-	        $WHEREtable=array( $data[1][0], $data[1][1]);
-			//echo $WHEREtable[0]."=".$WHEREtable[1];
-			$Base=array();
-			for($i=2;$i<count($data[1]);$i++){
-				
-			    array_push( $Base,$data[1][$i]);
-			}
- 
-			for($i=2;$i<count($data);$i++){ 
-		        $WHEREData=array( $data[$i][0], $data[$i][1] );
-				$up=array();
-			 	for($j=2;$j<count($data[$i]);$j++){
-			         array_push( $up,$data[$i][$j]);
-		        	}
-			    $stmt= MakeUpdateStmtv2 ($tableName,$Base,$up,$WHEREtable,$WHEREData);
-				 echo "</br>".$stmt;
-		         SendCommand($stmt,$data_library);
-			}
-   }
-   
-   function AddTable($data){
-	   		$data_library=$data[0][1];
-			$tableName=$data[0][0];
-            $tables=returnTables($data_library ,$tableName);
-            $WHEREtable=array();
-		    for($i=0;$i<count($tables);$i++){
-		         array_push($WHEREtable,$tables[$i]);
-			}
-			$upTables=array();
-		    for($i=0;$i<count($data[1]);$i++){
-				 array_push( $upTables,$data[1][$i]);
-			}
-		    for($i=2;$i<count($data);$i++){
-				$WHEREData= returnWhereData($data[$i],$upTables,$tables);
-				 $stmt= MakeNewStmt( $data_library,$tableName,$WHEREtable,$WHEREData); 
-				   SendCommand($stmt,$data_library);		
-			    echo  $stmt;
-			}
-		
-   }
-   function returnWhereData($base,$upTables,$tables){
-	        $rarray=array();
-	        for($i=0;$i<count($tables);$i++){
-				$up="";
-				echo $tables[$i];
-				for($j=0;$j<count($upTables);$j++){
-				     if($tables[$i]==$upTables[$j])$up=$base[$j];
-				}
-				array_push($rarray,$up);
-			}
-			return $rarray;
-   }
-   function getTxtArray(){
-           global $txt;
-		   $data=array();
-		   $row=explode("\n",$txt) ;//表單名[0]格英文[1] 中文[2] 字數[3]
-	       for ($i=0;$i<count($row);$i++){ 
-				$line=explode("\t",$row[$i])  ;
-			    for ($j=0;$j<count($line);$j++){ 
-		             $data[$i][$j]=trim($line[$j]) ;
-			         } 
-			}
-			return $data;
-  }
  
 ?>
 <?php //pubapi
+/*
   	 function returnTables($data_library ,$tableName){ //取得資料表所有欄位名稱
 		    $db = mysql_connect("localhost","root","1406");
 	        $db_selected = mysql_select_db( $data_library,$db);
@@ -165,10 +100,8 @@
 		 // echo $stmt;
 	  }
      function MakeUpdateStmtv2($tableName,$Base,$up,$WHEREtable,$WHEREData){
- 
 	       $stmt="UPDATE `".$tableName."` SET ";
            for($i=0;$i<count($Base);$i++){
-	 
 		         $stmt=$stmt." `".$Base[$i]."` = '".$up[$i]."'";
 				 if($i!=(count($Base)-1)) $stmt=$stmt.",";
 		   }
@@ -180,6 +113,7 @@
 		   $stmt=$stmt." LIMIT 1 ;";
 	    return $stmt;
 	  }
+*/
 ?>
 </body>
 </html>

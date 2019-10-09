@@ -50,8 +50,17 @@
 			 //外包資料
 			 global $outsBaseData,$outsBaseSelects;
 		     getOutsData();
-			 
 			 getPregressLastState();
+			 
+			 //表格資料
+			 global $DetailFormName, $FormRect,$FormList,$FormListsize,$FormTitle;
+			 $DetailFormName="outsdetail";
+			 $formBase=getMysqlDataArray($DetailFormName); 
+			 $FormTitle=filterArray($formBase,0,"資料類別");
+			 $FormListsizeT=filterArray($formBase,0,"size");
+			 $FormListsize=$FormListsizeT[0];
+			 $FormList=array(2,3,4,5,6,7,8,9,10 );
+			 $FormRect=array(100,120,120,20);
 	}
 	function sortcontact(){  //整理聯絡人
          	 global $OutCosts;
@@ -136,7 +145,9 @@
 <?php //處理表格類別
       function filterListType(){
              global $ListType;
-			   global $submit;
+		     global $submit;
+			 if($submit=="上傳表單")return;
+			  if($submit=="確定上傳表單")return;
 		  //   if($submit!="搜尋" or $submit!="")return;
 	         if($ListType==""){
 				 DrawContacts();
@@ -159,9 +170,11 @@
 			 if($ListType=="EditOutsForm"){
 			    EditOutsForm();
 			 }
+			 if($ListType=="inputOutsForm"){
+			    EditOutsForm();
+			 }
 	}
       function filterSubmit(){
-		 
 			  global $submit;
 	          global $ListNames,$ListSize,$OutCosts;
 			  if($submit=="")return;
@@ -169,6 +182,8 @@
 			  if($submit=="新增外包表單")AddNewMysqlData();
 	          if($submit=="更新註解")RemarkUpdate();
 			  if($submit=="上傳圖檔") UpPic();
+			  if($submit=="上傳表單") UpformCheck();
+		      if($submit=="確定上傳表單") Upform();
 	}
 ?>
 <?php //列印請款進程
@@ -439,7 +454,45 @@
 				  }
 			  }
 	 }
-	 
+	 function UpForm(){
+		      global  $sn,$datas;
+			  global  $data_library,$tableName,$OutCosts,$DetailFormName;
+			  global  $BaseURL;
+		      require_once 'uty/xls2mysqlApi.php';
+		      $baseT=getMysqlDataArray("outsdetail"); 
+			  $baseT2=filterArray($baseT,0,"outs");
+			  $base=filterArray($baseT2,1,$sn);
+			  $tableName=$DetailFormName;
+			  $tables=returnTables($data_library,$tableName);
+			 
+	          //清除
+			  for($i=0;$i<count($base);$i++){
+				 $WHEREtable=array("OutsSn","sn");
+				 $WHEREData=array($sn,$base[$i][2]);
+				 $stmt= MakeDeleteStmt($tableName,$WHEREtable,$WHEREData);
+				  echo $stmt;
+				   SendCommand($stmt,$data_library);
+			  }
+			 
+ 		      $WHEREtable= returnData($tables);
+			  $data=getTxtArray();
+			  $datas=filterArray( $data,0,"outs");
+			  for($i=0;$i<count($datas);$i++){
+				  $WHEREData=returnData($datas[$i]); 
+				  $stmt=  MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
+				 SendCommand($stmt,$data_library);
+			      echo $stmt;
+			  }
+			  $Link=$BackURL."?ListType=EditOutsForm&sn=".$sn;
+		    echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
+	 }
+	 function returnData($data){
+	          $t=array();
+			  for($i=0;$i<count( $data);$i++){
+			      array_push($t,$data[$i]);
+			  }
+			  return $t;
+	 }
 ?>
 <?php //上傳前表單
       function  CreatNewOuts(){
@@ -519,6 +572,7 @@
 		       global  $BaseURL,$BackURL;
 			   global  $sn;
 			   global  $OutCosts;
+			   global  $ListType;
 			   $currentDataT= filterArray( $OutCosts,1,$sn);
 			   $currentData= filterArray( $currentDataT,2,$sn);
 			   $ex=100;
@@ -529,7 +583,9 @@
 			   $c="(第".$currentData[0][14]."包)";
 			   $title ="編輯".$currentData[0][1]."-".$currentData[0][5].$c."[".$currentData[0][8]."]製作內容";
 	           DrawPopBG($ex,$ey,$w,$h,$title ,"12",$Link);
-			   ExportForms($sn);
+			    
+			    if($ListType=="EditOutsForm")  ExportForms($sn);
+		        if($ListType=="inputOutsForm") InputForms($sn);
                
 		
 	  }
@@ -547,19 +603,17 @@
 			   //列印
 			   $Link=$BaseURL."?sn=".$sn."&picNum=".count($outsDetial);
 			   echo  "<form method=post enctype=multipart/form-data action=".$Link.">";
-			   for($i=0;$i<count($outsDetial);$i++){
-			        Drawsingel($outsDetial[$i],$List,$rect,$fontColor,$BGcolor);
-					$input= "<input type=file name=pic".$i." style= font-size:10px;>";
-					$pic="Outsourcing/SortPic/".$sn."/spic".$i.".jpg" ;
-					DrawPosPic($pic,$rect[1],$rect[0]+740,20,20,"absolute" );
-					
-			        DrawInputRect_size("效果图例",10,"#ffffff",$rect[0]+770,$rect[1],300,$rect[3],$BGcolor,$WorldAlign,$input);
-				    $rect[1]+=22;
-			   }
+			  //細節
+			   
+	           DrawDetialList($outsDetial ,$fontColor,$BGcolor);
+			   $rect[1]+=count($outsDetial)*22;
 			   //送出
 			   $submitP="<input type=submit name=submit value=上傳圖檔  style= font-size:10px; >";
                DrawInputRect("",8 ,"#ffffff",$rect[0]+750,$rect[1],200,$rect[3], $colorCodes[4][2],"top",$submitP);
 			   echo "</form>";
+			   //連接修改表單
+			   $Link=$BaseURL."?ListType=inputOutsForm&sn=".$sn;
+			   DrawLinkRect_Layer("修改表單",10,$fontColor,$rect,"#ffaacc",$Link,$border,$Layer);
 			   //輸出
 			   $Link="../../IGGTaipeRD2/Outsourcing/ExportMat.php?Exporttype=mat1&sn=".$sn;
 			   $msg="產生 [材料1：项目外包需求申请单.xls]";
@@ -592,16 +646,71 @@
 			   $msg="產生 [需求明细.doc]";
 			   $rect[1]+=32;
 			   DrawLinkRect_LayerNew($msg,12,$fontColor,$rect,$BGcolor,$Link,$border,$Layer);
-			   
 	  }
-	  function  Drawsingel($data,$List,$rect,$fontColor,$BGcolor){
-		    
-		    for($i=0;$i<count($List);$i++){
-			      DrawRect($data[$List[$i]],10,$fontColor,$rect[0],$rect[1],$rect[2],$rect[3],$BGcolor);
-				  $rect[0]+=$rect[2]+2;
+	  function  InputForms($sn){
+		  	    global $BaseURL;
+				$rect=array(100,120,120,20);
+		    	$Link=	$BackURL."?sn=".$sn;
+	            echo  "<form method=post enctype=multipart/form-data action=".$Link.">";
+			    $input="<textarea name=txt cols=90 rows=12></textarea>";
+			    DrawInputRect_size("貼上execl剪貼",12,"#ffffff",$rect[0],$rect[1]+20,500,100,$BGcolor,$WorldAlign,$input);
+				$submitP="<input type=submit name=submit value=上傳表單  style= font-size:12px; >";
+                DrawInputRect("",8 ,"#ffffff",$rect[0]+670,$rect[1]+300,200,$rect[3], $colorCodes[4][2],"top",$submitP);
+				echo "</form>";
+		   
+	  }
+	  function DrawDetialList($outsDetial,$fontColor,$BGcolor){
+		       global $DetailFormName, $FormRect,$FormList,$FormListsize,$FormTitle;
+			   $rect=$FormRect;
+			   Drawsingel($FormTitle[0],$FormList, $rect,"#ffffff","#000000");
+			   $rect[1]+=22;
+			   Drawsingel($outsDetial[$i],$FormList, $rect,$fontColor,$BGcolor);
+	  		   for($i=0;$i<count($outsDetial);$i++){
+			        Drawsingel($outsDetial[$i],$FormList, $rect,$fontColor,$BGcolor);
+				    $rect[1]+=22;
 			   }
 	  }
-	  
+	  function  Drawsingel($data,$List,$rect,$fontColor,$BGcolor){
+		    global $DetailFormName, $FormRect,$FormList,$FormListsize;
+		    for($i=0;$i<count($List);$i++){
+				  $w=$FormListsize[$List[$i]];
+			      DrawRect($data[$List[$i]],10,$fontColor,$rect[0],$rect[1],$w,$rect[3],$BGcolor);
+				  $rect[0]+=$w+2;
+			   }
+			   $pic="Outsourcing/SortPic/".$sn."/spic".$i.".jpg" ;
+	           DrawPosPic($pic,$rect[1],$rect[0],20,20,"absolute" );
+			   $rect[0]+=22;
+               $input= "<input type=file name=pic".$i." style= font-size:10px;>";
+			   DrawInputRect_size("效果图例",10,"#ffffff",$rect[0] ,$rect[1],300,$rect[3],$BGcolor,$WorldAlign,$input);
+	  }
+	   function UpformCheck(){
+	     	  global $sn;
+			  global $DetailFormName, $FormRect,$FormList,$FormListsize;
+			  global $BaseURL;
+			  global $txt;
+		      EditOutsForm();
+	          require_once 'uty/xls2mysqlApi.php';
+			  $data=getTxtArray();
+			  $data_library=$data[0][1];
+			  $tableName=$data[0][0];
+			  if($tableName!="outsdetail"){
+			  echo "上傳格式有錯!";
+			  return;
+			  }
+              $tables=returnTables($data_library ,$tableName);
+			  $collect=filterArray( $data,0,"outs");
+			  $fontColor="#222222";
+			  $BGcolor="#ffffff";
+			  echo  "<form method=post enctype=multipart/form-data action=".$BaseURL.">";
+			  DrawDetialList($collect,$fontColor,$BGcolor);
+			  echo "<input type=hidden name=sn value='".$sn."'   >";
+		      echo "<input type=hidden name=txt value='".$txt."'   >";
+			  //echo "<input type=hidden name=datas class=mail-contacts  value='".$collect."'   >";
+			  $submitP="<input type=submit name=submit value=確定上傳表單  style= font-size:12px; >"; 
+			  $rect=$FormRect;
+              DrawInputRect("",8 ,"#ffffff",$rect[0]+470,($rect[1]+(count($collect)+1)*22),200,$rect[3], "#ffcccc","top",$submitP);
+			  echo "</form>";
+	 }	
 ?>
  
 <?php //old
