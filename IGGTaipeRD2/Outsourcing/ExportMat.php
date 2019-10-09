@@ -23,7 +23,7 @@ function DefineData(){
 	 	 //分類
          if($Exporttype=="mat1")creatMat1();
 		 if($Exporttype=="mat3")creatMat3();
-	
+	     if($Exporttype=="Quote") creatQuote() ;
 }
  
 
@@ -240,10 +240,160 @@ function creatMat3(){
 	  $borderStyle="PHPExcel_Style_Border::BORDER_MEDIUM";
       DrawLineOut($objPHPExcel,$area,$borderStyle);
 	//  setCellStyle($objPHPExcel,'项目外包需求申请单','A1',"20",'center','A1:G1',"");
-	  saveExcel($objPHPExcel,"材料3：合同报价单.xls");
+	  saveExcel($objPHPExcel,"材料3：合同报价单.xls"); 
+}
+
+function  creatQuote(){
+	  global $baseData,$demand;
+	   global $outsDetial,$OutsCost, $outsData;
+	  $objPHPExcel = new PHPExcel();
+      $objPHPExcel->setActiveSheetIndex(0)  ;
+	  //設定欄寬
+	  $ColWidth=array(
+	  array('A',10),
+	   array('B',51),
+	    array('C',8),
+		 array('D',12),
+		  array('E',12),
+		   array('F',8),
+		    array('G',15)
+	  );
+	  for($i=0;$i<count($ColWidth);$i++){
+	     	$objPHPExcel->getActiveSheet()->getColumnDimension($ColWidth[$i][0])->setWidth($ColWidth[$i][1]); 
+	  }
+	  $title=array(
+	  array('A',"制作类型","type"),
+	   array('B',"内容","content"),
+	    array('C',"数量","number"),
+		 array('D',"总工时（小時）","workingHours"),
+		  array('E',"小時单价（".$baseData["currency"]."）","hourprice"),
+		   array('F',"税点","Tex"),
+		    array('G',"總額","Total")
+	  );
+	 //第一行
+	  for($i=0;$i<count( $title);$i++){
+		      $area=($title[$i][0]."1");
+	     	  setCellStyle($objPHPExcel,$title[$i][1],$area,"10",'center',"",$area);
+			  Fill_Solid($objPHPExcel,$area,"#ffffffff","#000000");
+			  $objPHPExcel->getActiveSheet()->getStyle($area)->getAlignment()->setWrapText(true);
+	  }
+	  $objPHPExcel->getActiveSheet()->getDefaultRowDimension()->setRowHeight(35); 
+	  //動作類型
+	  $area="A2";
+	  $merg="A2:A".(count($demand)+2);
+	  $msg=collectWork($outsDetial);
+	  setCellStyle($objPHPExcel, $msg,$area,"10",'center',$merg,$merg);
+      $objPHPExcel->getActiveSheet()->getStyle($area)->getAlignment()->setWrapText(true);
+	  //詳細資料
+	  $Nstart=2;
+	  $total=0;
+	  $totalNum=0;
+	  $totalHours=0;
+	  for($i=0;$i<count( $demand);$i++){
+		  $t  = $baseData["hourprice"]*$demand[$i]["workingHours"];
+		  $total+=$t;
+		  $totalNum+=$demand[$i]["number"];
+		  $totalHours+=$demand[$i]["workingHours"];
+		    for($j=1;$j<count( $title);$j++){
+				 $area=($title[$j][0].$Nstart);
+				 $info=$demand[$i][$title[$j][2]];
+				 if($title[$j][1]=="税点")$info="0%";
+				 if($title[$j][1]=="内容")$info= $demand[$i]["content"]. $demand[$i]["detail"];
+				 if($title[$j][0]=="E")$info= $baseData["hourprice"];
+				 if($title[$j][1]=="總額")$info=   $t  ;
+				 if ($info!=""){
+				     setCellStyle($objPHPExcel, $info,$area,"10",'center',"",$area);
+					 $objPHPExcel->getActiveSheet()->getStyle($area)->getAlignment()->setWrapText(true);
+				 }
+		        
+			}
+	      $Nstart+=1;
+	  }
+	 
+	  //總計
+	  $area="C".$Nstart; 
+      setCellStyle($objPHPExcel, $totalNum,$area,"10",'center',"",$area);
+	  $area="D".$Nstart;
+	  setCellStyle($objPHPExcel, $totalHours,$area,"10",'center',"",$area);
+	  $area="F".$Nstart;
+	  setCellStyle($objPHPExcel, "总计",$area,"12",'center',"",$area);
+	  $area="G".$Nstart;
+	  setCellStyle($objPHPExcel, $total,$area,"10",'center',"",$area);
+	  $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('$0,000');
+	   //外框
+	  $LineArea="A1:G".(count($demand)+2);
+	  DrawLineOut($objPHPExcel,$LineArea,"PHPExcel_Style_Border::BORDER_THIN");
+	  //開始
+	  $STENDay=getStartEndTime();
 	  
+      $Nstart+=2;
+	  $area="A".$Nstart;
+	  $objPHPExcel->getActiveSheet()->getRowDimension($Nstart)->setRowHeight(20);
+      setCellStyle($objPHPExcel,"开始时间",$area,"11",'center',"",$area);
+	  Fill_Solid($objPHPExcel,$area,"#ffffffff","#000000");
+	  $area="B".$Nstart;
+	  setCellStyle($objPHPExcel,$STENDay[0],$area,"11",'center',"",$area);
+	  //完成
+	  $Nstart+=1;
+	  $area="A".$Nstart;
+	  $objPHPExcel->getActiveSheet()->getRowDimension($Nstart)->setRowHeight(20);
+      setCellStyle($objPHPExcel,"完成时间",$area,"11",'center',"",$area);
+	  Fill_Solid($objPHPExcel,$area,"#ffffffff","#000000");
+	  $area="B".$Nstart;
+	  setCellStyle($objPHPExcel,$STENDay[1],$area,"11",'center',"",$area);
+ 
+	  saveExcel($objPHPExcel,"報價.xls"); 
 	  
 }
+function getStartEndTime(){
+         global $outsDetial;
+		 $year=array();
+		 $startM=array();
+		 $EndM=array();
+		 $startD=array();
+		 $EndD=array();
+		 for($i=0;$i<count($outsDetial);$i++){
+		     $tmp= explode("/",$outsDetial[$i][9]);
+			 if(count($tmp)>2){
+			 if(!in_array($tmp[0],$year))array_push($year,$tmp[0]);
+			 if(!in_array($tmp[1],$startM))array_push($startM,$tmp[1]);
+			 if(!in_array($tmp[2], $startD))array_push( $startD,$tmp[2]);
+			 }
+			 $tmp= explode("/",$outsDetial[$i][10]);
+			 if(count($tmp)>2){
+			 if(!in_array($tmp[0],$year))array_push($year,$tmp[0]);
+			 if(!in_array($tmp[1],$EndM))array_push($EndM,$tmp[1]);
+			 if(!in_array($tmp[2],$EndD))array_push( $EndD,$tmp[2]);
+			 }
+		 }
+		 sort($year);
+		 sort($startM);
+	     sort($EndM);
+		 $sd= getStartDay($outsDetial,$year[0],$startM[0],"");
+		 $ed= getStartDay($outsDetial,$year[(count($year)-1)],$EndM[(count($EndM)-1)],"false");
+	     $startYM=$year[0]."年".$startM[0]."月".$sd."日";
+		 $EndYM=$year[(count($year)-1)]."年".$EndM[(count($EndM)-1)]."月".$ed."日";
+		 return array($startYM,$EndYM);
+}
+function getStartDay($data,$y,$m,$forward){
+	     $d=array();
+		 $s=9;
+		 if($forward=="false")$s=10;
+		
+	     for($i=0;$i<count($data);$i++){
+			// echo $data[$i][$s];
+		      $tmp= explode("/",$data[$i][$s]);
+			  if($y==$tmp[0] and $m==$tmp[1]){
+				   array_push($d,$tmp[2]);
+			  // if(!in_array($tmp[2],$d))array_push($d,$tmp[2]);
+			  }
+		 }
+		 sort($d);
+		 $fd=$d[0];
+		 if($forward=="false") $fd=$d[(count($d)-1)];
+		 return $fd;
+}
+ 
 ?>
 
  

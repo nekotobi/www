@@ -68,7 +68,7 @@
 		 $objPHPExcel->getActiveSheet()->getStyle($LineArea)->applyFromArray($styleArray);
 		}
 }
- function DrawLineOut($objPHPExcel,$LineArea,$borderStyle){
+       function DrawLineOut($objPHPExcel,$LineArea,$borderStyle){
 	   $styleArray = array(
            'borders' => array(
            'outline' => array(
@@ -117,4 +117,25 @@
 			  }
 	       return $data;
 	   }
+	   function Fill_Solid( $objPHPExcel,$area,$FontColor,$BGColor){
+	    $objPHPExcel->getActiveSheet()->getStyle($area)->getFont()->getColor()->setARGB($FontColor); 
+        $objPHPExcel->getActiveSheet()
+			  ->getStyle($area)
+			  ->getFill()
+			  ->applyFromArray(array('type' => PHPExcel_Style_Fill::FILL_SOLID,'startcolor' => array('rgb' =>$BGColor))); 
+}
+     function collectWork($datas){
+	      $str=array();
+		  for($i=0;$i<count($datas);$i++){
+		      $type=$datas[$i][3];
+			  if(!in_array($type, $str))array_push($str,$type);
+		  }
+		  $s="";
+		  for($i=0;$i<count($str);$i++){
+			  $s=$s.$str[$i];
+			  if($i!=(count($str)-1))$s."/";
+		  }
+		  $s=$s."製作";
+		  return $s;
+	 }
 ?>

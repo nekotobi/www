@@ -2,25 +2,26 @@
 global $Exporttype ;
 header("Content-type: text/html; charset=charset=unicode");
 $filename="材料2：申请资料.doc";
-header("Content-Disposition: attachment; filename=" . $filename); 
-header("Content-Type:application/doc");  
+if($Exporttype=="mat4")$filename="材料4：需求描述模板.doc";
+if($Exporttype=="Demand")$filename=" 需求明细.doc";
+header("Content-Type:application/ms-word");  
 header("Content-Disposition:attachment;filename=".$filename);
 header("Pragma:no-cache");
 header("Expires:0");
 ?> 
 
-
- 
-
 <?php
-      require_once  dirname(dirname(__FILE__)).'/PubApi.php';
+     // require_once  dirname(dirname(__FILE__)).'/PubApi.php';
+	  require_once 'xlsApiv2.php';
       setBGColor();
 	  DefineData();
-	 
 	  function DefineData(){
          global $sn;
          global $Exporttype;
 		 global $outsDetial,$OutsCost, $outsData;
+		 global $project, $principal;
+		 $project="FP";
+		 $principal="黃謙信";
 		 //詳細表單
 		 $outsDetialT=getMysqlDataArray("outsdetail");
 		 $outsDetial= filterArray( $outsDetialT,1,$sn);
@@ -34,7 +35,10 @@ header("Expires:0");
 		 $outsData=filterArray(  $outsDataT,1,$code);
 		 
 		 //分類
+		 	 if($Exporttype=="Demand")createDemand();
          if($Exporttype=="mat2")setMat2Data();
+		 if($Exporttype=="mat4")printMat4();
+	
 	  }
 	  function setMat2Data(){
 	     global $sn;
@@ -135,7 +139,7 @@ header("Expires:0");
 		 echo "<p>　</p>";  
 			 
 	 }
-     function  printPay($cash,$Currency) {
+     function printPay($cash,$Currency) {
 		    echo "</p>";
             echo "外包金额以及付款步骤: 一次性付清";
             echo "</p>";
@@ -162,11 +166,135 @@ header("Expires:0");
             echo   "附件：营业执照扫描件 /身份证扫描件";
 	 }
 	 
-	 
- 
 
-
+  
 ?>
 
+<?php //mat4
+	 function createDemand(){
+	      global $outsDetial,$OutsCost, $outsData;
+		  global $sn;
+		  global $project ,$principal;
+		  echo "<table  border=1 cellpadding=1 cellspacing=0 bordercolor=#000000 >";
+		  echo "<tr>";
+		  echo "<td width=5%>项目</td>";
+		  echo "<td width=12%>$project</td>";
+		  echo "<td width=38%>申请人</td>";
+		  echo "<td width=12%>$principal</td>";
+		  echo "<td width=8%>时间</td>";
+		  echo "<td width=20%>".$OutsCost[0][14]."</td>";
+		  echo "</tr>";
+		  echo "<tr>";
+		  echo "<td>事由</td>";
+	      echo "<td colspan=5>项目制作</td>";
+		  echo "</tr>";
+		  echo "<tr>";
+		  $row=4+count($outsDetial);
+		  echo "<td rowspan=$row>需求清单</td>";
+		  echo "<td>内容</td>";
+		  echo "<td>需求明细</td>";
+		  echo "<td colspan=3>效果图例</td>";
+		  echo "</tr>";
+		  echo "<td>";
+		  echo collectWork($outsDetial);
+		  echo "</td>";
+		  echo "<td>";
+		
+		  for($i=0;$i<count( $outsDetial);$i++){
+		
+		      $msg=($i+1).".".$outsDetial[$i][4].$outsDetial[$i][5];
+		      echo "<p>".$msg."</p>";
+		  }
+		  echo "</td>";
+		  echo "<td colspan=3>";
+		  for($i=0;$i<count( $outsDetial);$i++){
+		      $msg=($i+1).".".$outsDetial[$i][4] ;
+		      echo "<p>".$msg."</p>";
+		      $pic="pic0.png";
+			//  $pic="Outsourcing/SortPic/".$sn."/spic".$i.".jpg" ;
+			  echo $pic;
+			  $pic64=create_data_uri("pic0.png", "png");
+			  
+			  echo "<img  src=".$pic64.">";
+		  }
+	      echo "</td>";
+	      echo "</tr>";
+		  $outs=$outsData[0][15];
+		  
+		  echo "<tr><td>　</td><td> </td><td colspan=3> </td></tr>";
+		    $total=0;
+		  for($i=0;$i<count( $outsDetial);$i++){
+			   $total+=$outsDetial[$i][8];
+			   echo "<tr>";
+		       echo "<td>$outs</td>";
+			   echo "<td>".$outsDetial[$i][4].$outsDetial[$i][5]."</td>";
+			   echo "<td colspan=3>".$outsDetial[$i][8].$outsData[0][30]."</td>";
+		       echo "</tr>";
+		  }
+		  echo "<tr><td>總預算</td><td> </td><td colspan=3>".$total.$outsData[0][30]."</td></tr>";
+	      echo "</table>";		
+          //印明細
+      	
+	 }
+	 function printMat4(){
+	      global $outsDetial,$OutsCost, $outsData;
+		  global $sn;
+		  echo "<table  border=1 cellpadding=1 cellspacing=0 bordercolor=#000000 >";
+		  echo "<tr>";
+		  echo "<td rowspan=2 width=10%>需求清单</td>";
+		  echo "<td width=15%>内容</td>";
+		  echo "<td width=35%>需求明細</td>";
+		  echo "<td width=35%>效果图例</td>";
+		  echo "</tr>";
+		  echo "<tr>";
+		  echo "<td>";
+		  echo collectWork($outsDetial);
+		  echo "</td>";
+		  echo "<td>";
+		  for($i=0;$i<count( $outsDetial);$i++){
+		      $msg=($i+1).".".$outsDetial[$i][4].$outsDetial[$i][5];
+		      echo "<p>".$msg."</p>";
+		  }
+		  echo "</td>";
+		  echo "<td>";
+		  for($i=0;$i<count( $outsDetial);$i++){
+		      $msg=($i+1).".".$outsDetial[$i][4] ;
+		      echo "<p>".$msg."</p>";
+		      $pic="pic0.png";
+			//  $pic="Outsourcing/SortPic/".$sn."/spic".$i.".jpg" ;
+			  echo $pic;
+			  $pic64=create_data_uri("pic0.png", "png");
+			  echo "<img  src=".$pic64.">";
+		  }
+	      echo "</td>";
+	      echo "</tr>";
+	      echo "</table>";
+	 }
+ 
+?>
+<?php //需求明细.doc
+       function PrintDemandv2(){
+	   	  global $outsDetial,$OutsCost, $outsData;
+		  global $sn;
+		  global $project ,$principal;
+		 // echo "<table  border=1 cellpadding=1 cellspacing=1  bordercolor=#000000 >";
+		   echo "<table   border=1  cellpadding=1 cellspacing=0  bordercolor=#000000 >";
+		  echo "<tr>";
+		  echo "<td width=10% height=100>内容</td>";
+		  echo "<td width=20%>".$project."</td>";
+		  echo "<td width=30%>'申请人'</td>";
+		  echo "<td width=10%>".$principal."</td>";
+		  echo "<td width=5%>'时间'</td>";
+	      echo "<td width=25%>".$OutsCost[$sn][14]."</td>";
+	   }
+?>
+
+<?php //圖片轉code
+       function create_data_uri($source_file, $mime_type) {
+                $encoded_string = base64_encode(file_get_contents($source_file));
+                 return('data:image/' . $mime_type . ';base64,' . $encoded_string);
+              }
+?>
+ 
  
 

@@ -577,6 +577,21 @@
 			   $msg="產生 [材料3：合同报价单.xls]";
 			   $rect[1]+=32;
 			   DrawLinkRect_LayerNew($msg,12,$fontColor,$rect,$BGcolor,$Link,$border,$Layer);
+			   //mat4
+			   $Link="../../IGGTaipeRD2/Outsourcing/ExportMatDoc.php?Exporttype=mat4&sn=".$sn;
+			   $msg="產生 [材料4：需求描述模板.doc]";
+			   $rect[1]+=32;
+			   DrawLinkRect_LayerNew($msg,12,$fontColor,$rect,$BGcolor,$Link,$border,$Layer);
+			   //報價
+			   $Link="../../IGGTaipeRD2/Outsourcing/ExportMat.php?Exporttype=Quote&sn=".$sn;
+			   $msg="產生 [報價.xlsx]";
+			   $rect[1]+=32;
+			   DrawLinkRect_LayerNew($msg,12,$fontColor,$rect,$BGcolor,$Link,$border,$Layer);
+			   //報價
+			   $Link="../../IGGTaipeRD2/Outsourcing/ExportMatDoc.php?Exporttype=Demand&sn=".$sn;
+			   $msg="產生 [需求明细.doc]";
+			   $rect[1]+=32;
+			   DrawLinkRect_LayerNew($msg,12,$fontColor,$rect,$BGcolor,$Link,$border,$Layer);
 			   
 	  }
 	  function  Drawsingel($data,$List,$rect,$fontColor,$BGcolor){
@@ -588,6 +603,7 @@
 	  }
 	  
 ?>
+ 
 <?php //old
 /*
 	function filterContacts(){
