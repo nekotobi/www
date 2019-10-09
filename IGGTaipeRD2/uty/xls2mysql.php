@@ -19,7 +19,7 @@
 <?php
    function input(){
 	   global $submit;
-      if ($submit!="")return;
+       if ($submit!="")return;
           echo "<form id=form name=form method=post action=xls2mysql.php>";
 	      echo "<input type=hidden name=typ value=1>"; //隱藏數值
 	      echo "<label><div align=center>";

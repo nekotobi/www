@@ -484,7 +484,7 @@
 			      echo $stmt;
 			  }
 			  $Link=$BackURL."?ListType=EditOutsForm&sn=".$sn;
-		    echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
+		      echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
 	 }
 	 function returnData($data){
 	          $t=array();
@@ -650,6 +650,8 @@
 	  function  InputForms($sn){
 		  	    global $BaseURL;
 				$rect=array(100,120,120,20);
+				$Link="https://docs.google.com/spreadsheets/d/1kU1Nq95YIrua0EDWv9wIHaijPLAJX6SNb81685HQKnA/edit#gid=1048566831";
+				 DrawLinkRect("xls表單範例",10,"#000000",$rect[0],$rect[1],100,20,"#ccffaa",$Link,$border);
 		    	$Link=	$BackURL."?sn=".$sn;
 	            echo  "<form method=post enctype=multipart/form-data action=".$Link.">";
 			    $input="<textarea name=txt cols=90 rows=12></textarea>";
