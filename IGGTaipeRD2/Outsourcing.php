@@ -212,18 +212,18 @@
 		  global $radio_1,$radio_2;
 		  $x=600;
 		  $y=100;
-		  $w=400;
-		  $h=200+count( $Names)*20;
+		  $w=500;
+		  $h=400+count( $Names)*20;
 	      DrawPopBG($x,$y,$w,$h,"修正外包資料" ,"12",$BaseURL);
 		  $data= returnDataArray($BaseData,1,$code)   ;
 		  $tables=returnTables($data_library, $tableName );
 		  $y-=60;
           echo   "<form id='EditOut'  name='Show' action='Outsourcing.php'  method='post'  enctype='multipart/form-data'>";
 		  for($i=0;$i<count( $tables);$i++){
-			   $y+=30;
+			   $y+=32;
 			      switch ($TableType[$i]){
 				        case $TableType[$i]=="string" :
-				             $input="<input type=text name=".$tables[$i]." 	value='".$data[$i]."'  size=50  >";
+				             $input="<input type=text name=".$tables[$i]." 	value='".$data[$i]."' style= font-size:10px;  size=50  >";
 				             DrawInputRect($Names[$i]." ","12","#ffffff",($x ),$y,420,20, $colorCodes[4][2],"top", $input);
 				        break;
 					    case $TableType[$i]=="radio_1" :
