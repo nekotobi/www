@@ -614,6 +614,10 @@
 			   //連接修改表單
 			   $Link=$BaseURL."?ListType=inputOutsForm&sn=".$sn;
 			   DrawLinkRect_Layer("修改表單",10,$fontColor,$rect,"#ffaacc",$Link,$border,$Layer);
+			   
+			   //匯率
+			   $Link2="https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&rsv_idx=1&tn=baidu&wd=%E6%B1%87%E7%8E%87&oq=%25E6%25B1%2587%25E7%258E%2587%25E4%25BA%25BA%25E6%25B0%2591%25E5%25B8%2581%25E5%258F%25B0%25E5%25B8%2581&rsv_pq=fb7d36c4000e11ee&rsv_t=cc6dkVdXoMRFbjGQ46xf0UoT5jFYhDXhUsiL7NjPvkFHLT%2BDehA9LNu%2BEj8&rqlang=cn&rsv_enter=1&rsv_dl=tb&inputT=373&rsv_sug3=19&rsv_sug1=11&rsv_sug7=100&rsv_sug2=0&rsv_sug4=512&rsv_sug=2";
+			   DrawLinkRect("匯率運算",10,"#000000",$rect[0]+300,$rect[1],100,20,"#ccffaa",$Link2,$border);
 			   //輸出
 			   $Link="../../IGGTaipeRD2/Outsourcing/ExportMat.php?Exporttype=mat1&sn=".$sn;
 			   $msg="產生 [材料1：项目外包需求申请单.xls]";
@@ -656,12 +660,16 @@
 	            echo  "<form method=post enctype=multipart/form-data action=".$Link.">";
 			    $input="<textarea name=txt cols=90 rows=12></textarea>";
 			    DrawInputRect_size("貼上execl剪貼",12,"#ffffff",$rect[0],$rect[1]+20,500,100,$BGcolor,$WorldAlign,$input);
+
+				
+				
+				
 				$submitP="<input type=submit name=submit value=上傳表單  style= font-size:12px; >";
                 DrawInputRect("",8 ,"#ffffff",$rect[0]+670,$rect[1]+300,200,$rect[3], $colorCodes[4][2],"top",$submitP);
 				echo "</form>";
 		   
 	  }
-	  function DrawDetialList($outsDetial,$fontColor,$BGcolor){
+	  function  DrawDetialList($outsDetial,$fontColor,$BGcolor){
 		       global $DetailFormName, $FormRect,$FormList,$FormListsize,$FormTitle;
 			   $rect=$FormRect;
 			   Drawsingel($FormTitle[0],$FormList, $rect,"#ffffff","#000000");
@@ -685,7 +693,7 @@
                $input= "<input type=file name=pic".$i." style= font-size:10px;>";
 			   DrawInputRect_size("效果图例",10,"#ffffff",$rect[0] ,$rect[1],300,$rect[3],$BGcolor,$WorldAlign,$input);
 	  }
-	   function UpformCheck(){
+	  function  UpformCheck(){
 	     	  global $sn;
 			  global $DetailFormName, $FormRect,$FormList,$FormListsize;
 			  global $BaseURL;
