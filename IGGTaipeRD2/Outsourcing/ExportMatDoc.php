@@ -121,7 +121,7 @@ header("Expires:0");
 		 $color=array("#ffffff","#ffffff","#ffcccc");
 		 $LineStr="美术外包";
 
-		 echo "<table  border=1 cellpadding=1 cellspacing=1  bordercolor=#000000 >";
+		 echo "<table  border=1 cellpadding=1 cellspacing=0  bordercolor=#000000 >";
 		 echo "　<tr>";
 		 for($i=0;$i<count($ListTitle);$i++){
 		    echo "<td bgcolor=#000000 width=".$ListSize[$i].">".$ListTitle[$i]."</td>";
