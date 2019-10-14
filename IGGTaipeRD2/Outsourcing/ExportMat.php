@@ -144,7 +144,7 @@ function creatMat1(){
     $Range='A'.$Nstart.":C".$Nstart;
 	setCellStyle($objPHPExcel,$baseData[Outsourcing],'A'.$Nstart,"10",'center',$Range,$Range);
 	setCellStyle($objPHPExcel,$totalAmout,'D'.$Nstart,"10",'center',"",'D'.$Nstart);
-    $objPHPExcel->getActiveSheet()->getStyle('D'.$Nstart)->getNumberFormat()->setFormatCode('$0,000');
+    $objPHPExcel->getActiveSheet()->getStyle('D'.$Nstart)->getNumberFormat()->setFormatCode('$#,##0;-$#,##0');
 	setCellStyle($objPHPExcel,$baseData[startDay],'E'.$Nstart,"10",'center',"",'E'.$Nstart);
 	$Range='F'.$Nstart.":G".$Nstart;
 	setCellStyle($objPHPExcel,'','F'.$Nstart,"10",'center',$Range,$Range);
