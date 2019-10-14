@@ -107,7 +107,7 @@ function creatMat1(){
 	setCellStyle($objPHPExcel,$demand[$i][workingHours],'E'.$a,"10",'center',$merge,'E'.$a);
 	$m='F'.$a.':G'.$a;
 	setCellStyle($objPHPExcel,$demand[$i][valuation],'F'.$a,"10",'center', $m,	$m);
-	$objPHPExcel->getActiveSheet()->getStyle('F'.$a)->getNumberFormat()->setFormatCode('$0,000');
+	$objPHPExcel->getActiveSheet()->getStyle('F'.$a)->getNumberFormat()->setFormatCode('$#,##0;-$#,##0');
 	$Nstart+=1;
 	}
 	//需求
@@ -120,7 +120,7 @@ function creatMat1(){
 	setCellStyle($objPHPExcel,'总预算','A'.$Nstart,"10",'center',$Range,$Range);
 	$Range='D'.$Nstart.":G".$Nstart;
 	setCellStyle($objPHPExcel,$totalAmout,'D'.$Nstart,"10",'center',$Range,$Range);
-	$objPHPExcel->getActiveSheet()->getStyle('D'.$Nstart)->getNumberFormat()->setFormatCode('$0,000');
+	$objPHPExcel->getActiveSheet()->getStyle('D'.$Nstart)->getNumberFormat()->setFormatCode('$#,##0;-$#,##0');
     //簽字
 	$Nstart+=1;
 	$Range='A'.$Nstart.":C".$Nstart;
@@ -319,7 +319,7 @@ function  creatQuote(){
 	  setCellStyle($objPHPExcel, "总计",$area,"12",'center',"",$area);
 	  $area="G".$Nstart;
 	  setCellStyle($objPHPExcel, $total,$area,"10",'center',"",$area);
-	  $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('$0,000');
+	  $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('$#,##0;-$#,##0'); 
 	   //外框
 	  $LineArea="A1:G".(count($demand)+2);
 	  DrawLineOut($objPHPExcel,$LineArea,"PHPExcel_Style_Border::BORDER_THIN");
