@@ -31,9 +31,10 @@ header("Expires:0");
 		 $OutsCost= filterArray(  $OutsCostT,1,$sn);
 		 //外包名單
 		 $code=$OutsCost[0][15];
+		
 		 $outsDataT=getMysqlDataArray("outsourcing");
 		 $outsData=filterArray(  $outsDataT,1,$code);
-		 
+ 
 		 //分類
 		 	 if($Exporttype=="Demand")createDemand();
          if($Exporttype=="mat2")setMat2Data();
@@ -74,7 +75,8 @@ header("Expires:0");
 			   "Contact"=>"联系人",
 			   "Tel"=>"联系电话",
 			   "Adress"=>"公司地址",
-			   "ID"=>"公司统一社会信用代码"
+			   "ID"=>"公司统一社会信用代码",
+			    "BankSwiftCode"=>"Bank Swift Code: "
 			   ),
 			      array(
 	           "AccountName"=>$outsData[0][21],
@@ -85,7 +87,8 @@ header("Expires:0");
 			   "Contact"=>$outsData[0][26],
 			   "Tel"=>$outsData[0][27],
 			   "Adress"=>$outsData[0][28],
-			   "ID"=>$outsData[0][29]
+			   "ID"=>$outsData[0][29],
+			    "BankSwiftCode"=>$outsData[0][31]
 			   ),
 	     );
 		 printPayPaymentInformation($payinfo);
@@ -147,8 +150,8 @@ header("Expires:0");
             echo "<p>　</p>";  
 	 }
 	 function printPayPaymentInformation($payinfo){
-	        $PayPayC1=array("开户名：","开户行","银行账号","银行地址");
-	        $paypay1=array("AccountName","AccountBank","AccountNumber","BankAdress");
+	        $PayPayC1=array("开户名：","开户行","银行账号","银行地址","Bank Swift Code: ");
+	        $paypay1=array("AccountName","AccountBank","AccountNumber","BankAdress","BankSwiftCode");
             $PayPayC2=array("乙方","联系人","联系电话: ","公司地址","公司统一社会信用代码");
  	        $paypay2=array("PartyB","Contact","Tel","Adress","ID");		
             echo "乙方账户(填写英文)";			
