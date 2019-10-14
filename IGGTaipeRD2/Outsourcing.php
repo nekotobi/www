@@ -66,8 +66,7 @@
 	         	$x+=$w+2;
 			}
 	    }
-    }
-	
+    }	
     function DrawOutsourcing($Data,$x,$y,$color,$fontColor){
 	     global $width,$TableType;
 		 global $BaseURL, $BackURL;
@@ -125,8 +124,7 @@
 	         }
 			 $Link=$BackURL."?Edit=form&code=".$Data[1];
 			 DrawLinkRect("Edit","10","#ffffff",$x,$y,$h,$h,"#441122",$Link,1);
-    }
-	
+    }	
 	function DrawAdd($y,$LastSn){
 			  global  $BackURL;
 	          $x=20;
@@ -135,9 +133,6 @@
 	      	  $Link=$BackURL."?Add=yes";
 		      DrawLinkRect("+新增外包","12","#ffffff",$x,$y,1400,"20",$color,$Link,1);
 	}
-	
-
-	
 ?>
 <?php //Data
     function UpData(){
@@ -155,7 +150,7 @@
 		 UpEdit();
 		}
 	}
-	function  ChangeDNA(){
+	function ChangeDNA(){
 	          global $code,$bool;
 		      global	 $BaseURL,  $tableName,$data_library;
 			  $WHEREtable=array("data_type", "Code");					 
@@ -270,7 +265,7 @@
     function AddData(){
 		 global $tableName,$data_library;
          global $Add;	
-		 global  $BackURL;
+		 global $BaseURL, $BackURL;
   
 		 $sn=returnDataCode( ); //getDBLastSn( $data_library, $tableName,1);
 	     $WHEREtable=array("`data_type`", "`Code`","`name`","`cost`","`country`","`time_def`","`studio`","`business`","`cost_evaluate`","`quality_evaluate`","`cooperation_evaluate`","`speed_evaluate`","`Link`","`works`","`feedback`");					 
@@ -279,6 +274,6 @@
 	     $stmt= MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
 		 SendCommand($stmt,$data_library);
 	     echo $stmt;
-		  echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+		  echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
 	}
 ?>
