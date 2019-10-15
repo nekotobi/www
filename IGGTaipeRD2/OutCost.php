@@ -47,6 +47,10 @@
 			 $pregressT2=filterArray($pregressT,0,"pregress");
 			 $pregress= sortArrays( $pregressT2 ,1,"true") ;
 			 
+			 //過濾已付款項目
+			 if($ListType!="history")filterDoneOrder();
+			 
+			 
 			 //外包資料
 			 global $outsBaseData,$outsBaseSelects;
 		     getOutsData();
@@ -110,6 +114,20 @@
 				 array_push($outsBaseSelects,$sel);
 			 }
 	}
+	function filterDoneOrder(){
+	         global  $pregress,$OutCosts;
+			 $tmp=array();
+			 for($i=0;$i<count($pregress);$i++){
+			     if($pregress[$i][27]!="")array_push($tmp,$pregress[$i][1]);
+			 }		
+             $tmp2=array();			 
+			  for($i=0;$i<count($OutCosts);$i++){
+			       if (!in_array($OutCosts[$i][1], $tmp)) {
+				    array_push( $tmp2,$OutCosts[$i]);
+				   }
+			  }
+	        $OutCosts=$tmp2;
+	}
 ?>
 <?php //選項按鈕
     function DrawButtons(){
@@ -127,12 +145,13 @@
 			 $x+=$w+2;
 			 $w=60;
 			 $Link= $BaseURL."?SortType=".$SortType."&ListType=";
-			 DrawLinkRect("總表",10,"#eeeeee",$x,$y,$w,$h,"#000000",$Link,$border);
+			 DrawLinkRect("未播款表單",10,"#eeeeee",$x,$y,$w,$h,"#000000",$Link,$border);
 			 $x+=$w+2;
-			 
 			 $Link= $BaseURL."?SortType=".$SortType."&ListType=prepress";
 			 DrawLinkRect("請款進程",10,"#eeeeee",$x,$y,$w,$h,"#000000",$Link,$border);
-			 
+			 $x+=$w+2;
+			 $Link= $BaseURL."?SortType=".$SortType."&ListType=history";
+			 DrawLinkRect("歷史總表",10,"#eeeeee",$x,$y,$w,$h,"#000000",$Link,$border);
 			 $x+=$w+2;
 			 $Link= $BackURL."&ListType=AddOuts";
 			 $w=30;
@@ -145,16 +164,25 @@
 <?php //處理表格類別
       function filterListType(){
              global $ListType;
-		     global $submit;
+		     global $submit,$Hilight;
+			 if($Hilight!=""){
+				 MakeHiLight();
+			 }
 			 if($submit=="上傳表單")return;
-			  if($submit=="確定上傳表單")return;
+			 if($submit=="確定上傳表單")return;
 		  //   if($submit!="搜尋" or $submit!="")return;
 	         if($ListType==""){
 				 DrawContacts();
                  DrawTitle();
 				 return;
 			 }
+			 if($ListType=="history"){
+				 DrawContacts();
+                 DrawTitle();
+				 return;
+			 }
 		     if($ListType=="prepress"){
+				 DrawContacts();
 			 ListPregress();
 			 }
 			 if($ListType=="prepressUpdate"){
@@ -200,10 +228,21 @@
                Drawfiled($ListNames[0],$ListSize[0],$x,$y,$h,$costList,"#ffffff","#000000","");
 	   		   for($i=0;$i<count($OutCosts);$i++){
 				   $y+=22;
-				   Drawfiled($OutCosts[$i],$ListSize[0],$x,$y,$h, $costList,"#000000","#eeeeee",""); 
+				   $BgColor="#ffaaaa";
+				   $colcolor="#ffffff";
+				   if($OutCosts[$i][16]==""){
+					   $BgColor="#aaaaaa";
+					   $colcolor="#eeeeee";
+				   }
+				   
+				   Drawfiled($OutCosts[$i],$ListSize[0],$x,$y,$h, $costList,"#000000",$colcolor,""); 
 				   array_push( $ListSn,$OutCosts[$i][1]);
+				   //高亮
+				   $Rect=array( 15,$y,5,20);
+			
+				   $Link=$BackURL."&Hilight=".$OutCosts[$i][2]."&hi=".$OutCosts[$i][16];
+				   DrawLinkRect_Layer("▶",10,$BgColor,$Rect,$BgColor,$Link,$border,0);
 			   }
- 
 			   for($i=0;$i<count($costList);$i++)$x+=$ListSize[0][$costList[$i]];
 			   $y=60;  
 			   $x+=6;
@@ -212,13 +251,12 @@
 				   $data= returnArraySingel( $pregress,1,$ListSn[$i]);  
 				   $y+=22;
 				   $nextx=Drawfiled($data,$PreListSize[0],$x,$y,$h, $pregressList,"#222222", "",$ListSn[$i]); 
- 
 				   //註解
 				   $remstr=$data[28];
 				   $bgc="#ffccaa";
-				   $Rect=array( $nextx,$y,20,$h);
+				   $Rect=array( $nextx,$y,30,$h);
 				   $Link=$BaseURL."?SortType=".$SortType."&ListType=EditRemark&sn=".$ListSn[$i]."&Rx=".$Rect[0]."&Ry=".$Rect[1]."&info=".$remstr;
-				   DrawLinkRect_Layer("+R",10,$fontColor,$Rect,$bgc,$Link,$border,0);
+				   DrawLinkRect_Layer("+註解",10,$fontColor,$Rect,$bgc,$Link,$border,0);
 				   //if($data)
 			   }
 			 
@@ -282,21 +320,18 @@
 <?php //列印總表資料
      function DrawContacts(){
 	          global $outsBaseData,$outsBaseSelects;//    global $contacts ;
-			  global $BaseURL;
+			  global $BaseURL,$BackURL;
 			  global $selectName;
 			  $x=20;
 			  $y=20;
 			  $w=500;
 			  $h=20;
 			  $BgColor="#ffcccc";
-			  echo   "<form id='ChangeOut'  name='Show' action='".$BaseURL."' method='post'>";
+			  echo   "<form id='ChangeOut'  name='Show' action='".$BackURL."' method='post'>";
 		      $input=	MakeSelectionV2($outsBaseSelects,$selectName,"selectName",10);
 			  DrawInputRect("顯示外包",10,"#222222",$x,$y,$w,$h,$BgColor,$WorldAlign,$input);
 			  $x+=$w+2;
 			  $w=100;
-			//$Outinput="<input type=text name=Outinput value='".$Outinput."'  size=10 >";
-			//DrawInputRect("",10,"#222222",$x,$y,$w,$h,$BgColor,$WorldAlign,$Outinput);
-			//$x+=$w+2;
 			  $submitP="<input type=submit name=submit value=搜尋 style= font-size:10px; >";
 	          DrawInputRect("",8 ,"#ffffff",$x,$y,$w,$h, $colorCodes[4][2],"top",$submitP);
 			  echo "</form>";
@@ -492,6 +527,22 @@
 			      array_push($t,$data[$i]);
 			  }
 			  return $t;
+	 }
+	 function MakeHiLight(){
+		  global  $data_library,$tableName,$OutCosts,$DetailFormName;
+	     	  global $Hilight,$hi;
+	          $WHEREtable=array( "data_type", "sn" );
+		      $WHEREData=array( "cost",$Hilight);
+			  $h="1";
+			  if($hi!="")$h="";
+			  $Base=array("hiLight");
+			  $up=array($h);
+			  $stmt= MakeUpdateStmt(  $data_library, $tableName,$Base,$up,$WHEREtable,$WHEREData);
+			      echo $stmt;
+				  SendCommand($stmt,$data_library);
+				  global $BaseURL,$BackURL,$SortType,$ListType;
+				  $Link=$BaseURL."?SortType=".$SortType."&ListType=".$ListType;
+			      echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
 	 }
 ?>
 <?php //上傳前表單
