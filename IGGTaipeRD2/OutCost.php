@@ -242,7 +242,7 @@
 				   }
 				   Drawfiled($OutCosts[$i],$ListSize[0],$x,$y,$h, $costList,"#000000",$colcolor,""); 
 				   array_push( $ListSn,$OutCosts[$i][1]);
-                   DrawHiLight( array( 15,$y,5,20),$BgColor,$OutCosts[$i][2],$OutCosts[$i][16]);
+                   DrawHiLight( array( 15,$y,5,20),$BgColor,$OutCosts[$i][2],$OutCosts[$i][16],$OutCosts[$i][13]);
 			   }
 			   for($i=0;$i<count($costList);$i++)$x+=$ListSize[0][$costList[$i]];
 			   $y=60;  
@@ -301,15 +301,15 @@
 		   }
 		   return $n;
 	  }
-	  function DrawHiLight( $Rect,$BgColor,$Hilight,$hi){
+	  function DrawHiLight( $Rect,$BgColor,$Hilight,$hi,$num){
 		  	   global $BaseURL,$BackURL;
 	  			   //高亮
 				  // $Rect=array( 15,$y,5,20);
 				   $Link=$BackURL."&Hilight=".$Hilight."&hi=".$hi;
 				   DrawLinkRect_Layer("▶",10,$BgColor,$Rect,$BgColor,$Link,$border,0);
 				   //第幾包
-				   if($OutCosts[$i][13]!="") 
-				   DrawRect("第".$OutCosts[$i][13]."包",9,$fontColor,$Rect[0]+60,$Rect[1],30,18,"#eeffcc");
+				   if($num!="") //  if($OutCosts[$i][13]!="") 
+				   DrawRect("第".$num."包",9,$fontColor,$Rect[0]+50,$Rect[1],35,18,"#eeffcc");
 	  }
 ?>
 <?php //過濾
