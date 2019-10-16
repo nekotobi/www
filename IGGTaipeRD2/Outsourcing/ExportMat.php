@@ -224,7 +224,6 @@ function creatMat3(){
 				 if ($info!=""){
 				     setCellStyle($objPHPExcel, $info,$area,"10",'center',"",$area);
 				 }
-		        
 			}
 	      $Nstart+=1;
 	  }

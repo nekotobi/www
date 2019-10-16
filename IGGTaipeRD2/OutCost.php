@@ -31,7 +31,8 @@
 			 $MainPlanDataT=getMysqlDataArray($tableName); 
 			 $ListNames=filterArray($MainPlanDataT,0,"title");
 			 $ListSize=filterArray($MainPlanDataT,0,"size");
-			 $OutCostst=filterArray($MainPlanDataT,3,"FP");
+			 $OutCostst=filterArray($MainPlanDataT,0,"cost");
+			 
 			 $OutsLastSort= getLastSN2($OutCostst,1);
 			 //排序
 			 $forward="true";

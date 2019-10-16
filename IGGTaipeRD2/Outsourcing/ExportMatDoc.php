@@ -1,10 +1,14 @@
 <?php 
 global $Exporttype ;
+global $filename;
 header("Content-type: text/html; charset=charset=unicode");
 $filename="材料2：申请资料.doc";
 if($Exporttype=="mat4")$filename="材料4：需求描述模板.doc";
 if($Exporttype=="Demand")$filename=" 需求明细.doc";
-header("Content-Type:application/ms-word");  
+ header("Content-Type:application/ms-word");  
+//$doc = new VsWord(); 
+//$doc->saveAs($fileName);
+//header("Content-Type:application/vnd.openxmlformats-officedocument.wordprocessingml.document"); 
 header("Content-Disposition:attachment;filename=".$filename);
 header("Pragma:no-cache");
 header("Expires:0");
@@ -12,9 +16,11 @@ header("Expires:0");
 
 <?php
      // require_once  dirname(dirname(__FILE__)).'/PubApi.php';
+ 	  global $filename;
 	  require_once 'xlsApiv2.php';
       setBGColor();
 	  DefineData();
+	 // readfile($filename);`
 	  function DefineData(){
          global $sn;
          global $Exporttype;
