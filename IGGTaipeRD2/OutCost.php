@@ -94,10 +94,8 @@
 			 }
 			 for($i=0;$i<count($OutCosts);$i++){
 				 $sn=$OutCosts[$i][1];
-				 //echo $sn;
 			     $pdata= returnArraySingel( $pregress,1,$sn);  
 		         $OutCosts[$i][process]=$pdata[process];
-				// echo $OutCosts[$i][process];
 			 }
 	}
 	function getOutsData(){
@@ -147,7 +145,7 @@
 			 $x+=$w+2;
 			 $w=60;
 			 $Link= $BaseURL."?SortType=".$SortType."&ListType=";
-			 DrawLinkRect("未播款表單",10,"#eeeeee",$x,$y,$w,$h,"#000000",$Link,$border);
+			 DrawLinkRect("未撥款表單",10,"#eeeeee",$x,$y,$w,$h,"#000000",$Link,$border);
 			 $x+=$w+2;
 			 $Link= $BaseURL."?SortType=".$SortType."&ListType=prepress";
 			 DrawLinkRect("請款進程",10,"#eeeeee",$x,$y,$w,$h,"#000000",$Link,$border);
@@ -167,6 +165,7 @@
       function filterListType(){
              global $ListType;
 		     global $submit,$Hilight;
+			 global  $costList,$pregressList;
 			 if($Hilight!=""){
 				 MakeHiLight();
 			 }
@@ -175,8 +174,12 @@
 		  //   if($submit!="搜尋" or $submit!="")return;
 		  
 	         if($ListType==""){
+				 	$costList=array(1,5,7,8,9,10,11,12,13,14);
+			    //$pregressList=array(3,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28);
 				 //DrawContacts();
-                 DrawTitle();
+				 
+               //  DrawTitle();
+			     ListPregress();
 				 return;
 			 }
 			 if($ListType=="history"){
@@ -185,8 +188,9 @@
 				 return;
 			 }
 		     if($ListType=="prepress"){
-				// DrawContacts();
-			 ListPregress();
+				$costList=array(1,5,8);
+			    $pregressList=array(3,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28);
+			    ListPregress();
 			 }
 			 if($ListType=="prepressUpdate"){
 			 PregressUpdate();
@@ -222,8 +226,7 @@
 		  	   global $ListNames,$ListSize,$OutCosts,$SortType;
 		       global $pregress,$PreList,$PreListSize;
 			   global $BaseURL,$BackURL;
-	           $costList=array(1,5,8);
-			   $pregressList=array(3,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28);
+	           global  $costList,$pregressList;
 			   $ListSn=array();
 			   $x=20;
 			   $y=60;
@@ -237,16 +240,9 @@
 					   $BgColor="#aaaaaa";
 					   $colcolor="#eeeeee";
 				   }
-				   
 				   Drawfiled($OutCosts[$i],$ListSize[0],$x,$y,$h, $costList,"#000000",$colcolor,""); 
 				   array_push( $ListSn,$OutCosts[$i][1]);
-				   //高亮
-				   $Rect=array( 15,$y,5,20);
-				   $Link=$BackURL."&Hilight=".$OutCosts[$i][2]."&hi=".$OutCosts[$i][16];
-				   DrawLinkRect_Layer("▶",10,$BgColor,$Rect,$BgColor,$Link,$border,0);
-				   //第幾包
-				   if($OutCosts[$i][13]!="") 
-				   DrawRect("第".$OutCosts[$i][13]."包",9,$fontColor,$Rect[0]+60,$Rect[1],30,18,"#eeffcc");
+                   DrawHiLight( array( 15,$y,5,20),$BgColor,$OutCosts[$i][2],$OutCosts[$i][16]);
 			   }
 			   for($i=0;$i<count($costList);$i++)$x+=$ListSize[0][$costList[$i]];
 			   $y=60;  
@@ -304,6 +300,16 @@
 		   }
 		   return $n;
 	  }
+	  function DrawHiLight( $Rect,$BgColor,$Hilight,$hi){
+		  	   global $BaseURL,$BackURL;
+	  			   //高亮
+				  // $Rect=array( 15,$y,5,20);
+				   $Link=$BackURL."&Hilight=".$Hilight."&hi=".$hi;
+				   DrawLinkRect_Layer("▶",10,$BgColor,$Rect,$BgColor,$Link,$border,0);
+				   //第幾包
+				   if($OutCosts[$i][13]!="") 
+				   DrawRect("第".$OutCosts[$i][13]."包",9,$fontColor,$Rect[0]+60,$Rect[1],30,18,"#eeffcc");
+	  }
 ?>
 <?php //過濾
 	function filterContacts(){
@@ -328,7 +334,6 @@
 					//echo  $code;
 				    $Out=filterArraycontain($OutCosts,15,  $code);
 				    foreach ($Out as $o) array_push($a, $o);
-				   
 				 }
 			 }
 			 $OutCosts=$a;
@@ -344,8 +349,7 @@
 	}
 ?>
 <?php //列印總表資料
-   //  function DrawContacts(){
-	   function SearchContacts(){
+	 function SearchContacts(){
 	          global $outsBaseData,$outsBaseSelects;//    global $contacts ;
 			  global $BaseURL,$BackURL;
 			  global $selectName;
@@ -412,8 +416,10 @@
 				  $BGcolor="#DDFFDD";
 			      $msg="完成付款";
 			  }
-			
+		
 			  DrawRect($msg,10,"#000000",$x,$y,$w,$h, $BGcolor);
+			  
+			  DrawHiLight( $Rect,$BgColor,$Hilight,$hi);
 	 }
    
 ?>
