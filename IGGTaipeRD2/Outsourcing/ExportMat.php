@@ -70,6 +70,7 @@ function creatMat1(){
 	$Currency="估价（".$baseData[currency]."）";
     $objPHPExcel = new PHPExcel();
     $objPHPExcel->setActiveSheetIndex(0)  ;
+    $CurrencyType=$baseData[currency];
 	//設定欄寬
 	foreach(range('A','G') as $col){
 		$objPHPExcel->getActiveSheet()->getColumnDimension($col)->setWidth(12); 
@@ -102,12 +103,13 @@ function creatMat1(){
 		$totalAmout+=$demand[$i][valuation];
 	    setCellStyle($objPHPExcel,$demand[$i][type],'B'.$a,"10",'center',$merge,'B'.$a);
 		$objPHPExcel->getActiveSheet()->getRowDimension($Nstart)->setRowHeight(30);
-	setCellStyle($objPHPExcel,$demand[$i][content],'C'.$a,"10",'center',$merge,'C'.$a);
-	setCellStyle($objPHPExcel,$demand[$i][number],'D'.$a,"10",'center',$merge,'D'.$a);
-	setCellStyle($objPHPExcel,$demand[$i][workingHours],'E'.$a,"10",'center',$merge,'E'.$a);
+    	setCellStyle($objPHPExcel,$demand[$i][content],'C'.$a,"10",'center',$merge,'C'.$a);
+	    setCellStyle($objPHPExcel,$demand[$i][number],'D'.$a,"10",'center',$merge,'D'.$a);
+	    setCellStyle($objPHPExcel,$demand[$i][workingHours],'E'.$a,"10",'center',$merge,'E'.$a);
 	$m='F'.$a.':G'.$a;
 	setCellStyle($objPHPExcel,$demand[$i][valuation],'F'.$a,"10",'center', $m,	$m);
-	$objPHPExcel->getActiveSheet()->getStyle('F'.$a)->getNumberFormat()->setFormatCode('$#,##0;-$#,##0');
+    $area='F'.$a;
+	makeCurrency($area, $CurrencyType,$objPHPExcel);
 	$Nstart+=1;
 	}
 	//需求
@@ -120,7 +122,8 @@ function creatMat1(){
 	setCellStyle($objPHPExcel,'总预算','A'.$Nstart,"10",'center',$Range,$Range);
 	$Range='D'.$Nstart.":G".$Nstart;
 	setCellStyle($objPHPExcel,$totalAmout,'D'.$Nstart,"10",'center',$Range,$Range);
-	$objPHPExcel->getActiveSheet()->getStyle('D'.$Nstart)->getNumberFormat()->setFormatCode('$#,##0;-$#,##0');
+	 makeCurrency('D'.$Nstart,$Currency,$objPHPExcel) ; 
+//	$objPHPExcel->getActiveSheet()->getStyle('D'.$Nstart)->getNumberFormat()->setFormatCode('$#,##0;-$#,##0');
     //簽字
 	$Nstart+=1;
 	$Range='A'.$Nstart.":C".$Nstart;
@@ -144,7 +147,9 @@ function creatMat1(){
     $Range='A'.$Nstart.":C".$Nstart;
 	setCellStyle($objPHPExcel,$baseData[Outsourcing],'A'.$Nstart,"10",'center',$Range,$Range);
 	setCellStyle($objPHPExcel,$totalAmout,'D'.$Nstart,"10",'center',"",'D'.$Nstart);
-    $objPHPExcel->getActiveSheet()->getStyle('D'.$Nstart)->getNumberFormat()->setFormatCode('$#,##0;-$#,##0');
+	 makeCurrency('D'.$Nstart,$Currency,$objPHPExcel);
+    //$objPHPExcel->getActiveSheet()->getStyle('D'.$Nstart)->getNumberFormat()->setFormatCode('$#,##0;-$#,##0');
+	
 	setCellStyle($objPHPExcel,$baseData[startDay],'E'.$Nstart,"10",'center',"",'E'.$Nstart);
 	$Range='F'.$Nstart.":G".$Nstart;
 	setCellStyle($objPHPExcel,'','F'.$Nstart,"10",'center',$Range,$Range);
@@ -156,9 +161,14 @@ function creatMat1(){
 	$Range='D'.$Nstart.":G".$Nstart;
 	setCellStyle($objPHPExcel,' ','D'.$Nstart,"10",'center',$Range,$Range);
 	$objPHPExcel->getActiveSheet()->getRowDimension($Nstart)->setRowHeight(40);
-	  saveExcel($objPHPExcel,"材料1：项目外包需求申请单.xls");
+	saveExcel($objPHPExcel,"材料1：项目外包需求申请单.xls");
 }
- 
+function makeCurrency($area,$Currency,$objPHPExcel){
+       $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('¥#,##0;-$#,##0');
+	   if($baseData=="人民幣")
+	   $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('$#,##0;-$#,##0');
+
+}
 function creatMat3(){
       global $baseData,$demand;
 	  $objPHPExcel = new PHPExcel();
