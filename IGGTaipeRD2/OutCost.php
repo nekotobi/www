@@ -174,7 +174,7 @@
 		  //   if($submit!="搜尋" or $submit!="")return;
 		  
 	         if($ListType==""){
-				 	$costList=array(1,5,7,8,9,10,11,12,13,14);
+				 $costList=array(1,5,7,8,9,10,11,12,13,14);
 			    //$pregressList=array(3,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28);
 				 //DrawContacts();
 				 
@@ -248,6 +248,7 @@
 			   $y=60;  
 			   $x+=6;
 			   Drawfiled($PreList[0],$PreListSize[0],$x,$y,$h,$pregressList,"#ffffff","#000000","");
+			   if(count($pregressList)==0)return;
 			   for($i=0;$i<count($ListSn);$i++){
 				   $data= returnArraySingel( $pregress,1,$ListSn[$i]);  
 				   $y+=22;
