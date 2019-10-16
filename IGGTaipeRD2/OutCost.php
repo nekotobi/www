@@ -420,7 +420,7 @@
 		
 			  DrawRect($msg,10,"#000000",$x,$y,$w,$h, $BGcolor);
 			  
-			  DrawHiLight( $Rect,$BgColor,$Hilight,$hi);
+			  DrawHiLight( $Rect,$BgColor,$Hilight,$hi,"");
 	 }
    
 ?>
