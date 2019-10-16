@@ -14,6 +14,7 @@
 	sortcontact();
 	filterSubmit();
     DrawButtons();
+	SearchContacts();
     filterListType();
 ?>
 
@@ -172,18 +173,19 @@
 			 if($submit=="上傳表單")return;
 			 if($submit=="確定上傳表單")return;
 		  //   if($submit!="搜尋" or $submit!="")return;
+		  
 	         if($ListType==""){
-				 DrawContacts();
+				 //DrawContacts();
                  DrawTitle();
 				 return;
 			 }
 			 if($ListType=="history"){
-				 DrawContacts();
+				// DrawContacts();
                  DrawTitle();
 				 return;
 			 }
 		     if($ListType=="prepress"){
-				 DrawContacts();
+				// DrawContacts();
 			 ListPregress();
 			 }
 			 if($ListType=="prepressUpdate"){
@@ -306,11 +308,32 @@
 <?php //過濾
 	function filterContacts(){
 		     global $outsBaseData,$outsBaseSelects;
-			 global $selectName;
+			 global $selectName,$searchName;
 			 global $OutCosts;
-			 $code=getOutCode($selectName);
+			 if($searchName!=""){
+				  
+				  getSearchNameCode($searchName);
+				  return;
+			 }
+			 $code=getOutCode($selectName);		
 			 $OutCosts=filterArraycontain($OutCosts,15,  $code);
 	}
+	function getSearchNameCode($searchName){
+	     	 global $outsBaseData,$outsBaseSelects;
+			 global $OutCosts;
+			 $a=array();
+	         for($i=0;$i<count($outsBaseSelects);$i++){
+			     if(strpos($outsBaseSelects[$i],$searchName) !== false){ 
+				    $code= getOutCode($outsBaseSelects[$i]);
+					//echo  $code;
+				    $Out=filterArraycontain($OutCosts,15,  $code);
+				    foreach ($Out as $o) array_push($a, $o);
+				   
+				 }
+			 }
+			 $OutCosts=$a;
+	}
+	
 	function getOutCode($selectName){
 	      global $outsBaseData,$outsBaseSelects;
 		  $tmp= explode("-",$selectName); //0code 1序號 2名稱
@@ -321,7 +344,8 @@
 	}
 ?>
 <?php //列印總表資料
-     function DrawContacts(){
+   //  function DrawContacts(){
+	   function SearchContacts(){
 	          global $outsBaseData,$outsBaseSelects;//    global $contacts ;
 			  global $BaseURL,$BackURL;
 			  global $selectName;
@@ -333,7 +357,12 @@
 			  echo   "<form id='ChangeOut'  name='Show' action='".$BackURL."' method='post'>";
 		      $input=	MakeSelectionV2($outsBaseSelects,$selectName,"selectName",10);
 			  DrawInputRect("顯示外包",10,"#222222",$x,$y,$w,$h,$BgColor,$WorldAlign,$input);
+			  
 			  $x+=$w+2;
+			 
+			  $input ="<input type=text name=searchName   style= font-size:10px; >";
+			  DrawInputRect("",10,"#222222",$x,$y,$w,$h,$BgColor,$WorldAlign,$input);
+			  $x+=102;
 			  $w=100;
 			  $submitP="<input type=submit name=submit value=搜尋 style= font-size:10px; >";
 	          DrawInputRect("",8 ,"#ffffff",$x,$y,$w,$h, $colorCodes[4][2],"top",$submitP);
@@ -386,7 +415,7 @@
 			
 			  DrawRect($msg,10,"#000000",$x,$y,$w,$h, $BGcolor);
 	 }
-
+   
 ?>
 <?php //上傳
      function RemarkUpdate(){
