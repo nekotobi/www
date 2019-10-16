@@ -240,9 +240,11 @@
 				   array_push( $ListSn,$OutCosts[$i][1]);
 				   //高亮
 				   $Rect=array( 15,$y,5,20);
-			
 				   $Link=$BackURL."&Hilight=".$OutCosts[$i][2]."&hi=".$OutCosts[$i][16];
 				   DrawLinkRect_Layer("▶",10,$BgColor,$Rect,$BgColor,$Link,$border,0);
+				   //第幾包
+				   if($OutCosts[$i][13]!="") 
+				   DrawRect("第".$OutCosts[$i][13]."包",9,$fontColor,$Rect[0]+60,$Rect[1],30,18,"#eeffcc");
 			   }
 			   for($i=0;$i<count($costList);$i++)$x+=$ListSize[0][$costList[$i]];
 			   $y=60;  
