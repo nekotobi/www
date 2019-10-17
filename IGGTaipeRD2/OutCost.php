@@ -552,18 +552,31 @@
 			  $data=getTxtArray();
 			  $datas=filterArray( $data,0,"outs");
 			  for($i=0;$i<count($datas);$i++){
-				  $WHEREData=returnData($datas[$i]); 
+				  
+				  $WHEREData=returnDatafix($datas[$i],$sn,($i+1)); 
 				  $stmt=  MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
-				 SendCommand($stmt,$data_library);
+				  SendCommand($stmt,$data_library);
 			      echo $stmt;
 			  }
 			  $Link=$BackURL."?ListType=EditOutsForm&sn=".$sn;
-		      echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
+		       echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
+	 }
+	 function returnDatafix($data,$sn,$sort){
+	          $t=array();
+			  for($i=0;$i<count( $data);$i++){
+				  $up=$data[$i];
+				  if($i==1)$up=$sn;
+				  if($i==2)$up=$sort;
+				  if($i==0)$up="outs";
+			      array_push($t,$up);
+			  }
+			  return $t;
 	 }
 	 function returnData($data){
 	          $t=array();
 			  for($i=0;$i<count( $data);$i++){
-			      array_push($t,$data[$i]);
+				  $up=$data[$i];
+			      array_push($t,$up);
 			  }
 			  return $t;
 	 }
@@ -766,6 +779,7 @@
 			   $rect[1]+=22;
 			   Drawsingel($outsDetial[$i],$FormList, $rect,$fontColor,$BGcolor);
 	  		   for($i=0;$i<count($outsDetial);$i++){
+			 
 			        Drawsingel($outsDetial[$i],$FormList, $rect,$fontColor,$BGcolor);
 				    $rect[1]+=22;
 			   }
@@ -812,7 +826,6 @@
 			  echo "</form>";
 	 }	
 ?>
- 
 <?php //old
 /*
 	function filterContacts(){
