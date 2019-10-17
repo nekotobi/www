@@ -174,9 +174,7 @@ header("Expires:0");
 				 echo "<p>　</p>";  
             echo   "附件：营业执照扫描件 /身份证扫描件";
 	 }
-	 
 
-  
 ?>
 
 <?php //mat4

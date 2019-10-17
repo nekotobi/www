@@ -16,6 +16,7 @@
     DrawButtons();
 	SearchContacts();
     filterListType();
+	DrawFormcostEdit();
 ?>
 
 <?php //初始資料
@@ -67,6 +68,9 @@
 			 $FormListsize=$FormListsizeT[0];
 			 $FormList=array(2,3,4,5,6,7,8,9,10 );
 			 $FormRect=array(100,120,120,20);
+			 
+			 global  $editList;//編輯欄位
+			   $editList=array(8,9,10,11,13);
 	}
 	function sortcontact(){  //整理聯絡人
          	 global $OutCosts;
@@ -174,7 +178,7 @@
 		  //   if($submit!="搜尋" or $submit!="")return;
 		  
 	         if($ListType==""){
-				 $costList=array(1,5,7,8,9,10,11,12,13,14);
+				 $costList=array(1,5,7,8,9,10,11,12,13);
 			    //$pregressList=array(3,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28);
 				 //DrawContacts();
 				 
@@ -219,6 +223,7 @@
 			  if($submit=="上傳圖檔") UpPic();
 			  if($submit=="上傳表單") UpformCheck();
 		      if($submit=="確定上傳表單") Upform();
+			  if($submit=="修改表單") UpEditForm();
 	}
 ?>
 <?php //列印請款進程
@@ -227,6 +232,7 @@
 		       global $pregress,$PreList,$PreListSize;
 			   global $BaseURL,$BackURL;
 	           global  $costList,$pregressList;
+			 
 			   $ListSn=array();
 			   $x=20;
 			   $y=60;
@@ -243,8 +249,13 @@
 				   Drawfiled($OutCosts[$i],$ListSize[0],$x,$y,$h, $costList,"#000000",$colcolor,""); 
 				   array_push( $ListSn,$OutCosts[$i][1]);
                    DrawHiLight( array( 15,$y,5,20),$BgColor,$OutCosts[$i][2],$OutCosts[$i][16],$OutCosts[$i][13]);
+				   DrawEditButton(array( 0,$y+5,10,10),$OutCosts[$i][2],$y);
 			   }
-			   for($i=0;$i<count($costList);$i++)$x+=$ListSize[0][$costList[$i]];
+			   
+			   for($i=0;$i<count($costList);$i++){
+			 
+				   $x+=$ListSize[0][$costList[$i]];
+			   }
 			   $y=60;  
 			   $x+=6;
 			   Drawfiled($PreList[0],$PreListSize[0],$x,$y,$h,$pregressList,"#ffffff","#000000","");
@@ -259,6 +270,7 @@
 				   $Rect=array( $nextx,$y,30,$h);
 				   $Link=$BaseURL."?SortType=".$SortType."&ListType=EditRemark&sn=".$ListSn[$i]."&Rx=".$Rect[0]."&Ry=".$Rect[1]."&info=".$remstr;
 				   DrawLinkRect_Layer("+註解",10,$fontColor,$Rect,$bgc,$Link,$border,0);
+				 
 				   //if($data)
 			   }
 			 
@@ -280,16 +292,13 @@
 				   if($bgColor!=""){
 				     DrawRect($msg,10,$fontColor,$x,$y,$w,$h, $bgc);
 				   }
-				   
 				   if($bgColor==""){
 				        $bgc="#cccccc";
 				        if($n<=$lastsn)  $bgc="#ccffaa";
 						$Link=$BaseURL."?ListType=prepressUpdate&SortType=".$SortType."&sn=".$sort."&Column=".$n."&info=".$msg;
 						$Rect=array($x,$y,$w,$h);
 						DrawLinkRect_Layer($msg,10,$fontColor,$Rect,$bgc,$Link,$border,0);
-						   //  DrawRect($msg,10,$fontColor,$x,$y,$w,$h, $bgc);
 				    } 
-				   
 				   $x+=$w+2;
 			   }
 			   return $x;
@@ -310,6 +319,13 @@
 				   //第幾包
 				   if($num!="") //  if($OutCosts[$i][13]!="") 
 				   DrawRect("第".$num."包",9,$fontColor,$Rect[0]+50,$Rect[1],35,18,"#eeffcc");
+	  }
+	  function DrawEditButton($Rect,$sn,$hi){
+		       global $ListType;
+		       if($ListType=="prepress")return;
+		       global $BaseURL,$BackURL;
+	           $Link=$BackURL."&Edit=".$sn."&colHi=".$hi;
+			   DrawLinkRect_Layer("E",10,"#ffffff",$Rect,"#998888",$Link,$border,0);
 	  }
 ?>
 <?php //過濾
@@ -421,6 +437,8 @@
 			  DrawRect($msg,10,"#000000",$x,$y,$w,$h, $BGcolor);
 			  
 			  DrawHiLight( $Rect,$BgColor,$Hilight,$hi,"");
+			  
+		
 	 }
    
 ?>
@@ -594,10 +612,67 @@
 				  SendCommand($stmt,$data_library);
 				  global $BaseURL,$BackURL,$SortType,$ListType;
 				  $Link=$BaseURL."?SortType=".$SortType."&ListType=".$ListType;
-			      echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
+			    //  echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
+	 }
+	 function UpEditForm(){
+	 	      global $editsn ,$Column,$info;
+		      global $data_library ;
+		      global $BaseURL,$BackURL;
+			  global $editList;
+		      $WHEREtable=array( "data_type", "sn" );
+		      $WHEREData=array( "cost",$editsn );
+ 
+			  $Base=array();
+		      $up=array();
+			  $tables=returnTables($data_library,"fpoutsourcingcost");
+			  for($i=0;$i<count($editList);$i++){
+				   $n=$editList[$i];
+				   $tabn=$tables[$n];
+				   global  $$tabn;
+			       array_push(  $Base, $tabn);
+				   array_push(  $up, $$tabn);
+			  }
+ 
+		      $Link=$BaseURL."?SortType=".$SortType."&ListType=prepress";
+		      $stmt= MakeUpdateStmt(  $data_library,"fpoutsourcingcost",$Base,$up,$WHEREtable,$WHEREData);
+			   echo $stmt;
+			   SendCommand($stmt,$data_library);
+		    echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	 }
 ?>
 <?php //上傳前表單
+      function  DrawFormcostEdit(){ //編輯內容
+          global $Edit,$colHi,$ListSize;
+
+		  if($Edit=="")return;
+		  global $OutCosts;
+		  global  $data_library;
+		  global $BackURL;
+		  global $editList;		
+		  $tables=returnTables($data_library,"fpoutsourcingcost");
+		  $showField=array(1,5,7,8,9,10,11,12,13);
+		  $costEditT=filterArray($OutCosts,1,$Edit);
+		  $costEdit= $costEditT[0];
+		  echo  "<form method=post enctype=multipart/form-data action=".$BackURL.">";
+		  echo "<input type=hidden name=editsn value=".$Edit."  >";
+		  $x=30;
+		  $y=$colHi;
+		  DrawRect("",9,"",$x,$y+18,1100,2,"#ff7777");
+		  for($i=0;$i<count($showField);$i++){
+				   $n=$showField[$i];
+			       $w=$ListSize[0][$n];
+ 
+				   if (in_array($n,$editList)) {
+					   $s=$w/6;
+				     $input="<input type=text name=".$tables[$n]."  value='". $costEdit[$n]." 'size=".$s."  style= font-size:10px; >";
+		      	    DrawInputRect_size("",10,"#ffffff",$x  ,$y, $w,20,$BgColor,$WorldAlign,$input);
+				   }
+				   $x+=$w+2;
+		  }
+		    $submitP="<input type=submit name=submit value=修改表單 style= font-size:10px; >";
+            DrawInputRect("",8 ,"#ffffff",$x ,$y ,100,20, $colorCodes[4][2],"top",$submitP);
+		  echo "</form>";
+	  }
       function  CreatNewOuts(){
 		      global  $BaseURL,$BackURL;
 			  global $outsBaseData;
