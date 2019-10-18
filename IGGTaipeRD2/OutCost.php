@@ -132,6 +132,27 @@
 			  }
 	        $OutCosts=$tmp2;
 	}
+	
+	function change(){
+	         global  $NT2Us,$Us2NT;
+			 $ChangeWeb="https://zt.coinmill.com/";
+			 $NT="TWD";
+			 $CNY="CNY";
+			 $USD="USD";
+              /*
+			 $NT2US="https://zt.coinmill.com/TWD_USD.html#USD=";
+			 $US2NT="https://zt.coinmill.com/TWD_USD.html#USD=";
+			 
+		     global  $CNY2Us,$Us2CNY;
+			 $CNY2US="https://zt.coinmill.com/CNY_USD.html#USD=";
+			 $US2CNY="https://zt.coinmill.com/CNY_USD.html#USD=";
+			 
+			 global  $NT2CNY,$CNY2NT;
+			 $NT2CNY="https://zt.coinmill.com/CNY_TWD.html#CNY=";
+			 $CNY2NT="https://zt.coinmill.com/CNY_TWD.html#CNY=111";
+			 */
+			 
+	}
 ?>
 <?php //選項按鈕
     function DrawButtons(){
@@ -162,8 +183,7 @@
 			 DrawLinkRect("+",10,"#ffffff",$x,$y,$w,$h,"#992222",$Link,$border);
 			  
 	}
-
-
+ 
 ?>
 <?php //處理表格類別
       function filterListType(){
@@ -209,9 +229,10 @@
 			 if($ListType=="EditOutsForm"){
 			    EditOutsForm();
 			 }
-			 if($ListType=="inputOutsForm"){
-			    EditOutsForm();
+			 if($ListType=="Outfin"){
+			    UpOutFin();
 			 }
+		 
 	}
       function filterSubmit(){
 			  global $submit;
@@ -224,6 +245,7 @@
 			  if($submit=="上傳表單") UpformCheck();
 		      if($submit=="確定上傳表單") Upform();
 			  if($submit=="修改表單") UpEditForm();
+			
 	}
 ?>
 <?php //列印請款進程
@@ -270,8 +292,30 @@
 				   $Rect=array( $nextx,$y,30,$h);
 				   $Link=$BaseURL."?SortType=".$SortType."&ListType=EditRemark&sn=".$ListSn[$i]."&Rx=".$Rect[0]."&Ry=".$Rect[1]."&info=".$remstr;
 				   DrawLinkRect_Layer("+註解",10,$fontColor,$Rect,$bgc,$Link,$border,0);
-				 
-				   //if($data)
+				   
+				   //外包申請驗收
+				   $OutFin=$data[29];
+				
+				   $bgc="#aaaaaa";
+				   $dir="Outsourcing/AcceptanceData/".$sn;
+				   $Rect=array( $nextx+32,$y,40,$h);
+				   $msg="申請驗收";
+				   if($OutFin!=""){
+					 if(strpos($OutFin,'Fin') !== false){
+					  $bgc="#eeffee";
+					  $msg="已申請";
+					 }else{
+					  // $pic="pics/folder.png";
+					    $bgc="#ffaaaa";
+					    $Rect=array( $nextx+102,$y,420,$h);
+					    $rootLink="\\\\10.4.1.249\AppServ\www\IGGTaipeRD2\Outsourcing\AcceptanceData\\".$ListSn[$i];
+				       //DrawLinkRect_Layer($rootLink,10,$fontColor,$Rect,"#ffeeee", "",$border,0);
+					    DrawRect( $rootLink,10,$fontColor,$nextx+102,$y,420,$h,"#ffeeee");
+					 }
+				   }
+				   $Rect=array( $nextx+32,$y,40,$h);
+				   $Link=$BaseURL."?SortType=".$SortType."&ListType=Outfin&sn=".$ListSn[$i]."&info=".$OutFin;
+				   DrawLinkRect_Layer($msg,10,$fontColor,$Rect,$bgc,$Link,$border,0);
 			   }
 			 
 	  }
@@ -480,6 +524,37 @@
 					   $Link=$BaseURL."?SortType=".$SortType."&ListType=prepress";
 			  echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
 	 }
+	 function UpOutFin(){
+	          global $sn,$info;
+              global $data_library, $pregressData;
+			  $WHEREtable=array( "data_type", "sn" );
+		      $WHEREData=array( "pregress",$sn);
+		      $Ndate=date("Y/m/d") ;
+			  $info=trim($info);
+			  if($info==""){
+			   $Ndate=date("Y/m/d") ;  
+			  }
+			   if($info!=""){
+			     $Ndate="Fin_".date("Y/m/d") ;  
+			  }
+			   if(strpos($info,'Fin') !== false){
+				   $Ndate="";
+			   }
+
+		      $dir="Outsourcing/AcceptanceData/".$sn;
+		 
+			  if (!is_dir($dir) ){
+				  mkdir($dir, 0700);
+			  }
+		      $Base=array(  "OutFin");
+			  $up=array($Ndate);
+			  $stmt= MakeUpdateStmt(  $data_library,$pregressData,$Base,$up,$WHEREtable,$WHEREData);
+			  SendCommand($stmt,$data_library);
+			  global $BaseURL,$BackURL,$SortType,$ListType;
+					   $Link=$BaseURL."?SortType=".$SortType."&ListType=prepress";
+			   echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
+	 }
+	 
      function AddNewMysqlData(){
 	          global  $data_library,$tableName,$OutCosts;
 			  global  $BaseURL;
@@ -637,7 +712,7 @@
 		      $stmt= MakeUpdateStmt(  $data_library,"fpoutsourcingcost",$Base,$up,$WHEREtable,$WHEREData);
 			   echo $stmt;
 			   SendCommand($stmt,$data_library);
-		    echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+		       echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	 }
 ?>
 <?php //上傳前表單
