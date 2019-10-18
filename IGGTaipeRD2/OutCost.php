@@ -687,7 +687,7 @@
 				  SendCommand($stmt,$data_library);
 				  global $BaseURL,$BackURL,$SortType,$ListType;
 				  $Link=$BaseURL."?SortType=".$SortType."&ListType=".$ListType;
-			    //  echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
+			    echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
 	 }
 	 function UpEditForm(){
 	 	      global $editsn ,$Column,$info;
