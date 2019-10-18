@@ -232,7 +232,9 @@
 			 if($ListType=="Outfin"){
 			    UpOutFin();
 			 }
-		 
+	        if($ListType=="inputOutsForm"){
+			    EditOutsForm();
+			 }
 	}
       function filterSubmit(){
 			  global $submit;
@@ -329,12 +331,21 @@
 			   global $ListType,$SortType;
 		       if($bgColor=="")$lastsn=$BaseData[process] ; // $lastsn=returnPregress($BaseData);
 			   $bgc=$bgColor;
+		 
 	           for($i=0;$i<count($showField);$i++){
+				 //  if($i==0)echo $showField[$i];
+				       // $Link=$BaseURL."?SortType=".$SortType."&ListType=EditOutsForm&sn=".$msg;
+				    //   DrawLinkRect( $msg,10,$fontColor,$x,$y,$w,$h,$BgColor,$Link,$border);
 				   $n=$showField[$i];
 			       $w=$ListSize[$n];
-				   $msg=$BaseData[$n];
+				   $msg= $BaseData[$n];
 				   if($bgColor!=""){
+					  if($i==0){
+						 $Link=$BaseURL."?SortType=".$SortType."&ListType=EditOutsForm&sn=".$msg;
+				         DrawLinkRect( $msg,10,$fontColor,$x,$y,$w,$h,$bgc,$Link,$border);
+					  }else{
 				     DrawRect($msg,10,$fontColor,$x,$y,$w,$h, $bgc);
+					  }
 				   }
 				   if($bgColor==""){
 				        $bgc="#cccccc";
@@ -832,14 +843,15 @@
 			   $ey=100;
 			   $w=1200;
 			   $h=800;
+			   echo $sn;
 	           $Link=$BaseURL."?SortType=".$SortType;
 			   $c="(第".$currentData[0][14]."包)";
 			   $title ="編輯".$currentData[0][1]."-".$currentData[0][5].$c."[".$currentData[0][8]."]製作內容";
 	           DrawPopBG($ex,$ey,$w,$h,$title ,"12",$Link);
 			    
-			    if($ListType=="EditOutsForm")  ExportForms($sn);
-		        if($ListType=="inputOutsForm") InputForms($sn);
-               
+			   if($ListType=="EditOutsForm")  ExportForms($sn);
+		       if($ListType=="inputOutsForm") InputForms($sn);
+            //   echo $ListType;
 		
 	  }
 	  function  ExportForms($sn){
@@ -905,6 +917,7 @@
 			   DrawLinkRect_LayerNew($msg,12,$fontColor,$rect,$BGcolor,$Link,$border,$Layer);
 	  }
 	  function  InputForms($sn){
+		        echo "xx";
 		  	    global $BaseURL;
 				$rect=array(100,120,120,20);
 				$Link="https://docs.google.com/spreadsheets/d/1kU1Nq95YIrua0EDWv9wIHaijPLAJX6SNb81685HQKnA/edit#gid=1048566831";
