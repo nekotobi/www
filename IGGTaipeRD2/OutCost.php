@@ -67,7 +67,7 @@
 			 $FormListsizeT=filterArray($formBase,0,"size");
 			 $FormListsize=$FormListsizeT[0];
 			 $FormList=array(2,3,4,5,6,7,8,9,10 );
-			 $FormRect=array(100,120,120,20);
+			 $FormRect=array(100,140,120,20);
 			 
 			 global  $editList;//編輯欄位
 			   $editList=array(8,9,10,11,13);
@@ -226,9 +226,8 @@
 			 if($ListType=="EditRemark"){
 			    EditRemark();
 			 }
-			 if($ListType=="EditOutsForm"){
-			    EditOutsForm();
-			 }
+			 if($ListType=="EditOutsForm") EditOutsForm();
+	 
 			 if($ListType=="Outfin"){
 			    UpOutFin();
 			 }
@@ -839,20 +838,34 @@
 			   global  $ListType;
 			   $currentDataT= filterArray( $OutCosts,1,$sn);
 			   $currentData= filterArray( $currentDataT,2,$sn);
+			   
 			   $ex=100;
 			   $ey=100;
 			   $w=1200;
 			   $h=800;
-			   echo $sn;
+			  // echo $sn;
 	           $Link=$BaseURL."?SortType=".$SortType;
-			   $c="(第".$currentData[0][14]."包)";
+			   $c="(第".$currentData[0][13]."包)";
 			   $title ="編輯".$currentData[0][1]."-".$currentData[0][5].$c."[".$currentData[0][8]."]製作內容";
 	           DrawPopBG($ex,$ey,$w,$h,$title ,"12",$Link);
-			    
+			   DrawPrecautions($currentData[0][15]);
 			   if($ListType=="EditOutsForm")  ExportForms($sn);
 		       if($ListType=="inputOutsForm") InputForms($sn);
-            //   echo $ListType;
+       
 		
+	  }
+      function  DrawPrecautions($code){
+	            global $outs;  
+                global $FormRect;
+			    $currentOutT=filterArray( $outs,1,$code);
+				$currentOut=$currentOutT[0];
+
+				$country=trim($currentOut[4]);
+				$studio=trim($currentOut[6]);
+                 if ($country=="中國" && $studio=="個人"  ){
+				    $msg=$country."!注意中國個人申請使用美金" ;
+					DrawRect($msg,10,"#ffffff", $FormRect[0], $FormRect[1]-22,200,18,"#ff7777");
+				  }
 	  }
 	  function  ExportForms($sn){
 		       global $BaseURL;
@@ -860,7 +873,7 @@
 			   $outsDetial= filterArray( $outsDetialT,1,$sn);
 			   $ListTitle=filterArray( $outsDetialT,0,"資料類別");
 			   $List=array(4,5,6,7,8,9);
-			   $rect=array(100,120,120,20);
+			   $rect=array(100,160,120,20);
 			   $fontColor="#ffffff";$BGcolor="#000000";
 			   Drawsingel($ListTitle[0],$List,$rect,$fontColor,$BGcolor);
 			   $rect[1]+=22;
