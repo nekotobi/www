@@ -298,12 +298,12 @@
 				
 				   $bgc="#aaaaaa";
 				   $dir="Outsourcing/AcceptanceData/".$sn;
-				   $Rect=array( $nextx+32,$y,40,$h);
-				   $msg="申請驗收";
+				   $Rect=array( $nextx+32,$y,70,$h);
+				   $msg="(".$ListSn[$i].")申請驗收";
 				   if($OutFin!=""){
 					 if(strpos($OutFin,'Fin') !== false){
 					  $bgc="#eeffee";
-					  $msg="已申請";
+					  $msg="(".$ListSn[$i].")已申請";
 					 }else{
 					  // $pic="pics/folder.png";
 					    $bgc="#ffaaaa";
@@ -313,7 +313,7 @@
 					    DrawRect( $rootLink,10,$fontColor,$nextx+102,$y,420,$h,"#ffeeee");
 					 }
 				   }
-				   $Rect=array( $nextx+32,$y,40,$h);
+				   $Rect=array( $nextx+32,$y,70,$h);
 				   $Link=$BaseURL."?SortType=".$SortType."&ListType=Outfin&sn=".$ListSn[$i]."&info=".$OutFin;
 				   DrawLinkRect_Layer($msg,10,$fontColor,$Rect,$bgc,$Link,$border,0);
 			   }
