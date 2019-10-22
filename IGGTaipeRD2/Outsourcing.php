@@ -22,6 +22,8 @@
 		global $radio_1,$radio_2;
 		$data_library= "iggtaiperd2";
 		$tableName="outsourcing";
+		global $tables;
+		$tables=returnTables($data_library, $tableName );
       	$datasTmp= getMysqlDataArray($tableName); 	//0名稱 1序號 2尺寸 3類別
 		$BaseData= filterArray($datasTmp,0,"data");
 		$width=returnDataArray($datasTmp,0,"size")   ;
@@ -72,6 +74,7 @@
 		 global $BaseURL, $BackURL;
 	     global $LastSn;
 	     global $radio_1,$radio_2;
+		 global $tables;
 	   		    $x=20;
 				$h=40;
 				$bc=$color;
@@ -105,12 +108,16 @@
 				          DrawLinkRect_newtab("Link","12",$fontColor,$x,$y,$w,$h,$color,$Link,1);
 			              break; 
 					case  (strpos($TableType[$i],'pic') !== false) : //$TableType[$i]=="pic" :
-					
-			        	  $pic="Outsourcing/".$TableType[$i]."/".$Data[$i];
+			        	  $pic="Outsourcing/".$tables[$i]."/".$Data[$i];
 						   DrawLinkPic($pic,$y,$x,$w,$h,  $pic);
-					    //  DrawPosPic($pic, $y,$x,$h,$h,"absolute" );
 						  break;
-		   
+		   		    case  (strpos($TableType[$i],'file') !== false) :  
+			        	   $Link="Outsourcing/".$tables[$i]."/".$Data[$i];
+						   if(file_exists($Link) && $Data[$i]!=""){
+						   $pic="Pics/excel.png";
+						   DrawLinkPic($pic,$y,$x,$w,$h,$Link);
+						   }
+						  break;
 					case  $TableType[$i]=="bool" :
 					      $bool=$Data[$i];
 						  if($bool=="")$bool="null";
@@ -168,9 +175,10 @@
 	}		
 	function UpEdit(){
 		      global $tableName,$data_library;
-			 global	 $BaseURL, $BackURL;
-			  	  global $BaseData;
-		      $tables=returnTables($data_library, $tableName );
+			  global $BaseURL, $BackURL;
+			  global $BaseData;
+			  global $tables;
+		     // $tables=returnTables($data_library, $tableName );
 			  $Base=array();
 			  $t= count( $tables);
 		      for($i=0;$i<$t;$i++){
@@ -189,27 +197,17 @@
 					if($_FILES[$tables[$i]]["name"]!=""){
 						$d=$_FILES[$tables[$i]]["name"];
 					    $ext = explode(".",$d);
-						
 					    $upFile= "Outsourcing/".$tables[$i]."/".$code.".".$ext[1];
-					//	echo $upFile;
-					  //  move_uploaded_file($_FILES[$file]["tmp_name"],"Outsourcing/pic/".$_FILES[$file]["name"]);
+						echo $upFile;
 					    move_uploaded_file($_FILES[$tables[$i]]["tmp_name"], $upFile);//$upFloder.$_FILES[$tables[$i]]["name"]);
 					    $d=$code.".".$ext[1];
 					}
-				 
-			 
 				    array_push($up,$d);
 		          }
-			 
-		  
-			 
 		     $WHEREtable=array("data_type", "Code");					 
              $WHEREData=array($$tables[0],$$tables[1]);	
-			// $stmt="UPDATE `outsourcing` SET `name` = 'aaa1' WHERE CONVERT( `outsourcing`.`data_type` USING utf8 ) = 'data' AND CONVERT( `outsourcing`.`Code` USING utf8 ) = '2019-06-03-180645'  LIMIT 1 ;";
 	         $stmt= MakeUpdateStmtv2(  $tableName,$Base,$up,$WHEREtable,$WHEREData);	
 			 SendCommand($stmt,$data_library);
-		     // echo $stmt;
-			  echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
 	}
 	
 	function EditData(){
@@ -248,6 +246,10 @@
 				             DrawInputRect($Names[$i]." ","12","#ffffff",($x ),$y,420,20, $colorCodes[4][2],"top", $input);
 						break;
 						case (strpos($TableType[$i],'pic') !== false):
+						      $input="<input type=file name=".$tables[$i]." 	id=".$tables[$i]."  size=60   >";
+							  DrawInputRect($Names[$i]." ","12","#ffffff",($x ),$y,420,20, $colorCodes[4][2],"top", $input);
+						break;
+						case (strpos($TableType[$i],'file') !== false):
 						      $input="<input type=file name=".$tables[$i]." 	id=".$tables[$i]."  size=60   >";
 							  DrawInputRect($Names[$i]." ","12","#ffffff",($x ),$y,420,20, $colorCodes[4][2],"top", $input);
 						break;
