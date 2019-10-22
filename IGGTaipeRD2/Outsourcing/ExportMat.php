@@ -252,7 +252,7 @@ function creatMat3(){
 	  saveExcel($objPHPExcel,"材料3：合同报价单.xls"); 
 }
 
-function  creatQuote(){
+function creatQuote(){
 	  global $baseData,$demand;
 	   global $outsDetial,$OutsCost, $outsData;
 	  $objPHPExcel = new PHPExcel();

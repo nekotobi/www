@@ -32,7 +32,7 @@
 		$radio_2=array("差","稍差","普通","可","優");
 		$x=20;
 		$y=60;
-	   $BaseURL="Outsourcing.php";
+	    $BaseURL="Outsourcing.php";
 	    DrawRect("外包資源列表","22","#ffffff","20","20","1400","30","#000000");
 		DrawTitle($Names,$x,$y,"#222222","#ffffff");
  
@@ -104,11 +104,11 @@
 				          $Link=$Data[$i];
 				          DrawLinkRect_newtab("Link","12",$fontColor,$x,$y,$w,$h,$color,$Link,1);
 			              break; 
-					case  $TableType[$i]=="pic" :
-			        	  $pic="Outsourcing/pic/".$Data[$i];
+					case  (strpos($TableType[$i],'pic') !== false) : //$TableType[$i]=="pic" :
+			        	  $pic="Outsourcing/".$TableType[$i]."/".$Data[$i];
 					      DrawPosPic($pic, $y,$x,$h,$h,"absolute" );
 						  break;
-		        	
+		   
 					case  $TableType[$i]=="bool" :
 					      $bool=$Data[$i];
 						  if($bool=="")$bool="null";
@@ -182,8 +182,9 @@
 				    $d=$$tables[$i];
 					if($_FILES[$tables[$i]]["name"]!=""){
 						$d=$_FILES[$tables[$i]]["name"];
+						$upFloder= "Outsourcing/".$tables[$i]."/";
 					  //  move_uploaded_file($_FILES[$file]["tmp_name"],"Outsourcing/pic/".$_FILES[$file]["name"]);
-					      move_uploaded_file($_FILES[$tables[$i]]["tmp_name"],"Outsourcing/pic/".$_FILES[$tables[$i]]["name"]);
+					      move_uploaded_file($_FILES[$tables[$i]]["tmp_name"],$upFloder.$_FILES[$tables[$i]]["name"]);
 					}
 					
 				    if($d=="")$d=$data[$i];

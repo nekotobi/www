@@ -859,7 +859,6 @@
                 global $FormRect;
 			    $currentOutT=filterArray( $outs,1,$code);
 				$currentOut=$currentOutT[0];
-
 				$country=trim($currentOut[4]);
 				$studio=trim($currentOut[6]);
                  if ($country=="中國" && $studio=="個人"  ){
