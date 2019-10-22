@@ -105,8 +105,10 @@
 				          DrawLinkRect_newtab("Link","12",$fontColor,$x,$y,$w,$h,$color,$Link,1);
 			              break; 
 					case  (strpos($TableType[$i],'pic') !== false) : //$TableType[$i]=="pic" :
+					
 			        	  $pic="Outsourcing/".$TableType[$i]."/".$Data[$i];
-					      DrawPosPic($pic, $y,$x,$h,$h,"absolute" );
+						   DrawLinkPic($pic,$y,$x,$w,$h,  $pic);
+					    //  DrawPosPic($pic, $y,$x,$h,$h,"absolute" );
 						  break;
 		   
 					case  $TableType[$i]=="bool" :
@@ -173,22 +175,32 @@
 			  $t= count( $tables);
 		      for($i=0;$i<$t;$i++){
 	       	      global $$tables[$i];
-				  array_push($Base,$tables[$i]);
+				  $tmp=$tables[$i];
+				//  if (strpos($tables[$i] ,'pic') !== false){
+				     //   $tmp=$Code;
+				//  }
+				  
+				  array_push($Base, $tmp);
 		         }
+			  $code=$$tables[1];
 		      $up=array();
 			  $file="works";
 			  $data= returnDataArray($BaseData,1,$Code)   ;
 	          for($i=0;$i<$t;$i++){
 				    $d=$$tables[$i];
+				    if($d=="")$d=$data[$i];
 					if($_FILES[$tables[$i]]["name"]!=""){
 						$d=$_FILES[$tables[$i]]["name"];
-						$upFloder= "Outsourcing/".$tables[$i]."/";
+					    $ext = explode(".",$d);
+						
+					    $upFile= "Outsourcing/".$tables[$i]."/".$code.".".$ext[1];
+					//	echo $upFile;
 					  //  move_uploaded_file($_FILES[$file]["tmp_name"],"Outsourcing/pic/".$_FILES[$file]["name"]);
-					      move_uploaded_file($_FILES[$tables[$i]]["tmp_name"],$upFloder.$_FILES[$tables[$i]]["name"]);
+					    move_uploaded_file($_FILES[$tables[$i]]["tmp_name"], $upFile);//$upFloder.$_FILES[$tables[$i]]["name"]);
+					    $d=$code.".".$ext[1];
 					}
-					
-				    if($d=="")$d=$data[$i];
-					//echo "[".$d."=".$data[$i]."]";
+				 
+			 
 				    array_push($up,$d);
 		          }
 			 
