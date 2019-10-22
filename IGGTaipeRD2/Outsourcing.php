@@ -176,10 +176,7 @@
 		      for($i=0;$i<$t;$i++){
 	       	      global $$tables[$i];
 				  $tmp=$tables[$i];
-				//  if (strpos($tables[$i] ,'pic') !== false){
-				     //   $tmp=$Code;
-				//  }
-				  
+ 
 				  array_push($Base, $tmp);
 		         }
 			  $code=$$tables[1];
@@ -250,8 +247,8 @@
 						     $input="<input type=text name=".$tables[$i]." 	value='".$data[$i]."'  size=60   >";
 				             DrawInputRect($Names[$i]." ","12","#ffffff",($x ),$y,420,20, $colorCodes[4][2],"top", $input);
 						break;
-						case $TableType[$i]=="pic" :
-						     $input="<input type=file name=".$tables[$i]." 	id=".$tables[$i]."  size=60   >";
+						case (strpos($TableType[$i],'pic') !== false):
+						      $input="<input type=file name=".$tables[$i]." 	id=".$tables[$i]."  size=60   >";
 							  DrawInputRect($Names[$i]." ","12","#ffffff",($x ),$y,420,20, $colorCodes[4][2],"top", $input);
 						break;
 					    case $TableType[$i]=="time" :
