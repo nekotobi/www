@@ -939,7 +939,7 @@
 	
 			   echo "</form>";
 			      global $Outstotal;
-			   DrawRect("總額:".$Outstotal,10,"#000000",$rect[0]+210,$rect[1]-260,100,18,"#eeeeee");
+			   DrawRect("總額:".$Outstotal,10,"#000000",$rect[0]+210, 120,100,18,"#eeeeee");
 			   $Link=$BaseURL."?sn=".$sn."&picNum=".count($outsDetial);
 			   //輸出
 			   $Link="../../IGGTaipeRD2/Outsourcing/ExportMat.php?Exporttype=mat1&sn=".$sn;

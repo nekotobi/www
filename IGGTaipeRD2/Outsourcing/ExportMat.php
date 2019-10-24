@@ -47,7 +47,9 @@ function setMatData(){
 		 $demand=array();
 		 global  $exchangeTotal;
 		 $exchangeTotal=0;
+		 $total=0;
 		 for($i=0;$i<count($outsDetial);$i++){
+			 $total+=$outsDetial[$i][8];
 			 if($outsDetial[$i][11]!="")$exchangeTotal=$outsDetial[$i][11];
 			 // echo $outsDetial[$i][3];
 		     $tmp=  array(
@@ -62,6 +64,7 @@ function setMatData(){
               );
 			  array_push($demand,$tmp);
 		 }
+		 	 $exchangeTotal=$exchangeTotal*$total;
 		 global   $CurrencyType;
 		  $CurrencyType=$baseData[currency];
  	  //檢查中國個人多美金欄位
@@ -408,7 +411,7 @@ function getStartDay($data,$y,$m,$forward){
 }
  
 ?>
-<?php //特殊換算
+<?php //特殊換算 
   function printexchange( $objPHPExcel,$demand,$pstart,$ar,$totalHours){
   		  global  $exchangeTotal;
 		  $USDtotal=0;
