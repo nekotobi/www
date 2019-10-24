@@ -265,9 +265,6 @@ function creatMat3(){
 	//  setCellStyle($objPHPExcel,'项目外包需求申请单','A1',"20",'center','A1:G1',"");
 	  saveExcel($objPHPExcel,"材料3：合同报价单.xls"); 
 }
-
-
-
 function creatQuote(){
 	  global $baseData,$demand;
 	  global $outsDetial,$OutsCost, $outsData;
@@ -413,6 +410,7 @@ function getStartDay($data,$y,$m,$forward){
 ?>
 <?php //特殊換算 
   function printexchange( $objPHPExcel,$demand,$pstart,$ar,$totalHours){
+	      global $sn;
   		  global  $exchangeTotal;
 		  $USDtotal=0;
 	      for($i=0;$i<count( $demand);$i++){
@@ -429,9 +427,23 @@ function getStartDay($data,$y,$m,$forward){
 		  setCellStyle($objPHPExcel,  $USDtotal,$area,"10",'center',"",$area);
 		  $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('$#,##0.00;-$#,##0.00'); 
 		  $objPHPExcel->getActiveSheet()->getStyle($area)->getAlignment()->setWrapText(true);
+		  $pstart+=4;
+		  $area="A".$pstart;
+		  $pic="exchangeRate/".$sn.".png";
+		  inputPic($objPHPExcel,$area,$pic);
    // setCellStyle($objPHPExcel,  $totalHours,"H20","10",'center',"",$area);
   }
 
+  function inputPic($objPHPExcel,$area,$pic){
+
+	$objDrawing = new PHPExcel_Worksheet_Drawing();
+	$objDrawing->setName('exchangeRate');
+	$objDrawing->setDescription('exchangeRate');
+	$objDrawing->setPath($pic);
+	$objDrawing->setCoordinates($area);
+	//$objDrawing->setHeight(36);
+	$objDrawing->setWorksheet($objPHPExcel->getActiveSheet());
+  }
 ?>
 <?php //設定Title
 function setQuoteTitle(){
