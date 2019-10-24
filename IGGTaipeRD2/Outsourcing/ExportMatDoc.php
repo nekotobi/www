@@ -38,9 +38,16 @@ header("Expires:0");
 		 $OutsCost= filterArray(  $OutsCostT,1,$sn);
 		 //外包名單
 		 $code=$OutsCost[0][15];
-		
 		 $outsDataT=getMysqlDataArray("outsourcing");
 		 $outsData=filterArray(  $outsDataT,1,$code);
+		 //檢查中國個人多美金欄位
+ 		 $CurrencyType=$baseData[currency];
+	     global $Currencytype;
+	     if($baseData["currency"]=="人民幣" && $baseData["studio"]="個人"){
+		    $Currencytype="CNY2USD";
+	     }
+ 
+ 
  
 		 //分類
 		 if($Exporttype=="Demand")createDemand();

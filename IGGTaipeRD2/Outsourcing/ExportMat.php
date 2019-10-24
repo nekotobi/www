@@ -47,6 +47,7 @@ function setMatData(){
 		 $demand=array();
 		 global  $exchangeTotal;
 		 $exchangeTotal=0;
+		 global $Basetotal;
 		 $total=0;
 		 for($i=0;$i<count($outsDetial);$i++){
 			 $total+=$outsDetial[$i][8];
@@ -65,27 +66,33 @@ function setMatData(){
               );
 			  array_push($demand,$tmp);
 		 }
-		 	 $exchangeTotal=$exchangeTotal*$total;
-		 global   $CurrencyType;
-		  $CurrencyType=$baseData[currency];
- 	  //檢查中國個人多美金欄位
-	  global $Currencytype;
+		 $exchangeTotal=$exchangeTotal*$total;
+         $Basetotal=$total;
 	  
-	  if($baseData["currency"]=="人民幣" && $baseData["studio"]="個人"){
-		  $Currencytype="CNY2USD";
+ 	  //檢查中國個人多美金欄位
+	  	 global   $CurrencyType;
+ 
+	  if($baseData["currency"]=="人民幣" && $baseData["studio"]=="個人"){
+		 $CurrencyType="CNY2USD";
 	  }
+
 }
 
 
 ?>
 <?php //產生材料
 function creatMat1(){
-	global $baseData,$demand;
+	global   $baseData,$demand;
+    global   $CurrencyType;
 	$ProjectTitle="《".$baseData[project].'》';
 	$Currency="估价（".$baseData[currency]."）";
+	if( $CurrencyType=="CNY2USD"){
+	    $Currency="估价（美元）";
+		 
+	}
     $objPHPExcel = new PHPExcel();
     $objPHPExcel->setActiveSheetIndex(0)  ;
-  	 global   $CurrencyType;
+   
 	//設定欄寬
 	foreach(range('A','G') as $col){
 		$objPHPExcel->getActiveSheet()->getColumnDimension($col)->setWidth(12); 
@@ -112,7 +119,8 @@ function creatMat1(){
    
 	//所有內容量6==>
 	$Nstart=6;
-	$totalAmout=0;
+	global $totalAmout ;
+    global  $exchangeTotal;
 	for($i=0;$i<count($demand);$i++){
 		$a=$Nstart;
 		$totalAmout+=$demand[$i][valuation];
@@ -121,12 +129,21 @@ function creatMat1(){
     	setCellStyle($objPHPExcel,$demand[$i][content],'C'.$a,"10",'center',$merge,'C'.$a);
 	    setCellStyle($objPHPExcel,$demand[$i][number],'D'.$a,"10",'center',$merge,'D'.$a);
 	    setCellStyle($objPHPExcel,$demand[$i][workingHours],'E'.$a,"10",'center',$merge,'E'.$a);
-	$m='F'.$a.':G'.$a;
-	setCellStyle($objPHPExcel,$demand[$i][valuation],'F'.$a,"10",'center', $m,	$m);
-    $area='F'.$a;
-	makeCurrency($area, $CurrencyType,$objPHPExcel);
-	$Nstart+=1;
+    	$m='F'.$a.':G'.$a;
+		//幣值處理
+		global  $Basetotal;
+		$cost=$demand[$i][valuation];
+	    if( $CurrencyType=="CNY2USD"){
+		    $cost=($demand[$i][valuation]/$Basetotal)*$exchangeTotal;
+			
+		}
+     	setCellStyle($objPHPExcel,$cost,'F'.$a,"10",'center', $m,	$m);
+        $area='F'.$a;
+	   makeCurrency($area, $CurrencyType,$objPHPExcel);
+	    $Nstart+=1;
 	}
+	//價格
+	 if( $CurrencyType=="CNY2USD")$totalAmout=$exchangeTotal;
 	//需求
 	//$Nstart=($start+count($demand)-1);
 	$Range='A5:A'.($Nstart-1);
@@ -138,7 +155,7 @@ function creatMat1(){
 	$Range='D'.$Nstart.":G".$Nstart;
 	setCellStyle($objPHPExcel,$totalAmout,'D'.$Nstart,"10",'center',$Range,$Range);
 	 makeCurrency('D'.$Nstart,$Currency,$objPHPExcel) ; 
-//	$objPHPExcel->getActiveSheet()->getStyle('D'.$Nstart)->getNumberFormat()->setFormatCode('$#,##0;-$#,##0');
+ 
     //簽字
 	$Nstart+=1;
 	$Range='A'.$Nstart.":C".$Nstart;
@@ -161,7 +178,9 @@ function creatMat1(){
 	$Nstart+=1;
     $Range='A'.$Nstart.":C".$Nstart;
 	setCellStyle($objPHPExcel,$baseData[Outsourcing],'A'.$Nstart,"10",'center',$Range,$Range);
+	
 	setCellStyle($objPHPExcel,$totalAmout,'D'.$Nstart,"10",'center',"",'D'.$Nstart);
+
 	 makeCurrency('D'.$Nstart,$Currency,$objPHPExcel);
     //$objPHPExcel->getActiveSheet()->getStyle('D'.$Nstart)->getNumberFormat()->setFormatCode('$#,##0;-$#,##0');
 	
@@ -179,9 +198,14 @@ function creatMat1(){
 	saveExcel($objPHPExcel,"材料1：项目外包需求申请单.xls");
 }
 function makeCurrency($area,$Currency,$objPHPExcel){
-       $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('¥#,##0;-$#,##0');
-	   if($baseData=="人民幣")
-	   $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('$#,##0;-$#,##0');
+	      global $baseData;
+		  global $CurrencyType;
+	      $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('$#,##0;-$#,##0');
+	      if($baseData["currency"]=="人民幣") {
+		     if( $CurrencyType=="CNY2USD")return;
+		    $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('¥#,##0;-¥#,##0');
+		  }
+	 
 
 }
 function creatMat3(){
@@ -195,8 +219,6 @@ function creatMat3(){
 	  for($i=0;$i<count($ColWidth);$i++){
 	     	$objPHPExcel->getActiveSheet()->getColumnDimension($ColWidth[$i][0])->setWidth($ColWidth[$i][1]); 
 	  }
-
-
 	  //第一行
 	  for($i=0;$i<count( $title);$i++){
 		  $area=($title[$i][0]."1");
@@ -209,7 +231,6 @@ function creatMat3(){
 
 	  }
 	  //詳細資料
-
 	  $Nstart=2;
 	  $pstart=$Nstart;
 	  $total=0;
@@ -235,10 +256,10 @@ function creatMat3(){
 			}
 	      $Nstart+=1;
 	  }
-	  global $Currencytype;
+	  global $CurrencyType;
 	  $aar="H";
-	  if($Currencytype=="CNY2USD"){//人民幣轉美金
-	   $aar="I";
+	  if($CurrencyType=="CNY2USD"){//人民幣轉美金
+	    $aar="I";
         printexchange( $objPHPExcel,$demand,$pstart,"G",$totalHours);
 	  }
 	  //工時總計
@@ -393,13 +414,10 @@ function getStartDay($data,$y,$m,$forward){
 	     $d=array();
 		 $s=9;
 		 if($forward=="false")$s=10;
-		
 	     for($i=0;$i<count($data);$i++){
-			// echo $data[$i][$s];
 		      $tmp= explode("/",$data[$i][$s]);
 			  if($y==$tmp[0] and $m==$tmp[1]){
 				   array_push($d,$tmp[2]);
-			  // if(!in_array($tmp[2],$d))array_push($d,$tmp[2]);
 			  }
 		 }
 		 sort($d);
@@ -524,9 +542,9 @@ function SetMat3Title(){
 		    array('G',"开始时间","starDate"),
 			  array('H',"完成时间","EndDate"),
 	  );
-	  global $Currencytype;
-	 
-      if(  $Currencytype=="CNY2USD"){
+	//  global $Currencytype;
+	  global $CurrencyType;
+      if(  $CurrencyType=="CNY2USD"){
 	       array_push( $ColWidth,  array('I',15));
 		   $t2=array(
 		        array('G',"換算美金","2USD"),
