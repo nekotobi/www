@@ -614,22 +614,26 @@
 			           echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	 }
      function UpPic(){
+		 
+		 global $BackURL;
 	          global $sn,$picNum;
 			  echo $sn.";".$picNum;
-			  for($i=0;$i<$picNum;$i++){
+			  for($i=0;$i<=$picNum;$i++){
 				  $fn="pic".$i;
+				  echo $fn;
 				  $dir="Outsourcing/SortPic/".$sn;
 				   if (!is_dir($dir) ) mkdir($dir, 0700);
 				  if($_FILES[$fn]["name"]!=null){
 				     $temp = explode(".", $_FILES[$fn]["name"]);
 				     $path=$dir."/pic".$i.".".$temp[1];
 					 $Npath=$dir."/spic".$i.".jpg";
-					//echo $path;
+					 echo $path;
 					 move_uploaded_file($_FILES[$fn]["tmp_name"], $path);  
 				     $cmd="convert       $path   -flatten -resize 256  $Npath ";
 					 exec($cmd);
 				  }
 			  }
+			    echo " <script language='JavaScript'>window.location.replace('".$BackURL."&sn=".$sn."')</script>";
 	 }
 	 function UpForm(){
 		      global  $sn,$datas;
@@ -918,10 +922,10 @@
 			   $rect[1]+=22;
 			   $fontColor="#222222";$BGcolor="#cccccc";
 			   //列印
-			
+			 // $Link=$BaseURL."?sn=".$sn."&picNum=".count($outsDetial);
 			   echo  "<form method=post enctype=multipart/form-data action=".$Link.">";
 			  //細節
-			   
+			   echo "<input type=hidden name=picNum value=".count($outsDetial)." >";
 	           DrawDetialList($outsDetial ,$fontColor,$BGcolor);
 			   $rect[1]+=count($outsDetial)*22;
 			   //送出
@@ -940,7 +944,7 @@
 			   echo "</form>";
 			      global $Outstotal;
 			   DrawRect("總額:".$Outstotal,10,"#000000",$rect[0]+210, 120,100,18,"#eeeeee");
-			   $Link=$BaseURL."?sn=".$sn."&picNum=".count($outsDetial);
+			 
 			   //輸出
 			   $Link="../../IGGTaipeRD2/Outsourcing/ExportMat.php?Exporttype=mat1&sn=".$sn;
 			   $msg="產生 [材料1：项目外包需求申请单.xls]";
@@ -973,6 +977,12 @@
 			   $msg="產生 [需求明细.doc]";
 			   $rect[1]+=32;
 			   DrawLinkRect_LayerNew($msg,12,$fontColor,$rect,$BGcolor,$Link,$border,$Layer);
+			   //產生預覽圖
+			   $Link="../../IGGTaipeRD2/Outsourcing/ExportMat.php?Exporttype=pic&sn=".$sn;
+			   $msg="產生 [縮圖表.xls]";
+			   $rect[1]+=32;
+			   DrawLinkRect_LayerNew($msg,12,$fontColor,$rect,$BGcolor,$Link,$border,$Layer);
+			   
 	  }
 	  function  InputForms($sn){
 		        echo "xx";
@@ -1011,15 +1021,18 @@
 	  }
 	  function  Drawsingel($data,$List,$rect,$fontColor,$BGcolor){
 		    global $DetailFormName, $FormRect,$FormList,$FormListsize;
+			global $sn;
 		    for($i=0;$i<count($List);$i++){
 				  $w=$FormListsize[$List[$i]];
 			      DrawRect($data[$List[$i]],10,$fontColor,$rect[0],$rect[1],$w,$rect[3],$BGcolor);
 				  $rect[0]+=$w+2;
 			   }
-			   $pic="Outsourcing/SortPic/".$sn."/spic".$i.".jpg" ;
+			  // if($data[0]=="表單")return;
+			   $pic="Outsourcing/SortPic/".$sn."/spic".$data[2].".jpg" ;
+			   // echo $pic;
 	           DrawPosPic($pic,$rect[1],$rect[0],20,20,"absolute" );
 			   $rect[0]+=22;
-               $input= "<input type=file name=pic".$i." style= font-size:10px;>";
+               $input= "<input type=file name=pic".$data[2]." style= font-size:10px;>";
 			   DrawInputRect_size("效果图例",10,"#ffffff",$rect[0] ,$rect[1],300,$rect[3],$BGcolor,$WorldAlign,$input);
 	  }
 	  function  UpformCheck(){

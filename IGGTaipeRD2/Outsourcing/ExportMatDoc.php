@@ -31,6 +31,7 @@ header("Expires:0");
 		 //詳細表單
 		 $outsDetialT=getMysqlDataArray("outsdetail");
 		 $outsDetial= filterArray( $outsDetialT,1,$sn);
+		 $outsDetial= sortArrays($outsDetial ,"2" ,"true");
  
 		 //外包單
 		 $OutsCostT=getMysqlDataArray("fpoutsourcingcost");
@@ -42,7 +43,7 @@ header("Expires:0");
 		 $outsData=filterArray(  $outsDataT,1,$code);
  
 		 //分類
-		 	 if($Exporttype=="Demand")createDemand();
+		 if($Exporttype=="Demand")createDemand();
          if($Exporttype=="mat2")setMat2Data();
 		 if($Exporttype=="mat4")printMat4();
 	
@@ -301,6 +302,41 @@ header("Expires:0");
                 $encoded_string = base64_encode(file_get_contents($source_file));
                  return('data:image/' . $mime_type . ';base64,' . $encoded_string);
               }
+	   function sortArrays($BaseArray ,$ArrayNum ,$forwardBool){
+  		  $newArray=array();
+		  $lastSn=  getLastSN2($BaseArray,$ArrayNum);
+      		 
+		 if($forwardBool=="true"){//正向
+		  	  for($i=0;$i<= $lastSn;$i++){
+                 $tmpArray= GetArraySn($BaseArray, $ArrayNum ,$i);
+				 if(count($tmpArray)>0)$newArray=  array_merge( $newArray,$tmpArray); 
+			  } 
+		  }
+		  if($forwardBool=="false"){//逆向
+		  	  for( $i=$lastSn;$i>0;$i--){
+                 $tmpArray= GetArraySn($BaseArray, $ArrayNum ,$i );
+				 if(count($tmpArray)>0)$newArray=  array_merge( $newArray,$tmpArray); 
+			  }
+		  }
+	      return  $newArray;
+	  }  
+	   function getLastSN2($SQLData,$SnNum){
+	      $lastSN=0;
+		  for($i=0;$i<count($SQLData);$i++){
+		 
+		  if($SQLData[$i][$SnNum]>$lastSN)$lastSN=$SQLData[$i][$SnNum];
+		  }
+		  return $lastSN;
+	   }
+	  function GetArraySn($BaseArray, $ArrayNum ,$sn ){
+			  $newArray=array();
+		      for($i=0;$i<count($BaseArray);$i++){
+			     if($BaseArray[$i][ $ArrayNum]==$sn) {
+					  array_push (  $newArray,$BaseArray[$i]);
+				 }  
+			  }
+			  return $newArray;
+	   }
 ?>
  
  

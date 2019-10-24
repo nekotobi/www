@@ -183,7 +183,6 @@
 		      for($i=0;$i<$t;$i++){
 	       	      global $$tables[$i];
 				  $tmp=$tables[$i];
- 
 				  array_push($Base, $tmp);
 		         }
 			  $code=$$tables[1];
@@ -207,7 +206,7 @@
              $WHEREData=array($$tables[0],$$tables[1]);	
 	         $stmt= MakeUpdateStmtv2(  $tableName,$Base,$up,$WHEREtable,$WHEREData);	
 			 SendCommand($stmt,$data_library);
-			 	  echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
+		     echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
 	}
 	
 	function EditData(){

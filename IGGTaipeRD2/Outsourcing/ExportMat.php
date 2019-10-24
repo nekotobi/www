@@ -1,4 +1,4 @@
-<?php
+<?php //預設資料
 require_once dirname(dirname(dirname(__FILE__))) .'/phpexcel/Classes/PHPExcel.php';
 require_once 'xlsApiv2.php';
  
@@ -24,9 +24,9 @@ function DefineData(){
          if($Exporttype=="mat1")creatMat1();
 		 if($Exporttype=="mat3")creatMat3();
 	     if($Exporttype=="Quote")creatQuote() ;
+		 if($Exporttype=="pic") creatPicForm() ;
 }
  
-
 function setMatData(){
 	     global $sn;
 		 global $outsDetial;
@@ -53,7 +53,7 @@ function setMatData(){
 			 if($outsDetial[$i][11]!="")$exchangeTotal=$outsDetial[$i][11];
 			 // echo $outsDetial[$i][3];
 		     $tmp=  array(
-			   "type"=>$outsDetial[$i][3],
+			    "type"=>$outsDetial[$i][3],
 			    "content"=>$outsDetial[$i][4],
 				"number"=>$outsDetial[$i][6],
 				"workingHours"=>$outsDetial[$i][7],
@@ -61,6 +61,7 @@ function setMatData(){
 				"starDate"=>$outsDetial[$i][9],
 				"EndDate"=>$outsDetial[$i][10],
 				"detail"=>$outsDetial[$i][5],
+				"sn"=>$outsDetial[$i][2], 
               );
 			  array_push($demand,$tmp);
 		 }
@@ -77,7 +78,7 @@ function setMatData(){
 
 
 ?>
-<?php
+<?php //產生材料
 function creatMat1(){
 	global $baseData,$demand;
 	$ProjectTitle="《".$baseData[project].'》';
@@ -406,8 +407,43 @@ function getStartDay($data,$y,$m,$forward){
 		 if($forward=="false") $fd=$d[(count($d)-1)];
 		 return $fd;
 }
- 
 ?>
+<?php //產生附圖
+function creatPicForm(){
+         global $sn;
+		 global $baseData,$demand;
+		 $st=1;
+	     $objPHPExcel = new PHPExcel();
+         $objPHPExcel->setActiveSheetIndex(0)  ;
+		 $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(50); 
+		 for($i=0;$i<count( $demand);$i++){
+			  $sort=$demand[$i][sn];
+		 	  $area="A".$sort*2;
+			  $pic="SortPic/".$sn."/spic".$sort.".jpg" ;
+	          setCellStyle($objPHPExcel,$sort.".".$demand[$i]['content'],$area,"12",'center',$Range,$Range);
+			  $objPHPExcel->getActiveSheet()->getStyle($area)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT ); 
+			  $area="A".($sort*2+1);
+			   if(file_exists($pic)){
+				  $objPHPExcel->getActiveSheet()->getRowDimension( $sort*2+1)->setRowHeight(60);
+			      inputPic($objPHPExcel,$area,$pic,60);
+			  }else{
+			   setCellStyle($objPHPExcel,"(無例圖)",$area,"10",'center',$Range,$Range);
+			  }
+	        
+		 }
+		 saveExcel($objPHPExcel,"縮圖資料.xls");
+}
+function inputPic($objPHPExcel,$area,$pic,$size){
+	$objDrawing = new PHPExcel_Worksheet_Drawing();
+	$objDrawing->setName('exchangeRate');
+	$objDrawing->setDescription('exchangeRate');
+	$objDrawing->setPath($pic);
+	$objDrawing->setCoordinates($area);
+	 if($size!="")$objDrawing->setHeight($size);
+	$objDrawing->setWorksheet($objPHPExcel->getActiveSheet());
+  }
+?>
+
 <?php //特殊換算 
   function printexchange( $objPHPExcel,$demand,$pstart,$ar,$totalHours){
 	      global $sn;
@@ -430,20 +466,11 @@ function getStartDay($data,$y,$m,$forward){
 		  $pstart+=4;
 		  $area="A".$pstart;
 		  $pic="exchangeRate/".$sn.".png";
-		  inputPic($objPHPExcel,$area,$pic);
+		  inputPic($objPHPExcel,$area,$pic,$size);
    // setCellStyle($objPHPExcel,  $totalHours,"H20","10",'center',"",$area);
   }
 
-  function inputPic($objPHPExcel,$area,$pic){
 
-	$objDrawing = new PHPExcel_Worksheet_Drawing();
-	$objDrawing->setName('exchangeRate');
-	$objDrawing->setDescription('exchangeRate');
-	$objDrawing->setPath($pic);
-	$objDrawing->setCoordinates($area);
-	//$objDrawing->setHeight(36);
-	$objDrawing->setWorksheet($objPHPExcel->getActiveSheet());
-  }
 ?>
 <?php //設定Title
 function setQuoteTitle(){
