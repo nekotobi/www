@@ -246,7 +246,7 @@
 			  if($submit=="上傳表單") UpformCheck();
 		      if($submit=="確定上傳表單") Upform();
 			  if($submit=="修改表單") UpEditForm();
-			
+			  if($submit=="上傳匯率") UpExchangeRate();
 	}
 ?>
 <?php //列印請款進程
@@ -641,7 +641,6 @@
 			  $base=filterArray($baseT2,1,$sn);
 			  $tableName=$DetailFormName;
 			  $tables=returnTables($data_library,$tableName);
-			 
 	          //清除
 			  for($i=0;$i<count($base);$i++){
 				 $WHEREtable=array("OutsSn","sn");
@@ -662,7 +661,7 @@
 			      echo $stmt;
 			  }
 			  $Link=$BackURL."?ListType=EditOutsForm&sn=".$sn;
-		       echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
+		      echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
 	 }
 	 function returnDatafix($data,$sn,$sort){
 	          $t=array();
@@ -724,6 +723,31 @@
 			   SendCommand($stmt,$data_library);
 		       echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	 }
+	 function  UpExchangeRate(){
+	           global  $outsn,$datas;
+			   global $data_library ;
+			   global $exchangeRate;
+			   global $BaseURL,$BackURL;
+			   global $backURLval;
+	           $WHEREtable=array( "data_type", "OutsSn"   );
+		       $WHEREData=array( "outs",$outsn  );
+			   $Base=array("exchangeRate");
+		       $up=array($exchangeRate);
+			   $stmt= MakeUpdateStmt(  $data_library,"outsdetail",$Base,$up,$WHEREtable,$WHEREData);
+			   SendCommand($stmt,$data_library);
+			   //上傳截圖
+			   if($_FILES['exchangeRatepic']["name"]!=null  ){
+				   $temp = explode(".", $_FILES['exchangeRatepic']["name"]);
+				   $path="Outsourcing/exchangeRate/".$outsn.".".$temp[1];
+			       move_uploaded_file($_FILES['exchangeRatepic']["tmp_name"], $path);  
+				   $Npath="Outsourcing/exchangeRate/".$outsn.".png";
+				  $cmd="convert   $path       $Npath ";
+				  exec($cmd);
+			   }
+			   
+			   echo " <script language='JavaScript'>window.location.replace('".$backURLval."&sn=".$outsn."')</script>";
+	 }
+	 
 ?>
 <?php //上傳前表單
       function  DrawFormcostEdit(){ //編輯內容
@@ -838,36 +862,52 @@
 			   global  $ListType;
 			   $currentDataT= filterArray( $OutCosts,1,$sn);
 			   $currentData= filterArray( $currentDataT,2,$sn);
-			   
 			   $ex=100;
 			   $ey=100;
 			   $w=1200;
 			   $h=800;
-			  // echo $sn;
 	           $Link=$BaseURL."?SortType=".$SortType;
 			   $c="(第".$currentData[0][13]."包)";
 			   $title ="編輯".$currentData[0][1]."-".$currentData[0][5].$c."[".$currentData[0][8]."]製作內容";
 	           DrawPopBG($ex,$ey,$w,$h,$title ,"12",$Link);
-			   DrawPrecautions($currentData[0][15]);
 			   if($ListType=="EditOutsForm")  ExportForms($sn);
 		       if($ListType=="inputOutsForm") InputForms($sn);
-       
+               DrawPrecautions($currentData[0][15],$sn);//判斷中國人
+			   
 		
 	  }
-      function  DrawPrecautions($code){
-	            global $outs;  
+      function  DrawPrecautions($code,$sn){
+	            global $outs,$BackURL;  
                 global $FormRect;
+			    global $Outstotal;
+			    global $exchangeRate;
 			    $currentOutT=filterArray( $outs,1,$code);
 				$currentOut=$currentOutT[0];
 				$country=trim($currentOut[4]);
 				$studio=trim($currentOut[6]);
-                 if ($country=="中國" && $studio=="個人"  ){
+				$rect=$FormRect;	   //估價費率:
+                 if ($country=="中國" && $studio=="個人"  ){  //人民幣>美金
 				    $msg=$country."!注意中國個人申請使用美金" ;
-					DrawRect($msg,10,"#ffffff", $FormRect[0], $FormRect[1]-22,200,18,"#ff7777");
+					DrawRect($msg,10,"#ffffff", $rect[0], $rect[1]-18,200,18,"#ff7777");
+				   // $Link=$BaseURL."?sn=".$sn."&picNum=".count($outsDetial);
+					echo  "<form method=post enctype=multipart/form-data action=".$BackURL.">";
+					echo "<input type=hidden name=outsn value=".$sn.">";
+			        echo "<input type=hidden name=backURLval  value=".$BackURL.">";
+			        $input="<input type=text name=exchangeRate  size=12 style= font-size:10px; value=".$exchangeRate." >";
+                    DrawInputRect("(人民幣>美金總額)",8 ,"#ffffff",$rect[0]+310,$rect[1]-18,200,$rect[3], $colorCodes[4][2],"top",$input);
+				    $input="<input type=file name=exchangeRatepic  size=12 style= font-size:10px;  >";
+                    DrawInputRect("(轉匯截圖)",8 ,"#ffffff",$rect[0]+450,$rect[1]-18,300,$rect[3], $colorCodes[4][2],"top",$input);
+			        $submitP="<input type=submit name=submit value=上傳匯率 style= font-size:10px; >";
+                    DrawInputRect("",8 ,"#ffffff",$rect[0]+580,$rect[1]-18,100,$rect[3], $colorCodes[4][2],"top",$submitP);
+					echo "</from>";
 				  }
+				  $pic="Outsourcing/exchangeRate/".$sn.".png";
+			    	 if(file_exists($pic))  
+						   DrawLinkPic($pic,$rect[1]-60,$rect[0]+877,300,120,$Link);
 	  }
 	  function  ExportForms($sn){
-		       global $BaseURL;
+		       global $BaseURL,$BackURL;
+			   
 	           $outsDetialT=getMysqlDataArray("outsdetail"); 
 			   $outsDetial= filterArray( $outsDetialT,1,$sn);
 			   $ListTitle=filterArray( $outsDetialT,0,"資料類別");
@@ -878,7 +918,7 @@
 			   $rect[1]+=22;
 			   $fontColor="#222222";$BGcolor="#cccccc";
 			   //列印
-			   $Link=$BaseURL."?sn=".$sn."&picNum=".count($outsDetial);
+			
 			   echo  "<form method=post enctype=multipart/form-data action=".$Link.">";
 			  //細節
 			   
@@ -887,14 +927,20 @@
 			   //送出
 			   $submitP="<input type=submit name=submit value=上傳圖檔  style= font-size:10px; >";
                DrawInputRect("",8 ,"#ffffff",$rect[0]+750,$rect[1],200,$rect[3], $colorCodes[4][2],"top",$submitP);
-			   echo "</form>";
+			
 			   //連接修改表單
 			   $Link=$BaseURL."?ListType=inputOutsForm&sn=".$sn;
 			   DrawLinkRect_Layer("修改表單",10,$fontColor,$rect,"#ffaacc",$Link,$border,$Layer);
-			   
+			
 			   //匯率
 			   $Link2="https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&rsv_idx=1&tn=baidu&wd=%E6%B1%87%E7%8E%87&oq=%25E6%25B1%2587%25E7%258E%2587%25E4%25BA%25BA%25E6%25B0%2591%25E5%25B8%2581%25E5%258F%25B0%25E5%25B8%2581&rsv_pq=fb7d36c4000e11ee&rsv_t=cc6dkVdXoMRFbjGQ46xf0UoT5jFYhDXhUsiL7NjPvkFHLT%2BDehA9LNu%2BEj8&rqlang=cn&rsv_enter=1&rsv_dl=tb&inputT=373&rsv_sug3=19&rsv_sug1=11&rsv_sug7=100&rsv_sug2=0&rsv_sug4=512&rsv_sug=2";
-			   DrawLinkRect("匯率運算",10,"#000000",$rect[0]+300,$rect[1],100,20,"#ccffaa",$Link2,$border);
+			   DrawLinkRect("匯率運算連結",10,"#000000",$rect[0]+200,$rect[1],100,20,"#ccffaa",$Link2,$border);
+			  
+	
+			   echo "</form>";
+			      global $Outstotal;
+			   DrawRect("總額:".$Outstotal,10,"#000000",$rect[0]+210,$rect[1]-260,100,18,"#eeeeee");
+			   $Link=$BaseURL."?sn=".$sn."&picNum=".count($outsDetial);
 			   //輸出
 			   $Link="../../IGGTaipeRD2/Outsourcing/ExportMat.php?Exporttype=mat1&sn=".$sn;
 			   $msg="產生 [材料1：项目外包需求申请单.xls]";
@@ -949,12 +995,16 @@
 	  }
 	  function  DrawDetialList($outsDetial,$fontColor,$BGcolor){
 		       global $DetailFormName, $FormRect,$FormList,$FormListsize,$FormTitle;
+			   global $Outstotal;
+			   global $exchangeRate;
+			   $Outstotal=0;
 			   $rect=$FormRect;
 			   Drawsingel($FormTitle[0],$FormList, $rect,"#ffffff","#000000");
 			   $rect[1]+=22;
 			   Drawsingel($outsDetial[$i],$FormList, $rect,$fontColor,$BGcolor);
 	  		   for($i=0;$i<count($outsDetial);$i++){
-			 
+			        $Outstotal+=$outsDetial[$i][8];
+					if($outsDetial[$i][11]!="")$exchangeRate=$outsDetial[$i][11];
 			        Drawsingel($outsDetial[$i],$FormList, $rect,$fontColor,$BGcolor);
 				    $rect[1]+=22;
 			   }

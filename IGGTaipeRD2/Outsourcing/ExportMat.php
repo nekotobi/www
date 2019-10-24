@@ -23,7 +23,7 @@ function DefineData(){
 	 	 //分類
          if($Exporttype=="mat1")creatMat1();
 		 if($Exporttype=="mat3")creatMat3();
-	     if($Exporttype=="Quote") creatQuote() ;
+	     if($Exporttype=="Quote")creatQuote() ;
 }
  
 
@@ -41,10 +41,14 @@ function setMatData(){
 			 "currency"=>$outsData[0][30],
 			 "Outsourcing"=> $outsData[0][15],
 			 "hourprice"=>$outsData[0][3],
+			 "studio"=>$outsData[0][6],
 			 "tex"=>"0.0%"
 		 );
 		 $demand=array();
+		 global  $exchangeTotal;
+		 $exchangeTotal=0;
 		 for($i=0;$i<count($outsDetial);$i++){
+			 if($outsDetial[$i][11]!="")$exchangeTotal=$outsDetial[$i][11];
 			 // echo $outsDetial[$i][3];
 		     $tmp=  array(
 			   "type"=>$outsDetial[$i][3],
@@ -58,7 +62,14 @@ function setMatData(){
               );
 			  array_push($demand,$tmp);
 		 }
- 
+		 global   $CurrencyType;
+		  $CurrencyType=$baseData[currency];
+ 	  //檢查中國個人多美金欄位
+	  global $Currencytype;
+	  
+	  if($baseData["currency"]=="人民幣" && $baseData["studio"]="個人"){
+		  $Currencytype="CNY2USD";
+	  }
 }
 
 
@@ -70,7 +81,7 @@ function creatMat1(){
 	$Currency="估价（".$baseData[currency]."）";
     $objPHPExcel = new PHPExcel();
     $objPHPExcel->setActiveSheetIndex(0)  ;
-    $CurrencyType=$baseData[currency];
+  	 global   $CurrencyType;
 	//設定欄寬
 	foreach(range('A','G') as $col){
 		$objPHPExcel->getActiveSheet()->getColumnDimension($col)->setWidth(12); 
@@ -171,32 +182,16 @@ function makeCurrency($area,$Currency,$objPHPExcel){
 }
 function creatMat3(){
       global $baseData,$demand;
+	   global   $CurrencyType;
 	  $objPHPExcel = new PHPExcel();
       $objPHPExcel->setActiveSheetIndex(0)  ;
 	  //設定欄寬
-	  $ColWidth=array(
-	  array('A',11),
-	   array('B',41),
-	    array('C',8),
-		 array('D',8),
-		  array('E',8),
-		   array('F',8),
-		    array('G',15),
-			  array('H',15),
-	  );
+	  SetMat3Title();
+	  global $ColWidth,$title;
 	  for($i=0;$i<count($ColWidth);$i++){
 	     	$objPHPExcel->getActiveSheet()->getColumnDimension($ColWidth[$i][0])->setWidth($ColWidth[$i][1]); 
 	  }
-	  $title=array(
-	  array('A',"制作类型","type"),
-	   array('B',"内容","content"),
-	    array('C',"数量","number"),
-		 array('D',"工时（小时）","workingHours"),
-		  array('E',"工时单价","hourprice"),
-		   array('F',"合计","Total"),
-		    array('G',"开始时间","starDate"),
-			  array('H',"完成时间","EndDate"),
-	  );
+
 
 	  //第一行
 	  for($i=0;$i<count( $title);$i++){
@@ -212,36 +207,52 @@ function creatMat3(){
 	  //詳細資料
 
 	  $Nstart=2;
+	  $pstart=$Nstart;
 	  $total=0;
+	  $totalHours=0;
 	  for($i=0;$i<count( $demand);$i++){
+		  	 $totalHours+=$demand[$i]["workingHours"];
 		  $total+=$demand[$i]["workingHours"];
 		    for($j=0;$j<count( $title);$j++){
 				 $area=($title[$j][0].$Nstart);
 				 $info=$demand[$i][$title[$j][2]];
+			
 				 if($title[$j][1]=="工时单价")$info=$baseData["hourprice"];
-				 if($title[$j][1]=="合计")$info=$baseData["hourprice"]*$demand[$i]["workingHours"];
+				 if($title[$j][1]=="合计"){
+					 $info=$baseData["hourprice"]*$demand[$i]["workingHours"];
+					 makeCurrency($area,$Currency,$objPHPExcel);
+				 	// $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('#,##0;-#,##0'); 
+				 }
 				 if($title[$j][1]=="内容")$info= $demand[$i]["content"]. $demand[$i]["detail"];
+				 
 				 if ($info!=""){
 				     setCellStyle($objPHPExcel, $info,$area,"10",'center',"",$area);
 				 }
 			}
 	      $Nstart+=1;
 	  }
-	 
-	  
+	  global $Currencytype;
+	  $aar="H";
+	  if($Currencytype=="CNY2USD"){//人民幣轉美金
+	   $aar="I";
+        printexchange( $objPHPExcel,$demand,$pstart,"G",$totalHours);
+	  }
 	  //工時總計
 	  $area=("D".$Nstart);
 	  setCellStyle($objPHPExcel, $total,$area,"10",'center',"",$area);
 	  //合計
-	  $Nstart+=2;
+	//  $Nstart+=2;
 	  $area=("E".$Nstart);
 	  setCellStyle($objPHPExcel, "总计",$area,"10",'center',"",$area);
 	  //總金額
 	  $area=("F".$Nstart);
+	  
 	  $cost=$total*$baseData["hourprice"];
+	  makeCurrency($area,$Currency,$objPHPExcel);
 	  setCellStyle($objPHPExcel,  $cost,$area,"10",'center',"",$area);
 	  	   //外框
-	  $area="A1:"."H".(count( $demand)+2);
+	  $area="A1:".$aar.(count( $demand)+2);
+	  
 	  $borderStyle="PHPExcel_Style_Border::BORDER_MEDIUM";
       DrawLineOut($objPHPExcel,$area,$borderStyle);
 	  //外框2
@@ -252,33 +263,20 @@ function creatMat3(){
 	  saveExcel($objPHPExcel,"材料3：合同报价单.xls"); 
 }
 
+
+
 function creatQuote(){
 	  global $baseData,$demand;
-	   global $outsDetial,$OutsCost, $outsData;
+	  global $outsDetial,$OutsCost, $outsData;
+	  global $ColWidth,$title;
 	  $objPHPExcel = new PHPExcel();
       $objPHPExcel->setActiveSheetIndex(0)  ;
 	  //設定欄寬
-	  $ColWidth=array(
-	  array('A',10),
-	   array('B',51),
-	    array('C',8),
-		 array('D',12),
-		  array('E',12),
-		   array('F',8),
-		    array('G',15)
-	  );
+      setQuoteTitle();
 	  for($i=0;$i<count($ColWidth);$i++){
 	     	$objPHPExcel->getActiveSheet()->getColumnDimension($ColWidth[$i][0])->setWidth($ColWidth[$i][1]); 
 	  }
-	  $title=array(
-	  array('A',"制作类型","type"),
-	   array('B',"内容","content"),
-	    array('C',"数量","number"),
-		 array('D',"总工时（小時）","workingHours"),
-		  array('E',"小時单价（".$baseData["currency"]."）","hourprice"),
-		   array('F',"税点","Tex"),
-		    array('G',"總額","Total")
-	  );
+
 	 //第一行
 	  for($i=0;$i<count( $title);$i++){
 		      $area=($title[$i][0]."1");
@@ -298,6 +296,7 @@ function creatQuote(){
 	  $total=0;
 	  $totalNum=0;
 	  $totalHours=0;
+	  $pstart=$Nstart;
 	  for($i=0;$i<count( $demand);$i++){
 		  $t  = $baseData["hourprice"]*$demand[$i]["workingHours"];
 		  $total+=$t;
@@ -309,16 +308,21 @@ function creatQuote(){
 				 if($title[$j][1]=="税点")$info="0%";
 				 if($title[$j][1]=="内容")$info= $demand[$i]["content"]. $demand[$i]["detail"];
 				 if($title[$j][0]=="E")$info= $baseData["hourprice"];
-				 if($title[$j][1]=="總額")$info=   $t  ;
+				 if($title[$j][1]=="總額" or $title[$j][1]=="合計(人民幣)" ){
+					 $info=   $t  ;
+					 $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('¥#,##0;-¥#,##0'); 
+				 }
 				 if ($info!=""){
 				     setCellStyle($objPHPExcel, $info,$area,"10",'center',"",$area);
 					 $objPHPExcel->getActiveSheet()->getStyle($area)->getAlignment()->setWrapText(true);
-				 }
-		        
+				 } 
 			}
 	      $Nstart+=1;
 	  }
-	 
+	  global $Currencytype;
+	  if($Currencytype=="CNY2USD"){//人民幣轉美金
+        printexchange( $objPHPExcel,$demand,$pstart,"H",$totalHours);
+	  }
 	  //總計
 	  $area="C".$Nstart; 
       setCellStyle($objPHPExcel, $totalNum,$area,"10",'center',"",$area);
@@ -328,9 +332,10 @@ function creatQuote(){
 	  setCellStyle($objPHPExcel, "总计",$area,"12",'center',"",$area);
 	  $area="G".$Nstart;
 	  setCellStyle($objPHPExcel, $total,$area,"10",'center',"",$area);
-	  $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('$#,##0;-$#,##0'); 
+	  $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('$#,##0.00;-$#,##0.00'); 
 	   //外框
-	  $LineArea="A1:G".(count($demand)+2);
+	  $LineArea="A1:".$title[count($title)-1][0].(count($demand)+2);
+	 // if(count($title)>6)$LineArea="A1:H".(count($demand)+2);
 	  DrawLineOut($objPHPExcel,$LineArea,"PHPExcel_Style_Border::BORDER_THIN");
 	  //開始
 	  $STENDay=getStartEndTime();
@@ -352,7 +357,6 @@ function creatQuote(){
 	  setCellStyle($objPHPExcel,$STENDay[1],$area,"11",'center',"",$area);
  
 	  saveExcel($objPHPExcel,"報價.xls"); 
-	  
 }
 function getStartEndTime(){
          global $outsDetial;
@@ -403,6 +407,96 @@ function getStartDay($data,$y,$m,$forward){
 		 return $fd;
 }
  
+?>
+<?php //特殊換算
+  function printexchange( $objPHPExcel,$demand,$pstart,$ar,$totalHours){
+  		  global  $exchangeTotal;
+		  $USDtotal=0;
+	      for($i=0;$i<count( $demand);$i++){
+			  $pre=$demand[$i][workingHours]/ $totalHours;
+		      $USD= $exchangeTotal*$pre;
+			  $USDtotal+=$USD;
+			  $area= $area=($ar.$pstart);
+			  setCellStyle($objPHPExcel, $USD,$area,"10",'center',"",$area);
+			  $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('$#,##0.00;-$#,##0.00'); 
+			  $objPHPExcel->getActiveSheet()->getStyle($area)->getAlignment()->setWrapText(true);
+			  $pstart+=1;
+		  }
+		  $area=$ar.$pstart;
+		  setCellStyle($objPHPExcel,  $USDtotal,$area,"10",'center',"",$area);
+		  $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('$#,##0.00;-$#,##0.00'); 
+		  $objPHPExcel->getActiveSheet()->getStyle($area)->getAlignment()->setWrapText(true);
+   // setCellStyle($objPHPExcel,  $totalHours,"H20","10",'center',"",$area);
+  }
+
+?>
+<?php //設定Title
+function setQuoteTitle(){
+	  global $ColWidth,$title;
+	  global $baseData;
+	  $ColWidth=array(
+	  array('A',10),
+	   array('B',51),
+	    array('C',8),
+		 array('D',12),
+		  array('E',12),
+		   array('F',8),
+		    array('G',15)
+	  );
+     $title=array(
+	  array('A',"制作类型","type"),
+	   array('B',"内容","content"),
+	    array('C',"数量","number"),
+		 array('D',"总工时（小時）","workingHours"),
+		  array('E',"小時单价（".$baseData["currency"]."）","hourprice"),
+		   array('F',"税点","Tex"),
+		    array('G',"總額","Total")
+	  );
+     global $Currencytype;
+       if(  $Currencytype=="CNY2USD"){
+	  	   Array_push($ColWidth,array('H',15));
+		   $title[count( $title)-1]=array('G',"合計(人民幣)","Total");
+		  Array_push( $title,array('H',"換算美金","Total2"));
+     }
+}
+
+function SetMat3Title(){
+	  global $ColWidth,$title;
+	  $ColWidth=array(
+	  array('A',11),
+	   array('B',41),
+	    array('C',8),
+		 array('D',8),
+		  array('E',8),
+		   array('F',8),
+		    array('G',15),
+			  array('H',15),
+	  );
+	  $title=array(
+	  array('A',"制作类型","type"),
+	   array('B',"内容","content"),
+	    array('C',"数量","number"),
+		 array('D',"工时（小时）","workingHours"),
+		  array('E',"工时单价","hourprice"),
+		   array('F',"合计","Total"),
+		    array('G',"开始时间","starDate"),
+			  array('H',"完成时间","EndDate"),
+	  );
+	  global $Currencytype;
+	 
+      if(  $Currencytype=="CNY2USD"){
+	       array_push( $ColWidth,  array('I',15));
+		   $t2=array(
+		        array('G',"換算美金","2USD"),
+		         array('H',"开始时间","starDate"),
+		      	  array('I',"完成时间","EndDate"),
+		   );
+		  array_splice( $title,6,2,$t2);
+		  
+	  }
+ 
+}
+
 ?>
 
  

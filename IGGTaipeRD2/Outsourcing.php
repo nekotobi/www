@@ -9,7 +9,6 @@
 	include('mysqlApi.php');
 		$data_library= "iggtaiperd2";
 		$tableName="outsourcing";
-  	    //returnTables($data_library,$tableName,"outsourcing");
         DrawMainUI();
 	    UpData();
 
@@ -219,9 +218,9 @@
 		  global $BaseData;
 	      global $width,$TableType,$Names;
 		  global $radio_1,$radio_2;
-		  $x=600;
+		  $x=300;
 		  $y=100;
-		  $w=500;
+		  $w=800;
 		  $h=400+count( $Names)*20;
 	      DrawPopBG($x,$y,$w,$h,"修正外包資料" ,"12",$BaseURL);
 		  $data= returnDataArray($BaseData,1,$code)   ;
