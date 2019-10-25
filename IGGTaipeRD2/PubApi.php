@@ -637,4 +637,18 @@
 	   }
 ?>
 
+<?php //NewSend
+       function sendVal($URL,$ValArray,$SubmitName,$SubmitVal,$Rect,$size=12, $BgColor="#eeeeee",$fontColor="#ffffff"){
+		   echo "<form action=".$URL." method=post >";
+		   for($i=0;$i<count($ValArray);$i++){
+		       echo "<input type=hidden name=".$ValArray[$i][0]." value=".$ValArray[$i][1]." >";
+		   }
+		    $submitP="<input type=submit name=submit   value=".$SubmitVal." 
+			           style = 'width:".$Rect[2]."px; height:".$Rect[3]."px; background-color:".$BgColor." ;
+       	               font-size:".$size."px; font-weight:bold; border:0; color:".$fontColor.";  '/>";  
+		   echo "<div style= 'position:absolute;  top:".$Rect[1]."px; left:".$Rect[0]."px;  '>".$submitP."</div>";
+		   echo "</form>";
+	   }
+	   
+?> 
  

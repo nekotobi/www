@@ -6,9 +6,17 @@
    <title>美術資料連結</title>
 </head>
 <body bgcolor="#b5c4b1">
+ 
+
 <?php
       include('PubApi.php');
- 
+	  global $BaseURL;
+	  $BaseURL="index.php";
+	  global $selectype;
+	  $selectype=$_POST['selectype'];
+	  
+	   
+	   
 	  if($selectype=="")$selectype=0;
       $startY=50;
 	  $TypeCont;
@@ -64,6 +72,7 @@
 	  
 	  function DrawType(){
 		  global $types ,$typeColors,$selectype,$TypeCont;
+		  global $BaseURL;
 		  global $colorCodes;
 	      getTypes(); //紀錄分類數		
 		  $x=190;
@@ -79,7 +88,8 @@
 					$y=$startY+40;
 				 }
 				$Link="index.php?selectype=".$i;
-			   	DrawLinkRect($types[$i],"20","#ffffff",  $x,$y,$boxWidth, $boXheight,$color,$Link,"");
+			  //  DrawLinkRect($types[$i],"20","#ffffff",  $x,$y,$boxWidth, $boXheight,$color,$Link,"");
+			    sendVal( $BaseURL,array(array("selectype",$i)),"submit",$types[$i],array($x,$y,$boxWidth, $boXheight) ,20,$color);
 				$x+=$boxWidth+5;
 		  }
 	  }
