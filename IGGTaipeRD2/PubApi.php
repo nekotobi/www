@@ -53,8 +53,7 @@
 	  }
 	   function sortArrays($BaseArray ,$ArrayNum ,$forwardBool){
   		  $newArray=array();
-		  $lastSn=  getLastSN2($BaseArray,$ArrayNum);
-      		 
+		  $lastSn=  getLastSN2($BaseArray,$ArrayNum); 
 		 if($forwardBool=="true"){//正向
 		  	  for($i=0;$i<= $lastSn;$i++){
                  $tmpArray= GetArraySn($BaseArray, $ArrayNum ,$i);

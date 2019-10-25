@@ -6,13 +6,9 @@
 //require_once dirname(dirname(dirname(__FILE__))) .'/phpExcelReader/Excel/reader.php';
 ReadExecl();
 function ReadExecl(){
-	echo "x";
+      	echo "x";
 	     $file="test.xlsx";
-	    // chmod($file, 0777);
-		// echo    chmod($path, 0777);
- 
-        $reader = PHPExcel_IOFactory::createReader('Excel2007'); // 讀取2007 excel 檔案
-		$PHPExcel = $reader->load( $file);
+	    $objPHPExcel = PHPExcel_IOFactory::load($file);
 }
 
 

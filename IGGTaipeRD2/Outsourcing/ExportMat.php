@@ -1,9 +1,7 @@
 <?php //預設資料
 require_once dirname(dirname(dirname(__FILE__))) .'/phpexcel/Classes/PHPExcel.php';
 require_once 'xlsApiv2.php';
- 
 DefineData();
-
 function DefineData(){
          global $sn;
          global $Exporttype;
@@ -26,7 +24,6 @@ function DefineData(){
 	     if($Exporttype=="Quote")creatQuote() ;
 		 if($Exporttype=="pic") creatPicForm() ;
 }
- 
 function setMatData(){
 	     global $sn;
 		 global $outsDetial;
@@ -77,8 +74,6 @@ function setMatData(){
 	  }
 
 }
-
-
 ?>
 <?php //產生材料
 function creatMat1(){
@@ -139,7 +134,7 @@ function creatMat1(){
 		}
      	setCellStyle($objPHPExcel,$cost,'F'.$a,"10",'center', $m,	$m);
         $area='F'.$a;
-	   makeCurrency($area, $CurrencyType,$objPHPExcel);
+	    makeCurrency($area, $CurrencyType,$objPHPExcel);
 	    $Nstart+=1;
 	}
 	//價格
@@ -200,13 +195,17 @@ function creatMat1(){
 function makeCurrency($area,$Currency,$objPHPExcel){
 	      global $baseData;
 		  global $CurrencyType;
-	      $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('$#,##0;-$#,##0');
+	      $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('$#,##0.00;-$#,##0.00');
 	      if($baseData["currency"]=="人民幣") {
 		     if( $CurrencyType=="CNY2USD")return;
-		    $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('¥#,##0;-¥#,##0');
+		     $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('¥#,##0;-¥#,##0');
 		  }
-	 
-
+}
+function makeCurrencyCNY($area,$objPHPExcel){
+	    $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('¥#,##0;-¥#,##0');
+}
+function makeCurrencyUSD($area,$objPHPExcel){
+	     $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('$#,##0.00;-$#,##0.00');
 }
 function creatMat3(){
       global $baseData,$demand;
@@ -236,8 +235,8 @@ function creatMat3(){
 	  $total=0;
 	  $totalHours=0;
 	  for($i=0;$i<count( $demand);$i++){
-		  	 $totalHours+=$demand[$i]["workingHours"];
-		  $total+=$demand[$i]["workingHours"];
+		   $totalHours+=$demand[$i]["workingHours"];
+		   $total+=$demand[$i]["workingHours"];
 		    for($j=0;$j<count( $title);$j++){
 				 $area=($title[$j][0].$Nstart);
 				 $info=$demand[$i][$title[$j][2]];
@@ -245,8 +244,8 @@ function creatMat3(){
 				 if($title[$j][1]=="工时单价")$info=$baseData["hourprice"];
 				 if($title[$j][1]=="合计"){
 					 $info=$baseData["hourprice"]*$demand[$i]["workingHours"];
-					 makeCurrency($area,$Currency,$objPHPExcel);
-				 	// $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('#,##0;-#,##0'); 
+					 //makeCurrency($area,$Currency,$objPHPExcel);
+					  makeCurrencyCNY($area,$objPHPExcel);
 				 }
 				 if($title[$j][1]=="内容")$info= $demand[$i]["content"]. $demand[$i]["detail"];
 				 
@@ -271,11 +270,11 @@ function creatMat3(){
 	  setCellStyle($objPHPExcel, "总计",$area,"10",'center',"",$area);
 	  //總金額
 	  $area=("F".$Nstart);
-	  
 	  $cost=$total*$baseData["hourprice"];
-	  makeCurrency($area,$Currency,$objPHPExcel);
+	 // makeCurrency($area,$Currency,$objPHPExcel);
+	  makeCurrencyCNY($area, $objPHPExcel);
 	  setCellStyle($objPHPExcel,  $cost,$area,"10",'center',"",$area);
-	  	   //外框
+	  //外框
 	  $area="A1:".$aar.(count( $demand)+2);
 	  
 	  $borderStyle="PHPExcel_Style_Border::BORDER_MEDIUM";
@@ -341,9 +340,9 @@ function creatQuote(){
 			}
 	      $Nstart+=1;
 	  }
-	  global $Currencytype;
-	  if($Currencytype=="CNY2USD"){//人民幣轉美金
-        printexchange( $objPHPExcel,$demand,$pstart,"H",$totalHours);
+	  global $CurrencyType;
+	  if($CurrencyType=="CNY2USD"){//人民幣轉美金
+          printexchange( $objPHPExcel,$demand,$pstart,"H",$totalHours);
 	  }
 	  //總計
 	  $area="C".$Nstart; 
@@ -354,7 +353,13 @@ function creatQuote(){
 	  setCellStyle($objPHPExcel, "总计",$area,"12",'center',"",$area);
 	  $area="G".$Nstart;
 	  setCellStyle($objPHPExcel, $total,$area,"10",'center',"",$area);
-	  $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('$#,##0.00;-$#,##0.00'); 
+	   makeCurrencyUSD($area,$objPHPExcel);
+ 
+	  if($baseData[currency]=="人民幣"){
+		  	  makeCurrencyCNY($area,$objPHPExcel);
+	  }
+ 
+	  //$objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('$#,##0.00;-$#,##0.00'); 
 	   //外框
 	  $LineArea="A1:".$title[count($title)-1][0].(count($demand)+2);
 	 // if(count($title)>6)$LineArea="A1:H".(count($demand)+2);
@@ -512,8 +517,8 @@ function setQuoteTitle(){
 		   array('F',"税点","Tex"),
 		    array('G',"總額","Total")
 	  );
-     global $Currencytype;
-       if(  $Currencytype=="CNY2USD"){
+     global $CurrencyType;
+       if(  $CurrencyType=="CNY2USD"){
 	  	   Array_push($ColWidth,array('H',15));
 		   $title[count( $title)-1]=array('G',"合計(人民幣)","Total");
 		  Array_push( $title,array('H',"換算美金","Total2"));
@@ -528,7 +533,7 @@ function SetMat3Title(){
 	    array('C',8),
 		 array('D',8),
 		  array('E',8),
-		   array('F',8),
+		   array('F',15),
 		    array('G',15),
 			  array('H',15),
 	  );
