@@ -638,17 +638,22 @@
 ?>
 
 <?php //NewSend
-       function sendVal($URL,$ValArray,$SubmitName,$SubmitVal,$Rect,$size=12, $BgColor="#eeeeee",$fontColor="#ffffff"){
+       function sendVal($URL,$ValArray,$SubmitName,$SubmitVal,$Rect,$size=12, $BgColor="#eeeeee",$fontColor="#ffffff",$setCookie=false){
 		   echo "<form action=".$URL." method=post >";
 		   for($i=0;$i<count($ValArray);$i++){
-		       echo "<input type=hidden name=".$ValArray[$i][0]." value=".$ValArray[$i][1]." >";
+			   echo "<input type=hidden name=".$ValArray[$i][0]." value=".$ValArray[$i][1]." >";
 		   }
+	        echo "<input type=hidden name=setCookie value=".$setCookie." >";
 		    $submitP="<input type=submit name=submit   value=".$SubmitVal." 
 			           style = 'width:".$Rect[2]."px; height:".$Rect[3]."px; background-color:".$BgColor." ;
        	               font-size:".$size."px; font-weight:bold; border:0; color:".$fontColor.";  '/>";  
 		   echo "<div style= 'position:absolute;  top:".$Rect[1]."px; left:".$Rect[0]."px;  '>".$submitP."</div>";
 		   echo "</form>";
 	   }
-	   
+	   function sendCookie($ValArray){
+	        for($i=0;$i<count($ValArray);$i++){
+		    	setcookie( $ValArray[$i][0], $ValArray[$i][1], time()+36000); 
+			}
+	   }
 ?> 
  
