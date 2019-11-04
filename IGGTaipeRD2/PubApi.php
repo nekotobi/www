@@ -638,6 +638,27 @@
 ?>
 
 <?php //NewSend
+       function DrawPopBGsendVal($x,$y,$w,$h,$title,$fontSize,$BackURL,$ValArray){
+	         DrawPicBG("Pics/Black50Bg.png",$y-40,$x-40,$w+80,$h+80);
+		     //  DrawLinkPic("Pics/Cancel.png",$y-50,$x+$w+20,32,32,$BackURL);
+		     $pic="Pics/Cancel.png";
+		     
+		     DrawRect($title,$fontSize,"#ffffff",$x ,$y ,$w,"20","#a27e7e");
+		     $Rect=array($x+$w+20,$y-50,40,40);
+		     sendValPic($BackURL,$pic,$Rect,$ValArray);
+	   }
+	    function sendValPic($URL,$pic,$Rect,$ValArray){
+	             echo "<form action=".$URL." method=post >";
+	             for($i=0;$i<count($ValArray);$i++){
+		             echo "<input type=hidden name='".$ValArray[$i][0]."' value='".$ValArray[$i][1]."' >";
+		            } 
+				    echo "<input type=hidden name=setCookie value=true >";
+	                $submitP="<input type=image src=".$pic."   alt='Submit Form'  width=".$Rect[2]." height=".$Rect[3]." />";
+		            echo "<div style= 'position:absolute;  top:".$Rect[1]."px; left:".$Rect[0]."px; 
+			                   width:".$Rect[2]."px;   height:".$Rect[3]."px;
+		            	'>".$submitP."</div>";
+			        echo "</form>";
+	    }
        function  DrawLinkRect_Layer2sendVal($msg,$fontSize,$fontColor,$Rect,$BgColor,$Link,$border,$Layer){
 		         $tmp=explode("?",$Link);
                  $ValArray=LinkURL2ValArray($Link);
@@ -647,8 +668,6 @@
 				 //$Rect=array($x,$y,$w,$h);
 	             sendVal($URL,$ValArray,$SubmitName,$SubmitVal,$Rect,$fontSize, $BgColor ,$fontColor ,"true");
 	   }
-
-
        function  DrawLinkRect2sendVal($msg,$fontSize,$fontColor,$x,$y,$w,$h,$BgColor,$Link,$border){
 		        $tmp=explode("?",$Link);
                  $ValArray=LinkURL2ValArray($Link);
@@ -710,7 +729,7 @@
 				//  echo $n."=".$$n."]";
 			  }
 	}
-	function CheckCookie($CookieArray){
+	   function CheckCookie($CookieArray){
 	  for($i=0;$i<count($CookieArray);$i++){
 		     $n=$CookieArray[$i];
 		     echo  $n."=".$_COOKIE[$n],"]";

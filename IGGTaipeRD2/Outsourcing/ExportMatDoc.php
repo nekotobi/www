@@ -1,5 +1,8 @@
 <?php 
 global $Exporttype ;
+ 	   $Exporttype=$_POST['Exporttype'];
+ global $sn;
+	   $sn=$_POST['sn'];
 global $filename;
 header("Content-type: text/html; charset=charset=unicode");
 $filename="材料2：申请资料.doc";
@@ -26,7 +29,7 @@ header("Expires:0");
          global $Exporttype;
 		 global $outsDetial,$OutsCost, $outsData;
 		 global $project, $principal;
-		 $project="FP";
+		 $project="VT";
 		 $principal="黃謙信";
 		 //詳細表單
 		 $outsDetialT=getMysqlDataArray("outsdetail");
@@ -119,12 +122,12 @@ header("Expires:0");
 	 }
      function printTitle($year,$m,$d){
          echo "<div style=font-size:22px ; align=center >";
-         echo "《FP》项目美术外包申请";
+         echo "《VT》项目美术外包申请";
          echo "</div>";
          echo "</p>";
          echo "外包内容以及完成时间";
          echo "</p>";
-         echo "内容 ：FP项目美术外包";
+         echo "内容 ：VT项目美术外包";
          echo "</p>";
          echo "合同时间：自 ".$year." 年".$m."月".$d."日开始。";
          echo "</p>";

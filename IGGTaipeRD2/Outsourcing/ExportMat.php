@@ -5,6 +5,8 @@ DefineData();
 function DefineData(){
          global $sn;
          global $Exporttype;
+		 $Exporttype=$_POST['Exporttype'];
+		 $sn=$_POST['sn'];
 		 global $outsDetial,$OutsCost, $outsData;
 		 //詳細表單
 		 $outsDetialT=getMysqlDataArray("outsdetail");
@@ -32,7 +34,7 @@ function setMatData(){
          $baseData=array();
 		 $principal="黃謙信";
 		 $baseData=array(
-		     "project"=>"FP",
+		     "project"=>"VT",
 		     "principal"=>$principal,
 		     "startDay"=>$OutsCost[0][14],
 			 "currency"=>$outsData[0][30],
@@ -68,7 +70,9 @@ function setMatData(){
 	  
  	  //檢查中國個人多美金欄位
 	  	 global   $CurrencyType;
- 
+      if($baseData["currency"]=="台幣") $CurrencyType="NT";
+	  if($baseData["currency"]=="美金") $CurrencyType="USD";
+	  if($baseData["currency"]=="人民幣") $CurrencyType="CNY";
 	  if($baseData["currency"]=="人民幣" && $baseData["studio"]=="個人"){
 		 $CurrencyType="CNY2USD";
 	  }
@@ -139,6 +143,7 @@ function creatMat1(){
 	}
 	//價格
 	 if( $CurrencyType=="CNY2USD")$totalAmout=$exchangeTotal;
+	 
 	//需求
 	//$Nstart=($start+count($demand)-1);
 	$Range='A5:A'.($Nstart-1);
@@ -201,12 +206,7 @@ function makeCurrency($area,$Currency,$objPHPExcel){
 		     $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('¥#,##0;-¥#,##0');
 		  }
 }
-function makeCurrencyCNY($area,$objPHPExcel){
-	    $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('¥#,##0;-¥#,##0');
-}
-function makeCurrencyUSD($area,$objPHPExcel){
-	     $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('$#,##0.00;-$#,##0.00');
-}
+
 function creatMat3(){
       global $baseData,$demand;
 	   global   $CurrencyType;
@@ -245,7 +245,8 @@ function creatMat3(){
 				 if($title[$j][1]=="合计"){
 					 $info=$baseData["hourprice"]*$demand[$i]["workingHours"];
 					 //makeCurrency($area,$Currency,$objPHPExcel);
-					  makeCurrencyCNY($area,$objPHPExcel);
+					 // makeCurrencyCNY($area,$objPHPExcel);
+					 MakeCostFormat($area, $objPHPExcel);
 				 }
 				 if($title[$j][1]=="内容")$info= $demand[$i]["content"]. $demand[$i]["detail"];
 				 
@@ -272,7 +273,7 @@ function creatMat3(){
 	  $area=("F".$Nstart);
 	  $cost=$total*$baseData["hourprice"];
 	 // makeCurrency($area,$Currency,$objPHPExcel);
-	  makeCurrencyCNY($area, $objPHPExcel);
+     	MakeCostFormat($area, $objPHPExcel);
 	  setCellStyle($objPHPExcel,  $cost,$area,"10",'center',"",$area);
 	  //外框
 	  $area="A1:".$aar.(count( $demand)+2);
@@ -286,7 +287,20 @@ function creatMat3(){
 	//  setCellStyle($objPHPExcel,'项目外包需求申请单','A1',"20",'center','A1:G1',"");
 	  saveExcel($objPHPExcel,"材料3：合同报价单.xls"); 
 }
+function MakeCostFormat($area, $objPHPExcel){
+	  global  $CurrencyType;
+      if( $CurrencyType=="CNY2USD")  makeCurrencyCNY($area, $objPHPExcel);
+      if( $CurrencyType=="NT")  makeCurrencyUSD($area,$objPHPExcel);
+	  if( $CurrencyType=="CNY") makeCurrencyCNY($area,$objPHPExcel);
+}
+function makeCurrencyCNY($area,$objPHPExcel){
+	    $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('¥#,##0;-¥#,##0');
+}
+function makeCurrencyUSD($area,$objPHPExcel){
+	     $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('$#,##0.00;-$#,##0.00');
+}
 function creatQuote(){
+
 	  global $baseData,$demand;
 	  global $outsDetial,$OutsCost, $outsData;
 	  global $ColWidth,$title;
@@ -330,8 +344,9 @@ function creatQuote(){
 				 if($title[$j][1]=="内容")$info= $demand[$i]["content"]. $demand[$i]["detail"];
 				 if($title[$j][0]=="E")$info= $baseData["hourprice"];
 				 if($title[$j][1]=="總額" or $title[$j][1]=="合計(人民幣)" ){
-					 $info=   $t  ;
-					 $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('¥#,##0;-¥#,##0'); 
+					 $info= $t  ;
+					  MakeCostFormat($area, $objPHPExcel);
+					// $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('¥#,##0;-¥#,##0'); 
 				 }
 				 if ($info!=""){
 				     setCellStyle($objPHPExcel, $info,$area,"10",'center',"",$area);

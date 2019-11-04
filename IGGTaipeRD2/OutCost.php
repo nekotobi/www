@@ -31,6 +31,7 @@
 			 $CookieArray=array('SortType','ListType','sn',"SelectOut","Column","info","Rx","Ry","EditType");
              setcookies($CookieArray, $BaseURL);
 			 SetGlobalcookieData($CookieArray);
+			// CheckCookie($CookieArray);
 			 //表單資料
 		     global $ListNames,$ListSize,$OutCosts,$OutsLastSort;
 			 global $data_library,$tableName,$pregressData;
@@ -179,8 +180,8 @@
 			 DrawLinkRect2sendVal("▼",10,"#cccccc",$x,$y,$w,$h,"#000000",$Link,$border);
 			 $x+=$w+2;
 			 $w=60;
-			 $Link= $BaseURL."?SortType=".$SortType."&ListType=";
-			 DrawLinkRect2sendVal("未撥款表單",10,"#eeeeee",$x,$y,$w,$h,"#000000",$Link,$border);
+			 $Link= $BaseURL."?SortType=".$SortType."&ListType=Processing";
+			 DrawLinkRect2sendVal("處理中表單",10,"#eeeeee",$x,$y,$w,$h,"#000000",$Link,$border);
 			 $x+=$w+2;
 			 $Link= $BaseURL."?SortType=".$SortType."&ListType=prepress";
 			 DrawLinkRect2sendVal("請款進程",10,"#eeeeee",$x,$y,$w,$h,"#000000",$Link,$border);
@@ -209,7 +210,7 @@
 			 if($submit=="確定上傳表單")return;
 		  //   if($submit!="搜尋" or $submit!="")return;
 		  
-	         if($ListType==""){
+	         if($ListType=="Processing"){
 				 $costList=array(1,5,7,8,9,10,11,12,13);
 			    //$pregressList=array(3,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28);
 				 //DrawContacts();
@@ -358,7 +359,7 @@
 				   if($bgColor!=""){
 					  if($i==0){
 						 $Link=$BaseURL."?SortType=".$SortType."&ListType=EditOutsForm&sn=".$msg;
-				         DrawLinkRect( $msg,10,$fontColor,$x,$y,$w,$h,$bgc,$Link,$border);
+				         DrawLinkRect2sendVal( $msg,10,$fontColor,$x,$y,$w,$h,$bgc,$Link,$border);
 					  }else{
 				     DrawRect($msg,10,$fontColor,$x,$y,$w,$h, $bgc);
 					  }
@@ -899,10 +900,12 @@
 			   $ey=100;
 			   $w=1200;
 			   $h=800;
-	           $Link=$BaseURL."?SortType=".$SortType;
+	           $Link=$BaseURL;//."?SortType=".$SortType;
+			   $ValArray=array(array("ListType","Processing"));
 			   $c="(第".$currentData[0][13]."包)";
 			   $title ="編輯".$currentData[0][1]."-".$currentData[0][5].$c."[".$currentData[0][8]."]製作內容";
-	           DrawPopBG($ex,$ey,$w,$h,$title ,"12",$Link);
+	         //  DrawPopBG($ex,$ey,$w,$h,$title ,"12",$Link);
+			   DrawPopBGsendVal($ex,$ey,$w,$h,$title ,"12",$Link,$ValArray);
 			   if($ListType=="EditOutsForm")  ExportForms($sn);
 		       if($ListType=="inputOutsForm") InputForms($sn);
                DrawPrecautions($currentData[0][15],$sn);//判斷中國人
@@ -976,41 +979,41 @@
 			 
 			   //輸出
 			   $Link="../../IGGTaipeRD2/Outsourcing/ExportMat.php?Exporttype=mat1&sn=".$sn;
-			   $msg="產生 [材料1：项目外包需求申请单.xls]";
+			   $msg="產生[材料1：项目外包需求申请单.xls]";
 			   $fontColor="#ffffff";$BGcolor="#99aa99";
 			   $rect[1]+=42;
 		       $rect[2]=300;
-			   DrawLinkRect_LayerNew($msg,12,$fontColor,$rect,$BGcolor,$Link,$border,$Layer);
+			   DrawLinkRect_Layer2sendVal($msg,12,$fontColor,$rect,$BGcolor,$Link,$border,$Layer);
 			   //mat2
 			   $Link="../../IGGTaipeRD2/Outsourcing/ExportMatDoc.php?Exporttype=mat2&sn=".$sn;
-			   $msg="產生 [材料2：申请资料.docx]";
+			   $msg="產生[材料2：申请资料.docx]";
 			   $rect[1]+=32;
-			   DrawLinkRect_LayerNew($msg,12,$fontColor,$rect,$BGcolor,$Link,$border,$Layer);
+			   DrawLinkRect_Layer2sendVal($msg,12,$fontColor,$rect,$BGcolor,$Link,$border,$Layer);
 			   //mat3
 			   $Link="../../IGGTaipeRD2/Outsourcing/ExportMat.php?Exporttype=mat3&sn=".$sn;
-			   $msg="產生 [材料3：合同报价单.xls]";
+			   $msg="產生[材料3：合同报价单.xls]";
 			   $rect[1]+=32;
-			   DrawLinkRect_LayerNew($msg,12,$fontColor,$rect,$BGcolor,$Link,$border,$Layer);
+			   DrawLinkRect_Layer2sendVal($msg,12,$fontColor,$rect,$BGcolor,$Link,$border,$Layer);
 			   //mat4
 			   $Link="../../IGGTaipeRD2/Outsourcing/ExportMatDoc.php?Exporttype=mat4&sn=".$sn;
-			   $msg="產生 [材料4：需求描述模板.doc]";
+			   $msg="產生[材料4：需求描述模板.doc]";
 			   $rect[1]+=32;
-			   DrawLinkRect_LayerNew($msg,12,$fontColor,$rect,$BGcolor,$Link,$border,$Layer);
+			   DrawLinkRect_Layer2sendVal($msg,12,$fontColor,$rect,$BGcolor,$Link,$border,$Layer);
 			   //報價
 			   $Link="../../IGGTaipeRD2/Outsourcing/ExportMat.php?Exporttype=Quote&sn=".$sn;
-			   $msg="產生 [報價.xlsx]";
+			   $msg="產生[報價.xlsx]";
 			   $rect[1]+=32;
-			   DrawLinkRect_LayerNew($msg,12,$fontColor,$rect,$BGcolor,$Link,$border,$Layer);
+			   DrawLinkRect_Layer2sendVal($msg,12,$fontColor,$rect,$BGcolor,$Link,$border,$Layer);
 			   //報價
 			   $Link="../../IGGTaipeRD2/Outsourcing/ExportMatDoc.php?Exporttype=Demand&sn=".$sn;
-			   $msg="產生 [需求明细.doc]";
+			   $msg="產生[需求明细.doc]";
 			   $rect[1]+=32;
-			   DrawLinkRect_LayerNew($msg,12,$fontColor,$rect,$BGcolor,$Link,$border,$Layer);
+			   DrawLinkRect_Layer2sendVal($msg,12,$fontColor,$rect,$BGcolor,$Link,$border,$Layer);
 			   //產生預覽圖
 			   $Link="../../IGGTaipeRD2/Outsourcing/ExportMat.php?Exporttype=pic&sn=".$sn;
-			   $msg="產生 [縮圖表.xls]";
+			   $msg="產生[縮圖表.xls]";
 			   $rect[1]+=32;
-			   DrawLinkRect_LayerNew($msg,12,$fontColor,$rect,$BGcolor,$Link,$border,$Layer);
+			   DrawLinkRect_Layer2sendVal($msg,12,$fontColor,$rect,$BGcolor,$Link,$border,$Layer);
 			   
 	  }
 	  function  InputForms($sn){
