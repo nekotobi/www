@@ -1,6 +1,6 @@
 <?php
  
- // require_once  dirname(dirname(__FILE__)) .'/PubApi.php';
+  require_once  dirname(dirname(__FILE__)) .'/PubApi.php';
 test();
   function test(){
 	   $URL="test.php";
@@ -13,7 +13,7 @@ test();
   $fontColor="#ffffff";
   $CookieArray=array('testCookie');
   setcookies($CookieArray,"test.php");
-   echo ">".$_COOKIE['testCookie'];
+   echo "=".$_COOKIE['testCookie'];
    sendVal($URL,$ValArray,$SubmitName,"nekot",$Rect,$size=12, $BgColor ,$fontColor ,"true" ); 
    $Rect=array(220,320,100,20);
    $ValArray=array(array('testCookie','kk'));
@@ -30,15 +30,13 @@ test();
 <?php
  
 
-
+/*
 function setcookies($CookieArray,$BackURL){
 	if($_POST['setCookie']!="true") return;
-
 		for($i=0;$i<count($CookieArray);$i++){
 			$n=$CookieArray[$i];
-		    setcookie($n , $_POST['$n'], time()+3600); 
+		    setcookie($n , $_POST[$n], time()+3600); 
 		}
-		 echo ">".$_POST['testCookie'];
     echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";	 
 }
 
@@ -54,5 +52,5 @@ function setcookies($CookieArray,$BackURL){
 		   echo "<div style= 'position:absolute;  top:".$Rect[1]."px; left:".$Rect[0]."px;  '>".$submitP."</div>";
 		   echo "</form>";
 	   }  
-
+*/
 ?>

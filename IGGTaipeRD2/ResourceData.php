@@ -219,6 +219,7 @@
 ?>
 
 <?php //整理資訊
+	/*
     function SortList($base,$num){
 	      $sorta=array();
 		  $nums=array();
@@ -228,6 +229,7 @@
           $sorta=sortArrays( $base ,13 ,"true");
 		  return $sorta;
 	}
+	*/
     function findCodeAndState( $code ,$type ){ //比對文件編碼 工作類別回傳 0狀態 1工作開始 2工作結束日 3外包 4百分比 5code
 	             global $ScheduleDataOpt;
  
@@ -325,10 +327,12 @@
             if($a['sortgd'] == $b['sortgd']) return 0;
            return ($a['sortgd'] > $b['sortgd']) ? 1 : -1;
          }
+	/*
 	function codeRnum($string){
 	        $a= ereg_replace("[a-zA-Z]","",$string);
 			return(int) $a;
 	}
+	*/
     function DrawAddNewOrder(){
 	     global $data_library,$tableName,$milestone,$typeData;   
 	     global $colorCodes;

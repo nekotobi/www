@@ -11,8 +11,6 @@
     include('PubApi.php');
     include('mysqlApi.php');
     defineData();
- 
-
 	sortcontact();
 	filterSubmit();
     DrawButtons();
@@ -27,10 +25,6 @@
 			 global $BaseURL,$BackURL,$SortType,$ListType;
 			 $BaseURL="OutCost.php";
              $BackURL=$BaseURL."?SortType=".$SortType."&ListType=".$ListType;
-			 //cookie
-			 $CookieArray=array('SortType','ListType','sn',"SelectOut","Column","info","Rx","Ry","EditType");
-             setcookies($CookieArray, $BaseURL);
-			 SetGlobalcookieData($CookieArray);
 			 //表單資料
 		     global $ListNames,$ListSize,$OutCosts,$OutsLastSort;
 			 global $data_library,$tableName,$pregressData;
@@ -77,11 +71,6 @@
 			 
 			 global  $editList;//編輯欄位
 			   $editList=array(8,9,10,11,13);
-			   
-			  //過濾
-			  global $SelectOut;
-			  if($SelectOut!="")
-			   $OutCosts=filterArraycontain($OutCosts,15,  $SelectOut);
 	}
 	function sortcontact(){  //整理聯絡人
          	 global $OutCosts;
@@ -143,6 +132,7 @@
 			  }
 	        $OutCosts=$tmp2;
 	}
+	
 	function change(){
 	         global  $NT2Us,$Us2NT;
 			 $ChangeWeb="https://zt.coinmill.com/";
@@ -172,25 +162,25 @@
 			 $w=20;
 			 $h=18;
 			 $Link= $BaseURL."?SortType=Forward"."&ListType=".$ListType;
-			 DrawLinkRect2sendVal("▲",10,"#cccccc",$x,$y,$w,$h,"#000000",$Link,$border);
+			 DrawLinkRect("▲",10,"#cccccc",$x,$y,$w,$h,"#000000",$Link,$border);
 			 $x+=$w+2;
  
 		     $Link= $BaseURL."?SortType=Reverse"."&ListType=".$ListType;
-			 DrawLinkRect2sendVal("▼",10,"#cccccc",$x,$y,$w,$h,"#000000",$Link,$border);
+			 DrawLinkRect("▼",10,"#cccccc",$x,$y,$w,$h,"#000000",$Link,$border);
 			 $x+=$w+2;
 			 $w=60;
 			 $Link= $BaseURL."?SortType=".$SortType."&ListType=";
-			 DrawLinkRect2sendVal("未撥款表單",10,"#eeeeee",$x,$y,$w,$h,"#000000",$Link,$border);
+			 DrawLinkRect("未撥款表單",10,"#eeeeee",$x,$y,$w,$h,"#000000",$Link,$border);
 			 $x+=$w+2;
 			 $Link= $BaseURL."?SortType=".$SortType."&ListType=prepress";
-			 DrawLinkRect2sendVal("請款進程",10,"#eeeeee",$x,$y,$w,$h,"#000000",$Link,$border);
+			 DrawLinkRect("請款進程",10,"#eeeeee",$x,$y,$w,$h,"#000000",$Link,$border);
 			 $x+=$w+2;
 			 $Link= $BaseURL."?SortType=".$SortType."&ListType=history";
-			 DrawLinkRect2sendVal("歷史總表",10,"#eeeeee",$x,$y,$w,$h,"#000000",$Link,$border);
+			 DrawLinkRect("歷史總表",10,"#eeeeee",$x,$y,$w,$h,"#000000",$Link,$border);
 			 $x+=$w+2;
 			 $Link= $BackURL."&ListType=AddOuts";
 			 $w=30;
-			 DrawLinkRect2sendVal("+",10,"#ffffff",$x,$y,$w,$h,"#992222",$Link,$border);
+			 DrawLinkRect("+",10,"#ffffff",$x,$y,$w,$h,"#992222",$Link,$border);
 			  
 	}
  
@@ -198,9 +188,7 @@
 <?php //處理表格類別
       function filterListType(){
              global $ListType;
-	          $submit= $_POST['submit'];
-			 global  $EditType;
-		     global  $Hilight;
+		     global $submit,$Hilight;
 			 global  $costList,$pregressList;
 			 if($Hilight!=""){
 				 MakeHiLight();
@@ -235,26 +223,22 @@
              if($ListType=="AddOuts"){
 				 CreatNewOuts();
 			 }
-			 if($EditType=="EditRemark"){
+			 if($ListType=="EditRemark"){
 			    EditRemark();
-				// ListPregress();
 			 }
 			 if($ListType=="EditOutsForm") EditOutsForm();
 	 
 			 if($ListType=="Outfin"){
 			    UpOutFin();
 			 }
-	         if($ListType=="inputOutsForm"){
+	        if($ListType=="inputOutsForm"){
 			    EditOutsForm();
 			 }
 	}
       function filterSubmit(){
-		      $submit= $_POST['submit'];
+			  global $submit;
 	          global $ListNames,$ListSize,$OutCosts;
-		      echo $submit;
-			  global $BaseURL;
-			//  if($submit=="")return;
-              if($submit=="+註解") EditRemark();
+			  if($submit=="")return;
 			  if($submit=="搜尋") filterContacts();
 			  if($submit=="新增外包表單")AddNewMysqlData();
 	          if($submit=="更新註解")RemarkUpdate();
@@ -263,10 +247,6 @@
 		      if($submit=="確定上傳表單") Upform();
 			  if($submit=="修改表單") UpEditForm();
 			  if($submit=="上傳匯率") UpExchangeRate();
-			  if($submit=="取消"){
-				$CookieArray=array(array("EditType",""));
-				  setcookiesForce($CookieArray,$BackURL);
-			  }
 	}
 ?>
 <?php //列印請款進程
@@ -311,8 +291,8 @@
 				   $remstr=$data[28];
 				   $bgc="#ffccaa";
 				   $Rect=array( $nextx,$y,30,$h);
-				   $Link=$BaseURL."?SortType=".$SortType."&EditType=EditRemark&sn=".$ListSn[$i]."&Rx=".$Rect[0]."&Ry=".$Rect[1]."&info=".$remstr;
-				   DrawLinkRect_Layer2sendVal("+註解",10,$fontColor,$Rect,$bgc,$Link,$border,0);
+				   $Link=$BaseURL."?SortType=".$SortType."&ListType=EditRemark&sn=".$ListSn[$i]."&Rx=".$Rect[0]."&Ry=".$Rect[1]."&info=".$remstr;
+				   DrawLinkRect_Layer("+註解",10,$fontColor,$Rect,$bgc,$Link,$border,0);
 				   
 				   //外包申請驗收
 				   $OutFin=$data[29];
@@ -352,6 +332,9 @@
 			   $bgc=$bgColor;
 		 
 	           for($i=0;$i<count($showField);$i++){
+				 //  if($i==0)echo $showField[$i];
+				       // $Link=$BaseURL."?SortType=".$SortType."&ListType=EditOutsForm&sn=".$msg;
+				    //   DrawLinkRect( $msg,10,$fontColor,$x,$y,$w,$h,$BgColor,$Link,$border);
 				   $n=$showField[$i];
 			       $w=$ListSize[$n];
 				   $msg= $BaseData[$n];
@@ -402,22 +385,15 @@
 <?php //過濾
 	function filterContacts(){
 		     global $outsBaseData,$outsBaseSelects;
-			  $selectName= $_POST['selectName'];
-			  $searchName=$_POST['searchName'];
-			// global $selectName,$searchName;
-			 global $BaseURL;
+			 global $selectName,$searchName;
 			 global $OutCosts;
-		 
 			 if($searchName!=""){
+				  
 				  getSearchNameCode($searchName);
 				  return;
-			 } 
+			 }
 			 $code=getOutCode($selectName);		
-			
-			 $send=array(array("SelectOut",$code));
-			// echo $code;
-			 setcookiesForce($send,$BaseURL);
-			  $OutCosts=filterArraycontain($OutCosts,15,  $code);
+			 $OutCosts=filterArraycontain($OutCosts,15,  $code);
 	}
 	function getSearchNameCode($searchName){
 	     	 global $outsBaseData,$outsBaseSelects;
@@ -453,8 +429,7 @@
 			  $w=500;
 			  $h=20;
 			  $BgColor="#ffcccc";
-			   echo "<form action=".$BaseURL." method=post >";
-			 // echo   "<form id='ChangeOut'  name='Show' action='".$BaseURL."' method='post'>";
+			  echo   "<form id='ChangeOut'  name='Show' action='".$BackURL."' method='post'>";
 		      $input=	MakeSelectionV2($outsBaseSelects,$selectName,"selectName",10);
 			  DrawInputRect("顯示外包",10,"#222222",$x,$y,$w,$h,$BgColor,$WorldAlign,$input);
 			  
@@ -781,6 +756,7 @@
 <?php //上傳前表單
       function  DrawFormcostEdit(){ //編輯內容
           global $Edit,$colHi,$ListSize;
+
 		  if($Edit=="")return;
 		  global $OutCosts;
 		  global  $data_library;
@@ -863,8 +839,7 @@
 			  echo "</form>";
 	 }
 	  function  EditRemark(){
-		      // ListPregress();
-			   
+		       ListPregress();
 	           global  $BaseURL,$BackURL;
 			   global  $OutsLastSort,$contacts;
 			   global $Rx,$Ry,$sn,$info;
@@ -874,16 +849,12 @@
 			   $h=40;
 			  // $sn=$OutsLastSort+1;
 			   $title="編輯註解[".$sn."]";
-			//   $Link=$BaseURL//."?SortType=".$SortType."&ListType=prepress";
-	           //DrawPopBG($ex,$ey-22,$w,$h,$title ,"12",$BaseURL);
+			   $Link=$BaseURL."?SortType=".$SortType."&ListType=prepress";
+	           DrawPopBG($ex,$ey-22,$w,$h,$title ,"12",$Link);
 			   echo   "<form id='ChangeOut'  name='Show' action='".$BaseURL."' method='post'>";
-			   echo "<input type=hidden name=sn value='".$sn."'   >";
-			   DrawRect("註解",10,"#ffffff",$ex,$ey-2 ,333,22,"#000000");
+			    echo "<input type=hidden name=sn value='".$sn."'   >";
 			   $submitP="<input type=submit name=submit value=更新註解 style= font-size:10px; >";
-			   DrawInputRect("",8 ,"#ffffff",$ex+200 ,$ey  ,100,20, $colorCodes[4][2],"top",$submitP);
-			   $submitP="<input type=submit name=submit value=取消 style= font-size:10px; >";
-			   DrawInputRect("",8 ,"#ffffff",$ex+270 ,$ey  ,60,20, $colorCodes[4][2],"top",$submitP);
-			   
+			   DrawInputRect("",8 ,"#ffffff",$ex+150 ,$ey+32 ,100,20, $colorCodes[4][2],"top",$submitP);
 			   $input="<input type=text name=Remark value='".$info."'size=30  style= font-size:10px; >";
 			   DrawInputRect_size("註解",10,"#ffffff",$ex,$ey,200,20,$BgColor,$WorldAlign,$input);
 			   echo "</form>";

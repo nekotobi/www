@@ -638,6 +638,104 @@
 ?>
 
 <?php //NewSend
+       function  DrawLinkRect_Layer2sendVal($msg,$fontSize,$fontColor,$Rect,$BgColor,$Link,$border,$Layer){
+		         $tmp=explode("?",$Link);
+                 $ValArray=LinkURL2ValArray($Link);
+				 $URL=$tmp[0];
+				 $SubmitName="Linkdata";
+				 $SubmitVal=$msg;
+				 //$Rect=array($x,$y,$w,$h);
+	             sendVal($URL,$ValArray,$SubmitName,$SubmitVal,$Rect,$fontSize, $BgColor ,$fontColor ,"true");
+	   }
+
+
+       function  DrawLinkRect2sendVal($msg,$fontSize,$fontColor,$x,$y,$w,$h,$BgColor,$Link,$border){
+		        $tmp=explode("?",$Link);
+                 $ValArray=LinkURL2ValArray($Link);
+				 $URL=$tmp[0];
+				 $SubmitName="Linkdata";
+				 $SubmitVal=$msg;
+				 $Rect=array($x,$y,$w,$h);
+	             sendVal($URL,$ValArray,$SubmitName,$SubmitVal,$Rect,$fontSize, $BgColor ,$fontColor ,"true");
+	   }
+       function LinkURL2ValArray($Link){
+		   		  $tmp=explode("?",$Link);
+				 $tmp2=explode("&",$tmp[1]);
+	             $ValArray=array();
+				 for($i=0;$i<count( $tmp2);$i++){
+					  $tmp3=explode("=",$tmp2[$i]);
+					  if(count($tmp3)==2)    array_push( $ValArray,array($tmp3[0],$tmp3[1]));
+				 }
+				 return $ValArray;
+	   }
+       function sendVal($URL,$ValArray,$SubmitName,$SubmitVal,$Rect,$size=12, $BgColor="#eeeeee",$fontColor="#ffffff",$setCookie=false){
+		   echo "<form action=".$URL." method=post >";
+		   for($i=0;$i<count($ValArray);$i++){
+			   echo "<input type=hidden name='".$ValArray[$i][0]."' value='".$ValArray[$i][1]."' >";
+		   }
+	        echo "<input type=hidden name=setCookie value=".$setCookie." >";
+		    $submitP="<input type=submit name=submit   value=".$SubmitVal." 
+			           style = 'width:".$Rect[2]."px; height:".$Rect[3]."px; background-color:".$BgColor." ;
+       	               font-size:".$size."px; font-weight:bold; border:0; color:".$fontColor.";  '/>";  
+		   echo "<div style= 'position:absolute;  top:".$Rect[1]."px; left:".$Rect[0]."px;  '>".$submitP."</div>";
+		   echo "</form>";
+	   }  
+	   function setcookies($CookieArray,$BackURL){
+	           if($_POST['setCookie']!="true") return;
+		       for($i=0;$i<count($CookieArray);$i++){
+			       $n=$CookieArray[$i];
+				   if($_POST[$n]!=""){
+		           echo "[".$n."=".$_POST[$n];
+		           setcookie($n , $_POST[$n], time()+3600); 
+				   }
+		          }
+			
+        echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";	 
+        }
+	   function setcookiesForce($CookieArray,$BackURL){
+		       for($i=0;$i<count($CookieArray);$i++){
+			       $n=$CookieArray[$i][0];
+				   $j=$CookieArray[$i][1];
+	           	   echo "[".$n."=".$j;
+		           setcookie($n , $j, time()+3600); 
+		          }
+			
+        echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";	 
+        }
+	   function  SetGlobalcookieData($cookieArray){
+			  for($i=0;$i<count($cookieArray);$i++){
+			      $n=$cookieArray[$i];
+				  global $$n;
+				  $$n=$_COOKIE[$n];
+				//  echo $n."=".$$n."]";
+			  }
+	}
+	function CheckCookie($CookieArray){
+	  for($i=0;$i<count($CookieArray);$i++){
+		     $n=$CookieArray[$i];
+		     echo  $n."=".$_COOKIE[$n],"]";
+	  }
+	}
+?> 
+ 
+<?php //排序GD
+    function SortList($base,$num){
+	      $sorta=array();
+		  $nums=array();
+		  for($i=0;$i<count($base);$i++){
+			 $base[$i][13]= codeRnum($base[$i][2]);
+		  }
+          $sorta=sortArrays( $base ,13 ,"true");
+		  return $sorta;
+	}
+     function codeRnum($string){
+	        $a= ereg_replace("[a-zA-Z]","",$string);
+			return(int) $a;
+	}
+?> 
+ 
+<?php //old
+/*
        function sendVal($URL,$ValArray,$SubmitName,$SubmitVal,$Rect,$size=12, $BgColor="#eeeeee",$fontColor="#ffffff",$setCookie=false){
 		   echo "<form action=".$URL." method=post >";
 		   for($i=0;$i<count($ValArray);$i++){
@@ -650,10 +748,5 @@
 		   echo "<div style= 'position:absolute;  top:".$Rect[1]."px; left:".$Rect[0]."px;  '>".$submitP."</div>";
 		   echo "</form>";
 	   }
-	   function sendCookie($ValArray){
-	        for($i=0;$i<count($ValArray);$i++){
-		    	setcookie( $ValArray[$i][0], $ValArray[$i][1], time()+36000); 
-			}
-	   }
-?> 
- 
+	   */
+?>
