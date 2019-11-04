@@ -638,6 +638,7 @@
 ?>
 
 <?php //NewSend
+     
        function DrawPopBGsendVal($x,$y,$w,$h,$title,$fontSize,$BackURL,$ValArray){
 	         DrawPicBG("Pics/Black50Bg.png",$y-40,$x-40,$w+80,$h+80);
 		     //  DrawLinkPic("Pics/Cancel.png",$y-50,$x+$w+20,32,32,$BackURL);
@@ -719,7 +720,7 @@
 		           setcookie($n , $j, time()+3600); 
 		          }
 			
-        echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";	 
+      //  echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";	 
         }
 	   function  SetGlobalcookieData($cookieArray){
 			  for($i=0;$i<count($cookieArray);$i++){
@@ -730,11 +731,22 @@
 			  }
 	}
 	   function CheckCookie($CookieArray){
-	  for($i=0;$i<count($CookieArray);$i++){
+	          for($i=0;$i<count($CookieArray);$i++){
 		     $n=$CookieArray[$i];
 		     echo  $n."=".$_COOKIE[$n],"]";
 	  }
-	}
+	    }
+	   function JavasubmitForm($URL,$ValArray){
+		        echo "<br>send";
+	           echo "<form action=".$URL." enctype=multipart/form-data name=Javaform id=Javaform  >";
+			   for($i=0;$i<count($ValArray);$i++){
+		             echo "<input type=hidden name='".$ValArray[$i][0]."' value='".$ValArray[$i][1]."' >";
+		           } 
+			   echo "<input type=hidden name=setCookie value=true >";   
+			   echo "</form>";
+			   echo " <script language='JavaScript'>Javaform.submit()</script>";
+			   echo "ss";
+	   }
 ?> 
  
 <?php //排序GD

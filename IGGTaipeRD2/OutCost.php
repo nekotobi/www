@@ -10,8 +10,9 @@
     $id=$_COOKIE['IGG_id'];
     include('PubApi.php');
     include('mysqlApi.php');
+	
     defineData();
- 
+    filterUpType();
 
 	sortcontact();
 	filterSubmit();
@@ -31,7 +32,7 @@
 			 $CookieArray=array('SortType','ListType','sn',"SelectOut","Column","info","Rx","Ry","EditType");
              setcookies($CookieArray, $BaseURL);
 			 SetGlobalcookieData($CookieArray);
-			// CheckCookie($CookieArray);
+			  //CheckCookie($CookieArray);
 			 //表單資料
 		     global $ListNames,$ListSize,$OutCosts,$OutsLastSort;
 			 global $data_library,$tableName,$pregressData;
@@ -197,6 +198,11 @@
  
 ?>
 <?php //處理表格類別
+      function filterUpType(){
+	           if( $_POST['UpType']=="prepressUpdate"){
+			   PregressUpdate();
+			   }
+	  }
       function filterListType(){
              global $ListType;
 	          $submit= $_POST['submit'];
@@ -229,9 +235,7 @@
 			    $pregressList=array(3,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28);
 			    ListPregress();
 			 }
-			 if($ListType=="prepressUpdate"){
-			 PregressUpdate();
-			 }
+		 
 			  
              if($ListType=="AddOuts"){
 				 CreatNewOuts();
@@ -351,7 +355,7 @@
 			   global $ListType,$SortType;
 		       if($bgColor=="")$lastsn=$BaseData[process] ; // $lastsn=returnPregress($BaseData);
 			   $bgc=$bgColor;
-		 
+		       $fc="#000000";
 	           for($i=0;$i<count($showField);$i++){
 				   $n=$showField[$i];
 			       $w=$ListSize[$n];
@@ -367,9 +371,13 @@
 				   if($bgColor==""){
 				        $bgc="#cccccc";
 				        if($n<=$lastsn)  $bgc="#ccffaa";
-						$Link=$BaseURL."?ListType=prepressUpdate&SortType=".$SortType."&sn=".$sort."&Column=".$n."&info=".$msg;
+						if($msg=="")$msg="_";
+						
+						//$Link=$BaseURL."?UpType=prepressUpdate&SortType=".$SortType."&sn=".$sort."&Column=".$n."&info=".$msg;
 						$Rect=array($x,$y,$w,$h);
-						DrawLinkRect_Layer($msg,10,$fontColor,$Rect,$bgc,$Link,$border,0);
+						//DrawLinkRect_Layer2sendVal($msg,10,$fontColor,$Rect,$bgc,$Link,$border,0);
+						$ValArray=array(array("UpType","prepressUpdate"),array("sn",$sort),array("Column",$n),array("info",$msg));
+						sendVal($BaseURL,$ValArray,"submit",$msg,$Rect,8,$bgc,$fc );
 				    } 
 				   $x+=$w+2;
 			   }
@@ -538,27 +546,37 @@
 		   echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
 	 }
      function PregressUpdate(){
-	         global $sn,$Column,$info;
+	 
+		     $sn=$_POST['sn'];
+		  	 $Column=$_POST['Column'];
+	 
+			 $info=$_POST['info'];
+	        // global $sn,$Column,$info;
 			 global $data_library, $pregressData;
 			 global $BaseURL;
 			 $BackURL=$BaseURL."?ListType=prepress";
-			 if($info==""){
+			 if($info=="_"){
 		        $Ndate=date("Y/m/d") ;
 			 }else{
 			    $Ndate="";
 			 }
 			 $tables= returnTables($data_library , $pregressData);
-			 echo $tables[$Column];
+ 
 	         $WHEREtable=array( "data_type", "sn" );
 		     $WHEREData=array( "pregress",$sn);
 			 $Base=array( $tables[$Column]);
 			 $up=array($Ndate);
 			 $stmt= MakeUpdateStmt(  $data_library,$pregressData,$Base,$up,$WHEREtable,$WHEREData);
-			      echo $stmt;
-				  SendCommand($stmt,$data_library);
-				     global $BaseURL,$BackURL,$SortType,$ListType;
-					   $Link=$BaseURL."?SortType=".$SortType."&ListType=prepress";
-			  echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
+		     echo $stmt;
+			 SendCommand($stmt,$data_library);
+			 global $BaseURL,$BackURL,$SortType,$ListType;
+			 // $ValArray=array(array("ListType","prepress"));
+			 // echo "xx";
+		     //  JavasubmitForm($BaseURL,$ValArray);
+             //  setcookie("ListType" , "prepress", time()+3600); 
+		  	 // setcookiesForce($CookieArray,$BaseURL);
+			 //	   $Link=$BaseURL."?SortType=".$SortType."&ListType=prepress";
+		     echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
 	 }
 	 function UpOutFin(){
 	          global $sn,$info;
@@ -587,7 +605,7 @@
 			  $stmt= MakeUpdateStmt(  $data_library,$pregressData,$Base,$up,$WHEREtable,$WHEREData);
 			  SendCommand($stmt,$data_library);
 			  global $BaseURL,$BackURL,$SortType,$ListType;
-					   $Link=$BaseURL."?SortType=".$SortType."&ListType=prepress";
+					 $Link=$BaseURL."?SortType=".$SortType."&ListType=prepress";
 			   echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
 	 }
 	 
