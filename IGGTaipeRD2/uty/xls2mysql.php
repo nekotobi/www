@@ -8,7 +8,6 @@
 <body bgcolor="#b5c4b1">
 <?php //主控台
      // include('PubApi.php');
- 
 	  require_once  dirname(dirname(__FILE__))  .'\PubApi.php';
 	  require_once('xls2mysqlApi.php');
       input();
