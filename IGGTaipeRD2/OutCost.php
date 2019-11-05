@@ -202,6 +202,9 @@
 	           if( $_POST['UpType']=="prepressUpdate"){
 			   PregressUpdate();
 			   }
+			   if( $_POST['UpType']=="Outfin"){
+			      UpOutFin();
+			    }
 	  }
       function filterListType(){
              global $ListType;
@@ -246,9 +249,7 @@
 			 }
 			 if($ListType=="EditOutsForm") EditOutsForm();
 	 
-			 if($ListType=="Outfin"){
-			    UpOutFin();
-			 }
+
 	         if($ListType=="inputOutsForm"){
 			    EditOutsForm();
 			 }
@@ -340,8 +341,10 @@
 					 }
 				   }
 				   $Rect=array( $nextx+32,$y,70,$h);
-				   $Link=$BaseURL."?SortType=".$SortType."&ListType=Outfin&sn=".$ListSn[$i]."&info=".$OutFin;
-				   DrawLinkRect_Layer($msg,10,$fontColor,$Rect,$bgc,$Link,$border,0);
+				   $ValArray=array(array("UpType","Outfin"),array("sn",$ListSn[$i]),array("info",$OutFin));
+				   sendVal($BaseURL,$ValArray,"submit",$msg,$Rect,10, $bgc,$fontColor);
+				   //$Link=$BaseURL."?SortType=".$SortType."&ListType=Outfin&sn=".$ListSn[$i]."&info=".$OutFin;
+				  // DrawLinkRect_Layer($msg,10,$fontColor,$Rect,$bgc,$Link,$border,0);
 			   }
 			 
 	  }
@@ -579,7 +582,9 @@
 		     echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
 	 }
 	 function UpOutFin(){
-	          global $sn,$info;
+		       $sn=  $_POST['sn'];
+		       $info=$_POST['info'];
+	         // global $sn,$info;
               global $data_library, $pregressData;
 			  $WHEREtable=array( "data_type", "sn" );
 		      $WHEREData=array( "pregress",$sn);
@@ -603,10 +608,11 @@
 		      $Base=array(  "OutFin");
 			  $up=array($Ndate);
 			  $stmt= MakeUpdateStmt(  $data_library,$pregressData,$Base,$up,$WHEREtable,$WHEREData);
+			//  echo $stmt;
 			  SendCommand($stmt,$data_library);
 			  global $BaseURL,$BackURL,$SortType,$ListType;
 					 $Link=$BaseURL."?SortType=".$SortType."&ListType=prepress";
-			   echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
+			    echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
 	 }
 	 
      function AddNewMysqlData(){
