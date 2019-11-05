@@ -21,6 +21,7 @@
 			$sql = "SELECT * from ".$tableName;
 			$result = mysql_query($sql, $db );
 		    $tables=array();
+			//echo (mysql_fetch_field($result));
 		    while($property = mysql_fetch_field($result)){
 			      array_push($tables, $property->name);
             }

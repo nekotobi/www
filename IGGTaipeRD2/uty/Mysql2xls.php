@@ -51,7 +51,9 @@
 ?>
 <?php  //處理表格類別
     function filterSubmit(){
-			  global $submit;
+	       //   echo "]".$_POST['submit']."]";
+		      $submit=trim($_POST['submit']);
+			  
 			  if($submit=="")return;
 			  if($submit=="搜尋") ListTableDatas();
 			  if($submit=="輸出") {
@@ -65,7 +67,9 @@
 
 <?php //列印
     function ListTableDatas(){
-	         global $data_library, $selectable;
+		     echo $_POST['submit'];
+			 $selectable= $_POST['selectable'];
+	         global $data_library; 
 			 $tableDatas=getMysqlDataArray($selectable); 
 			// echo $selectable."]".count( $tableDatas);
 			 $msg="選擇表單[".$selectable."]";
@@ -76,6 +80,7 @@
 	         DrawRect($selectable,10,"#ffffff",$x,$y,$w,$h,"#000000");
 			 $x+=$w+2;
 			 DrawRect($data_library,10,"#ffffff",$x,$y,$w,$h,"#000000");
+	     //echo    $data_library."}".$selectable;
 		     $field=  returnTables($data_library ,$selectable);
 			 $y+=32;
 			 $w=100;
