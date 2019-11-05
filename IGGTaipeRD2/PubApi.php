@@ -648,7 +648,7 @@
 		     $Rect=array($x+$w+20,$y-50,40,40);
 		     sendValPic($BackURL,$pic,$Rect,$ValArray);
 	   }
-	    function sendValPic($URL,$pic,$Rect,$ValArray){
+	   function sendValPic($URL,$pic,$Rect,$ValArray){
 	             echo "<form action=".$URL." method=post >";
 	             for($i=0;$i<count($ValArray);$i++){
 		             echo "<input type=hidden name='".$ValArray[$i][0]."' value='".$ValArray[$i][1]."' >";
@@ -722,7 +722,7 @@
 			
       //  echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";	 
         }
-	   function  SetGlobalcookieData($cookieArray){
+	   function SetGlobalcookieData($cookieArray){
 			  for($i=0;$i<count($cookieArray);$i++){
 			      $n=$cookieArray[$i];
 				  global $$n;
@@ -747,10 +747,11 @@
 			   echo " <script language='JavaScript'>Javaform.submit()</script>";
 			   echo "ss";
 	   }
+	   
 ?> 
  
 <?php //排序GD
-    function SortList($base,$num){
+     function SortList($base,$num){
 	      $sorta=array();
 		  $nums=array();
 		  for($i=0;$i<count($base);$i++){

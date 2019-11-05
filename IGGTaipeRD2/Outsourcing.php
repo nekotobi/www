@@ -11,7 +11,7 @@
 		$tableName="outsourcing";
         DrawMainUI();
 	    UpData();
-
+  
     function DrawMainUI(){
 		global $tableName;
 		global $data_library;
@@ -34,7 +34,7 @@
 		$x=20;
 		$y=60;
 	    $BaseURL="Outsourcing.php";
-	    DrawRect("外包資源列表","22","#ffffff","20","20","1400","30","#000000");
+	     DrawRect("外包資源列表","22","#ffffff","20","20","1400","30","#000000");
 		DrawTitle($Names,$x,$y,"#222222","#ffffff");
  
         DrawOutsourcings($BaseData,$y);
@@ -134,12 +134,16 @@
 			 DrawLinkRect("Edit","10","#ffffff",$x,$y,$h,$h,"#441122",$Link,1);
     }	
 	function DrawAdd($y,$LastSn){
-			  global  $BackURL;
+			  global   $BaseURL;
 	          $x=20;
 		      $y+=30;
-		      $color="#881122";
+		      $BgColor="#881122";
 	      	  $Link=$BackURL."?Add=yes";
-		      DrawLinkRect("+新增外包","12","#ffffff",$x,$y,1400,"20",$color,$Link,1);
+			  
+		     // DrawLinkRect("+新增外包","12","#ffffff",$x,$y,1400,"20",$color,$Link,1);
+			  $ValArray=array(array("Add","yes"));
+			  $Rect=array($x,$y,"1400","20");
+			  sendVal($BaseURL,$ValArray,"submit","+新增外包",$Rect,12, $BgColor , "#ffffff" );
 	}
 ?>
 <?php //Data
@@ -147,9 +151,8 @@
 		global  $Add,$Edit;
 		global  $BackURL;
 	    global $submit;
-     	if($Add!=""){
-		   AddData();
-	    }
+		if( $_POST['Add']=="yes")   AddData();
+ 
 		if($Edit!=""){
 			if($Edit=="form") EditData();
 		    if($Edit=="DNA") ChangeDNA();
@@ -277,14 +280,20 @@
 		 global $tableName,$data_library;
          global $Add;	
 		 global $BaseURL, $BackURL;
-  
 		 $sn=returnDataCode( ); //getDBLastSn( $data_library, $tableName,1);
-	     $WHEREtable=array("`data_type`", "`Code`","`name`","`cost`","`country`","`time_def`","`studio`","`business`","`cost_evaluate`","`quality_evaluate`","`cooperation_evaluate`","`speed_evaluate`","`Link`","`works`","`feedback`");					 
-         $WHEREData=array("data", $sn, " " , " ", " " , " " , " "
-                		 , " ", " " ," "," "," " ," "," "," ");							 
+		 $tables=returnTables($data_library ,$tableName);
+		 $WHEREtable=array();
+		 $WHEREData=array();
+		 for($i=0;$i<count($tables);$i++){
+		     array_push( $WHEREtable,$tables[$i]);
+			 if($i==0)array_push($WHEREData,"data");
+			 if($i==1)array_push($WHEREData,$sn);
+		     if($i>1)array_push($WHEREData,"");
+		 }
+
 	     $stmt= MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
 		 SendCommand($stmt,$data_library);
 	     echo $stmt;
-		  echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
+		 echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
 	}
 ?>
