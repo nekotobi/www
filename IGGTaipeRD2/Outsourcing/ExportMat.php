@@ -273,7 +273,7 @@ function creatMat3(){
 	  $area=("F".$Nstart);
 	  $cost=$total*$baseData["hourprice"];
 	 // makeCurrency($area,$Currency,$objPHPExcel);
-     	MakeCostFormat($area, $objPHPExcel);
+      MakeCostFormat($area, $objPHPExcel);
 	  setCellStyle($objPHPExcel,  $cost,$area,"10",'center',"",$area);
 	  //外框
 	  $area="A1:".$aar.(count( $demand)+2);
@@ -289,6 +289,7 @@ function creatMat3(){
 }
 function MakeCostFormat($area, $objPHPExcel){
 	  global  $CurrencyType;
+	  if( $CurrencyType=="USD")  makeCurrencyUSD($area, $objPHPExcel);
       if( $CurrencyType=="CNY2USD")  makeCurrencyCNY($area, $objPHPExcel);
       if( $CurrencyType=="NT")  makeCurrencyUSD($area,$objPHPExcel);
 	  if( $CurrencyType=="CNY") makeCurrencyCNY($area,$objPHPExcel);

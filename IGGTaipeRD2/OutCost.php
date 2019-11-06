@@ -731,7 +731,7 @@
 			      echo $stmt;
 			  }
 			  $Link=$BackURL."?UpType=EditOutsForm&sn=".$sn;
-		   //   echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
+		     echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
 	 }
 	 function returnDatafix($data,$sn,$sort){
 	          $t=array();
