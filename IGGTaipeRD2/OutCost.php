@@ -619,7 +619,9 @@
      function AddNewMysqlData(){
 	          global  $data_library,$tableName,$OutCosts;
 			  global  $BaseURL;
-			  global  $selectOut;
+		      $selectOut=$_POST['selectOut'];
+			  $sn=$_POST['sn'];
+			
 			  global  $outsBaseData,$outsBaseSelects,$outs;
 			  		  $p=$tableName;
 				      $tables=returnTables($data_library,$p);
@@ -627,19 +629,21 @@
 					  //外包基礎資料
 					  $code= getOutCode($selectOut);
 					  $OutData=filterArray($outs,1, $code); 
-					  $OutData[0][2];  
+					 // $OutData[0][2];  
 					 //國家
 					  $WHEREtable=array();
 				      $WHEREData=array();
 		              for($i=0;$i<$t;$i++){
-	       	               global $$tables[$i];
-						   if($tables[$i]=="outsourcing")$$tables[$i]=$OutData[0][15];
-						   if($tables[$i]=="contact")$$tables[$i]=$OutData[0][16];
-						   if($tables[$i]=="country")$$tables[$i]=$OutData[0][4];
-						   if($tables[$i]=="outcode")$$tables[$i]=$OutData[0][1];
-						   if($tables[$i]=="state")$$tables[$i]=date("Y/m/d");
+	       	            //   global $$tables[$i];
+						   $tmp=$_POST[$tables[$i]];
+						    
+						   if($tables[$i]=="outsourcing") $tmp=$OutData[0][15];
+						   if($tables[$i]=="contact") $tmp=$OutData[0][16];
+						   if($tables[$i]=="country") $tmp=$OutData[0][4];
+						   if($tables[$i]=="outcode") $tmp=$OutData[0][1];
+						   if($tables[$i]=="state") $tmp=date("Y/m/d");
 				           array_push($WHEREtable, $tables[$i] );
-					       array_push($WHEREData,$$tables[$i]);
+					       array_push($WHEREData, $tmp);
 		              }
 					  $stmt=   MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
 					  echo $stmt;
@@ -651,18 +655,23 @@
 				      $WHEREData=array();
 					  for($i=0;$i<count( $tables);$i++){
 						   $inside="";
-						   if($tables[$i]=="data_type")$inside="pregress";
-						   if($tables[$i]=="sn")$inside=$sn;
-						   if($tables[$i]=="code")$inside=$sn;
+						   $tab=trim($tables[$i]);
+						  // echo $tab;
+						   if($tab=='data_type')$inside="pregress";
+						   if($tab=='sn'){
+							 //    echo ">".$sn.">";
+							   $inside=$sn;
+						   }
+						   if($tab=='code')$inside=$sn;
 						   array_push($WHEREtable, $tables[$i] );
 					       array_push($WHEREData,$inside);
 					  }
 					  $stmt=   MakeNewStmtv2($pregressData,$WHEREtable,$WHEREData);
 					  echo $stmt;
 				      SendCommand($stmt,$data_library);
-					   global $BaseURL,$BackURL,$SortType,$ListType;
-					   $BackURL=$BaseURL."?SortType=".$SortType."&ListType=".$ListType;
-			           echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+					  global $BaseURL,$BackURL,$SortType,$ListType;
+					  $BackURL=$BaseURL."?SortType=".$SortType."&ListType=".$ListType;
+			        echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	 }
      function UpPic(){
 		 
