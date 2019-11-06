@@ -29,9 +29,11 @@
 	}
 
 	function ListForm(){
+		    global $data_library;  
 		    global $BaseURL;
 		 	global $tables;
 			global $selectable;
+			$exportURL="Mysql2xlsOut.php";
 	        echo   "<form id='ChangeOut'  name='Show' action='".$BaseURL."' method='post'>";
 			$y=20;
 		    $input=	MakeSelectionV2($tables,$selectable,"selectable",10);
@@ -41,11 +43,19 @@
 			$x=200;
             $submitP="<input type=submit name=submit value=搜尋 style= font-size:10px; >";
 	        DrawInputRect("",8 ,"#ffffff",$x,$y,$w,$h, $colorCodes[4][2],"top",$submitP);
-				
-			$x+= 60;
-            $submitP="<input type=submit name=submit value=輸出 style= font-size:10px; >";
-	        DrawInputRect("",8 ,"#ffffff",$x,$y,$w,$h, $colorCodes[4][2],"top",$submitP);
+
 		    echo "</form>";
+			
+		    echo   "<form id='ChangeOut2'  name='Show2' action='".$exportURL."' method='post'>";
+			 $x=20;
+			 $y+=20;
+			 echo $data_library;  
+			     echo   "<input type=hidden name=data_library value=".$data_library.">";
+                     DrawInputRect("表單列表",10,"#222222",$x,$y,$w,$h,$BgColor,$WorldAlign,$input);			
+			         $x+=  200;
+                     $submitP="<input type=submit name=submit value=輸出 style= font-size:10px; >";
+	                 DrawInputRect("",8 ,"#ffffff",$x,$y,$w,$h, $colorCodes[4][2],"top",$submitP);
+		  echo "</form>";
 	}
  
 ?>
@@ -59,7 +69,7 @@
 			  if($submit=="輸出") {
 				 global $data_library, $selectable;
 			     $go="Mysql2xlsOut.php?data_library=".$data_library."&selectable=".$selectable."";
-				  echo " <script language='JavaScript'>window.location.replace('".$go."')</script>";
+				// echo " <script language='JavaScript'>window.location.replace('".$go."')</script>";
 			  }
 	}
 
@@ -82,6 +92,7 @@
 			 DrawRect($data_library,10,"#ffffff",$x,$y,$w,$h,"#000000");
 	     //echo    $data_library."}".$selectable;
 		     $field=  returnTables($data_library ,$selectable);
+		
 			 $y+=32;
 			 $w=100;
 			 $x=20;
@@ -89,6 +100,7 @@
 			       DrawRect($field[$i],10,"#ffffff",$x,$y,$w,$h,"#000000");
 				   $x+= $w+2;
 			 }
+			 
 			 $x=20;
 			 $y+=22;
 			 $sizes= getColumnsize();
@@ -96,7 +108,7 @@
 			       DrawRect($sizes[$i],10,"#ffffff",$x,$y,$w,$h,"#000000");
 				   $x+= $w+2;
 			 }
-			 
+			 	
 			 $x=20;
 			 $y+=22;
 			 for( $i=0;$i<count($tableDatas);$i++){
@@ -114,7 +126,8 @@
 			}
 	}
     function getColumnsize(){
-		   global $data_library, $selectable;
+		   $selectable= $_POST['selectable'];
+		   global $data_library ;
 		   $db = mysql_connect("localhost","root","1406");
 		   $db_selected = mysql_select_db( $data_library,$db);
 		   $fields= returnTables($data_library ,$selectable);

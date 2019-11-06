@@ -3,11 +3,20 @@
 	   require_once 'xlsApi.php';
        OutExcel();
  function OutExcel(){
-	        global $data_library;  
-			global $selectable;
- 
-			$tables=  returnTables($data_library ,$selectable);
+	 	     global  $selectable;
+			  global $data_library;
+	         $data_library=  $_POST['data_library'];
+	        
+			 $selectable=$_POST['selectable']; 
+		
+			// echo "xx";
+            // echo $data_library;
+			//   echo $selectable;
+			// return;
+			 $tables=  returnTables($data_library ,$selectable);
+		
 			$tableDatas=getMysqlDataArray($selectable); 
+		
 		    $objPHPExcel = new PHPExcel();
             $objPHPExcel->setActiveSheetIndex(0)  ;
 			
@@ -29,16 +38,16 @@
 			     setCellStyle($objPHPExcel,$tables[$i],$area,"10",'center',"",$area); 
 		    }
 			 
+		 
 		    $sizes= getColumnsize();
 			for($i=0;$i<count( $sizes);$i++){
 	     	    $area=getAreaA($i)."3";
-			  setCellStyle($objPHPExcel,$sizes[$i],$area,"10",'center',"",$area); 
+			    setCellStyle($objPHPExcel,$sizes[$i],$area,"10",'center',"",$area); 
 		    }
 			
 			
 			$l=4;
-		    for($i=0;$i<count($tableDatas);$i++){
-	     	   	 
+		    for($i=0;$i<count($tableDatas);$i++){	 
 			    for($j=0;$j<count($tableDatas[$i]);$j++){
 				    $area=getAreaA($j).($l+$i) ;
 					$str="'".$tableDatas[$i][$j]."'";
@@ -46,7 +55,7 @@
 				}
 		    }
 		  
-		  saveExcel($objPHPExcel);
+	  saveExcel($objPHPExcel);
 		
  }
  function getAreaA($i){
