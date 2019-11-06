@@ -20,8 +20,11 @@
 			}
    }
    function AddTable($data){
+	        echo "xx";
 	   		$data_library=$data[0][1];
 			$tableName=$data[0][0];
+			echo $data_library;
+			echo $tableName;
             $tables=returnTables($data_library ,$tableName);
             $WHEREtable=array();
 		    for($i=0;$i<count($tables);$i++){
@@ -34,10 +37,10 @@
 		    for($i=2;$i<count($data);$i++){
 				$WHEREData= returnWhereData($data[$i],$upTables,$tables);
 				 $stmt= MakeNewStmt( $data_library,$tableName,$WHEREtable,$WHEREData); 
-				   SendCommand($stmt,$data_library);		
+				  SendCommand($stmt,$data_library);		
 			    echo  $stmt;
 			}
-		
+		   
    }
    function returnWhereData($base,$upTables,$tables){
 	        $rarray=array();

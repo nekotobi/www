@@ -9,6 +9,7 @@
 <?php //主控台
      // include('PubApi.php');
 	  require_once  dirname(dirname(__FILE__))  .'\PubApi.php';
+	  require_once  dirname(dirname(__FILE__))  .'\mysqlApi.php';
 	  require_once('xls2mysqlApi.php');
       input();
       updata();
@@ -33,9 +34,14 @@
           echo "</div></label></form>";
    }
    function updata(){
+	   
 	   global $submit;
-       if ($submit=="")return; 
-	    $data=getTxtArray();
+       $submit=$_POST['submit'];
+	   if ($submit=="")return; 
+	   global $txt;
+	   $txt=$_POST['txt'];
+	   echo $txt;
+	   $data=getTxtArray();
 	   if($submit=="新增全新表格") newTable( $data);
 	   if($submit=="追加內容") AddTable( $data); 
 	   if($submit=="修改內容") changedata($data);
