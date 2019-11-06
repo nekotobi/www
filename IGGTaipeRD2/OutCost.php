@@ -199,16 +199,21 @@
 ?>
 <?php //處理表格類別
       function filterUpType(){
+		       global $UpType;
+		        $UpType=$_POST['UpType'];
+				echo $UpType;
 	           if( $_POST['UpType']=="prepressUpdate"){
 			   PregressUpdate();
 			   }
 			   if( $_POST['UpType']=="Outfin"){
 			      UpOutFin();
 			    }
+			  // if( $_POST['UpType']=="EditOutsForm") EditOutsForm();
+	         //  if( $_POST['UpType']=="inputOutsForm")EditOutsForm();
 	  }
       function filterListType(){
-             global $ListType;
-	          $submit= $_POST['submit'];
+            global  $ListType ;
+	         $submit= $_POST['submit'];
 			 global  $EditType;
 		     global  $Hilight;
 			 global  $costList,$pregressList;
@@ -218,7 +223,7 @@
 			 if($submit=="上傳表單")return;
 			 if($submit=="確定上傳表單")return;
 		  //   if($submit!="搜尋" or $submit!="")return;
-		  
+		      
 	         if($ListType=="Processing"){
 				 $costList=array(1,5,7,8,9,10,11,12,13);
 			    //$pregressList=array(3,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28);
@@ -247,17 +252,14 @@
 			    EditRemark();
 				// ListPregress();
 			 }
-			 if($ListType=="EditOutsForm") EditOutsForm();
+			  if($ListType=="EditOutsForm") EditOutsForm();
+	        // if($ListType=="inputOutsForm")  EditOutsForm();
 	 
-
-	         if($ListType=="inputOutsForm"){
-			    EditOutsForm();
-			 }
 	}
       function filterSubmit(){
 		      $submit= $_POST['submit'];
 	          global $ListNames,$ListSize,$OutCosts;
-		      echo $submit;
+		  
 			  global $BaseURL;
 			//  if($submit=="")return;
               if($submit=="+註解") EditRemark();
@@ -267,7 +269,7 @@
 			  if($submit=="上傳圖檔") UpPic();
 			  if($submit=="上傳表單") UpformCheck();
 		      if($submit=="確定上傳表單") Upform();
-			  if($submit=="修改表單") UpEditForm();
+			 // if($submit=="修改表單") UpEditForm();
 			  if($submit=="上傳匯率") UpExchangeRate();
 			  if($submit=="取消"){
 				$CookieArray=array(array("EditType",""));
@@ -366,6 +368,7 @@
 				   if($bgColor!=""){
 					  if($i==0){
 						 $Link=$BaseURL."?SortType=".$SortType."&ListType=EditOutsForm&sn=".$msg;
+						 
 				         DrawLinkRect2sendVal( $msg,10,$fontColor,$x,$y,$w,$h,$bgc,$Link,$border);
 					  }else{
 				     DrawRect($msg,10,$fontColor,$x,$y,$w,$h, $bgc);
@@ -507,7 +510,7 @@
 				  $w= $ListSize[0][$i];
 			      $msg=  $Data[$i];
 				  if($i==1){
-				       $Link=$BaseURL."?SortType=".$SortType."&ListType=EditOutsForm&sn=".$msg;
+				       $Link=$BaseURL."?SortType=".$SortType."&UpType=EditOutsForm&sn=".$msg;
 				       DrawLinkRect( $msg,10,$fontColor,$x,$y,$w,$h,$BgColor,$Link,$border);
 					   $x+=$w+2;
 				  }else{
@@ -635,8 +638,7 @@
 				      $WHEREData=array();
 		              for($i=0;$i<$t;$i++){
 	       	            //   global $$tables[$i];
-						   $tmp=$_POST[$tables[$i]];
-						    
+						   $tmp=$_POST[$tables[$i]]; 
 						   if($tables[$i]=="outsourcing") $tmp=$OutData[0][15];
 						   if($tables[$i]=="contact") $tmp=$OutData[0][16];
 						   if($tables[$i]=="country") $tmp=$OutData[0][4];
@@ -699,33 +701,37 @@
 		      global  $sn,$datas;
 			  global  $data_library,$tableName,$OutCosts,$DetailFormName;
 			  global  $BaseURL;
+			  //echo "UpForm";
 		      require_once 'uty/xls2mysqlApi.php';
 		      $baseT=getMysqlDataArray("outsdetail"); 
 			  $baseT2=filterArray($baseT,0,"outs");
 			  $base=filterArray($baseT2,1,$sn);
 			  $tableName=$DetailFormName;
 			  $tables=returnTables($data_library,$tableName);
+			
+			  
 	          //清除
 			  for($i=0;$i<count($base);$i++){
 				 $WHEREtable=array("OutsSn","sn");
 				 $WHEREData=array($sn,$base[$i][2]);
 				 $stmt= MakeDeleteStmt($tableName,$WHEREtable,$WHEREData);
 				  echo $stmt;
-				   SendCommand($stmt,$data_library);
+				  SendCommand($stmt,$data_library);
 			  }
-			 
+			  global $txt;
+			  $txt=$_POST['txt'];
  		      $WHEREtable= returnData($tables);
 			  $data=getTxtArray();
 			  $datas=filterArray( $data,0,"outs");
+			  echo $datas;
 			  for($i=0;$i<count($datas);$i++){
-				  
 				  $WHEREData=returnDatafix($datas[$i],$sn,($i+1)); 
 				  $stmt=  MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
 				  SendCommand($stmt,$data_library);
 			      echo $stmt;
 			  }
-			  $Link=$BackURL."?ListType=EditOutsForm&sn=".$sn;
-		      echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
+			  $Link=$BackURL."?UpType=EditOutsForm&sn=".$sn;
+		   //   echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
 	 }
 	 function returnDatafix($data,$sn,$sort){
 	          $t=array();
@@ -763,6 +769,7 @@
 			    echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
 	 }
 	 function UpEditForm(){
+		      
 	 	      global $editsn ,$Column,$info;
 		      global $data_library ;
 		      global $BaseURL,$BackURL;
@@ -927,7 +934,8 @@
 		       global  $BaseURL,$BackURL;
 			   global  $sn;
 			   global  $OutCosts;
-			   global  $ListType;
+			  // global  $ListType;
+			   global $UpType;
 			   $currentDataT= filterArray( $OutCosts,1,$sn);
 			   $currentData= filterArray( $currentDataT,2,$sn);
 			   $ex=100;
@@ -940,8 +948,9 @@
 			   $title ="編輯".$currentData[0][1]."-".$currentData[0][5].$c."[".$currentData[0][8]."]製作內容";
 	         //  DrawPopBG($ex,$ey,$w,$h,$title ,"12",$Link);
 			   DrawPopBGsendVal($ex,$ey,$w,$h,$title ,"12",$Link,$ValArray);
-			   if($ListType=="EditOutsForm")  ExportForms($sn);
-		       if($ListType=="inputOutsForm") InputForms($sn);
+			 
+			   if($UpType=="")  ExportForms($sn);
+		       if($UpType=="inputOutsForm") InputForms($sn);
                DrawPrecautions($currentData[0][15],$sn);//判斷中國人
 			   
 		
@@ -999,9 +1008,11 @@
                DrawInputRect("",8 ,"#ffffff",$rect[0]+750,$rect[1],200,$rect[3], $colorCodes[4][2],"top",$submitP);
 			
 			   //連接修改表單
-			   $Link=$BaseURL."?ListType=inputOutsForm&sn=".$sn;
-			   DrawLinkRect_Layer("修改表單",10,$fontColor,$rect,"#ffaacc",$Link,$border,$Layer);
-			
+			//   $Link=$BaseURL."?ListType=inputOutsForm&sn=".$sn;
+			   // $Link=$BaseURL."?UpType=inputOutsForm&sn=".$sn;
+			  // DrawLinkRect_Layer2sendVal("修改表單2",10,$fontColor,$rect,"#ffaacc",$Link,$border,$Layer);
+			   $ValArray=array(array("UpType","inputOutsForm"));
+			   sendVal($BaseURL,$ValArray,"submit","修改表單",$rect,10, "#ffaacc" ,$fontColor   );
 			   //匯率
 			   $Link2="https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&rsv_idx=1&tn=baidu&wd=%E6%B1%87%E7%8E%87&oq=%25E6%25B1%2587%25E7%258E%2587%25E4%25BA%25BA%25E6%25B0%2591%25E5%25B8%2581%25E5%258F%25B0%25E5%25B8%2581&rsv_pq=fb7d36c4000e11ee&rsv_t=cc6dkVdXoMRFbjGQ46xf0UoT5jFYhDXhUsiL7NjPvkFHLT%2BDehA9LNu%2BEj8&rqlang=cn&rsv_enter=1&rsv_dl=tb&inputT=373&rsv_sug3=19&rsv_sug1=11&rsv_sug7=100&rsv_sug2=0&rsv_sug4=512&rsv_sug=2";
 			   DrawLinkRect("匯率運算連結",10,"#000000",$rect[0]+200,$rect[1],100,20,"#ccffaa",$Link2,$border);
@@ -1010,7 +1021,7 @@
 			   echo "</form>";
 			      global $Outstotal;
 			   DrawRect("總額:".$Outstotal,10,"#000000",$rect[0]+210, 120,100,18,"#eeeeee");
-			 
+			   
 			   //輸出
 			   $Link="../../IGGTaipeRD2/Outsourcing/ExportMat.php?Exporttype=mat1&sn=".$sn;
 			   $msg="產生[材料1：项目外包需求申请单.xls]";
@@ -1051,7 +1062,7 @@
 			   
 	  }
 	  function  InputForms($sn){
-		        echo "xx";
+		        echo "InputForms";
 		  	    global $BaseURL;
 				$rect=array(100,120,120,20);
 				$Link="https://docs.google.com/spreadsheets/d/1kU1Nq95YIrua0EDWv9wIHaijPLAJX6SNb81685HQKnA/edit#gid=1048566831";
@@ -1060,10 +1071,7 @@
 	            echo  "<form method=post enctype=multipart/form-data action=".$Link.">";
 			    $input="<textarea name=txt cols=90 rows=12></textarea>";
 			    DrawInputRect_size("貼上execl剪貼",12,"#ffffff",$rect[0],$rect[1]+20,500,100,$BGcolor,$WorldAlign,$input);
-
-				
-				
-				
+ 
 				$submitP="<input type=submit name=submit value=上傳表單  style= font-size:12px; >";
                 DrawInputRect("",8 ,"#ffffff",$rect[0]+670,$rect[1]+300,200,$rect[3], $colorCodes[4][2],"top",$submitP);
 				echo "</form>";
@@ -1102,15 +1110,19 @@
 			   DrawInputRect_size("效果图例",10,"#ffffff",$rect[0] ,$rect[1],300,$rect[3],$BGcolor,$WorldAlign,$input);
 	  }
 	  function  UpformCheck(){
+		      echo " UpformCheck";
 	     	  global $sn;
 			  global $DetailFormName, $FormRect,$FormList,$FormListsize;
 			  global $BaseURL;
 			  global $txt;
-		      EditOutsForm();
+			   $txt=$_POST['txt'];
+		       EditOutsForm();
 	          require_once 'uty/xls2mysqlApi.php';
 			  $data=getTxtArray();
 			  $data_library=$data[0][1];
 			  $tableName=$data[0][0];
+			  
+			  
 			  if($tableName!="outsdetail"){
 			  echo "上傳格式有錯!";
 			  return;
@@ -1119,6 +1131,7 @@
 			  $collect=filterArray( $data,0,"outs");
 			  $fontColor="#222222";
 			  $BGcolor="#ffffff";
+			 
 			  echo  "<form method=post enctype=multipart/form-data action=".$BaseURL.">";
 			  DrawDetialList($collect,$fontColor,$BGcolor);
 			  echo "<input type=hidden name=sn value='".$sn."'   >";
