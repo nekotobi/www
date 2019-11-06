@@ -564,13 +564,14 @@
 			    $Ndate="";
 			 }
 			 $tables= returnTables($data_library , $pregressData);
- 
+			// print_r($tables);
+           //  echo count($tables).".".$tables[$Column]."[".$Column."</br>";
 	         $WHEREtable=array( "data_type", "sn" );
 		     $WHEREData=array( "pregress",$sn);
 			 $Base=array( $tables[$Column]);
 			 $up=array($Ndate);
 			 $stmt= MakeUpdateStmt(  $data_library,$pregressData,$Base,$up,$WHEREtable,$WHEREData);
-		     echo $stmt;
+		   //  echo $stmt;
 			 SendCommand($stmt,$data_library);
 			 global $BaseURL,$BackURL,$SortType,$ListType;
 			 // $ValArray=array(array("ListType","prepress"));
