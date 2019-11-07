@@ -60,8 +60,9 @@
 		      DrawButton($Rect,$type2Title,"type2" );
 			  global $BaseURL;
 			  $ValArray=array(array("Up","ViewPic"));
-			  $Rect=array(20,80,100,20);
-			  sendVal($BaseURL,$ValArray,"submit","開啟編輯",$Rect, 12, "#eeaaaa", "#ffffff" );
+			  $Rect=array(20,100,100,20);
+			  sendVal($BaseURL,$ValArray,"submit","開啟編輯",$Rect, 12, "#ee6666", "#ffffff" );
+			  if($_POST['Up']=="ViewPic") DrawRect("注意不要一次上傳太多檔案",12, "#ffffff",   $Rect[0], $Rect[1],200,20,"#ff1234" );
 	 }
 	 function DrawButton($Rect,$btArray,$arraytype,$BgColor="#000000",  $fontColor="#ffffff"){
 		    global $BaseURL;
@@ -109,30 +110,30 @@
 			     $n="pic_".$i;
 				 $c="c_".$i;
 				 if($_POST['Up']=="ViewPic"){
-				      DrawRect("",11,$fontColor,$Rect[0]+100,$Rect[1],200,100,"#000000");
+				      DrawRect("",11,$fontColor,$Rect[0]+200,$Rect[1],200,100,"#000000");
 				 echo "<input type=hidden name=".$c." value=".$data[$i][2].">";
 				 $input="<input type=file name=".$n."	id=file  size=10   >";
-				 DrawInputRect("代表圖檔"." ","12","#ffffff", $Rect[0]+93, $Rect[1]  ,1220,20, $colorCodes[4][2],"top", $input);
+				 DrawInputRect("代表圖檔"." ","12","#ffffff", $Rect[0]+202, $Rect[1]  ,1220,20, $colorCodes[4][2],"top", $input);
 				 //max檔
 				 $n="Max_".$i;
 				 $input="<input type=file name=".$n."	id=file  size=10   >";
-				 DrawInputRect("3D檔"." ","12","#ffffff", $Rect[0]+93, $Rect[1]+22  ,1220,20, $colorCodes[4][2],"top", $input);
+				 DrawInputRect("3D檔"." ","12","#ffffff", $Rect[0] +202, $Rect[1]+22  ,1220,20, $colorCodes[4][2],"top", $input);
 				 
 				 //ani檔
 				 $n="Ani_".$i;
 				 $input="<input type=file name=".$n."	id=file  size=10   >";
-				 DrawInputRect("動畫檔"." ","12","#ffffff", $Rect[0]+93, $Rect[1]+43  ,1220,20, $colorCodes[4][2],"top", $input);
+				 DrawInputRect("動畫檔"." ","12","#ffffff", $Rect[0] +202, $Rect[1]+43  ,1220,20, $colorCodes[4][2],"top", $input);
 			    //VFX檔
 				 $n="VFX_".$i;
 				 $input="<input type=file name=".$n."	id=file  size=10   >";
-				 DrawInputRect("特效檔"." ","12","#ffffff", $Rect[0]+93, $Rect[1]+65  ,1220,20, $colorCodes[4][2],"top", $input);
+				 DrawInputRect("特效檔"." ","12","#ffffff", $Rect[0]+ 202, $Rect[1]+65  ,1220,20, $colorCodes[4][2],"top", $input);
 				 }
 				 
 				 $Rect[1]+=104;
 			
 			  }
 			 if($_POST['Up']!="") $submit ="<input type=submit name=submit value=上傳>";
-	          DrawInputRect("","12","#ffffff", 340 ,  120,100,20, $colorCodes[4][2],"上傳",$submit );
+	          DrawInputRect("","12","#ffffff", 440 ,  120,100,20, $colorCodes[4][2],"上傳",$submit );
 			  echo "</form>";
 	
 	 }

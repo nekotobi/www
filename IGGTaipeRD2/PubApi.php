@@ -638,8 +638,7 @@
 ?>
 
 <?php //NewSend
-     
-       function DrawPopBGsendVal($x,$y,$w,$h,$title,$fontSize,$BackURL,$ValArray){
+       function  DrawPopBGsendVal($x,$y,$w,$h,$title,$fontSize,$BackURL,$ValArray){
 	         DrawPicBG("Pics/Black50Bg.png",$y-40,$x-40,$w+80,$h+80);
 		     //  DrawLinkPic("Pics/Cancel.png",$y-50,$x+$w+20,32,32,$BackURL);
 		     $pic="Pics/Cancel.png";
@@ -648,7 +647,7 @@
 		     $Rect=array($x+$w+20,$y-50,40,40);
 		     sendValPic($BackURL,$pic,$Rect,$ValArray);
 	   }
-	   function sendValPic($URL,$pic,$Rect,$ValArray){
+	   function  sendValPic($URL,$pic,$Rect,$ValArray){
 	             echo "<form action=".$URL." method=post >";
 	             for($i=0;$i<count($ValArray);$i++){
 		             echo "<input type=hidden name='".$ValArray[$i][0]."' value='".$ValArray[$i][1]."' >";
@@ -678,7 +677,7 @@
 				 $Rect=array($x,$y,$w,$h);
 	             sendVal($URL,$ValArray,$SubmitName,$SubmitVal,$Rect,$fontSize, $BgColor ,$fontColor ,"true");
 	   }
-       function LinkURL2ValArray($Link){
+       function  LinkURL2ValArray($Link){
 		   		  $tmp=explode("?",$Link);
 				 $tmp2=explode("&",$tmp[1]);
 	             $ValArray=array();
@@ -688,7 +687,7 @@
 				 }
 				 return $ValArray;
 	   }
-       function sendVal($URL,$ValArray,$SubmitName,$SubmitVal,$Rect,$size=12, $BgColor="#eeeeee",$fontColor="#ffffff",$setCookie=false){
+       function  sendVal($URL,$ValArray,$SubmitName,$SubmitVal,$Rect,$size=12, $BgColor="#eeeeee",$fontColor="#ffffff",$setCookie=false){
 		   echo "<form action=".$URL." method=post >";
 		   for($i=0;$i<count($ValArray);$i++){
 			   echo "<input type=hidden name='".$ValArray[$i][0]."' value='".$ValArray[$i][1]."' >";
