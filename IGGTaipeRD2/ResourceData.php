@@ -13,7 +13,7 @@
 	DefineMysQLData();
     DefineDate();
 	DrawMainUI();
-	DrawType();
+    DrawType();
 	DrawList();
     TypeGo();
 	upFile();
@@ -21,12 +21,16 @@
 <?php //定義資料區
     function  DefineBaseData(){
 	    //分頁
-		 
 	  	global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
 		$BaseURL="ResourceData.php";
 		$BackURL= $BaseURL."?Stype_1=".$Stype_1."&Stype_2=".$Stype_2;
-		if($Stype_1=="")$Stype_1=0;
-		if($Stype_2=="")$Stype_2=0;
+
+		$CookieArray=array("Stype_1","Stype_2");
+		setcookies($CookieArray,$BaseURL);
+		SetGlobalcookieData($CookieArray);
+	    CheckCookie($CookieArray);
+	    if($Stype_1=="")$Stype_1=0;
+		 if($Stype_2=="")$Stype_2=0;
 	}
 	function  DefineMysQLData(){
 	    //資料庫
@@ -99,8 +103,8 @@
 			if($Stype_1==$i){
 				$BgColor="#aa2222";
 			}
-		    DrawLinkRect($typeData[$i],12,"#ffffff",$x,$y,$w,$h,$BgColor,$Link,"1");
-	     	if($Stype_1==$i)   DrawLinkRect("X".count($mainData),10,"#ffffff",$x+30,$y+4,40,$h-6,"#000000",$Link,"1");
+		    DrawLinkRect2sendVal($typeData[$i],12,"#ffffff",$x,$y,$w,$h,$BgColor,$Link,"1");
+	     	if($Stype_1==$i)   DrawLinkRect("X".count($mainData),10,"#ffffff",$x+70,$y+4,20,$h-6,"#000000",$Link,"1");
 			$x+=110;
 		}
 		//milestone
@@ -111,9 +115,10 @@
 			$Link=$BaseURL."?Stype_1=".$Stype_1."&Stype_2=".$i;
 			$BgColor="#000000";
 			if($Stype_2==$i)$BgColor="#aa2222";
-		    DrawLinkRect( $milestoneSelect[$i],12,"#ffffff",$x,$y,$w,$h,$BgColor,$Link,"1");
+		    DrawLinkRect2sendVal( $milestoneSelect[$i],12,"#ffffff",$x,$y,$w,$h,$BgColor,$Link,"1");
 			$x+=60;
 		}
+	 
 	}
 	function  DrawType(){
 			  global $Lists,$ListSize;
@@ -159,7 +164,7 @@
 			      $rect[0]+=$ListSize[$i]+5;
 			 }
 	}
-    function DrawTypeArea($rect,$type,$planCode,$GDcode){
+    function  DrawTypeArea($rect,$type,$planCode,$GDcode){
 		               if($planCode==-1)return;
 		               if($type=="")return;
 			           global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType; 
@@ -303,9 +308,12 @@
     function GetMainPlanCodeMile($GDCode){ //比對物件名稱包含GDCode 回傳文件編碼
 	         global $ScheduleDataTitle;
 	         for($i=0;$i<count($ScheduleDataTitle);$i++){
-				 if(strpos($ScheduleDataTitle[$i][3],$GDCode) !== false){ 
-				    return  $ScheduleDataTitle[$i][1];
+				 if($ScheduleDataTitle[$i][3]!=""){
+				    if(strpos($ScheduleDataTitle[$i][3],$GDCode) !== false){ 
+				       return  $ScheduleDataTitle[$i][1];
 				    }
+				 }
+				
 				}
 			 return -1;
     }

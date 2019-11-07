@@ -10,6 +10,7 @@
    CookieSet();
    ShowButton();
    ListContent();
+   CheckUp();
 ?>
 
 <?php //title
@@ -53,10 +54,14 @@
 	 } 
      function ShowButton(){
 		      global $type1Title,$type2Title;
-			  $Rect=array(20,40,100,20);
+			  $Rect=array(20,20,100,20);
 			  DrawButton($Rect,$type1Title,"type1" );
-			  $Rect=array(20,70,100,20);
+			  $Rect=array(20,50,100,20);
 		      DrawButton($Rect,$type2Title,"type2" );
+			  global $BaseURL;
+			  $ValArray=array(array("Up","ViewPic"));
+			  $Rect=array(20,80,100,20);
+			  sendVal($BaseURL,$ValArray,"submit","開啟編輯",$Rect, 12, "#eeaaaa", "#ffffff" );
 	 }
 	 function DrawButton($Rect,$btArray,$arraytype,$BgColor="#000000",  $fontColor="#ffffff"){
 		    global $BaseURL;
@@ -74,34 +79,116 @@
 ?>
 
 <?php //List
-     function ListContent(){
-	          global  $CookieArray,$MysQlArray;
-              for($i=0;$i<count($CookieArray);$i++)  if($_COOKIE[$CookieArray[$i]]=="")return;
-			  global $ResData;
+     function getData(){
+		      global  $CookieArray,$MysQlArray;
+	          global $ResData;
 			  $t1=$_COOKIE[$CookieArray[0]];
 			  $t2=$_COOKIE[$CookieArray[1]];
 			  $data=filterArray( $ResData,0,$t1);
 			  if($t2!="all") $data=filterArray( $data,$MysQlArray[1],$t2);
-			   $data= SortList( $data,3);
+			  $data= SortList( $data,3);
+			  return $data;
+	 
+	 }
+    
+     function ListContent(){
+	          global  $CookieArray,$MysQlArray;
+			  global $ResData;
+              for($i=0;$i<count($CookieArray);$i++)  if($_COOKIE[$CookieArray[$i]]=="")return;
+			  $data = getData();
 			  $size= filterArray( $ResData,0,"size");
 			  $title= filterArray( $ResData,0,"name");
 			  $ListArray=array(2,3,4);
-			  $Rect=array(20,100,100,20);
+			  $Rect=array(20,120,90,20);
+			  echo   "<form id='EditRes'  name='Show' action='".$BackURL."' method='post'  enctype='multipart/form-data'>";
  		      for($i=0;$i<count($data);$i++){
+				  //內容
+				  DrawRect("",11,$fontColor,$Rect[0],$Rect[1],200,100,"#000000");
 			     DrawSingle($data[$i],$Rect,$ListArray,$size[0]);
-				 $Rect[1]+=22;
+				 //上傳圖檔
+			     $n="pic_".$i;
+				 $c="c_".$i;
+				 if($_POST['Up']=="ViewPic"){
+					 
+				 echo "<input type=hidden name=".$c." value=".$data[$i][2].">";
+				 $input="<input type=file name=".$n."	id=file  size=60   >";
+				 DrawInputRect(""." ","12","#ffffff", $Rect[0]+90, $Rect[1]+80 ,80,80, $colorCodes[4][2],"top", $input);
+				 }
+				 $Rect[1]+=104;
+			
 			  }
+			 if($_POST['Up']!="") $submit ="<input type=submit name=submit value=上傳>";
+	          DrawInputRect("","12","#ffffff", 240 ,  120,100,20, $colorCodes[4][2],"上傳",$submit );
+			  echo "</form>";
+	
 	 }
-	 function DrawSingle($Base,$Rect,$ListArray,$size){
+     function DrawSingle ($Base,$Rect,$ListArray,$size){
+		      global $type1;
+              $fontColor="#000000";
+			  $BgColor="#ffffff";
+		  	  $Rect[0]+=2;
+			   $Rect[1]+=2;
+              DrawRect_Layer($Base[2],12,$fontColor,$Rect,$BgColor,$Layer);
+			  $Rect[1]+=22;
+			  DrawRect_Layer($Base[3],12,$fontColor,$Rect,$BgColor,$Layer);
+			  
+			    $Rect[0]+=98;
+				 $Rect[1]-=22;
+			  $pic="ResourceData/".$type1."/viewPic/".$Base[2].".png";
+			  if( file_exists($pic)){
+			      DrawLinkPic($pic,$Rect[1],$Rect[0],96,96,$Link);
+			  }				  
+			  
+	 }
+	 function DrawSingle_old($Base,$Rect,$ListArray,$size){
 		    for($i=0;$i<count($ListArray);$i++){
 				 $s=$ListArray[$i];
- 
 				 $Rect[2]=$size[$s];
 				 $fontColor="#000000";
 				 $BgColor="#ffffff";
 	             DrawRect_Layer($Base[$s],12,$fontColor,$Rect,$BgColor,$Layer);
 				 $Rect[0]+=($Rect[2]+2);
 		       } 
+			 
 	 }
+
+?>
+
+<?php //up
+     function CheckUp(){
+	          if($_POST['submit']=="")return;
+	          if($_POST['submit']=="上傳")upfile();
+	 }
+     function upfile(){
+			  global $type1;
+			  $data = getData();
+			  $dir="ResourceData/".$type1;
+		      $picdir=$dir."/viewPic/Base";
+			  $viewDir=$dir."/viewPic";
+              MakeDir($picdir);			
+			  MakeDir($viewDir);		
+	          for($i=0;$i<count($data);$i++){
+				  $n="pic_".$i;
+				  $c="c_".$i;
+				  $code=  $_POST[$c];
+				 // echo $n;
+				  if($_FILES[$n]["name"]!=""){
+					 $ext = explode(".",$_FILES[$n]["name"]);
+                     $filePath=$picdir."/".$code.".".$ext[1];
+					// echo $filePath;
+				     move_uploaded_file($_FILES[$n]["tmp_name"], $filePath);
+					 $finalPath= $viewDir."/".$code.".png";
+					//  echo  $finalPath;
+				     $cmd="convert     $filePath    -flatten  -resize 256  $finalPath ";
+					 exec($cmd);
+				  }
+			     
+			   
+				 // echo $code;
+			  }
+ 
+	 }
+
+
 
 ?>

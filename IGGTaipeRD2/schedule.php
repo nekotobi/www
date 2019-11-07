@@ -13,6 +13,7 @@
    include('CalendarApi.php');  
    include('mysqlApi.php');
    include('scheduleApi.php');
+     cookieSet();
      defineData_schedule();   //定義基礎資料(scheduleApi)
      GetCalendarData(); //取得日曆資料(scheduleApi)
      DrawBaseCalendar_v2(); //列印基礎日期資料(scheduleApi)
@@ -29,6 +30,18 @@
      DrawInsertLine( );//
 ?>
 <?php //主要資料
+     function  cookieSet(){
+	           $CookieArray=array("UpMonth");
+		       setcookies($CookieArray,$BaseURL);
+		       SetGlobalcookieData($CookieArray);
+			   
+	 }
+     function  setTargetYM(){
+	           global $UpMonth;
+			   $Rect=array(20,80,20,20);
+			   sendVal($URL,$ValArray,$SubmitName,$SubmitVal,$Rect,$size=12, $BgColor="#eeeeee",$fontColor="#ffffff");
+			   
+	 }
  	 function  defineData_schedule(){
 		 //基礎數值
 		 global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX,$monthLoc,$showMonthNum,$LineHeight,$LineRec ;

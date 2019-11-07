@@ -577,12 +577,7 @@
 		   //  echo $stmt;
 			 SendCommand($stmt,$data_library);
 			 global $BaseURL,$BackURL,$SortType,$ListType;
-			 // $ValArray=array(array("ListType","prepress"));
-			 // echo "xx";
-		     //  JavasubmitForm($BaseURL,$ValArray);
-             //  setcookie("ListType" , "prepress", time()+3600); 
-		  	 // setcookiesForce($CookieArray,$BaseURL);
-			 //	   $Link=$BaseURL."?SortType=".$SortType."&ListType=prepress";
+ 
 		     echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
 	 }
 	 function UpOutFin(){

@@ -766,6 +766,20 @@
 	}
 ?> 
  
+<?php //建立資料夾
+     function MakeDir($path){
+	        $str = explode("/",$path);
+			$dir =$str[0];
+			if(!file_exists($dir)) mkdir($dir, 0700);
+			for($i=1;$i<count($str);$i++){
+				$dir=$dir."/".$str[$i];
+				if(!file_exists($dir)) mkdir($dir, 0700);
+				// echo $dir."</br>";
+			}
+	 }
+  
+?>
+ 
 <?php //old
 /*
        function sendVal($URL,$ValArray,$SubmitName,$SubmitVal,$Rect,$size=12, $BgColor="#eeeeee",$fontColor="#ffffff",$setCookie=false){
