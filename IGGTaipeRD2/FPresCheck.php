@@ -169,7 +169,7 @@
 			  }
 			  //圖檔
 			  $Rect[0]+=98;
-			  $Rect[1]-=22;
+			  $Rect[1]-=44;
 			  $pic="ResourceData/".$type1."/viewPic/".$Base[2].".png";
 			  if( file_exists($pic)){
 			      DrawLinkPic($pic,$Rect[1],$Rect[0],96,96,$Link);
