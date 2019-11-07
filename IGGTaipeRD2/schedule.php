@@ -39,7 +39,7 @@
      function  setTargetYM(){
 	           global $UpMonth;
 			   $Rect=array(20,80,20,20);
-			   sendVal($URL,$ValArray,$SubmitName,$SubmitVal,$Rect,$size=12, $BgColor="#eeeeee",$fontColor="#ffffff");
+			   sendVal($URL,$ValArray,"submit","",$Rect,$size=12, $BgColor="#eeeeee",$fontColor="#ffffff");
 			   
 	 }
  	 function  defineData_schedule(){
