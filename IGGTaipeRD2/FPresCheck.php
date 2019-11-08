@@ -26,6 +26,8 @@
 	 }
      function DefineBaseData(){
 		      global $BaseURL;
+			  global $stageNum;
+			  $stageNum=13;
 		      $BaseURL="FPresCheck.php";
 	          $data_library= "iggtaiperd2";
 		      $tableName="fpresdata"; 
@@ -41,7 +43,7 @@
 					   array("魔王","boss")
 			   );
 			  global $type2Title;
-			   $type2Title=array( 
+			  $type2Title=array( 
 			           array("m1","m1"),
 					   array("m2","m2"),
 					   array("m3","m3"),
@@ -49,7 +51,8 @@
 					   array("all","all"),
 			   );;
 			  global $CookieArray;
-		
+			  global $type3Title;
+		 
 			
 	 } 
      function ShowButton(){
@@ -63,6 +66,10 @@
 			  $Rect=array(20,100,100,20);
 			  sendVal($BaseURL,$ValArray,"submit","開啟編輯",$Rect, 12, "#ee6666", "#ffffff" );
 			  if($_POST['Up']=="ViewPic") DrawRect("注意不要一次上傳太多檔案",12, "#ffffff",   $Rect[0], $Rect[1],200,20,"#ff1234" );
+	 }
+	 function showCH(){
+	         $Rect=array(20,70,100,20);
+			 //for($i=0;$i=)
 	 }
 	 function DrawButton($Rect,$btArray,$arraytype,$BgColor="#000000",  $fontColor="#ffffff"){
 		    global $BaseURL;
@@ -162,10 +169,9 @@
 			       DrawLinkPic($pic,$Rect[1] ,$Rect[0]+22,20,20,$file);
 			  }
 			  //VFX
-			  $VFX="ResourceData/".$type1."/VFX/".$Base[2] ;
-			  $file=  checkfileExists(  $VFX,"zip");
+			  $file="ResourceData/".$type1."/VFX/".$Base[2].".unitypackage" ;
 			  $pic="Pics/VFX.png";
-			  if ($file!=""){
+			  if ( file_exists(  $file)){
 			       DrawLinkPic($pic,$Rect[1] ,$Rect[0]+44,20,20,$file);
 			  }
 			  //圖檔
@@ -194,6 +200,7 @@
 				  if( file_exists($Path.".zip"))return $Path.".zip";
 				  return "";
 			  }
+			  
 	 }
 ?>
 
