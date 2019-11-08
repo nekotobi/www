@@ -5,7 +5,7 @@
    <title>FP資源索引v2</title>
 </head>
 <?php //主控台
-    include('PubApi.php');
+   include('PubApi.php');
    DefineBaseData();
    CookieSet();
    ShowButton();
@@ -17,11 +17,11 @@
      function CookieSet(){
 		      global $BaseURL;
 		      global  $CookieArray,$MysQlArray;
-		 	  $CookieArray=array("type1","type2");
-			  $MysQlArray=array(0,12);
+		 	  $CookieArray=array("type1","type2","type3");
+			  $MysQlArray=array(0,12,13);
 			  setcookies($CookieArray,$BaseURL);
 	          SetGlobalcookieData( $CookieArray);
-			 // CheckCookie($CookieArray);
+			//  CheckCookie($CookieArray);
 			  
 	 }
      function DefineBaseData(){
@@ -44,43 +44,45 @@
 			   );
 			  global $type2Title;
 			  $type2Title=array( 
-			           array("m1","m1"),
+			           array("all","all"),
 					   array("m2","m2"),
 					   array("m3","m3"),
 					   array("m4","m4"),
-					   array("all","all"),
-			   );;
-			  global $CookieArray;
-			  global $type3Title;
-		 
+			   );
+			   global $type3Title;
+			   $type3Title=array(array("--","all"));
+			   for($i=1;$i<=$stageNum;$i++){
+				    $s="CH.".$i;
+			        array_push($type3Title,array($s,$i));
+			   } 
+		 	  global $CookieArray;
 			
 	 } 
      function ShowButton(){
-		      global $type1Title,$type2Title;
-			  $Rect=array(20,20,100,20);
-			  DrawButton($Rect,$type1Title,"type1" );
-			  $Rect=array(20,50,100,20);
-		      DrawButton($Rect,$type2Title,"type2" );
+		      global $type1Title,$type2Title,$type3Title;
+			  $Rect=array(20,30,100,20);
+			  DrawButton($Rect,$type1Title,"type1" ,array(" "," "));
+			  $Rect=array(20,55,100,20);
+		      DrawButton($Rect,$type2Title,"type2",array("type3","all") );
+			  $Rect=array(20,80,50,20);
+		      DrawButton($Rect,$type3Title,"type3",array("type2","all") );
 			  global $BaseURL;
 			  $ValArray=array(array("Up","ViewPic"));
-			  $Rect=array(20,100,100,20);
+			  $Rect=array(20,110,100,20);
 			  sendVal($BaseURL,$ValArray,"submit","開啟編輯",$Rect, 12, "#ee6666", "#ffffff" );
 			  if($_POST['Up']=="ViewPic") DrawRect("注意不要一次上傳太多檔案",12, "#ffffff",   $Rect[0], $Rect[1],200,20,"#ff1234" );
 	 }
-	 function showCH(){
-	         $Rect=array(20,70,100,20);
-			 //for($i=0;$i=)
-	 }
-	 function DrawButton($Rect,$btArray,$arraytype,$BgColor="#000000",  $fontColor="#ffffff"){
+ 
+	 function DrawButton($Rect,$btArray,$arraytype,$AddArray,$BgColor="#000000",  $fontColor="#ffffff"){
 		    global $BaseURL;
 		    for($i=0;$i<count( $btArray);$i++){
 			      $BGC=$BgColor;
 			      if($_COOKIE[$arraytype]==$btArray[$i][1])$BGC="#ee0000";
-				  $valArray=array(array($arraytype,  $btArray[$i][1]));
+				  $valArray=array(array($arraytype, $btArray[$i][1]), $AddArray);
 				  $SubmitName="submit";
 				  $SubmitVal= $btArray[$i][0] ;
-				  $Rect[0]+=110;
 			 	  sendVal($BaseURL,$valArray,$SubmitName,$SubmitVal,$Rect,10, $BGC,$fontColor,"true");
+				  $Rect[0]+=$Rect[2]+5;
 			  }
 	 
 	 }
@@ -92,11 +94,12 @@
 	          global $ResData;
 			  $t1=$_COOKIE[$CookieArray[0]];
 			  $t2=$_COOKIE[$CookieArray[1]];
+			  $t3=$_COOKIE[$CookieArray[2]];
 			  $data=filterArray( $ResData,0,$t1);
 			  if($t2!="all") $data=filterArray( $data,$MysQlArray[1],$t2);
+			  if($t3!="all") $data=filterArray( $data,$MysQlArray[2],"CH.".$t3); 
 			  $data= SortList( $data,3);
 			  return $data;
-	 
 	 }
     
      function ListContent(){
@@ -107,8 +110,10 @@
 			  $size= filterArray( $ResData,0,"size");
 			  $title= filterArray( $ResData,0,"name");
 			  $ListArray=array(2,3,4);
-			  $Rect=array(20,120,90,20);
+			  $Rect=array(20,150,90,20);
 			  echo   "<form id='EditRes'  name='Show' action='".$BackURL."' method='post'  enctype='multipart/form-data'>";
+			   //關卡
+				   DrawStageList($Rect);
  		      for($i=0;$i<count($data);$i++){
 				  //內容
 			     DrawRect("",11,$fontColor,$Rect[0],$Rect[1],200,100,"#000000");
@@ -139,6 +144,7 @@
 				 $Rect[1]+=104;
 			
 			  }
+			  
 			 if($_POST['Up']!="") $submit ="<input type=submit name=submit value=上傳>";
 	          DrawInputRect("","12","#ffffff", 440 ,  120,100,20, $colorCodes[4][2],"上傳",$submit );
 			  echo "</form>";
@@ -204,6 +210,50 @@
 	 }
 ?>
 
+<?php //stage
+      function DrawStageList($Rect){
+	        global  $CookieArray;
+			$ch=$_COOKIE[$CookieArray[2]];
+			if($ch=="all")return;
+			$Rect[0]+=500;
+		    DrawRect("",11,$fontColor,$Rect[0],$Rect[1],560,400,"#000000");
+
+	        //場景圖
+			$add="0";
+			  $Dir="ResourceData/stage";
+			if($ch>=10)$add="";
+			$picN="level_ch".$add.$ch."_01".".png";
+			$pic= $Dir."/".$picN;
+			//echo $pic;
+			DrawRect("關卡資料",11,$fontColor,$Rect[0]+2,$Rect[1]+2,120,20,"#ffffff");
+			if ( file_exists( $pic)){
+			       DrawLinkPic($pic,$Rect[1]+24 ,$Rect[0]+2,512,256,$pic);
+			}
+			//U3d
+			$n="Stage_U3D".$ch;
+			$u3d=$Dir."/".$n.".unitypackage";
+			$pic="Pics/SCU.png";
+			//echo 	$u3d;
+			if ( file_exists( $u3d)){
+			       DrawLinkPic($pic,$Rect[1]+2  ,$Rect[0]+132,20,20,$u3d);
+			}
+			 //上傳
+		    if($_POST['Up']=="ViewPic"){
+			   $Rect[1]+=280;
+			   //場景圖
+			   $input="<input type=file name=stagePic	id=file  size=10   >";
+			   echo "<input type=hidden name=stagepicCode value=".$picN.">";
+			   DrawInputRect("關卡圖"." ","12","#ffffff", $Rect[0] , $Rect[1]  ,1220,20, $colorCodes[4][2],"top", $input);
+			   $Rect[1]+=22; 
+			   //場景packge
+			 //  $n="Stage_U3D".$i;
+			   $input="<input type=file name=Stage_U3D	id=file  size=10   >";
+			   DrawInputRect("場景unitypackage"." ","12","#ffffff", $Rect[0] , $Rect[1]  ,1220,20, $colorCodes[4][2],"top", $input);
+			}
+	  }
+
+?>
+
 <?php //up
      function CheckUp(){
 	          if($_POST['submit']=="")return;
@@ -238,7 +288,8 @@
 				   UPTypeFile($dir,"Ani","Ani_",$i,$code);
 			       UPTypeFile($dir,"VFX","VFX_",$i,$code);
 			  }
-			    echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
+			  UpStageFile();
+			   echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
 	 }
 	 function UPTypeFile($dir,$type,$name,$i,$code){
 		          $na=$name.$i ;
@@ -251,7 +302,25 @@
 					 move_uploaded_file($_FILES[$na]["tmp_name"], $filePath);
 				  }
 	 }
-
-
+     function UpStageFile(){
+		      global  $CookieArray;
+			  $ch=$_COOKIE[$CookieArray[2]];
+			  $Dir="ResourceData/stage";
+			  MakeDir( $Dir);
+			  //pic
+			  $picN=$_POST['stagepicCode'];
+			  $Uppath=$Dir."/".$picN;
+	          UpsimpleFile("stagePic",$Uppath);
+			  //package
+			  $n="Stage_U3D".$ch;
+			  $Uppath=$Dir."/".$n.".unitypackage";
+			  UpsimpleFile("Stage_U3D",$Uppath);
+	 }
+	 
+     function UpsimpleFile($name,$Uppath){
+		   if($_FILES[$name]["name"]!=""){
+				   move_uploaded_file($_FILES[$name]["tmp_name"], $Uppath);
+			  }
+	 }
 
 ?>
