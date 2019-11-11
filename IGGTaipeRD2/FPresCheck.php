@@ -8,8 +8,9 @@
    include('PubApi.php');
    DefineBaseData();
    CookieSet();
-   ShowButton();
+
    ListContent();
+   ShowButton();
    CheckUp();
 ?>
 
@@ -59,6 +60,7 @@
 			   } 
 		 	  global $CookieArray;
 			
+			 // $ResDatafi=getData();
 	 } 
      function ShowButton(){
 		      global $type1Title,$type2Title,$type3Title;
@@ -77,14 +79,22 @@
  
 	 function DrawButton($Rect,$btArray,$arraytype,$AddArray,$BgColor="#000000",  $fontColor="#ffffff"){
 		    global $BaseURL;
+			global $ResDatafi;
 		    for($i=0;$i<count( $btArray);$i++){
 			      $BGC=$BgColor;
-			      if($_COOKIE[$arraytype]==$btArray[$i][1])$BGC="#ee0000";
+			      if($_COOKIE[$arraytype]==$btArray[$i][1]){
+					  $BGC="#ee0000";
+	
+				  }
 				  $valArray=array(array($arraytype, $btArray[$i][1]), $AddArray);
 				  $SubmitName="submit";
 				  $SubmitVal= $btArray[$i][0] ;
 			 	  sendVal($BaseURL,$valArray,$SubmitName,$SubmitVal,$Rect,10, $BGC,$fontColor,"true");
+				  if($arraytype=="type1" && $_COOKIE[$arraytype]==$btArray[$i][1])
+					  DrawRect( "x".count($ResDatafi),10,"#ffffff", $Rect[0]+60, $Rect[1]+3,20,15,"#000000");
 				  $Rect[0]+=$Rect[2]+5;
+			
+				   
 			  }
 	 
 	 }
@@ -103,12 +113,17 @@
 			  $data= SortList( $data,3);
 			  return $data;
 	 }
-    
+     
      function ListContent(){
 	          global  $CookieArray,$MysQlArray;
-			  global $ResData;
+			  global $ResData, $ResDatafi;
+
               for($i=0;$i<count($CookieArray);$i++)  if($_COOKIE[$CookieArray[$i]]=="")return;
 			  $data = getData();
+			//  $data= $ResDatafi;
+			   $ResDatafi= $data; 
+			  //
+			  
 			  $size= filterArray( $ResData,0,"size");
 			  $title= filterArray( $ResData,0,"name");
 			  $ListArray=array(2,3,4);
