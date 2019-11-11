@@ -700,7 +700,9 @@
 		   echo "</form>";
 	   }  
 	   function setcookies($CookieArray,$BackURL){
+		         
 	           if($_POST['setCookie']!="true") return;
+			   
 		       for($i=0;$i<count($CookieArray);$i++){
 			       $n=$CookieArray[$i];
 				   if($_POST[$n]!=""){

@@ -14,6 +14,7 @@
    include('mysqlApi.php');
    include('scheduleApi.php');
      cookieSet();
+	
      defineData_schedule();   //定義基礎資料(scheduleApi)
      GetCalendarData(); //取得日曆資料(scheduleApi)
      DrawBaseCalendar_v2(); //列印基礎日期資料(scheduleApi)
@@ -22,26 +23,35 @@
 	 DrawTypeCont();//判斷印出內容
 	 CheckinputType_v2();//判斷輸入
 	 global   $BaseURL;
-     DrawMembersLinkArea_Simple( 30, 6,  $BaseURL); 
+     //DrawMembersLinkArea_Simple( 30, 6,  $BaseURL); 
      DrawOutLinkArea(30,52,$BaseURL);
 	 DrawUserData( 1120, 5);   //使用者資料(PubApi)
 	 DrawMemo();//臨時紀錄
+	 SetWebCookies();//設定開關
 	 DrawHideSwicth();//開關
      DrawInsertLine( );//
+	  setTargetYM();
 ?>
 <?php //主要資料
      function  cookieSet(){
-	           $CookieArray=array("UpMonth");
+	           $CookieArray=array("UpMonth","History");
 		       setcookies($CookieArray,$BaseURL);
 		       SetGlobalcookieData($CookieArray);
-			   
+			   CheckCookie($CookieArray);
 	 }
      function  setTargetYM(){
 	           global $UpMonth;
-			   $Rect=array(20,80,20,20);
-			   sendVal($URL,$ValArray,"submit","",$Rect,$size=12, $BgColor="#eeeeee",$fontColor="#ffffff");
-			   
+			   global $BaseURL;
+			   $c=$UpMonth-1;
+			   $ValArray=array(array("UpMonth",$c));
+			   $Rect=array(5,135,15,10);
+			   sendVal($BaseURL,$ValArray,"submit","►",$Rect, 10,  "#222222", "#ffffff","true");   
+			   $Rect=array(5,155,15,10);
+			   $c=$UpMonth+1;
+			   $ValArray=array(array("UpMonth",$c));
+			   sendVal($BaseURL,$ValArray,"submit","◄",$Rect, 10,  "#222222", "#ffffff","true");
 	 }
+
  	 function  defineData_schedule(){
 		 //基礎數值
 		 global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX,$monthLoc,$showMonthNum,$LineHeight,$LineRec ;
@@ -54,7 +64,6 @@
 				$LineHeight=40;
 	            $CurrentX= $StartX;
 				$showMonthNum=8;
-				$UpMonth=-2;
 				$daysLoc=array();//(year,m,d,x軸位置)
                 $monthLoc=array();//($y,m,x軸位置,Siz)
 				$LineRec=array();//紀錄哪行有排列
@@ -176,10 +185,21 @@
 	              return "false";
 	 }
 	 function  DrawMemo(){
-		       $Rect=array(1024,10,50,12);
+		       $Rect=array(1024,10,40,12);
 	           $Link= "https://docs.google.com/document/d/1B8UBHJAsMGcSxbgN5yHyWQn4KkLwlfKz_tAOU2lS44E/edit?usp=sharing";
 		       DrawLinkRect_newtab("memo","10","#ffffff",$Rect[0],$Rect[1],$Rect[2],$Rect[3],"#000000",$Link,"1");
-			 
+	 }
+	 function  SetWebCookies(){
+		       global $History;
+			   global $BaseURL;
+		       $Rect=array(1066,6,40,12);
+			   $BGColor= "#000000";
+			   $ValArray=array(array("History", "true"));
+			   if($History=="true"){
+		          $BGColor= "#aa4444";  
+				 $ValArray=array(array("History", "_"));
+			   }
+			   sendVal($BaseURL,$ValArray,"submit","History",$Rect, 10,   $BGColor, "#ffffff","true");
 	 }
 	 function  DrawInsertLine( ){
 		       global $BackURL,$ELine,$LineRec;
@@ -472,7 +492,8 @@
 				        $plans=  filterArray($plansTmp,5,$SelectType_2[$Stype_2]);
 				  break;
 		  	  }
-			  $plans= RemoveArray($plans,7,"已完成");
+			  if($History!="true")$plans= RemoveArray($plans,7,"已完成");
+			  
 			  $users= collectUser($plans);
 			  if($sort=="")  $plans= SortbyDate($plans);
 		   	  if($sort=="User")  $plans= SortbyUser($plans,$users);
