@@ -48,6 +48,8 @@
 					   array("m2","m2"),
 					   array("m3","m3"),
 					   array("m4","m4"),
+					   array("m5","m5"),
+					   array("未定","Undefined"),
 			   );
 			   global $type3Title;
 			   $type3Title=array(array("--","all"));
