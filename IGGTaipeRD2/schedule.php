@@ -472,6 +472,7 @@
 			  global $user,$List;
 			  global $WarringDatas;
 			  global $E,$sort;
+			  global $History;
 			  global $OutsData,$memberData;
 			  $plansTmp=getMysqlDataArray($tableName); 
 			  switch ($List){
@@ -492,8 +493,9 @@
 				        $plans=  filterArray($plansTmp,5,$SelectType_2[$Stype_2]);
 				  break;
 		  	  }
-			  if($History!="true")$plans= RemoveArray($plans,7,"已完成");
-			  
+			  if($History!="true"){
+				  $plans= RemoveArray($plans,7,"已完成");
+			  }
 			  $users= collectUser($plans);
 			  if($sort=="")  $plans= SortbyDate($plans);
 		   	  if($sort=="User")  $plans= SortbyUser($plans,$users);
