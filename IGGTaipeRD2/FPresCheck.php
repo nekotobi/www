@@ -58,13 +58,11 @@
 			        array_push($type3Title,array($s,$i));
 			   } 
 		 	  global $CookieArray;
-			  global $ScheduleData, $ScheduleDataPlan ,$ScheduleData3D,$ScheduleDataAni,$ScheduleDataVfx;
+			  global $ScheduleData, $ScheduleDataPlan  ;
 			  $stmp= getMysqlDataArray("fpschedule");	
 			  $ScheduleData=$stmp;
 	          $ScheduleDataPlan  =  filterArray($stmp,5,"工項");
-			  $ScheduleData3D =  filterArray($stmp,5,"建模");
-			  $ScheduleDataAni =  filterArray($stmp,5,"動作");
-			  $ScheduleDataVfx =  filterArray($stmp,5,"特效");
+ 
 	 } 
      function ShowButton(){
 		      global $type1Title,$type2Title,$type3Title;
@@ -136,29 +134,37 @@
 				   DrawStageList($Rect);
  		      for($i=0;$i<count($data);$i++){
 				  //內容
-			     DrawRect("",11,$fontColor,$Rect[0],$Rect[1],200,100,"#000000");
+			     DrawRect("",11,$fontColor,$Rect[0],$Rect[1],300,100,"#000000");
 			     DrawSingle($data[$i],$Rect,$ListArray,$size[0]);
 				 //上傳圖檔
 			     $n="pic_".$i;
 				 $c="c_".$i;
 				 if($_POST['Up']=="ViewPic"){
-				      DrawRect("",11,$fontColor,$Rect[0]+200,$Rect[1],200,100,"#000000");
+				      DrawRect("",11,$fontColor,$Rect[0]+200,$Rect[1],600,100,"#000000");
 				 echo "<input type=hidden name=".$c." value=".$data[$i][2].">";
 				 $input="<input type=file name=".$n."	id=file  size=10   >";
-				 DrawInputRect("代表圖檔"." ","12","#ffffff", $Rect[0]+202, $Rect[1]  ,1220,20, $colorCodes[4][2],"top", $input);
+				 DrawInputRect("代表圖檔"." ","10","#ffffff", $Rect[0]+202, $Rect[1]  ,1220,20, $colorCodes[4][2],"top", $input);
 				 //max檔
 				 $n="Max_".$i;
 				 $input="<input type=file name=".$n."	id=file  size=10   >";
-				 DrawInputRect("3D檔"." ","12","#ffffff", $Rect[0] +202, $Rect[1]+22  ,1220,20, $colorCodes[4][2],"top", $input);
+				 DrawInputRect("3D檔"." ","10","#ffffff", $Rect[0] +202, $Rect[1]+22  ,1220,20, $colorCodes[4][2],"top", $input);
 				 
 				 //ani檔
 				 $n="Ani_".$i;
 				 $input="<input type=file name=".$n."	id=file  size=10   >";
-				 DrawInputRect("動畫檔"." ","12","#ffffff", $Rect[0] +202, $Rect[1]+43  ,1220,20, $colorCodes[4][2],"top", $input);
+				 DrawInputRect("動畫檔"." ","10","#ffffff", $Rect[0] +202, $Rect[1]+43  ,1220,20, $colorCodes[4][2],"top", $input);
 			    //VFX檔
 				 $n="VFX_".$i;
 				 $input="<input type=file name=".$n."	id=file  size=10   >";
-				 DrawInputRect("特效檔"." ","12","#ffffff", $Rect[0]+ 202, $Rect[1]+65  ,1220,20, $colorCodes[4][2],"top", $input);
+				 DrawInputRect("特效檔"." ","10","#ffffff", $Rect[0]+ 202, $Rect[1]+65  ,1220,20, $colorCodes[4][2],"top", $input);
+				
+				 //Buff
+				 $n="Buff_C_".$i;
+				 $input="<input type=file name=".$n."	id=file  size=10   >";
+				 DrawInputRect("技能1"." ","10","#ffffff", $Rect[0]+ 402, $Rect[1]   ,1220,20, $colorCodes[4][2],"top", $input);
+				 $n="Buff_P_".$i;
+				 $input="<input type=file name=".$n."	id=file  size=10   >";
+				 DrawInputRect("技能2"." ","10","#ffffff", $Rect[0]+ 402, $Rect[1]+22   ,1220,20, $colorCodes[4][2],"top", $input);
 				 }
 				 $Rect[1]+=104;
 			  }
@@ -182,8 +188,8 @@
 			  $state="設定";
 			  $pic="ResourceData/".$type1."/viewPic/".$Base[2].".png";
 			  if( file_exists($pic)){
-			      DrawLinkPic($pic,$Rect[1]-44,$Rect[0]+94,96,96,$Link);
-				    $state="建模";
+			      DrawLinkPic($pic,$Rect[1]-44,$Rect[0]+94,96,96,$pic);
+				  $state="建模";
 			  }	
 			  //max
 			  $max="ResourceData/".$type1."/model/".$Base[2] ;
@@ -211,39 +217,38 @@
 				   $Rect[0]+=22;
 			       DrawLinkPic($pic,$Rect[1] ,$Rect[0] ,20,20,$file);
 				   $state="fin";
-			 } 
+			  } 
+			  //buff
+			  if ($type1=="hero"){
+			  	 $file="ResourceData/hero/buff/".$Base[2]."_C.png" ;
+                 DrawfileLinkPic( $file, $file,array($Rect[0]+192,$Rect[1]-45,48,48));
+				 $file="ResourceData/hero/buff/".$Base[2]."_P.png" ;
+                 DrawfileLinkPic( $file, $file,array($Rect[0]+192,$Rect[1]+5,48,48));
+			  }
+
 			 if( $state!="fin")
 			 CheckState($Code, $BaseRect,$state);
-		
-		
- 
+	 }
+	 function DrawfileLinkPic($Link,$pic,$Rect){
+		   if ( file_exists( $Link)){
+			       DrawLinkPic($pic,$Rect[1] ,$Rect[0] ,$Rect[2] ,$Rect[3],$Link);
+			  } 
 	 }
 	 function CheckState($Code,$Rect,$state){
 	          global $ScheduleData,$ScheduleDataPlan;
 			  $SCCode=returnCode($ScheduleDataPlan,$Code);
-			 // echo $Code.".".$SCCode.">".$state;
-			 $Rect[1]+=44;
+			  $Rect[1]+=44;
 			  $pr=filterArray($ScheduleData,5,$state);
 			  $p= filterArray($pr,3,$SCCode);
-			   /*
-			  $p=array();
-			  switch($state){
-			      case "設定":
-				       $p= filterArray($ScheduleData3D,3,$SCCode);
-					  break;
-				  case "建模":
-				       $p= filterArray($ScheduleDataAni,3,$SCCode);
-					   break;
-				  case "動作":
-				       $p= filterArray($ScheduleDataVfx,3,$SCCode);
-					   break;
-			  }
-			  */
 			  $msg="未排定";
-			  if(count($p)>=1)$msg= $state.">".$p[0][9]."製作中".$p[0][2]."[".$p[0][6]."]";
+			  $BGC="#ee4422;";
+			  if(count($p)>=1){
+				  $msg= $state.">".$p[0][9].$p[0][7].$p[0][2]."[".$p[0][6]."]";
+				  $BGC="#22aa55";
+			  }
 			  $Rect[1]+=22;
 			  $Rect[3]=32;
-		      DrawRect_Layer($msg,10,"#ffffff",$Rect,"#444444",$Layer);
+		      DrawRect_Layer($msg,10,"#ffffff",$Rect,$BGC,$Layer);
 	 }
 	 
 	 
@@ -349,6 +354,8 @@
 			  $dir="ResourceData/".$type1;
 		      $picdir=$dir."/viewPic/Base";
 			  $viewDir=$dir."/viewPic";
+			  $BuffIconDir="ResourceData/hero/buff";
+		      MakeDir($BuffIconDir);	
               MakeDir($picdir);			
 			  MakeDir($viewDir);		
 	          for($i=0;$i<count($data);$i++){
@@ -359,10 +366,8 @@
 				  if($_FILES[$n]["name"]!=""){
 					 $ext = explode(".",$_FILES[$n]["name"]);
                      $filePath=$picdir."/".$code.".".$ext[1];
-					// echo $filePath;
 				     move_uploaded_file($_FILES[$n]["tmp_name"], $filePath);
 					 $finalPath= $viewDir."/".$code.".png";
-					//  echo  $finalPath;
 				     $cmd="convert     $filePath    -flatten  -resize 256  $finalPath ";
 					 exec($cmd);
 				  }
@@ -370,9 +375,25 @@
 				   UPTypeFile($dir,"model","Max_",$i,$code);
 				   UPTypeFile($dir,"Ani","Ani_",$i,$code);
 			       UPTypeFile($dir,"VFX","VFX_",$i,$code);
+				   if($type1=="hero"){
+					   $nameArray=array( array("Buff_C_".$i,$code."_C"), array("Buff_P_".$i,$code."_P"));
+				       UPskillIcon ( $BuffIconDir,$i ,$nameArray);
+				   }
+				     
 			  }
 			  UpStageFile();
-			   echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
+			  //echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
+	 }
+	 function UPskillIcon($Dir,$i,$nameArray){
+		      for($i=0;$i<count($nameArray);$i++){
+				   if($_FILES[$nameArray[$i][0]]["name"]!=""){
+				      $ext = explode(".",$_FILES[$nameArray[$i][0]]["name"]);
+                      $filePath=$Dir."/".$nameArray[$i][1] .".".$ext[1];
+					   move_uploaded_file($_FILES[$nameArray[$i][0]]["tmp_name"], $filePath);
+					  $finalPath =$Dir."/".$nameArray[$i][1].".png";
+					  $cmd="convert     $filePath    -flatten   $finalPath ";
+				   }					   
+			  }
 	 }
 	 function UPTypeFile($dir,$type,$name,$i,$code){
 		          $na=$name.$i ;
