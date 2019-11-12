@@ -382,7 +382,7 @@
 				     
 			  }
 			  UpStageFile();
-			  //echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
+			  echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
 	 }
 	 function UPskillIcon($Dir,$i,$nameArray){
 		      for($i=0;$i<count($nameArray);$i++){
