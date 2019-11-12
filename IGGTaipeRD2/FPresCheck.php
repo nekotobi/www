@@ -8,10 +8,11 @@
    include('PubApi.php');
    DefineBaseData();
    CookieSet();
-
    ListContent();
    ShowButton();
    CheckUp();
+   //檢查進度
+   GetCode();
 ?>
 
 <?php //title
@@ -35,8 +36,6 @@
 			  //$stmp= getMysqlDataArray("fpschedule");	
 			  global $ResData;
 			  $ResData=getMysqlDataArray( $tableName);	
-		      //$ScheduleData  =  filterArray($stmp,0,"data");
-		      //$ScheduleDataTitle=filterArray($ScheduleData,5,"工項");
 			  global $type1Title;
 			  $type1Title=array( 
 			           array("英雄","hero"),
@@ -59,8 +58,13 @@
 			        array_push($type3Title,array($s,$i));
 			   } 
 		 	  global $CookieArray;
-			
-			 // $ResDatafi=getData();
+			  global $ScheduleData, $ScheduleDataPlan ,$ScheduleData3D,$ScheduleDataAni,$ScheduleDataVfx;
+			  $stmp= getMysqlDataArray("fpschedule");	
+			  $ScheduleData=$stmp;
+	          $ScheduleDataPlan  =  filterArray($stmp,5,"工項");
+			  $ScheduleData3D =  filterArray($stmp,5,"建模");
+			  $ScheduleDataAni =  filterArray($stmp,5,"動作");
+			  $ScheduleDataVfx =  filterArray($stmp,5,"特效");
 	 } 
      function ShowButton(){
 		      global $type1Title,$type2Title,$type3Title;
@@ -75,6 +79,10 @@
 			  $Rect=array(20,110,100,20);
 			  sendVal($BaseURL,$ValArray,"submit","開啟編輯",$Rect, 12, "#ee6666", "#ffffff" );
 			  if($_POST['Up']=="ViewPic") DrawRect("注意不要一次上傳太多檔案",12, "#ffffff",   $Rect[0], $Rect[1],200,20,"#ff1234" );
+			  //取得code
+			  $Rect=array(1224,10,100,20);
+			  $ValArray=array(array("CheckCode","true"));
+			  sendVal($BaseURL,$ValArray,"submit","CheckCode",$Rect,8, "#aaaaaa", "#ffffff" );
 	 }
  
 	 function DrawButton($Rect,$btArray,$arraytype,$AddArray,$BgColor="#000000",  $fontColor="#ffffff"){
@@ -84,7 +92,6 @@
 			      $BGC=$BgColor;
 			      if($_COOKIE[$arraytype]==$btArray[$i][1]){
 					  $BGC="#ee0000";
-	
 				  }
 				  $valArray=array(array($arraytype, $btArray[$i][1]), $AddArray);
 				  $SubmitName="submit";
@@ -93,8 +100,6 @@
 				  if($arraytype=="type1" && $_COOKIE[$arraytype]==$btArray[$i][1])
 					  DrawRect( "x".count($ResDatafi),10,"#ffffff", $Rect[0]+60, $Rect[1]+3,20,15,"#000000");
 				  $Rect[0]+=$Rect[2]+5;
-			
-				   
 			  }
 	 
 	 }
@@ -117,12 +122,10 @@
      function ListContent(){
 	          global  $CookieArray,$MysQlArray;
 			  global $ResData, $ResDatafi;
-
               for($i=0;$i<count($CookieArray);$i++)  if($_COOKIE[$CookieArray[$i]]=="")return;
 			  $data = getData();
-			//  $data= $ResDatafi;
-			   $ResDatafi= $data; 
-			  //
+			  $ResDatafi= $data; 
+
 			  
 			  $size= filterArray( $ResData,0,"size");
 			  $title= filterArray( $ResData,0,"name");
@@ -157,12 +160,9 @@
 				 $input="<input type=file name=".$n."	id=file  size=10   >";
 				 DrawInputRect("特效檔"." ","12","#ffffff", $Rect[0]+ 202, $Rect[1]+65  ,1220,20, $colorCodes[4][2],"top", $input);
 				 }
-				 
 				 $Rect[1]+=104;
-			
 			  }
-			  
-			 if($_POST['Up']!="") $submit ="<input type=submit name=submit value=上傳>";
+			  if($_POST['Up']!="") $submit ="<input type=submit name=submit value=上傳>";
 	          DrawInputRect("","12","#ffffff", 440 ,  120,100,20, $colorCodes[4][2],"上傳",$submit );
 			  echo "</form>";
 	
@@ -172,7 +172,7 @@
               $fontColor="#000000";
 			  $BgColor="#ffffff";
 		  	  $Rect[0]+=2;
-			   $Rect[1]+=2;
+			  $Rect[1]+=2;
               DrawRect_Layer($Base[2],12,$fontColor,$Rect,$BgColor,$Layer);
 			  $Rect[1]+=22;
 			  DrawRect_Layer($Base[3],12,$fontColor,$Rect,$BgColor,$Layer);
@@ -181,31 +181,68 @@
 			  $max="ResourceData/".$type1."/model/".$Base[2] ;
 			  $file=  checkfileExists( $max,"zip");
 			  $pic="Pics/3D.png";
+			    $state="設定";
+			  $Code=$Base[2];
 			  if ($file!=""){
 			       DrawLinkPic($pic,$Rect[1] ,$Rect[0],20,20,$file);
-			  }
+				   $state="動作";
+			  } 
 			  //Ani
 			  $Ani="ResourceData/".$type1."/Ani/".$Base[2] ;
 			  $file=  checkfileExists( $Ani,"zip");
 			  $pic="Pics/Ani.png";
 			  if ($file!=""){
-			       DrawLinkPic($pic,$Rect[1] ,$Rect[0]+22,20,20,$file);
-			  }
+				  $Rect[0]+=22;
+			       DrawLinkPic($pic,$Rect[1] ,$Rect[0] ,20,20,$file);
+				   $state="特效";
+			  } 
 			  //VFX
 			  $file="ResourceData/".$type1."/VFX/".$Base[2].".unitypackage" ;
 			  $pic="Pics/VFX.png";
 			  if ( file_exists(  $file)){
-			       DrawLinkPic($pic,$Rect[1] ,$Rect[0]+44,20,20,$file);
-			  }
+				   $Rect[0]+=22;
+			       DrawLinkPic($pic,$Rect[1] ,$Rect[0] ,20,20,$file);
+				   $state="fin";
+			 } 
+			 if( $state!="fin")
+			 CheckState($Code,$Rect,$state);
 			  //圖檔
-			  $Rect[0]+=98;
+			  $Rect[0]+=54;
 			  $Rect[1]-=44;
 			  $pic="ResourceData/".$type1."/viewPic/".$Base[2].".png";
 			  if( file_exists($pic)){
 			      DrawLinkPic($pic,$Rect[1],$Rect[0],96,96,$Link);
 			  }	
-			  
+ 
 	 }
+	 function CheckState($Code,$Rect,$state){
+	          global $ScheduleData,$ScheduleDataPlan;
+			  $SCCode=returnCode($ScheduleDataPlan,$Code);
+			 // echo $Code.".".$SCCode.">".$state;
+			  $pr=filterArray($ScheduleData,5,$state);
+			  $p= filterArray($pr,3,$SCCode);
+			   /*
+			  $p=array();
+			  switch($state){
+			      case "設定":
+				       $p= filterArray($ScheduleData3D,3,$SCCode);
+					  break;
+				  case "建模":
+				       $p= filterArray($ScheduleDataAni,3,$SCCode);
+					   break;
+				  case "動作":
+				       $p= filterArray($ScheduleDataVfx,3,$SCCode);
+					   break;
+			  }
+			  */
+			 // $msg="未製作";
+			  if(count($p)>=1)$msg= $state.">".$p[0][9]."製作中".$p[0][2]."[".$p[0][6]."]";
+			  $Rect[1]+=22;
+			  $Rect[3]=32;
+		      DrawRect_Layer($msg,10,"#ffffff",$Rect,"#444444",$Layer);
+	 }
+	 
+	 
 	 function DrawSingle_old($Base,$Rect,$ListArray,$size){
 		    for($i=0;$i<count($ListArray);$i++){
 				 $s=$ListArray[$i];
@@ -270,6 +307,31 @@
 	  }
 
 ?>
+
+<?php //CheckPre進度
+	 function GetCode(){
+	           if ($_POST['CheckCode']!="true")return;
+			   global $ResData;
+			   $stmp= getMysqlDataArray("fpschedule");	
+	           $ScheduleData  =  filterArray($stmp,5,"工項");
+			   for($i=0;$i<count($ResData);$i++){
+				   if($ResData[$i][2]!=""){
+				      $c=  returnCode($ScheduleData,$ResData[$i][2]);
+				   echo "</br>".$c;
+				   }
+			    
+			   }
+			   //echo "Check";
+	 }
+	 function returnCode($ScheduleData,$Code){
+	          for($i=0;$i<count($ScheduleData);$i++){
+			      if(strpos($ScheduleData[$i][3],$Code) !== false)
+					  return $ScheduleData[$i][1];				  
+			  }
+	 }
+
+?>
+
 
 <?php //up
      function CheckUp(){
