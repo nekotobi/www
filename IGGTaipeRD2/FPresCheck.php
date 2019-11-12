@@ -389,9 +389,10 @@
 				   if($_FILES[$nameArray[$i][0]]["name"]!=""){
 				      $ext = explode(".",$_FILES[$nameArray[$i][0]]["name"]);
                       $filePath=$Dir."/".$nameArray[$i][1] .".".$ext[1];
-					   move_uploaded_file($_FILES[$nameArray[$i][0]]["tmp_name"], $filePath);
+					  move_uploaded_file($_FILES[$nameArray[$i][0]]["tmp_name"], $filePath);
 					  $finalPath =$Dir."/".$nameArray[$i][1].".png";
 					  $cmd="convert     $filePath    -flatten   $finalPath ";
+					   exec($cmd);
 				   }					   
 			  }
 	 }
