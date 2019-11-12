@@ -207,7 +207,7 @@
 			 if( $state!="fin")
 			 CheckState($Code,$Rect,$state);
 			  //圖檔
-			  $Rect[0]+=54;
+			  $Rect[0]+=94;
 			  $Rect[1]-=44;
 			  $pic="ResourceData/".$type1."/viewPic/".$Base[2].".png";
 			  if( file_exists($pic)){
