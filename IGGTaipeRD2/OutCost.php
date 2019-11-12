@@ -32,7 +32,7 @@
 			 $CookieArray=array('SortType','ListType','sn',"SelectOut","Column","info","Rx","Ry","EditType");
              setcookies($CookieArray, $BaseURL);
 			 SetGlobalcookieData($CookieArray);
-			  //CheckCookie($CookieArray);
+			 //CheckCookie($CookieArray);
 			 //表單資料
 		     global $ListNames,$ListSize,$OutCosts,$OutsLastSort;
 			 global $data_library,$tableName,$pregressData;
@@ -221,9 +221,7 @@
 				 MakeHiLight();
 			 }
 			 if($submit=="上傳表單")return;
-			 if($submit=="確定上傳表單")return;
-		  //   if($submit!="搜尋" or $submit!="")return;
-		      
+			 if($submit=="確定上傳表單")return;     
 	         if($ListType=="Processing"){
 				 $costList=array(1,5,7,8,9,10,11,12,13);
 			    //$pregressList=array(3,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28);
@@ -252,7 +250,7 @@
 			    EditRemark();
 				// ListPregress();
 			 }
-			  if($ListType=="EditOutsForm") EditOutsForm();
+			 if($ListType=="EditOutsForm") EditOutsForm();
 	        // if($ListType=="inputOutsForm")  EditOutsForm();
 	 
 	}
@@ -264,6 +262,7 @@
 			//  if($submit=="")return;
               if($submit=="+註解") EditRemark();
 			  if($submit=="搜尋") filterContacts();
+			  if($submit=="搜尋製作內容")filterDetail();
 			  if($submit=="新增外包表單")AddNewMysqlData();
 	          if($submit=="更新註解")RemarkUpdate();
 			  if($submit=="上傳圖檔") UpPic();
@@ -276,6 +275,7 @@
 				  setcookiesForce($CookieArray,$BackURL);
 			  }
 	}
+	
 ?>
 <?php //列印請款進程
       function ListPregress(){
@@ -415,6 +415,30 @@
 	  }
 ?>
 <?php //過濾
+	function filterDetail(){
+		     
+		     $keyWord=$_POST['searchDetail'];
+			 if($keyWord=="")return;
+	         $DetailDatas=getMysqlDataArray("outsdetail"); 
+			 $collectData=array();
+			 for($i=0;$i<count($DetailDatas);$i++){
+			     if(strpos($DetailDatas[$i][4],$keyWord) !== false){ 
+				    if (!in_array( $DetailDatas[$i][1],$collectData)){
+					array_push($collectData,$DetailDatas[$i][1]);
+				//	echo $DetailDatas[$i][1];
+					}
+				 }
+			 }
+			 global $OutCosts;
+		     $fi=array();
+			 for($i=0;$i<count($collectData);$i++){
+				  $ff=filterArray( $OutCosts,1,$collectData[$i]);
+
+			      array_push($fi,$ff[0]);
+			 }
+			 global $OutCosts;
+			 $OutCosts=$fi;
+	}
 	function filterContacts(){
 		     global $outsBaseData,$outsBaseSelects;
 			  $selectName= $_POST['selectName'];
@@ -472,14 +496,18 @@
 			 // echo   "<form id='ChangeOut'  name='Show' action='".$BaseURL."' method='post'>";
 		      $input=	MakeSelectionV2($outsBaseSelects,$selectName,"selectName",10);
 			  DrawInputRect("顯示外包",10,"#222222",$x,$y,$w,$h,$BgColor,$WorldAlign,$input);
-			  
 			  $x+=$w+2;
-			 
 			  $input ="<input type=text name=searchName   style= font-size:10px; >";
 			  DrawInputRect("",10,"#222222",$x,$y,$w,$h,$BgColor,$WorldAlign,$input);
 			  $x+=102;
 			  $w=100;
 			  $submitP="<input type=submit name=submit value=搜尋 style= font-size:10px; >";
+	          DrawInputRect("",8 ,"#ffffff",$x,$y,$w,$h, $colorCodes[4][2],"top",$submitP);
+			  $x+=102;
+			  $input ="<input type=text name=searchDetail   style= font-size:10px; >";
+			  DrawInputRect("",10,"#222222",$x,$y,$w,$h,$BgColor,$WorldAlign,$input);
+			   $x+=102;
+			  $submitP="<input type=submit name=submit value=搜尋製作內容 style= font-size:10px; >";
 	          DrawInputRect("",8 ,"#ffffff",$x,$y,$w,$h, $colorCodes[4][2],"top",$submitP);
 			  echo "</form>";
 	 }
@@ -612,8 +640,7 @@
 			  global $BaseURL,$BackURL,$SortType,$ListType;
 					 $Link=$BaseURL."?SortType=".$SortType."&ListType=prepress";
 			    echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
-	 }
-	 
+	 } 
      function AddNewMysqlData(){
 	          global  $data_library,$tableName,$OutCosts;
 			  global  $BaseURL;
