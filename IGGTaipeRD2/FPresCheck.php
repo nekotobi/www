@@ -169,6 +169,7 @@
 	 }
      function DrawSingle ($Base,$Rect,$ListArray,$size){
 		      global $type1;
+			  $BaseRect=$Rect;
               $fontColor="#000000";
 			  $BgColor="#ffffff";
 		  	  $Rect[0]+=2;
@@ -178,10 +179,10 @@
 			  DrawRect_Layer($Base[3],12,$fontColor,$Rect,$BgColor,$Layer);
 			  $Rect[1]+=22;
 			  //圖檔
-			 	 $state="設定";
+			  $state="設定";
 			  $pic="ResourceData/".$type1."/viewPic/".$Base[2].".png";
 			  if( file_exists($pic)){
-			      DrawLinkPic($pic,$Rect[1],$Rect[0]+94,96,96,$Link);
+			      DrawLinkPic($pic,$Rect[1]-44,$Rect[0]+94,96,96,$Link);
 				    $state="建模";
 			  }	
 			  //max
@@ -212,7 +213,7 @@
 				   $state="fin";
 			 } 
 			 if( $state!="fin")
-			 CheckState($Code,$Rect,$state);
+			 CheckState($Code, $BaseRect,$state);
 		
 		
  
@@ -221,6 +222,7 @@
 	          global $ScheduleData,$ScheduleDataPlan;
 			  $SCCode=returnCode($ScheduleDataPlan,$Code);
 			 // echo $Code.".".$SCCode.">".$state;
+			 $Rect[1]+=44;
 			  $pr=filterArray($ScheduleData,5,$state);
 			  $p= filterArray($pr,3,$SCCode);
 			   /*
