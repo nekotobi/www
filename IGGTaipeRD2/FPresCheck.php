@@ -177,11 +177,18 @@
 			  $Rect[1]+=22;
 			  DrawRect_Layer($Base[3],12,$fontColor,$Rect,$BgColor,$Layer);
 			  $Rect[1]+=22;
+			  //圖檔
+			 	 $state="設定";
+			  $pic="ResourceData/".$type1."/viewPic/".$Base[2].".png";
+			  if( file_exists($pic)){
+			      DrawLinkPic($pic,$Rect[1],$Rect[0]+94,96,96,$Link);
+				    $state="建模";
+			  }	
 			  //max
 			  $max="ResourceData/".$type1."/model/".$Base[2] ;
 			  $file=  checkfileExists( $max,"zip");
 			  $pic="Pics/3D.png";
-			    $state="設定";
+		
 			  $Code=$Base[2];
 			  if ($file!=""){
 			       DrawLinkPic($pic,$Rect[1] ,$Rect[0],20,20,$file);
@@ -206,13 +213,8 @@
 			 } 
 			 if( $state!="fin")
 			 CheckState($Code,$Rect,$state);
-			  //圖檔
-			  $Rect[0]+=94;
-			  $Rect[1]-=44;
-			  $pic="ResourceData/".$type1."/viewPic/".$Base[2].".png";
-			  if( file_exists($pic)){
-			      DrawLinkPic($pic,$Rect[1],$Rect[0],96,96,$Link);
-			  }	
+		
+		
  
 	 }
 	 function CheckState($Code,$Rect,$state){
