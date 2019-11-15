@@ -119,8 +119,10 @@
      function DrawPercentage(){
 		      global  $Percentage;
 			  global  $ResDatafi;
+			  global $type1;
 			  $all=count($ResDatafi);
 			  if($all==0)return;
+			  if ( $type1=="hero")$all=30;
 			  $i=round($Percentage[0]/$all*100);
 			  $d=round($Percentage[1]/$all*100);
 			  $a=round($Percentage[2]/$all*100);
