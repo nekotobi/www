@@ -120,12 +120,13 @@
 		      global  $Percentage;
 			  global  $ResDatafi;
 			  $all=count($ResDatafi);
-			  $i=round($Percentage[0]/$all)*100;
-			  $d=round($Percentage[1]/$all)*100;
-			  $a=round($Percentage[2]/$all)*100;
-			  $v=round($Percentage[3]/$all)*100;
-			  $msg="[設定]".$i."%"."[建模]".$d."%"."[動畫]".$a."%"."[特效]".$v."%";
-			  DrawRect($msg,11,"#ffffff",600,40,200,20,"#000000");
+			  if($all==0)return;
+			  $i=round($Percentage[0]/$all*100);
+			  $d=round($Percentage[1]/$all*100);
+			  $a=round($Percentage[2]/$all*100);
+			  $v=round($Percentage[3]/$all*100);
+			  $msg= $all."[設定]".$i."%"."[建模]".$d."%"."[動畫]".$a."%"."[特效]".$v."%";
+			  DrawRect($msg,11,"#ffffff",600,30,300,20,"#000000");
 	 }
      function getData(){
 		      global  $CookieArray,$MysQlArray;
