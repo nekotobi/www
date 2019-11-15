@@ -69,13 +69,19 @@
 	 function getXlsPath(){
 		      global  $ResDatafi;
 	          global  $type1Title,$type1;
-			  $type=$type1Title[$type1];
-			 // echo $type1.">".$type1Title[$type1];
-			  
+			  $type=ReturnCH($type1Title,$type1);
+			  echo $type1.">". $type;
+			  $GDCodeArray=array();
 			  for($i=0;$i<count($ResDatafi);$i++){
-				//  echo $ResDatafi[$i][2];
+				   array_push( $GDCodeArray,$ResDatafi[$i][2]);
 			  }
-			  return returnXlsArray($type,$GDCodeArray);
+			  $t=returnXlsArray($type,$GDCodeArray);
+			  return $t;
+	 }
+	 function ReturnCH($typeArray,$typec){
+	      for($i=0;$i<count($typeArray);$i++){
+		     if($typeArray[$i][1]==$typec) return $typeArray[$i][0];
+		  }
 	 }
      function ShowButton(){
 		      global $type1Title,$type2Title,$type3Title;
@@ -127,7 +133,7 @@
 			  $d=round($Percentage[1]/$all*100);
 			  $a=round($Percentage[2]/$all*100);
 			  $v=round($Percentage[3]/$all*100);
-			  $msg= $all."[設定]".$i."%"."[建模]".$d."%"."[動畫]".$a."%"."[特效]".$v."%";
+			  $msg= "[總量]".$all."[設定]".$i."%"."[建模]".$d."%"."[動畫]".$a."%"."[特效]".$v."%";
 			  DrawRect($msg,11,"#ffffff",600,30,300,20,"#000000");
 	 }
      function getData(){
@@ -161,7 +167,7 @@
  		      for($i=0;$i<count($data);$i++){
 				  //內容
 			     DrawRect("",11,$fontColor,$Rect[0],$Rect[1],300,100,"#000000");
-			     DrawSingle($data[$i],$Rect,$ListArray,$size[0]);
+			     DrawSingle($data[$i],$Rect,$ListArray,$size[0],$xlsPath[$i]);
 				 //上傳圖檔
 			     $n="pic_".$i;
 				 $c="c_".$i;
@@ -198,7 +204,7 @@
 	          DrawInputRect("","12","#ffffff", 440 ,  120,100,20, $colorCodes[4][2],"上傳",$submit );
 			  echo "</form>";
 	 }
-     function DrawSingle ($Base,$Rect,$ListArray,$size){
+     function DrawSingle ($Base,$Rect,$ListArray,$size,$xls){
 		      global $type1;
 			  global  $Percentage;
 			  $BaseRect=$Rect;
@@ -248,6 +254,9 @@
 				   $state="fin";
 				   $Percentage[3]+=1;
 			  } 
+			  //Xls
+			  $pic="Pics/excel.png";
+			    DrawLinkPic($pic,$Rect[1] ,$Rect[0]+22 ,20,20,$xls);  
 			  //buff
 			  if ($type1=="hero"){
 			  	 $file="ResourceData/hero/buff/".$Base[2]."_C.png" ;
