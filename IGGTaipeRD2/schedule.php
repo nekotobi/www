@@ -14,7 +14,6 @@
    include('mysqlApi.php');
    include('scheduleApi.php');
      cookieSet();
-	
      defineData_schedule();   //定義基礎資料(scheduleApi)
      GetCalendarData(); //取得日曆資料(scheduleApi)
      DrawBaseCalendar_v2(); //列印基礎日期資料(scheduleApi)

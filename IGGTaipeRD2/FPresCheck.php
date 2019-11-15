@@ -5,7 +5,8 @@
    <title>FP資源索引v2</title>
 </head>
 <?php //主控台
-   include('PubApi.php');
+     require_once('PubApi.php');
+   require_once 'ResGDfindApi.php';
    DefineBaseData();
    CookieSet();
    ListContent();
@@ -13,6 +14,7 @@
    CheckUp();
    //檢查進度
    GetCode();
+   DrawPercentage();
 ?>
 
 <?php //title
@@ -38,9 +40,9 @@
 			  $ResData=getMysqlDataArray( $tableName);	
 			  global $type1Title;
 			  $type1Title=array( 
-			           array("英雄","hero"),
-					   array("怪物","mob"),
-					   array("魔王","boss")
+			           array("英雄","hero" ),
+					   array("小怪","mob"),
+					   array("boss&召喚獸" ,"boss")
 			   );
 			  global $type2Title;
 			  $type2Title=array( 
@@ -64,6 +66,17 @@
 	          $ScheduleDataPlan  =  filterArray($stmp,5,"工項");
  
 	 } 
+	 function getXlsPath(){
+		      global  $ResDatafi;
+	          global  $type1Title,$type1;
+			  $type=$type1Title[$type1];
+			 // echo $type1.">".$type1Title[$type1];
+			  
+			  for($i=0;$i<count($ResDatafi);$i++){
+				//  echo $ResDatafi[$i][2];
+			  }
+			  return returnXlsArray($type,$GDCodeArray);
+	 }
      function ShowButton(){
 		      global $type1Title,$type2Title,$type3Title;
 			  $Rect=array(20,30,100,20);
@@ -82,7 +95,6 @@
 			  $ValArray=array(array("CheckCode","true"));
 			  sendVal($BaseURL,$ValArray,"submit","CheckCode",$Rect,8, "#aaaaaa", "#ffffff" );
 	 }
- 
 	 function DrawButton($Rect,$btArray,$arraytype,$AddArray,$BgColor="#000000",  $fontColor="#ffffff"){
 		    global $BaseURL;
 			global $ResDatafi;
@@ -104,9 +116,20 @@
 ?>
 
 <?php //List
+     function DrawPercentage(){
+		      global  $Percentage;
+			  global  $ResDatafi;
+			  $all=count($ResDatafi);
+			  $i=round($Percentage[0]/$all)*100;
+			  $d=round($Percentage[1]/$all)*100;
+			  $a=round($Percentage[2]/$all)*100;
+			  $v=round($Percentage[3]/$all)*100;
+			  $msg="[設定]".$i."%"."[建模]".$d."%"."[動畫]".$a."%"."[特效]".$v."%";
+			  DrawRect($msg,11,"#ffffff",600,40,200,20,"#000000");
+	 }
      function getData(){
 		      global  $CookieArray,$MysQlArray;
-	          global $ResData;
+	          global  $ResData;
 			  $t1=$_COOKIE[$CookieArray[0]];
 			  $t2=$_COOKIE[$CookieArray[1]];
 			  $t3=$_COOKIE[$CookieArray[2]];
@@ -116,15 +139,15 @@
 			  $data= SortList( $data,3);
 			  return $data;
 	 }
-     
      function ListContent(){
 	          global  $CookieArray,$MysQlArray;
 			  global $ResData, $ResDatafi;
               for($i=0;$i<count($CookieArray);$i++)  if($_COOKIE[$CookieArray[$i]]=="")return;
 			  $data = getData();
 			  $ResDatafi= $data; 
-
-			  
+              $xlsPath=getXlsPath();
+			  global  $Percentage;
+			  $Percentage=array(0,0,0,0);
 			  $size= filterArray( $ResData,0,"size");
 			  $title= filterArray( $ResData,0,"name");
 			  $ListArray=array(2,3,4);
@@ -171,10 +194,10 @@
 			  if($_POST['Up']!="") $submit ="<input type=submit name=submit value=上傳>";
 	          DrawInputRect("","12","#ffffff", 440 ,  120,100,20, $colorCodes[4][2],"上傳",$submit );
 			  echo "</form>";
-	
 	 }
      function DrawSingle ($Base,$Rect,$ListArray,$size){
 		      global $type1;
+			  global  $Percentage;
 			  $BaseRect=$Rect;
               $fontColor="#000000";
 			  $BgColor="#ffffff";
@@ -190,6 +213,7 @@
 			  if( file_exists($pic)){
 			      DrawLinkPic($pic,$Rect[1]-44,$Rect[0]+94,96,96,$pic);
 				  $state="建模";
+				    $Percentage[0]+=1;
 			  }	
 			  //max
 			  $max="ResourceData/".$type1."/model/".$Base[2] ;
@@ -200,6 +224,7 @@
 			  if ($file!=""){
 			       DrawLinkPic($pic,$Rect[1] ,$Rect[0],20,20,$file);
 				   $state="動作";
+				    $Percentage[1]+=1;
 			  } 
 			  //Ani
 			  $Ani="ResourceData/".$type1."/Ani/".$Base[2] ;
@@ -209,6 +234,7 @@
 				  $Rect[0]+=22;
 			       DrawLinkPic($pic,$Rect[1] ,$Rect[0] ,20,20,$file);
 				   $state="特效";
+				    $Percentage[2]+=1;
 			  } 
 			  //VFX
 			  $file="ResourceData/".$type1."/VFX/".$Base[2].".unitypackage" ;
@@ -217,13 +243,14 @@
 				   $Rect[0]+=22;
 			       DrawLinkPic($pic,$Rect[1] ,$Rect[0] ,20,20,$file);
 				   $state="fin";
+				   $Percentage[3]+=1;
 			  } 
 			  //buff
 			  if ($type1=="hero"){
 			  	 $file="ResourceData/hero/buff/".$Base[2]."_C.png" ;
-                 DrawfileLinkPic( $file, $file,array($Rect[0]+192,$Rect[1]-45,48,48));
+                 DrawfileLinkPic( $file, $file,array($Rect[0]+182,$Rect[1]-45,48,48));
 				 $file="ResourceData/hero/buff/".$Base[2]."_P.png" ;
-                 DrawfileLinkPic( $file, $file,array($Rect[0]+192,$Rect[1]+5,48,48));
+                 DrawfileLinkPic( $file, $file,array($Rect[0]+182,$Rect[1]+5,48,48));
 			  }
 
 			 if( $state!="fin")
@@ -250,7 +277,6 @@
 			  $Rect[3]=32;
 		      DrawRect_Layer($msg,10,"#ffffff",$Rect,$BGC,$Layer);
 	 }
-	 
 	 
 	 function DrawSingle_old($Base,$Rect,$ListArray,$size){
 		    for($i=0;$i<count($ListArray);$i++){
@@ -429,3 +455,5 @@
 	 }
 
 ?>
+
+<body bgcolor="#b5c4b1">

@@ -1,10 +1,3 @@
- <!DOCTYPE html>
-<html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-   <title>????</title>
-</head>
-<body bgcolor="#999999">
 <?php //主功能
 	   $id=$_COOKIE['IGG_id'];
 	   $rank=$_COOKIE['IGG_Rank'];
@@ -796,4 +789,25 @@
 		   echo "</form>";
 	   }
 	   */
+?>
+
+<?php //中文資料夾轉換相關
+ function ReturnPhpDir($BasePath){
+     $strs=explode("/",$BasePath);
+	 $str="";
+	 $dir=$strs[0]."/";
+	 for($i=1;$i<count($strs);$i++){
+		 $dirAss= GetDirCode($dir,$strs[$i]);
+		 $dir= $dir."/".$dirAss;
+	 }
+	 return $dir;
+ }
+ function GetDirCode($dir,$name){
+      $file= scandir($dir);
+      for($i=0;$i<count($file);$i++){
+	      $fn=iconv("BIG5", "UTF-8",$file[$i]);
+          if($fn==$name)return $file[$i];
+        }
+ }
+
 ?>
