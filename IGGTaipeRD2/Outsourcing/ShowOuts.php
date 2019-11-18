@@ -102,7 +102,7 @@
 		      Drawxlsdet($objPHPExcel,$OutCosts[$i],$i+2);
 		 
 			}
-		saveExcel($objPHPExcel,"FP项目外包量汇总表.xlsx");
+		saveExcel($objPHPExcel,"FP项目外包量汇总表.xls");
   }
  function Drawxlsdet( $objPHPExcel,$data,$y){
 	    global $ListArray;
