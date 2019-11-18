@@ -580,7 +580,7 @@
 			       $USTotal+=$OutCosts[$i][10];
 			       $CNYTotal+=$OutCosts[$i][11];
 			  }
-			  $msg= "總發費:[台幣]".number_format($ntTotal)."[美金]".number_format($USTotal)."[人民幣]".number_format($CNYTotal);
+			  $msg= "表單[".count($OutCosts)."]總發費:[台幣]".number_format($ntTotal)."[美金]".number_format($USTotal)."[人民幣]".number_format($CNYTotal);
 			  DrawRect($msg,10,"#ffffff",824,40,300,20, "#884444");
 	 }		 
 ?>

@@ -109,12 +109,15 @@
 			       $CNYTotal+=$OutCosts[$i][11];
 			}
 	    //總額
+		/*
 		$area="G".(count($OutCosts)+2);
-		 setCellStyle($objPHPExcel, $ntTotal,$area,"12",'center',"",$area);
+	    setCellStyle($objPHPExcel, $ntTotal,$area,"12",'center',"",$area);
+		 
 		$area="H".(count($OutCosts)+2);
 				 setCellStyle($objPHPExcel, $USTotal,$area,"12",'center',"",$area);
 		$area="I".(count($OutCosts)+2);
 				 setCellStyle($objPHPExcel,  $CNYTotal,$area,"12",'center',"",$area);
+				 */
 		saveExcel($objPHPExcel,"FP项目外包量汇总表.xls");
   }
  function Drawxlsdet( $objPHPExcel,$data,$y){
@@ -127,6 +130,7 @@
 			  if($i==10 && $msg=="")$msg="黃謙信";
 			  if($data[13]!="" && $i==2) $msg=$msg."(第".trim($data[13])."包)";//
 			  setCellStyle($objPHPExcel,$msg,$area,"12",'center',"",$area);
+			  $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('#,##0.00;-#,##0.00');
 		  }
  }
 
