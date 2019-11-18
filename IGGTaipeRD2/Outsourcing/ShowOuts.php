@@ -98,10 +98,23 @@
 		    setCellStyle($objPHPExcel,$ListArray[$i][0],$area,"14",'center',"",$area);
 		}
 		global $OutCosts;
+         $ntTotal=0;
+	     $USTotal=0;
+		 $CNYTotal=0;
+		
         for($i=0;$i<count($OutCosts);$i++){
 		      Drawxlsdet($objPHPExcel,$OutCosts[$i],$i+2);
-		 
+		           $ntTotal+=$OutCosts[$i][9];
+			       $USTotal+=$OutCosts[$i][10];
+			       $CNYTotal+=$OutCosts[$i][11];
 			}
+	    //總額
+		$area="G".(count($OutCosts)+2);
+		 setCellStyle($objPHPExcel, $ntTotal,$area,"12",'center',"",$area);
+		$area="H".(count($OutCosts)+2);
+				 setCellStyle($objPHPExcel, $USTotal,$area,"12",'center',"",$area);
+		$area="I".(count($OutCosts)+2);
+				 setCellStyle($objPHPExcel,  $CNYTotal,$area,"12",'center',"",$area);
 		saveExcel($objPHPExcel,"FP项目外包量汇总表.xls");
   }
  function Drawxlsdet( $objPHPExcel,$data,$y){
