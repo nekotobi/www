@@ -193,7 +193,9 @@
 			 $Link= $BackURL."&ListType=AddOuts";
 			 $w=30;
 			 DrawLinkRect2sendVal("+",10,"#ffffff",$x,$y,$w,$h,"#992222",$Link,$border);
-			  
+			 
+			 $Link= "Outsourcing/ShowOuts.php";
+			 DrawLinkRect("輸出execl",10,"#ffffff",1024,20,100,20,"#aaaaaa",$Link,$border); 
 	}
  
 ?>
