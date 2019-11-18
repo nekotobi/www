@@ -571,7 +571,7 @@
 		
 	 }
      function DrawTotal($OutCosts){
-		      // $_COOKIE['IGG_id'];
+		   //   if(  $_COOKIE['IGG_id']=="")return;
 	 		  $ntTotal=0;
 			  $USTotal=0;
 			  $CNYTotal=0;
@@ -581,7 +581,7 @@
 			       $CNYTotal+=$OutCosts[$i][11];
 			  }
 			  $msg= "表單[".count($OutCosts)."]總發費:[台幣]".number_format($ntTotal)."[美金]".number_format($USTotal)."[人民幣]".number_format($CNYTotal);
-			  DrawRect($msg,10,"#ffffff",824,40,300,20, "#884444");
+			  DrawRect($msg,10,"#ffffff",1424, 0,400,20, "#884444");
 	 }		 
 ?>
 <?php //上傳

@@ -109,7 +109,7 @@
 			       $CNYTotal+=$OutCosts[$i][11];
 			}
 	    //總額
-		/*
+		 
 		$area="G".(count($OutCosts)+2);
 	    setCellStyle($objPHPExcel, $ntTotal,$area,"12",'center',"",$area);
 		 
@@ -117,20 +117,24 @@
 				 setCellStyle($objPHPExcel, $USTotal,$area,"12",'center',"",$area);
 		$area="I".(count($OutCosts)+2);
 				 setCellStyle($objPHPExcel,  $CNYTotal,$area,"12",'center',"",$area);
-				 */
+			 
 		saveExcel($objPHPExcel,"FP项目外包量汇总表.xls");
   }
  function Drawxlsdet( $objPHPExcel,$data,$y){
 	    global $ListArray;
 	 	  for($i=0;$i<count($ListArray);$i++){
-			  $s=$ListArray[$i][2];
-			  $msg=$data[$s];
+			  $s=trim($ListArray[$i][2]);
+			  $msg=trim($data[$s]);
 			  $area=$ListArray[$i][4].$y;
 			  if($i==9)$msg=getPregress($data[1]);
 			  if($i==10 && $msg=="")$msg="黃謙信";
 			  if($data[13]!="" && $i==2) $msg=$msg."(第".trim($data[13])."包)";//
+			  if($i>=6 && $i<=8){
+			  $msg=(float) $msg; 
+			   $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('#,##0.00;-#,##0.00');
+			  }
 			  setCellStyle($objPHPExcel,$msg,$area,"12",'center',"",$area);
-			  $objPHPExcel->getActiveSheet()->getStyle($area)->getNumberFormat()->setFormatCode('#,##0.00;-#,##0.00');
+ 
 		  }
  }
 
