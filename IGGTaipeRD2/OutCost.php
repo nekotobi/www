@@ -202,6 +202,8 @@
 		       global $UpType;
 		        $UpType=$_POST['UpType'];
 				echo $UpType;
+				if( $_POST['UpType']=="EditCostForm") UpEditForm();
+ 
 	           if( $_POST['UpType']=="prepressUpdate"){
 			   PregressUpdate();
 			   }
@@ -410,8 +412,10 @@
 		       global $ListType;
 		       if($ListType=="prepress")return;
 		       global $BaseURL,$BackURL;
-	           $Link=$BackURL."&Edit=".$sn."&colHi=".$hi;
-			   DrawLinkRect_Layer("E",10,"#ffffff",$Rect,"#998888",$Link,$border,0);
+	          // $Link=$BackURL."&Edit=".$sn."&colHi=".$hi;
+			   $ValArray=array(array("Edit",$sn),array("colHi",$hi));
+			   sendVal($BaseURL,$ValArray,"submit","E",$Rect,10, "#998888" ,"#ffffff");
+			   //DrawLinkRect_Layer("E",10,"#ffffff",$Rect,"#998888",$Link,$border,0);
 	  }
 ?>
 <?php //過濾
@@ -791,11 +795,15 @@
 			    echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
 	 }
 	 function UpEditForm(){
-		      
-	 	      global $editsn ,$Column,$info;
+		       global $editList;
+	 	     // global $editsn ,$Column,$info;
+			  $editsn=$_POST['editsn'] ;
+			  $Column=$_POST['Column'];
+			  $info=$_POST['info'];
+			 //$editList=$_POST['editList'];
 		      global $data_library ;
 		      global $BaseURL,$BackURL;
-			  global $editList;
+		
 		      $WHEREtable=array( "data_type", "sn" );
 		      $WHEREData=array( "cost",$editsn );
  
@@ -805,16 +813,19 @@
 			  for($i=0;$i<count($editList);$i++){
 				   $n=$editList[$i];
 				   $tabn=$tables[$n];
-				   global  $$tabn;
+				 //  global  $$tabn;
+				   $tab=$_POST[$tables[$n]];
 			       array_push(  $Base, $tabn);
-				   array_push(  $up, $$tabn);
+				   array_push(  $up, $tab);
+				   //array_push(  $up, $$tabn);
+				   
 			  }
  
 		      $Link=$BaseURL."?SortType=".$SortType."&ListType=prepress";
 		      $stmt= MakeUpdateStmt(  $data_library,"fpoutsourcingcost",$Base,$up,$WHEREtable,$WHEREData);
 			   echo $stmt;
 			   SendCommand($stmt,$data_library);
-		       echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+		        echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	 }
 	 function  UpExchangeRate(){
 	           global  $outsn,$datas;
@@ -844,7 +855,11 @@
 ?>
 <?php //上傳前表單
       function  DrawFormcostEdit(){ //編輯內容
-          global $Edit,$colHi,$ListSize;
+          //global $Edit,$colHi,
+		  global $ListSize;
+		  echo "x";
+		  $Edit=$_POST['Edit'];
+		  $colHi=$_POST['colHi'];
 		  if($Edit=="")return;
 		  global $OutCosts;
 		  global  $data_library;
@@ -856,7 +871,8 @@
 		  $costEdit= $costEditT[0];
 		  echo  "<form method=post enctype=multipart/form-data action=".$BackURL.">";
 		  echo "<input type=hidden name=editsn value=".$Edit."  >";
-		  $x=30;
+		  echo "<input type=hidden name=UpType value=EditCostForm  >";
+		  $x=20;
 		  $y=$colHi;
 		  DrawRect("",9,"",$x,$y+18,1100,2,"#ff7777");
 		  for($i=0;$i<count($showField);$i++){
