@@ -529,9 +529,11 @@
 					 $x+=$w+2;
 				  }
 			  }
+
 			  for($i=0;$i<count($OutCosts);$i++){
 				 DrawLines($OutCosts[$i],($i+4)*22 );
 			  }
+			  DrawTotal($OutCosts);
 	 }
 	 function DrawLines($Data,$y ){
 		      global  $ListSize,$PreList;
@@ -568,7 +570,19 @@
 			  
 		
 	 }
-   
+     function DrawTotal($OutCosts){
+		      // $_COOKIE['IGG_id'];
+	 		  $ntTotal=0;
+			  $USTotal=0;
+			  $CNYTotal=0;
+			   for($i=0;$i<count($OutCosts);$i++){
+				   $ntTotal+=$OutCosts[$i][9];
+			       $USTotal+=$OutCosts[$i][10];
+			       $CNYTotal+=$OutCosts[$i][11];
+			  }
+			  $msg= "總發費:[台幣]".number_format($ntTotal)."[美金]".number_format($USTotal)."[人民幣]".number_format($CNYTotal);
+			  DrawRect($msg,10,"#ffffff",824,40,300,20, "#884444");
+	 }		 
 ?>
 <?php //上傳
      function RemarkUpdate(){
