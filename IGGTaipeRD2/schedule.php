@@ -33,7 +33,7 @@
 ?>
 <?php //主要資料
      function  cookieSet(){
-	           $CookieArray=array("UpMonth","History");
+	           $CookieArray=array("UpMonth","History","Stype_1");
 		       setcookies($CookieArray,$BaseURL);
 		       SetGlobalcookieData($CookieArray);
 			   //CheckCookie($CookieArray);
@@ -110,7 +110,8 @@
 				   $msg=" ".$SelectType_1[$i];
 				   $color= "#222222";
 				   if($Stype_1==$i and $Stype_1!="")$color= "#dd2212";
-			       DrawLinkRect($msg,"11","#ffffff",$x,$y,"50","16",$color,$BackURL2,1);
+			       //DrawLinkRect($msg,"11","#ffffff",$x,$y,"50","16",$color,$BackURL2,1);
+				   DrawLinkRect2sendVal($msg,"11","#ffffff",$x,$y,"50","16",$color,$BackURL2,1);
 				   $x += 60;
 			  }
 			  DrawState();
