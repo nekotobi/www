@@ -37,6 +37,16 @@
 		       setcookies($CookieArray,$BaseURL);
 		       SetGlobalcookieData($CookieArray);
 			   //CheckCookie($CookieArray);
+ 
+	 }
+	 function setTmpPost( $tmpPost){
+		 echo "x";
+	       for($i=0;$i<count($tmpPost);$i++){
+			   $t=$tmpost[$i];
+		       global $$t;
+			   echo $_POST[$t];
+			   $$t=$_POST[$t];
+		   }
 	 }
      function  setTargetYM(){
 	           global $UpMonth;
@@ -111,7 +121,10 @@
 				   $color= "#222222";
 				   if($Stype_1==$i and $Stype_1!="")$color= "#dd2212";
 			       //DrawLinkRect($msg,"11","#ffffff",$x,$y,"50","16",$color,$BackURL2,1);
-				   DrawLinkRect2sendVal($msg,"11","#ffffff",$x,$y,"50","16",$color,$BackURL2,1);
+				    DrawLinkRect2sendVal($msg,"11","#ffffff",$x,$y,"50","16",$color,$BackURL2,1);
+				  // $Rect=array($x,$y,50,16);
+				 //  $ValArray=array(array("Stype_1",$i));
+				 //  sendVal($BaseURL,$ValArray,"submit" ,$msg, $Rect,11, $color,"#ffffff");
 				   $x += 60;
 			  }
 			  DrawState();

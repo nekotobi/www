@@ -6,6 +6,7 @@
 </head>
 <?php //主控台
      require_once('PubApi.php');
+	      require_once('mysqlApi.php');
    require_once 'ResGDfindApi.php';
    DefineBaseData();
    CookieSet();
@@ -31,6 +32,7 @@
      function DefineBaseData(){
 		      global $BaseURL;
 			  global $stageNum;
+			  global $data_library;
 			  $stageNum=13;
 		      $BaseURL="FPresCheck.php";
 	          $data_library= "iggtaiperd2";
@@ -38,6 +40,7 @@
 			  //$stmp= getMysqlDataArray("fpschedule");	
 			  global $ResData;
 			  $ResData=getMysqlDataArray( $tableName);	
+			  
 			  global $type1Title;
 			  $type1Title=array( 
 			           array("英雄","hero" ),
@@ -63,8 +66,14 @@
 			  global $ScheduleData, $ScheduleDataPlan  ;
 			  $stmp= getMysqlDataArray("fpschedule");	
 			  $ScheduleData=$stmp;
-	          $ScheduleDataPlan  =  filterArray($stmp,5,"工項");
- 
+	          $ScheduleDataPlan  =filterArray($stmp,5,"工項");
+              global $OutsData, $memberData;
+			  $OutsDatat=getMysqlDataArray("outsourcing");	 
+			  $OutsData=returnArraybySort(  $OutsDatat,2);
+			  $memberDataT=getMysqlDataArray("members");
+			  $memberData=returnArraybySort(  $memberDataT,1);
+			  global $Worktype;
+			  $Worktype=array("設定","建模","動作","特效");
 	 } 
 	 function getXlsPath(){
 		      global  $ResDatafi;
@@ -165,44 +174,82 @@
 			   //關卡
 				   DrawStageList($Rect);
  		      for($i=0;$i<count($data);$i++){
+				
 				  //內容
-			     DrawRect("",11,$fontColor,$Rect[0],$Rect[1],300,100,"#000000");
+			     DrawRect("",11,$fontColor,$Rect[0],$Rect[1],700,100,"#000000");
 			     DrawSingle($data[$i],$Rect,$ListArray,$size[0],$xlsPath[$i]);
 				 //上傳圖檔
 			     $n="pic_".$i;
 				 $c="c_".$i;
 				 if($_POST['Up']=="ViewPic"){
-				      DrawRect("",11,$fontColor,$Rect[0]+200,$Rect[1],600,100,"#000000");
+				      DrawRect("",11,$fontColor,$Rect[0]+200,$Rect[1],800,100,"#000000");
 				 echo "<input type=hidden name=".$c." value=".$data[$i][2].">";
 				 $input="<input type=file name=".$n."	id=file  size=10   >";
-				 DrawInputRect("代表圖檔"." ","10","#ffffff", $Rect[0]+202, $Rect[1]  ,1220,20, $colorCodes[4][2],"top", $input);
+				 DrawInputRect("設定"." ","10","#ffffff", $Rect[0]+402, $Rect[1]  ,1220,20, $colorCodes[4][2],"top", $input);
 				 //max檔
 				 $n="Max_".$i;
 				 $input="<input type=file name=".$n."	id=file  size=10   >";
-				 DrawInputRect("3D檔"." ","10","#ffffff", $Rect[0] +202, $Rect[1]+22  ,1220,20, $colorCodes[4][2],"top", $input);
+				 DrawInputRect("3D檔"." ","10","#ffffff", $Rect[0] +402, $Rect[1]+22  ,1220,20, $colorCodes[4][2],"top", $input);
 				 
 				 //ani檔
 				 $n="Ani_".$i;
 				 $input="<input type=file name=".$n."	id=file  size=10   >";
-				 DrawInputRect("動畫檔"." ","10","#ffffff", $Rect[0] +202, $Rect[1]+43  ,1220,20, $colorCodes[4][2],"top", $input);
+				 DrawInputRect("動畫檔"." ","10","#ffffff", $Rect[0] +402, $Rect[1]+43  ,1220,20, $colorCodes[4][2],"top", $input);
 			    //VFX檔
 				 $n="VFX_".$i;
 				 $input="<input type=file name=".$n."	id=file  size=10   >";
-				 DrawInputRect("特效檔"." ","10","#ffffff", $Rect[0]+ 202, $Rect[1]+65  ,1220,20, $colorCodes[4][2],"top", $input);
+				 DrawInputRect("特效檔"." ","10","#ffffff", $Rect[0]+ 402, $Rect[1]+65  ,1220,20, $colorCodes[4][2],"top", $input);
 				
 				 //Buff
 				 $n="Buff_C_".$i;
 				 $input="<input type=file name=".$n."	id=file  size=10   >";
-				 DrawInputRect("技能1"." ","10","#ffffff", $Rect[0]+ 402, $Rect[1]   ,1220,20, $colorCodes[4][2],"top", $input);
+				 DrawInputRect("技能1"." ","10","#ffffff", $Rect[0]+ 202, $Rect[1]   ,1220,20, $colorCodes[4][2],"top", $input);
 				 $n="Buff_P_".$i;
 				 $input="<input type=file name=".$n."	id=file  size=10   >";
-				 DrawInputRect("技能2"." ","10","#ffffff", $Rect[0]+ 402, $Rect[1]+22   ,1220,20, $colorCodes[4][2],"top", $input);
+				 DrawInputRect("技能2"." ","10","#ffffff", $Rect[0]+ 202, $Rect[1]+22   ,1220,20, $colorCodes[4][2],"top", $input);
+				 //工作資訊
+				 setWork($data[$i],$Rect[1]+2);
 				 }
-				 $Rect[1]+=104;
+			  	  $Rect[1]+=104;
 			  }
 			  if($_POST['Up']!="") $submit ="<input type=submit name=submit value=上傳>";
 	          DrawInputRect("","12","#ffffff", 440 ,  120,100,20, $colorCodes[4][2],"上傳",$submit );
 			  echo "</form>";
+	 }
+	 function setWork($data,$y){
+		      global $BaseURL;
+			  $x=610;
+			  global $OutsData,$memberData;
+			  
+			  $size=10;
+			  
+			  global $Worktype;
+			  echo "BaseCode=".$data[1];
+			  if($data[1]==""){
+			     echo  "<form   name='Show2' action='".$BaseURL."' method='post'  enctype='multipart/form-data'>";
+				 $submit ="<input  style=font-size:10px type=submit name=submit2 value=新增排程>";
+				 echo "<input type=hidden name=gdcode value=".$data[2].">";
+	             DrawInputRect( "","10","#ffffff", $x,$y ,100,20, "#dddddd","top",  $submit);
+				 echo  "</form>";
+			     return;    
+			  }
+			  echo  "<form   name='Show2' action='".$BaseURL."' method='post'  enctype='multipart/form-data'>";
+			  for($i=0;$i<count($Worktype);$i++){
+				      $str=explode(">",$data[5+$i]);
+		         	  $selectTable= MakeSelectionV2($OutsData,$str[0],"Out".$i, $size);
+			          DrawInputRect( "","10","#ffffff", $x,$y-10,100,20, "#dddddd","top",  $selectTable);
+					  $selectTable= MakeSelectionV2($memberData,$str[1],"Member".$i, $size);
+			          DrawInputRect( "","10","#ffffff", $x+180,$y ,100,20, "#dddddd","top",  $selectTable);
+				      
+					  $input="<input style=font-size:10px;background-color:#aaccaa; type=text name=start".$i."	size=10  value=".$str[2]."    ></input>";
+					  DrawInputRect( "","10","#ffffff", $x+250,$y ,100,20, "#dddddd","top", $input);
+					  $input="<input style=font-size:10px;background-color:#aaccaa; type=text name=day".$i."	size=2 value=".$str[3]."   ></input>";
+					  DrawInputRect( "","10","#ffffff", $x+340,$y ,30,20, "#dddddd","top", $input);
+					  $y+=22;
+			  }
+			  $submit ="<input  style=font-size:10px type=submit name=submit2 value=修改>";
+	          DrawInputRect( "","10","#ffffff", $x+370,$y-22 ,100,20, "#dddddd","top",  $submit);
+			  echo  "</form>";
 	 }
      function DrawSingle ($Base,$Rect,$ListArray,$size,$xls){
 		      global $type1;
@@ -256,7 +303,7 @@
 			  } 
 			  //Xls
 			  $pic="Pics/excel.png";
-			    DrawLinkPic($pic,$Rect[1] ,$Rect[0]+22 ,20,20,$xls);  
+			   DrawLinkPic($pic,$Rect[1] ,$Rect[0]+22 ,20,20,$xls);  
 			  //buff
 			  if ($type1=="hero"){
 			  	 $file="ResourceData/hero/buff/".$Base[2]."_C.png" ;
@@ -359,17 +406,41 @@
 	 function GetCode(){
 	           if ($_POST['CheckCode']!="true")return;
 			   global $ResData;
+			   global $type1;
+			   global $data_library;
+			   $tableName="fpresdata";
 			   $stmp= getMysqlDataArray("fpschedule");	
 	           $ScheduleData  =  filterArray($stmp,5,"工項");
-			   for($i=0;$i<count($ResData);$i++){
-				   if($ResData[$i][2]!=""){
-				      $c=  returnCode($ScheduleData,$ResData[$i][2]);
-				   echo "</br>".$c;
-				   }
-			    
+			   $type=array("設定","建模","動作","特效");
+			   $sc=array( );
+			   for($i=0;$i<count($type);$i++){
+				   $t=filterArray($stmp,5,$type[$i]);
+				   array_push($sc,$t);
 			   }
-			   //echo "Check";
+			   $WHEREtable=array( "data_type", "gdcode" );
+			   $Base=array("code","stateCode_1","stateCode_2","stateCode_3","stateCode_4");
+			   $Rs=  filterArray( $ResData,0,$type1);
+			   for($i=0;$i<count($Rs);$i++){
+				   $GDcode=$Rs[$i][2];
+				   if( $GDcode!=""){
+					   $code=  returnCode($ScheduleData, $GDcode);
+					   $up=returnStringArray($type, $sc,$code);
+		               $WHEREData=array( $type1, $GDcode );
+					   $stmt=   MakeUpdateStmtv2($tableName,$Base,$up,$WHEREtable,$WHEREData);
+					   SendCommand($stmt,$data_library);
+				   }
+			   }
+			   
 	 }
+	 function returnStringArray($type, $sc,$code){
+		       $ar=array($code);
+	           for($i=0;$i<count($type);$i++){
+				  $tmp= filterArray($sc[$i],3,$code);
+			      array_push( $ar,$tmp[0][9].">".$tmp[0][8].">".$tmp[0][2].">".$tmp[0][6]);
+			   }
+			   return $ar;
+	 }
+	 
 	 function returnCode($ScheduleData,$Code){
 	          for($i=0;$i<count($ScheduleData);$i++){
 			      if(strpos($ScheduleData[$i][3],$Code) !== false)
@@ -379,8 +450,11 @@
 
 ?>
 
-
 <?php //up
+	 //填表單進度
+     function UpForm(){
+		   
+	 }
      function CheckUp(){
 	          if($_POST['submit']=="")return;
 	          if($_POST['submit']=="上傳")upfile();
@@ -430,14 +504,14 @@
 					  move_uploaded_file($_FILES[$nameArray[$i][0]]["tmp_name"], $filePath);
 					  $finalPath =$Dir."/".$nameArray[$i][1].".png";
 					  $cmd="convert     $filePath    -flatten   $finalPath ";
-					   exec($cmd);
+					  exec($cmd);
 				   }					   
 			  }
 	 }
 	 function UPTypeFile($dir,$type,$name,$i,$code){
 		          $na=$name.$i ;
 				  $fdir=$dir."/".$type;
-				   MakeDir($fdir);	
+				  MakeDir($fdir);	
 			      if($_FILES[$na]["name"]!=""){
 				     $ext = explode(".",$_FILES[$na]["name"]);
                      $filePath= $fdir."/".$code.".".$ext[1];
@@ -467,5 +541,7 @@
 	 }
 
 ?>
+
+ 
 
 <body bgcolor="#b5c4b1">

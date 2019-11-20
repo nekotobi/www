@@ -693,18 +693,17 @@
 		   echo "</form>";
 	   }  
 	   function setcookies($CookieArray,$BackURL){
-		         
 	           if($_POST['setCookie']!="true") return;
-			   
 		       for($i=0;$i<count($CookieArray);$i++){
 			       $n=$CookieArray[$i];
 				   if($_POST[$n]!=""){
-		           echo "[".$n."=".$_POST[$n];
-		           setcookie($n , $_POST[$n], time()+3600); 
+		          // echo "[".$n."=".$_POST[$n];
+		            setcookie($n , $_POST[$n], time()+3600); 
+			 
 				   }
 		          }
 			
-        echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";	 
+      //  echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";	 
         }
 	   function setcookiesForce($CookieArray,$BackURL){
 		       for($i=0;$i<count($CookieArray);$i++){
@@ -721,8 +720,10 @@
 			      $n=$cookieArray[$i];
 				  global $$n;
 				  $$n=$_COOKIE[$n];
+				  if($_POST[$n]!="") $$n= $_POST[$n];
 				//  echo $n."=".$$n."]";
 			  }
+
 	}
 	   function CheckCookie($CookieArray){
 	          for($i=0;$i<count($CookieArray);$i++){

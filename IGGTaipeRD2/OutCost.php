@@ -715,7 +715,7 @@
 				      SendCommand($stmt,$data_library);
 					  global $BaseURL,$BackURL,$SortType,$ListType;
 					  $BackURL=$BaseURL."?SortType=".$SortType."&ListType=".$ListType;
-			        echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+			      //  echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	 }
      function UpPic(){
 		 
