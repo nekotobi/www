@@ -153,7 +153,7 @@
 		      global  $CookieArray,$MysQlArray;
 	          global  $ResData;
 			  global $type1,$type2,$type3;
-		  	  echo $type1.">".$type2.">".$type3;
+		  	//  echo $type1.">".$type2.">".$type3;
 			  $data=filterArray( $ResData,0,$type1);
 			 // echo count($data);
 		      if($type2!="all") $data=filterArray( $data,$MysQlArray[1],$type2);
