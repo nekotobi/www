@@ -697,7 +697,7 @@
 		       for($i=0;$i<count($CookieArray);$i++){
 			       $n=$CookieArray[$i];
 				   if($_POST[$n]!=""){
-		          // echo "[".$n."=".$_POST[$n];
+		         //  echo "[".$n."=".$_POST[$n];
 		            setcookie($n , $_POST[$n], time()+3600); 
 			 
 				   }
@@ -720,7 +720,10 @@
 			      $n=$cookieArray[$i];
 				  global $$n;
 				  $$n=$_COOKIE[$n];
-				  if($_POST[$n]!="") $$n= $_POST[$n];
+				  if($_POST[$n]!=""){
+					  $$n= $_POST[$n];
+					 // echo ">".$_POST[$n];
+				  }
 				//  echo $n."=".$$n."]";
 			  }
 

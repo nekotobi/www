@@ -6,16 +6,16 @@
 </head>
 <?php //主控台
      require_once('PubApi.php');
-	      require_once('mysqlApi.php');
-   require_once 'ResGDfindApi.php';
-   DefineBaseData();
-   CookieSet();
-   ListContent();
-   ShowButton();
-   CheckUp();
-   //檢查進度
-   GetCode();
-   DrawPercentage();
+	 require_once('mysqlApi.php');
+     require_once 'ResGDfindApi.php';
+     CookieSet();
+     DefineBaseData();
+     ListContent();
+     ShowButton();
+     CheckUp();
+     //檢查進度
+     GetCode();
+     DrawPercentage();
 ?>
 
 <?php //title
@@ -79,7 +79,7 @@
 		      global  $ResDatafi;
 	          global  $type1Title,$type1;
 			  $type=ReturnCH($type1Title,$type1);
-			  echo $type1.">". $type;
+			 /// echo $type1.">". $type;
 			  $GDCodeArray=array();
 			  for($i=0;$i<count($ResDatafi);$i++){
 				   array_push( $GDCodeArray,$ResDatafi[$i][2]);
@@ -94,12 +94,15 @@
 	 }
      function ShowButton(){
 		      global $type1Title,$type2Title,$type3Title;
+			  global $type1,$type2,$type3;
 			  $Rect=array(20,30,100,20);
-			  DrawButton($Rect,$type1Title,"type1" ,array(" "," "));
+              
+			  DrawButton($Rect,$type1Title ,"type1" ,array(" "," "),$type1);
 			  $Rect=array(20,55,100,20);
-		      DrawButton($Rect,$type2Title,"type2",array("type3","all") );
+		      DrawButton($Rect,$type2Title,"type2",array("type3","all"),$type2 );
 			  $Rect=array(20,80,50,20);
-		      DrawButton($Rect,$type3Title,"type3",array("type2","all") );
+			  if($type1!="hero")
+		      DrawButton($Rect,$type3Title,"type3",array("type2","all"),$type3 );
 			  global $BaseURL;
 			  $ValArray=array(array("Up","ViewPic"));
 			  $Rect=array(20,110,100,20);
@@ -110,12 +113,13 @@
 			  $ValArray=array(array("CheckCode","true"));
 			  sendVal($BaseURL,$ValArray,"submit","CheckCode",$Rect,8, "#aaaaaa", "#ffffff" );
 	 }
-	 function DrawButton($Rect,$btArray,$arraytype,$AddArray,$BgColor="#000000",  $fontColor="#ffffff"){
+	 function DrawButton($Rect,$btArray,$arraytype,$AddArray,$typev, $BgColor="#000000",  $fontColor="#ffffff"){
 		    global $BaseURL;
 			global $ResDatafi;
+		 
 		    for($i=0;$i<count( $btArray);$i++){
 			      $BGC=$BgColor;
-			      if($_COOKIE[$arraytype]==$btArray[$i][1]){
+			      if( $typev ==$btArray[$i][1]){
 					  $BGC="#ee0000";
 				  }
 				  $valArray=array(array($arraytype, $btArray[$i][1]), $AddArray);
@@ -148,12 +152,13 @@
      function getData(){
 		      global  $CookieArray,$MysQlArray;
 	          global  $ResData;
-			  $t1=$_COOKIE[$CookieArray[0]];
-			  $t2=$_COOKIE[$CookieArray[1]];
-			  $t3=$_COOKIE[$CookieArray[2]];
-			  $data=filterArray( $ResData,0,$t1);
-			  if($t2!="all") $data=filterArray( $data,$MysQlArray[1],$t2);
-			  if($t3!="all") $data=filterArray( $data,$MysQlArray[2],"CH.".$t3); 
+			  global $type1,$type2,$type3;
+		  	  echo $type1.">".$type2.">".$type3;
+			  $data=filterArray( $ResData,0,$type1);
+			 // echo count($data);
+		      if($type2!="all") $data=filterArray( $data,$MysQlArray[1],$type2);
+			  if($type3!="all") $data=filterArray( $data,$MysQlArray[2],"CH.".$type3); 
+			 // echo "=".count($data);
 			  $data= SortList( $data,3);
 			  return $data;
 	 }
@@ -176,7 +181,7 @@
  		      for($i=0;$i<count($data);$i++){
 				
 				  //內容
-			     DrawRect("",11,$fontColor,$Rect[0],$Rect[1],700,100,"#000000");
+			     DrawRect("",11,$fontColor,$Rect[0],$Rect[1],400,100,"#000000");
 			     DrawSingle($data[$i],$Rect,$ListArray,$size[0],$xlsPath[$i]);
 				 //上傳圖檔
 			     $n="pic_".$i;
