@@ -108,7 +108,7 @@
 			  global $BaseURL;
 			  $ValArray=array(array("Up","ViewPic"));
 			  $Rect=array(20,110,100,20);
-			  if($Up=="_")sendVal($BaseURL,$ValArray,"submit","開啟編輯",$Rect, 12, "#ee6666", "#ffffff","true");
+			  if($Up=="_" || $Up=="" )sendVal($BaseURL,$ValArray,"submit","開啟編輯",$Rect, 12, "#ee6666", "#ffffff","true");
 			  if($Up=="ViewPic"){
 				  DrawRect("注意不要一次上傳太多檔案",12, "#ffffff",   $Rect[0]+100, $Rect[1],200,20,"#ff1234" );
 				 $ValArray=array(array("Up","_"));
