@@ -27,7 +27,7 @@
 			  $MysQlArray=array(0,12,13);
 			  setcookies($CookieArray,$BaseURL);
 	          SetGlobalcookieData( $CookieArray);
-		     // CheckCookie($CookieArray);
+		       CheckCookie($CookieArray);
 			  
 	 }
      function DefineBaseData(){
