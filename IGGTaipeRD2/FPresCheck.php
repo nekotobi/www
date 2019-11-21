@@ -27,7 +27,7 @@
 			  $MysQlArray=array(0,12,13);
 			  setcookies($CookieArray,$BaseURL);
 	          SetGlobalcookieData( $CookieArray);
-		       CheckCookie($CookieArray);
+		      // CheckCookie($CookieArray);
 			  
 	 }
      function DefineBaseData(){
@@ -172,7 +172,7 @@
 	          global  $CookieArray,$MysQlArray;
 			  global $ResData, $ResDatafi;
 			  global $Up;
-              for($i=0;$i<count($CookieArray);$i++)  if($_COOKIE[$CookieArray[$i]]=="")return;
+              for($i=0;$i<2;$i++)  if($_COOKIE[$CookieArray[$i]]=="")return;
 			  $data = getData();
 			  $ResDatafi= $data; 
               $xlsPath=getXlsPath();
