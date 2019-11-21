@@ -291,6 +291,7 @@
 					  array_push($sendArrays,array("plan", $code));
 					  sendInputHiddenVal($sendArrays);
 					//  echo $Worktype[$i]. count ($s);
+					if(  $sc[7]=="已完成")   DrawRect("",11,$fontColor,$x,$y,510,20,"#77aa77");
 					  $out=trim($sc[9]); 
 					  //"startDay","principal","outsourcing","workingDays"
                       $selectTable= MakeSelectionV2($OutsData, $out,"outsourcing", $size);
