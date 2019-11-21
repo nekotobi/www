@@ -534,7 +534,31 @@
 	 }
 ?>
 
+<?php //upData
 
+   function AddData( ){
+		        global $data_library,$tableName;
+			    global  $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$EditHide;
+			       $p=$tableName;
+				   $tables=returnTables($data_library,$p);
+	               $t= count( $tables);
+				   $WHEREtable=array();
+				   $WHEREData=array();
+		           for($i=0;$i<$t;$i++){
+	       	            global $$tables[$i];
+ 
+				        array_push($WHEREtable, $tables[$i] );
+					    array_push($WHEREData,$$tables[$i]);
+					 //   echo  "</br>".$tables[$i].">".$$tables[$i]."]";
+		              }
+					$stmt=   MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
+					echo $stmt;
+				    SendCommand($stmt,$data_library);
+			      echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+		      	//  echo $stmt;
+	 }
+
+?>
 <?php  //
      function SortbyDate($BaseData){
 		 global $daysLoc;
@@ -637,4 +661,6 @@
 	  }
 ?>
 
+<?php //old
 
+?>

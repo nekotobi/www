@@ -7,12 +7,13 @@
 <?php //主控台
      require_once('PubApi.php');
 	 require_once('mysqlApi.php');
+	 require_once('scheduleApi.php');
      require_once 'ResGDfindApi.php';
      CookieSet();
      DefineBaseData();
      ListContent();
      ShowButton();
-     CheckUp();
+     filterSubmit();
      //檢查進度
      GetCode();
      DrawPercentage();
@@ -22,17 +23,18 @@
      function CookieSet(){
 		      global $BaseURL;
 		      global  $CookieArray,$MysQlArray;
-		 	  $CookieArray=array("type1","type2","type3");
+		 	  $CookieArray=array("type1","type2","type3","Up");
 			  $MysQlArray=array(0,12,13);
 			  setcookies($CookieArray,$BaseURL);
 	          SetGlobalcookieData( $CookieArray);
-			//  CheckCookie($CookieArray);
+		     // CheckCookie($CookieArray);
 			  
 	 }
      function DefineBaseData(){
 		      global $BaseURL;
 			  global $stageNum;
 			  global $data_library;
+			  global $tableName;
 			  $stageNum=13;
 		      $BaseURL="FPresCheck.php";
 	          $data_library= "iggtaiperd2";
@@ -94,7 +96,7 @@
 	 }
      function ShowButton(){
 		      global $type1Title,$type2Title,$type3Title;
-			  global $type1,$type2,$type3;
+			  global $type1,$type2,$type3,$Up;
 			  $Rect=array(20,30,100,20);
               
 			  DrawButton($Rect,$type1Title ,"type1" ,array(" "," "),$type1);
@@ -106,8 +108,12 @@
 			  global $BaseURL;
 			  $ValArray=array(array("Up","ViewPic"));
 			  $Rect=array(20,110,100,20);
-			  sendVal($BaseURL,$ValArray,"submit","開啟編輯",$Rect, 12, "#ee6666", "#ffffff" );
-			  if($_POST['Up']=="ViewPic") DrawRect("注意不要一次上傳太多檔案",12, "#ffffff",   $Rect[0], $Rect[1],200,20,"#ff1234" );
+			  if($Up=="_")sendVal($BaseURL,$ValArray,"submit","開啟編輯",$Rect, 12, "#ee6666", "#ffffff","true");
+			  if($Up=="ViewPic"){
+				  DrawRect("注意不要一次上傳太多檔案",12, "#ffffff",   $Rect[0]+100, $Rect[1],200,20,"#ff1234" );
+				 $ValArray=array(array("Up","_"));
+				  sendVal($BaseURL,$ValArray,"submit","關閉編輯",$Rect, 12, "#ee6666", "#ffffff","true");
+			  }
 			  //取得code
 			  $Rect=array(1224,10,100,20);
 			  $ValArray=array(array("CheckCode","true"));
@@ -165,6 +171,7 @@
      function ListContent(){
 	          global  $CookieArray,$MysQlArray;
 			  global $ResData, $ResDatafi;
+			  global $Up;
               for($i=0;$i<count($CookieArray);$i++)  if($_COOKIE[$CookieArray[$i]]=="")return;
 			  $data = getData();
 			  $ResDatafi= $data; 
@@ -179,14 +186,13 @@
 			   //關卡
 				   DrawStageList($Rect);
  		      for($i=0;$i<count($data);$i++){
-				
 				  //內容
 			     DrawRect("",11,$fontColor,$Rect[0],$Rect[1],400,100,"#000000");
 			     DrawSingle($data[$i],$Rect,$ListArray,$size[0],$xlsPath[$i]);
 				 //上傳圖檔
 			     $n="pic_".$i;
 				 $c="c_".$i;
-				 if($_POST['Up']=="ViewPic"){
+				 if($Up=="ViewPic"){
 				      DrawRect("",11,$fontColor,$Rect[0]+200,$Rect[1],800,100,"#000000");
 				 echo "<input type=hidden name=".$c." value=".$data[$i][2].">";
 				 $input="<input type=file name=".$n."	id=file  size=10   >";
@@ -213,48 +219,100 @@
 				 $input="<input type=file name=".$n."	id=file  size=10   >";
 				 DrawInputRect("技能2"." ","10","#ffffff", $Rect[0]+ 202, $Rect[1]+22   ,1220,20, $colorCodes[4][2],"top", $input);
 				 //工作資訊
-				 setWork($data[$i],$Rect[1]+2);
+				 setWork($data[$i],$Rect[1]+32);
 				 }
 			  	  $Rect[1]+=104;
 			  }
-			  if($_POST['Up']!="") $submit ="<input type=submit name=submit value=上傳>";
+			  if($Up=="ViewPic") $submit ="<input type=submit name=submit value=上傳>";
 	          DrawInputRect("","12","#ffffff", 440 ,  120,100,20, $colorCodes[4][2],"上傳",$submit );
 			  echo "</form>";
 	 }
+	 function BuildnewOrder( $sendArrays,$data,$x,$y){
+		         $code=returnDataCode( );
+	             array_push( $sendArrays, array("code",$code));
+				 array_push( $sendArrays, array("plan",$data[2].$data[3]));
+				 array_push( $sendArrays, array("type","工項"));
+			     array_push( $sendArrays, array("startDay",date(Y_m_d)));
+			
+			     echo  "<form   name='Show2' action='".$BaseURL."' method='post'  enctype='multipart/form-data'>";
+				
+				 sendInputHiddenVal($sendArrays);
+				 $input  ="<input type=text  name=line value=1 style=font-size:10px  size=2 > ";
+	             DrawInputRect( "行數","10","#ffffff", $x,$y ,50,20, "#dddddd","top",  $input);
+				 echo "<input type=hidden name=gdcode value=".$data[2].">";
+				 $submit="<input type=submit style=font-size:10px  name=submit value=新增工項>";
+	             DrawInputRect( "","10","#ffffff", $x+50,$y ,100,20, "#dddddd","top",  $submit);
+				 echo  "</form>";
+	 }
+	 
 	 function setWork($data,$y){
+		      global  $type1,$type2;
 		      global $BaseURL;
 			  $x=610;
 			  global $OutsData,$memberData;
-			  
-			  $size=10;
-			  
 			  global $Worktype;
-			  echo "BaseCode=".$data[1];
-			  if($data[1]==""){
-			     echo  "<form   name='Show2' action='".$BaseURL."' method='post'  enctype='multipart/form-data'>";
-				 $submit ="<input  style=font-size:10px type=submit name=submit2 value=新增排程>";
-				 echo "<input type=hidden name=gdcode value=".$data[2].">";
-	             DrawInputRect( "","10","#ffffff", $x,$y ,100,20, "#dddddd","top",  $submit);
-				 echo  "</form>";
+			  $st="角色";
+		      if($type1=="mob") $st="怪物";
+			  if($type1=="boss") $st="召喚獸王";
+			  $stmp= getMysqlDataArray("fpschedule");
+			  $ScheduleData  =  filterArray($stmp,5,"工項");
+			  $code=  returnCode($ScheduleData, $data[2]);
+			  //$code=$data[1];
+			  $sendArrays=array(
+			           array("data_type","data"),
+				       array("milestone",$type2),
+					   array("BaseURL",$BaseURL),
+					   array("selecttype",$st),
+					   array("sendtableName","fpschedule"),
+			 	       array("lastUpdate",date(Y_m_d_H_i,time()+(8*3600))) 
+				 );
+			  if($code==""){
+				 BuildnewOrder( $sendArrays,$data,$x,$y);
 			     return;    
 			  }
-			  echo  "<form   name='Show2' action='".$BaseURL."' method='post'  enctype='multipart/form-data'>";
+			  $size=10;
+	          $ScheduleData  =  filterArray($stmp,3,$code);
+			  //echo count($ScheduleData);
+			  $y-=20;
+			 
 			  for($i=0;$i<count($Worktype);$i++){
-				      $str=explode(">",$data[5+$i]);
-		         	  $selectTable= MakeSelectionV2($OutsData,$str[0],"Out".$i, $size);
-			          DrawInputRect( "","10","#ffffff", $x,$y-10,100,20, "#dddddd","top",  $selectTable);
-					  $selectTable= MakeSelectionV2($memberData,$str[1],"Member".$i, $size);
-			          DrawInputRect( "","10","#ffffff", $x+180,$y ,100,20, "#dddddd","top",  $selectTable);
-				      
-					  $input="<input style=font-size:10px;background-color:#aaccaa; type=text name=start".$i."	size=10  value=".$str[2]."    ></input>";
-					  DrawInputRect( "","10","#ffffff", $x+250,$y ,100,20, "#dddddd","top", $input);
-					  $input="<input style=font-size:10px;background-color:#aaccaa; type=text name=day".$i."	size=2 value=".$str[3]."   ></input>";
-					  DrawInputRect( "","10","#ffffff", $x+340,$y ,30,20, "#dddddd","top", $input);
+				  	  echo  "<form   name='Show2' action='".$BaseURL."' method='post'  enctype='multipart/form-data'>";
+				      $s= filterArray($ScheduleData,5,$Worktype[$i]);
+				      $sc=$s[0];
+					  $Ecode=$sc[1];
+					  if(count($s)==0)$Ecode=returnDataCode();
+					  array_push($sendArrays,array("code",$Ecode));
+					  array_push($sendArrays,array("type",$Worktype[$i]));
+					  array_push($sendArrays,array("plan", $code));
+					  sendInputHiddenVal($sendArrays);
+					//  echo $Worktype[$i]. count ($s);
+					  $out=trim($sc[9]); 
+					  //"startDay","principal","outsourcing","workingDays"
+                      $selectTable= MakeSelectionV2($OutsData, $out,"outsourcing", $size);
+			          DrawInputRect( "","10","#ffffff", $x,$y ,220,20, "#dddddd","top",  $selectTable);
+					  $pri=$sc[8];
+					  $selectTable= MakeSelectionV2($memberData, $pri,"principal", $size);
+			          DrawInputRect( "","10","#ffffff", $x+170,$y ,100,20, "#dddddd","top",  $selectTable);
+					  $start=trim($sc[2]);
+					  $input="<input style=font-size:10px;background-color:#aaccaa; type=text name=startDay size=12  value=".$start."    ></input>";
+					  DrawInputRect( "","10","#ffffff", $x+230,$y ,100,20, "#dddddd","top", $input);
+					  $day=$sc[6];
+					  $input="<input style=font-size:10px;background-color:#aaccaa; type=text name=workingDays size=2 value=".$day."   ></input>";
+				      DrawInputRect( "","10","#ffffff", $x+330,$y ,30,20, "#dddddd","top", $input);
+				      sendInputHiddenVal($sendArrays);
+					  $subname="修改";
+					  $BgColor="#ccffaa" ;
+					  if(count ($s)==0){
+						  $subname="新增";
+					      $BgColor="#ffaaaa" ;
+					  }
+			          $submit ="<input  style=font-size:10px;background-color:".$BgColor."; type=submit name=submit value=".$subname.">";
+	                  DrawInputRect( "","10","#ffffff", $x+370,$y ,100,20, "#dddddd","top",  $submit);
 					  $y+=22;
+					  echo  "</form>";
 			  }
-			  $submit ="<input  style=font-size:10px type=submit name=submit2 value=修改>";
-	          DrawInputRect( "","10","#ffffff", $x+370,$y-22 ,100,20, "#dddddd","top",  $submit);
-			  echo  "</form>";
+			
+		
 	 }
      function DrawSingle ($Base,$Rect,$ListArray,$size,$xls){
 		      global $type1;
@@ -341,7 +399,6 @@
 			  $Rect[3]=32;
 		      DrawRect_Layer($msg,10,"#ffffff",$Rect,$BGC,$Layer);
 	 }
-	 
 	 function DrawSingle_old($Base,$Rect,$ListArray,$size){
 		    for($i=0;$i<count($ListArray);$i++){
 				 $s=$ListArray[$i];
@@ -370,7 +427,7 @@
 			if($ch=="all")return;
 			$Rect[0]+=500;
 		    DrawRect("",11,$fontColor,$Rect[0],$Rect[1],560,400,"#000000");
-
+            global $Up;
 	        //場景圖
 			$add="0";
 			  $Dir="ResourceData/stage";
@@ -391,7 +448,7 @@
 			       DrawLinkPic($pic,$Rect[1]+2  ,$Rect[0]+132,20,20,$u3d);
 			}
 			 //上傳
-		    if($_POST['Up']=="ViewPic"){
+		    if($Up=="ViewPic"){
 			   $Rect[1]+=280;
 			   //場景圖
 			   $input="<input type=file name=stagePic	id=file  size=10   >";
@@ -408,11 +465,26 @@
 ?>
 
 <?php //CheckPre進度
+     function getStates(){
+	           global $ResData;
+			   global $type1;
+			   global $data_library;
+	           $stmp= getMysqlDataArray("fpschedule");	
+	           $ScheduleData  =  filterArray($stmp,5,"工項");
+			   $type=array("設定","建模","動作","特效");
+			   $sc=array( );
+			   for($i=0;$i<count($type);$i++){
+				   $t=filterArray($stmp,5,$type[$i]);
+				   array_push($sc,$t);
+			   }
+	 }
+ 
 	 function GetCode(){
 	           if ($_POST['CheckCode']!="true")return;
 			   global $ResData;
 			   global $type1;
 			   global $data_library;
+			 //  setcookie("codeDate" , date(Y_m_d_H), time()+360);
 			   $tableName="fpresdata";
 			   $stmp= getMysqlDataArray("fpschedule");	
 	           $ScheduleData  =  filterArray($stmp,5,"工項");
@@ -441,7 +513,7 @@
 		       $ar=array($code);
 	           for($i=0;$i<count($type);$i++){
 				  $tmp= filterArray($sc[$i],3,$code);
-			      array_push( $ar,$tmp[0][9].">".$tmp[0][8].">".$tmp[0][2].">".$tmp[0][6]);
+			      array_push( $ar,$tmp[0][9].">".$tmp[0][8].">".$tmp[0][2].">".$tmp[0][6].">".$tmp[0][7]);
 			   }
 			   return $ar;
 	 }
@@ -457,12 +529,30 @@
 
 <?php //up
 	 //填表單進度
-     function UpForm(){
-		   
+	 function AddTypeSchedule(){
+		     //  global $data_library;
+			   // $tableName="fpschedule";
+	           //$tables=returnTables($data_library,$tableName);
+			  AddDataV2( );
 	 }
-     function CheckUp(){
+     function EditTypeSchedule(){
+		       global $data_library;
+			   $tableName="fpschedule";
+		      $WHEREtable=array( "data_type", "code" );
+		      $WHEREData=array( "data",$_POST["code"] );
+			  $Base=array("startDay","principal","outsourcing","workingDays");
+			  $up=array($_POST["startDay"],$_POST["principal"],$_POST["outsourcing"],$_POST["workingDays"]);
+			  $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
+			//  echo $stmt;
+			   SendCommand($stmt,$data_library);		
+			    echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+	 }
+     function filterSubmit(){
 	          if($_POST['submit']=="")return;
 	          if($_POST['submit']=="上傳")upfile();
+			  if($_POST['submit']=="新增工項")AddDatav2( );
+			  if($_POST['submit']=="新增") AddTypeSchedule( );
+			  if($_POST['submit']=="修改")EditTypeSchedule( );
 	 }
      function upfile(){
 			  global $type1;
@@ -538,13 +628,31 @@
 			  $Uppath=$Dir."/".$n.".unitypackage";
 			  UpsimpleFile("Stage_U3D",$Uppath);
 	 }
-	 
      function UpsimpleFile($name,$Uppath){
 		   if($_FILES[$name]["name"]!=""){
 				   move_uploaded_file($_FILES[$name]["tmp_name"], $Uppath);
 			  }
 	 }
-
+      function AddDataV2( ){
+	            //echo "xxx";
+		        global  $data_library;//,$tableName;
+			    global  $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$EditHide;
+			       $tableName=$_POST['sendtableName'];
+				   echo  $_POST['sendtableName'];
+				   $tables=returnTables($data_library,$tableName);
+	               $t= count( $tables);
+				   $WHEREtable=array();
+				   $WHEREData=array();
+		           for($i=0;$i<$t;$i++){
+				        array_push($WHEREtable, $tables[$i] );
+					    array_push($WHEREData,$_POST[$tables[$i]]);
+		              }
+					$stmt=   MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
+					echo $stmt;
+				     SendCommand($stmt,$data_library);
+			        echo " <script language='JavaScript'>window.location.replace('".$_POST[$BaseURL]."')</script>";
+		      	  
+ 	 }
 ?>
 
  

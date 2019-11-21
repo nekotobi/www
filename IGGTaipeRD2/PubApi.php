@@ -345,7 +345,12 @@
 	  
 ?>
 
-<?php   //php表格用
+<?php   //phpinput表格用
+       function sendInputHiddenVal($sendArrays){
+		   for($i=0;$i<count($sendArrays);$i++){
+		   echo "<input type=hidden name=".$sendArrays[$i][0]." value=".$sendArrays[$i][1]." >";
+		   }
+	   }
 	   function MakeSelectionV2($items,$selectItem,$selectName,$size){
 		    $selectItemf=trim(  $selectItem);
 	        //$seletProject= "<select   style=width:100px; height:".$size."px;  name=".$selectName."    >";
@@ -698,11 +703,9 @@
 			       $n=$CookieArray[$i];
 				   if($_POST[$n]!=""){
 		         //  echo "[".$n."=".$_POST[$n];
-		            setcookie($n , $_POST[$n], time()+3600); 
-			 
+		            setcookie($n , $_POST[$n], time()+360); 
 				   }
 		          }
-			
       //  echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";	 
         }
 	   function setcookiesForce($CookieArray,$BackURL){
@@ -710,7 +713,7 @@
 			       $n=$CookieArray[$i][0];
 				   $j=$CookieArray[$i][1];
 	           	   echo "[".$n."=".$j;
-		           setcookie($n , $j, time()+3600); 
+		           setcookie($n , $j, time()+360); 
 		          }
 			
       //  echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";	 
@@ -726,7 +729,6 @@
 				  }
 				//  echo $n."=".$$n."]";
 			  }
-
 	}
 	   function CheckCookie($CookieArray){
 	          for($i=0;$i<count($CookieArray);$i++){
