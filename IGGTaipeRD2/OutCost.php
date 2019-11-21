@@ -308,7 +308,6 @@
 			   }
 			   
 			   for($i=0;$i<count($costList);$i++){
-			 
 				   $x+=$ListSize[0][$costList[$i]];
 			   }
 			   $y=60;  
@@ -318,7 +317,7 @@
 			   for($i=0;$i<count($ListSn);$i++){
 				   $data= returnArraySingel( $pregress,1,$ListSn[$i]);  
 				   $y+=22;
-				   $nextx=Drawfiled($data,$PreListSize[0],$x,$y,$h, $pregressList,"#222222", "",$ListSn[$i]); 
+				   $nextx=Drawfiled($data,$PreListSize[0],$x,$y,$h, $pregressList,"#222222", "",$ListSn[$i],"true"); 
 				   //註解
 				   $remstr=$data[28];
 				   $bgc="#ffccaa";
@@ -359,7 +358,7 @@
 			       if($baseArray[$i][$ArrayNum]==$matchString)return $baseArray[$i];
 			   }
 	  }
-	  function Drawfiled($BaseData,$ListSize,$x,$y,$h, $showField,$fontColor,$bgColor,$sort){
+	  function Drawfiled($BaseData,$ListSize,$x,$y,$h, $showField,$fontColor,$bgColor,$sort,$sub="false"){
 		       global $BaseURL,$BackURL;
 			   global $ListType,$SortType;
 		       if($bgColor=="")$lastsn=$BaseData[process] ; // $lastsn=returnPregress($BaseData);
@@ -369,6 +368,8 @@
 				   $n=$showField[$i];
 			       $w=$ListSize[$n];
 				   $msg= $BaseData[$n];
+				  if($sub=="true")  $msg=substr( $BaseData[$n],-6);
+				  
 				   if($bgColor!=""){
 					  if($i==0){
 						 $Link=$BaseURL."?SortType=".$SortType."&ListType=EditOutsForm&sn=".$msg;
