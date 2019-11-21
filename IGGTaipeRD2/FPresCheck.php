@@ -70,12 +70,17 @@
 			  $ScheduleData=$stmp;
 	          $ScheduleDataPlan  =filterArray($stmp,5,"工項");
               global $OutsData, $memberData;
-			  $OutsDatat=getMysqlDataArray("outsourcing");	 
+			  $OutsDatat1=getMysqlDataArray("outsourcing");	
+			  $OutsDatat=filterArray($OutsDatat1,0,"data");	
 			  $OutsData=returnArraybySort(  $OutsDatat,2);
 			  $memberDataT=getMysqlDataArray("members");
 			  $memberData=returnArraybySort(  $memberDataT,1);
 			  global $Worktype;
 			  $Worktype=array("設定","建模","動作","特效");
+			  global  $workType;
+			   $mt=getMysqlDataArray( "scheduletype"); 
+	            $mt2  =filterArray($mt,0,"data3");
+			    $workType=returnArraybySort(  $mt2 ,2);
 	 } 
 	 function getXlsPath(){
 		      global  $ResDatafi;
@@ -193,7 +198,7 @@
 			     $n="pic_".$i;
 				 $c="c_".$i;
 				 if($Up=="ViewPic"){
-				      DrawRect("",11,$fontColor,$Rect[0]+200,$Rect[1],800,100,"#000000");
+				      DrawRect("",11,$fontColor,$Rect[0]+200,$Rect[1],900,100,"#000000");
 				 echo "<input type=hidden name=".$c." value=".$data[$i][2].">";
 				 $input="<input type=file name=".$n."	id=file  size=10   >";
 				 DrawInputRect("設定"." ","10","#ffffff", $Rect[0]+402, $Rect[1]  ,1220,20, $colorCodes[4][2],"top", $input);
@@ -300,6 +305,11 @@
 					  $input="<input style=font-size:10px;background-color:#aaccaa; type=text name=workingDays size=2 value=".$day."   ></input>";
 				      DrawInputRect( "","10","#ffffff", $x+330,$y ,30,20, "#dddddd","top", $input);
 				      sendInputHiddenVal($sendArrays);
+					   global  $workType;
+					   $w=$sc[7];
+					   $selectTable= MakeSelectionV2($workType, $w,"state", $size);
+			          DrawInputRect( "","10","#ffffff", $x+360,$y ,100,20, "#dddddd","top",  $selectTable);
+					  
 					  $subname="修改";
 					  $BgColor="#ccffaa" ;
 					  if(count ($s)==0){
@@ -307,7 +317,7 @@
 					      $BgColor="#ffaaaa" ;
 					  }
 			          $submit ="<input  style=font-size:10px;background-color:".$BgColor."; type=submit name=submit value=".$subname.">";
-	                  DrawInputRect( "","10","#ffffff", $x+370,$y ,100,20, "#dddddd","top",  $submit);
+	                  DrawInputRect( "","10","#ffffff", $x+470,$y ,100,20, "#dddddd","top",  $submit);
 					  $y+=22;
 					  echo  "</form>";
 			  }
@@ -540,8 +550,8 @@
 			   $tableName="fpschedule";
 		      $WHEREtable=array( "data_type", "code" );
 		      $WHEREData=array( "data",$_POST["code"] );
-			  $Base=array("startDay","principal","outsourcing","workingDays");
-			  $up=array($_POST["startDay"],$_POST["principal"],$_POST["outsourcing"],$_POST["workingDays"]);
+			  $Base=array("startDay","principal","outsourcing","workingDays","state");
+			  $up=array($_POST["startDay"],$_POST["principal"],$_POST["outsourcing"],$_POST["workingDays"],$_POST["state"]);
 			  $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
 			//  echo $stmt;
 			   SendCommand($stmt,$data_library);		
