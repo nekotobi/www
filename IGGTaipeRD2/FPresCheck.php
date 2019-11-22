@@ -47,7 +47,8 @@
 			  $type1Title=array( 
 			           array("英雄","hero" ),
 					   array("小怪","mob"),
-					   array("boss&召喚獸" ,"boss")
+					   array("boss&召喚獸" ,"boss"),
+					   array("all" ,"all")
 			   );
 			  global $type2Title;
 			  $type2Title=array( 
@@ -123,6 +124,10 @@
 			  $Rect=array(1224,10,100,20);
 			  $ValArray=array(array("CheckCode","true"));
 			  sendVal($BaseURL,$ValArray,"submit","CheckCode",$Rect,8, "#aaaaaa", "#ffffff" );
+			  //輸出mile資料
+			  $Rect=array(1224,30,100,20);
+			  $ValArray=array(array("List","miledata"));
+			  sendVal($BaseURL,$ValArray,"submit","mileData",$Rect,8, "#aaaaaa", "#ffffff" );
 	 }
 	 function DrawButton($Rect,$btArray,$arraytype,$AddArray,$typev, $BgColor="#000000",  $fontColor="#ffffff"){
 		    global $BaseURL;
@@ -164,19 +169,57 @@
 		      global  $CookieArray,$MysQlArray;
 	          global  $ResData;
 			  global $type1,$type2,$type3;
-		  	//  echo $type1.">".$type2.">".$type3;
 			  $data=filterArray( $ResData,0,$type1);
-			 // echo count($data);
 		      if($type2!="all") $data=filterArray( $data,$MysQlArray[1],$type2);
 			  if($type3!="all") $data=filterArray( $data,$MysQlArray[2],"CH.".$type3); 
-			 // echo "=".count($data);
 			  $data= SortList( $data,3);
 			  return $data;
+	 }
+	 function getMileData(){
+			  global  $type1Title;
+			  global $ResData;
+			  global $type1,$type2,$type3;
+			  $d=filterArray( $ResData,12,$type2);
+			  $a=array();
+			  for($i=0;$i<count($type1Title)-1;$i++){
+				  $b=filterArray( $d,0,$type1Title[$i][1]);
+				  $b= SortList( $b,3);
+				  array_push($a,  $b);
+				 }
+			   return $a;
+	 }
+	 function ListMilestoneAll(){
+		      echo "XX";
+	          $data = getMileData();
+			  $x=20;
+			  for($i=0;$i<count($data);$i++){
+			         ListMilestonetype($data[$i],$x);
+					 $x+=220;
+			  }
+	 }
+	 function ListMilestonetype($data,$x){
+		 	  $y=140;
+			  $fontColor="#000000";
+			  $bgcolor="#ffffff";
+			  DrawRect("名稱",11,$bgcolor,$x,$y,100,20, $fontColor);
+		      DrawRect("3D",11,$bgcolor,$x+102,$y,100,20,  $fontColor);
+			  $y+=22;
+		      for($i=0;$i<count($data);$i++){
+			     DrawRect($data[$i][2].$data[$i][3],11,$fontColor,$x,$y,100,20,$bgcolor);
+				 
+				 DrawRect($data[$i][6] ,11,$fontColor,$x+102,$y,100,20,$bgcolor);
+				 $y+=22;
+			 }
 	 }
      function ListContent(){
 	          global  $CookieArray,$MysQlArray;
 			  global $ResData, $ResDatafi;
 			  global $Up;
+			  global $type1;
+			  if($type1=="all"){
+				  ListMilestoneAll();
+				  return;
+			  }
               for($i=0;$i<2;$i++)  if($_COOKIE[$CookieArray[$i]]=="")return;
 			  $data = getData();
 			  $ResDatafi= $data; 
@@ -292,6 +335,7 @@
 					  sendInputHiddenVal($sendArrays);
 					//  echo $Worktype[$i]. count ($s);
 					if(  $sc[7]=="已完成")   DrawRect("",11,$fontColor,$x,$y,510,20,"#77aa77");
+				    if(  $sc[7]!="未定義")   DrawRect("",11,$fontColor,$x,$y,510,20,"#77aaaa");
 					  $out=trim($sc[9]); 
 					  //"startDay","principal","outsourcing","workingDays"
                       $selectTable= MakeSelectionV2($OutsData, $out,"outsourcing", $size);
@@ -524,7 +568,8 @@
 		       $ar=array($code);
 	           for($i=0;$i<count($type);$i++){
 				  $tmp= filterArray($sc[$i],3,$code);
-			      array_push( $ar,$tmp[0][9].">".$tmp[0][8].">".$tmp[0][2].">".$tmp[0][6].">".$tmp[0][7]);
+			   //   array_push( $ar,$tmp[0][9].">".$tmp[0][8].">".$tmp[0][2].">".$tmp[0][6].">".$tmp[0][7]);
+			       array_push( $ar,$tmp[0][9].">".$tmp[0][7]);//.">".$tmp[0][2].">".$tmp[0][6].">".$tmp[0][7]);
 			   }
 			   return $ar;
 	 }
@@ -666,6 +711,17 @@
  	 }
 ?>
 
- 
+<?php //xls
+     function printMilestone(){
+		       if ($_POST['List']!="mileData")return;
+	          global $ResData;
+			  global $type2;
+	          $filterMile=filterArray($ResData,0,$type3);
+			  for($i=0;$i<count($filterMile);$i++){
+			      echo $filterMile[$i][0];
+			  }
+	 }
+
+?>
 
 <body bgcolor="#b5c4b1">
