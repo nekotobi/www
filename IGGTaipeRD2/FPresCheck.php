@@ -12,9 +12,10 @@
      require_once 'ResGDfindApi.php';
      CookieSet();
      DefineBaseData();
+	  filterSubmit();
      ListContent();
      ShowButton();
-     filterSubmit();
+    // filterSubmit();
      //檢查進度
      GetCode();
      DrawPercentage();
