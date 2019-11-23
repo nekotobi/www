@@ -4,6 +4,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
    <title>FP資源索引v2</title>
 </head>
+
 <?php //主控台
      require_once('PubApi.php');
 	 require_once('mysqlApi.php');
@@ -17,7 +18,9 @@
      //檢查進度
      GetCode();
      DrawPercentage();
+	// ExportMilestone();
 ?>
+
 
 <?php //title
      function CookieSet(){
@@ -126,7 +129,7 @@
 			  sendVal($BaseURL,$ValArray,"submit","CheckCode",$Rect,8, "#aaaaaa", "#ffffff" );
 			  //輸出mile資料
 			  $Rect=array(1224,30,100,20);
-			  $ValArray=array(array("List","miledata"));
+			  $ValArray=array(array("List","onlyTitle"));
 			  sendVal($BaseURL,$ValArray,"submit","mileData",$Rect,8, "#aaaaaa", "#ffffff" );
 	 }
 	 function DrawButton($Rect,$btArray,$arraytype,$AddArray,$typev, $BgColor="#000000",  $fontColor="#ffffff"){
@@ -189,26 +192,60 @@
 			   return $a;
 	 }
 	 function ListMilestoneAll(){
-		      echo "XX";
+		    //  echo "XX";
 	          $data = getMileData();
 			  $x=20;
+			  global  $yloc;
+			  $yloc=140;
 			  for($i=0;$i<count($data);$i++){
 			         ListMilestonetype($data[$i],$x);
-					 $x+=220;
+					  
 			  }
 	 }
 	 function ListMilestonetype($data,$x){
-		 	  $y=140;
+		 	  global  $yloc;
 			  $fontColor="#000000";
 			  $bgcolor="#ffffff";
-			  DrawRect("名稱",11,$bgcolor,$x,$y,100,20, $fontColor);
-		      DrawRect("3D",11,$bgcolor,$x+102,$y,100,20,  $fontColor);
-			  $y+=22;
+			  		  $yloc+=22;
+			  $w=400;
+			  $hi=20;
+			  $fontSize=1;
+			  $tableArray=array(
+				              array("名稱",100,"#000000","#ffffff"),
+							  array("3D",100,"#000000","#ffffff"),
+	          );
+			  DrawTable($tableArray,$x,$yloc,$fontColor,$fontSize,$bgcolor);
+			  
+			 // DrawRect("名稱",11,$bgcolor,$x,$yloc,100,20, $fontColor);
+		     // DrawRect("3D",11,$bgcolor,$x+102,$yloc,100,20,  $fontColor);
+	
+			  $yloc+=22;
 		      for($i=0;$i<count($data);$i++){
-			     DrawRect($data[$i][2].$data[$i][3],11,$fontColor,$x,$y,100,20,$bgcolor);
-				 
-				 DrawRect($data[$i][6] ,11,$fontColor,$x+102,$y,100,20,$bgcolor);
-				 $y+=22;
+				  $tableArray=array(
+				              array($data[$i][2].$data[$i][3],100),
+				              array( $data[$i][6],100),
+				  );
+				  DrawTable($tableArray,$x,$yloc,$fontColor,$fontSize,$bgcolor);
+				  /*
+                  echo "<div  style=' color:".$fontColor."; "  ;	
+				  echo " text-align:center ; font-weight:bolder ;font-family:Microsoft JhengHei; font-size:".$fontSize."px;";
+                  echo " position:absolute;  top:".$yloc."px; left:".$x."px;  width:".$w."px;height:".$hi."px; background-color:".$BgColor.";'>"; 			   
+		          echo "<table>";
+				  echo "<tr>";
+				  echo "<td   bgcolor=".$bgcolor." width=100px><font size=".$fontSize."><font>";
+				  echo $data[$i][2].$data[$i][3];
+				  echo "</td>";
+				  echo "<td   bgcolor=".$bgcolor." ><font size=".$fontSize."><font>";
+				  echo $data[$i][6] ;
+				  echo "</td>";
+				  echo "</tr>";
+			     // DrawRect($data[$i][2].$data[$i][3],11,$fontColor,$x,$h,100,20,$bgcolor);
+			 	//  DrawRect($data[$i][6] ,11,$fontColor,$x+102,$h,100,20,$bgcolor);
+			
+				  echo "</table>";
+				  echo "</div>";
+				  */
+				  $yloc+=22;
 			 }
 	 }
      function ListContent(){
@@ -713,14 +750,12 @@
 ?>
 
 <?php //xls
-     function printMilestone(){
-		       if ($_POST['List']!="mileData")return;
-	          global $ResData;
-			  global $type2;
-	          $filterMile=filterArray($ResData,0,$type3);
-			  for($i=0;$i<count($filterMile);$i++){
-			      echo $filterMile[$i][0];
-			  }
+     function ExportMilestone(){
+		 if($_POST['List']!="miledata")return;
+			 echo "Xx";
+		      require_once 'ExportXlsApi.php';
+		      $data = getMileData();
+			  Exporxls($data,"test");
 	 }
 
 ?>

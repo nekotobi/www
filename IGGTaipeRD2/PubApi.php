@@ -777,9 +777,30 @@
 				// echo $dir."</br>";
 			}
 	 }
-  
+    
 ?>
- 
+<?php //table
+     function DrawTable($tableArray,$x,$y,$fontColor,$fontSize,$bgcolor){
+              echo "<div  style=' color:".$fontColor."; "  ;	
+			   echo " text-align:center ; font-weight:bolder ;font-family:Microsoft JhengHei; font-size:".$fontSize."px;";
+              echo " position:absolute;  top:".$y."px; left:".$x."px; width:".$w."px;height:".$hi."px; background-color:".$BgColor.";'>"; 	  
+			  echo "<table>";
+			  echo "<tr>";
+			  for($i=0;$i<count($tableArray);$i++){
+				  $bc=$tableArray[$i][2];
+				  if($bc=="")$bc=$bgcolor;
+				  $fc=$tableArray[$i][3];
+				  if($fc=="")$fc=$fontColor;
+			  	  echo "<td   bgcolor=".$bc." width=".$tableArray[$i][1]."px>
+				        <font size=".$fontSize." color=".$fc."><font>";
+			      echo $tableArray[$i][0];
+			      echo "</td>";
+			  }
+              echo "</tr>";
+              echo "</table>";
+			  echo "</div>";
+ }
+?>
 <?php //old
 /*
        function sendVal($URL,$ValArray,$SubmitName,$SubmitVal,$Rect,$size=12, $BgColor="#eeeeee",$fontColor="#ffffff",$setCookie=false){
