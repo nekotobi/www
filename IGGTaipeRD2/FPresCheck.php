@@ -12,6 +12,7 @@
      require_once 'ResGDfindApi.php';
      CookieSet();
      DefineBaseData();
+ 
 	  filterSubmit();
      ListContent();
      ShowButton();
@@ -27,7 +28,7 @@
      function CookieSet(){
 		      global $BaseURL;
 		      global  $CookieArray,$MysQlArray;
-		 	  $CookieArray=array("type1","type2","type3","Up");
+		 	  $CookieArray=array("type1","type2","type3" ,"Up");
 			  $MysQlArray=array(0,12,13);
 			  setcookies($CookieArray,$BaseURL);
 	          SetGlobalcookieData( $CookieArray);
@@ -46,7 +47,8 @@
 			  //$stmp= getMysqlDataArray("fpschedule");	
 			  global $ResData;
 			  $ResData=getMysqlDataArray( $tableName);	
-			  
+			  global $ResGroup;
+			  $ResGroup=ReturncolectionGroup();
 			  global $type1Title;
 			  $type1Title=array( 
 			           array("英雄","hero" ),
@@ -63,6 +65,7 @@
 					   array("m5","m5"),
 					   array("未定","Undefined"),
 			   );
+			    AddT2Group(); //加入group
 			   global $type3Title;
 			   $type3Title=array(array("--","all"));
 			   for($i=1;$i<=$stageNum;$i++){
@@ -83,10 +86,37 @@
 			  global $Worktype;
 			  $Worktype=array("設定","建模","動作","特效");
 			  global  $workType;
-			   $mt=getMysqlDataArray( "scheduletype"); 
-	            $mt2  =filterArray($mt,0,"data3");
-			    $workType=returnArraybySort(  $mt2 ,2);
-	 } 
+			  $mt=getMysqlDataArray( "scheduletype"); 
+	          $mt2  =filterArray($mt,0,"data3");
+			  $workType=returnArraybySort(  $mt2 ,2);
+	 }
+	 function AddT2Group(){
+	           global $type2Title;
+			   global $ResGroup;
+			   if(count($ResGroup)==0)return;
+ 
+			   for($i=0;$i<count($ResGroup);$i++)
+				   array_push($type2Title,array("G".$i,"G".$i));
+	 }
+	 function ReturncolectionGroup(){
+		      global $type1;
+			  if($type1!="mob")return null;
+			  global $ResData;
+			  $bossArray=array();
+			  $tRs=filterArray( $ResData,0,$type1);
+              $ResGroup=array();		  
+			  for($i=0;$i<count($tRs);$i++){
+			      if($tRs[$i][14]!=""){
+				     $s=explode("_",$tRs[$i][14]);
+				    $n=0;
+					  if(count($s)>1 ) $n=$s[1]-1;
+				
+					 $ResGroup[$s[0]][$n]=$tRs[$i];
+				    // echo "</br>".$s[0].">".$s[1];
+				  }
+			  }
+			  return $ResGroup;
+	 }
 	 function getXlsPath(){
 		      global  $ResDatafi;
 	          global  $type1Title,$type1;
@@ -110,14 +140,14 @@
 			  $Rect=array(20,30,100,20);
               
 			  DrawButton($Rect,$type1Title ,"type1" ,array(" "," "),$type1);
-			  $Rect=array(20,55,100,20);
+			  $Rect=array(20,55,30,20);
 		      DrawButton($Rect,$type2Title,"type2",array("type3","all"),$type2 );
 			  $Rect=array(20,80,50,20);
 			  if($type1!="hero")
 		      DrawButton($Rect,$type3Title,"type3",array("type2","all"),$type3 );
 			  global $BaseURL;
 			  $ValArray=array(array("Up","ViewPic"));
-			  $Rect=array(20,110,100,20);
+			  $Rect=array(20,130,100,20);
 			  if($Up=="_" || $Up=="" )sendVal($BaseURL,$ValArray,"submit","開啟編輯",$Rect, 12, "#ee6666", "#ffffff","true");
 			  if($Up=="ViewPic"){
 				  DrawRect("注意不要一次上傳太多檔案",12, "#ffffff",   $Rect[0]+100, $Rect[1],200,20,"#ff1234" );
@@ -173,10 +203,22 @@
 		      global  $CookieArray,$MysQlArray;
 	          global  $ResData;
 			  global $type1,$type2,$type3;
+			   if(strpos($type2,'G') !== false){
+				   global $ResGroup;
+			       $data= array();
+			       $s= str_replace( "G" , "" ,$type2 );
+			       for($i=0;$i<count($ResGroup[$s]);$i++){
+				      array_push($data,$ResGroup[$s][$i]);
+				   }
+				   return $data;
+			  }
 			  $data=filterArray( $ResData,0,$type1);
+
 		      if($type2!="all") $data=filterArray( $data,$MysQlArray[1],$type2);
 			  if($type3!="all") $data=filterArray( $data,$MysQlArray[2],"CH.".$type3); 
 			  $data= SortList( $data,3);
+			  
+			
 			  return $data;
 	 }
 	 function getMileData(){
@@ -329,8 +371,7 @@
 				 $submit="<input type=submit style=font-size:10px  name=submit value=新增工項>";
 	             DrawInputRect( "","10","#ffffff", $x+50,$y ,100,20, "#dddddd","top",  $submit);
 				 echo  "</form>";
-	 }
-	 
+	 } 
 	 function setWork($data,$y){
 		      global  $type1,$type2;
 		      global $BaseURL;
@@ -360,7 +401,6 @@
 	          $ScheduleData  =  filterArray($stmp,3,$code);
 			  //echo count($ScheduleData);
 			  $y-=20;
-			 
 			  for($i=0;$i<count($Worktype);$i++){
 				  	  echo  "<form   name='Show2' action='".$BaseURL."' method='post'  enctype='multipart/form-data'>";
 				      $s= filterArray($ScheduleData,5,$Worktype[$i]);

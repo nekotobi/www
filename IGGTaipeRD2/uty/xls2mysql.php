@@ -27,17 +27,22 @@
           echo "<textarea name=txt cols=90 rows=12></textarea></p>";
           echo "<p><label>";
           echo "<input type=submit name=submit value=新增全新表格 />";
+		  echo "</br>";
+		  echo "</br>";
 		  echo "<input type=submit name=submit value=追加內容 />";
+		  echo "</br>";
 		  echo "<input type=submit name=submit value=修改內容 />";
+	      echo "</br>";
 	      echo "<input type=hidden name=data_library value=$data_library >";
           echo "</label>";
           echo "</div></label></form>";
    }
    function updata(){
 	   
-	   global $submit;
+	   //global $submit;
        $submit=$_POST['submit'];
 	   if ($submit=="")return; 
+	   echo $submit;
 	   global $txt;
 	   $txt=$_POST['txt'];
 	   echo $txt;
