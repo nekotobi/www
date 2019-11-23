@@ -602,7 +602,7 @@
 			  $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
 			//  echo $stmt;
 			   SendCommand($stmt,$data_library);		
-			    echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+			 //   echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	 }
      function filterSubmit(){
 	          if($_POST['submit']=="")return;

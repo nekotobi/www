@@ -713,7 +713,7 @@
 			       $n=$CookieArray[$i][0];
 				   $j=$CookieArray[$i][1];
 	           	   echo "[".$n."=".$j;
-		           setcookie($n , $j, time()+360); 
+		           setcookie($n , $j, time()+3600); 
 		          }
 			
       //  echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";	 
