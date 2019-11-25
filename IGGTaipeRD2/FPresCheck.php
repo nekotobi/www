@@ -65,7 +65,7 @@
 					   array("m5","m5"),
 					   array("未定","Undefined"),
 			   );
-			    AddT2Group(); //加入group
+			   AddT2Group(); //加入group
 			   global $type3Title;
 			   $type3Title=array(array("--","all"));
 			   for($i=1;$i<=$stageNum;$i++){
@@ -95,7 +95,7 @@
 			   global $ResGroup;
 			   if(count($ResGroup)==0)return;
  
-			   for($i=0;$i<count($ResGroup);$i++)
+			   for($i=0;$i<count($ResGroup)+1;$i++)
 				   array_push($type2Title,array("G".$i,"G".$i));
 	 }
 	 function ReturncolectionGroup(){
@@ -108,11 +108,10 @@
 			  for($i=0;$i<count($tRs);$i++){
 			      if($tRs[$i][14]!=""){
 				     $s=explode("_",$tRs[$i][14]);
-				    $n=0;
-					  if(count($s)>1 ) $n=$s[1]-1;
-				
+					  // echo "<br>".$s[0];
+				     $n=0;
+					 if(count($s)>1 ) $n=$s[1]-1;
 					 $ResGroup[$s[0]][$n]=$tRs[$i];
-				    // echo "</br>".$s[0].">".$s[1];
 				  }
 			  }
 			  return $ResGroup;
