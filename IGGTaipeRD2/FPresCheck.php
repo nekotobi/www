@@ -146,8 +146,11 @@
 		      DrawButton($Rect,$type3Title,"type3",array("type2","all"),$type3 );
 			  global $BaseURL;
 			  $ValArray=array(array("Up","ViewPic"));
-			  $Rect=array(20,130,100,20);
-			  if($Up=="_" || $Up=="" )sendVal($BaseURL,$ValArray,"submit","開啟編輯",$Rect, 12, "#ee6666", "#ffffff","true");
+			  $Rect=array(20,130,98,20);
+			  if($Up!="ViewPic" )sendVal($BaseURL,$ValArray,"submit","上傳圖檔",$Rect, 12, "#ee6666", "#ffffff","true");
+			  $ValArray=array(array("Up","Edit"));
+			   $Rect[0]+=98;
+			  if($Up!="Edit" )sendVal($BaseURL,$ValArray,"submit","編輯進度",$Rect, 12, "#ee6666", "#ffffff","true");
 			  if($Up=="ViewPic"){
 				  DrawRect("注意不要一次上傳太多檔案",12, "#ffffff",   $Rect[0]+100, $Rect[1],200,20,"#ff1234" );
 				 $ValArray=array(array("Up","_"));
@@ -257,10 +260,6 @@
 							  array("3D",100,"#000000","#ffffff"),
 	          );
 			  DrawTable($tableArray,$x,$yloc,$fontColor,$fontSize,$bgcolor);
-			  
-			 // DrawRect("名稱",11,$bgcolor,$x,$yloc,100,20, $fontColor);
-		     // DrawRect("3D",11,$bgcolor,$x+102,$yloc,100,20,  $fontColor);
-	
 			  $yloc+=22;
 		      for($i=0;$i<count($data);$i++){
 				  $tableArray=array(
@@ -268,25 +267,7 @@
 				              array( $data[$i][6],100),
 				  );
 				  DrawTable($tableArray,$x,$yloc,$fontColor,$fontSize,$bgcolor);
-				  /*
-                  echo "<div  style=' color:".$fontColor."; "  ;	
-				  echo " text-align:center ; font-weight:bolder ;font-family:Microsoft JhengHei; font-size:".$fontSize."px;";
-                  echo " position:absolute;  top:".$yloc."px; left:".$x."px;  width:".$w."px;height:".$hi."px; background-color:".$BgColor.";'>"; 			   
-		          echo "<table>";
-				  echo "<tr>";
-				  echo "<td   bgcolor=".$bgcolor." width=100px><font size=".$fontSize."><font>";
-				  echo $data[$i][2].$data[$i][3];
-				  echo "</td>";
-				  echo "<td   bgcolor=".$bgcolor." ><font size=".$fontSize."><font>";
-				  echo $data[$i][6] ;
-				  echo "</td>";
-				  echo "</tr>";
-			     // DrawRect($data[$i][2].$data[$i][3],11,$fontColor,$x,$h,100,20,$bgcolor);
-			 	//  DrawRect($data[$i][6] ,11,$fontColor,$x+102,$h,100,20,$bgcolor);
-			
-				  echo "</table>";
-				  echo "</div>";
-				  */
+ 
 				  $yloc+=22;
 			 }
 	 }
@@ -310,49 +291,49 @@
 			  $ListArray=array(2,3,4);
 			  $Rect=array(20,150,90,20);
 			  echo   "<form id='EditRes'  name='Show' action='".$BackURL."' method='post'  enctype='multipart/form-data'>";
-			   //關卡
-				   DrawStageList($Rect);
+			  //關卡
+			  DrawStageList($Rect,$i);
  		      for($i=0;$i<count($data);$i++){
 				  //內容
+ 	  
 			     DrawRect("",11,$fontColor,$Rect[0],$Rect[1],400,100,"#000000");
 			     DrawSingle($data[$i],$Rect,$ListArray,$size[0],$xlsPath[$i]);
-				 //上傳圖檔
-			     $n="pic_".$i;
-				 $c="c_".$i;
-				 if($Up=="ViewPic"){
-				      DrawRect("",11,$fontColor,$Rect[0]+200,$Rect[1],900,100,"#000000");
-				 echo "<input type=hidden name=".$c." value=".$data[$i][2].">";
-				 $input="<input type=file name=".$n."	id=file  size=10   >";
-				 DrawInputRect("設定"." ","10","#ffffff", $Rect[0]+402, $Rect[1]  ,1220,20, $colorCodes[4][2],"top", $input);
-				 //max檔
-				 $n="Max_".$i;
-				 $input="<input type=file name=".$n."	id=file  size=10   >";
-				 DrawInputRect("3D檔"." ","10","#ffffff", $Rect[0] +402, $Rect[1]+22  ,1220,20, $colorCodes[4][2],"top", $input);
-				 
-				 //ani檔
-				 $n="Ani_".$i;
-				 $input="<input type=file name=".$n."	id=file  size=10   >";
-				 DrawInputRect("動畫檔"." ","10","#ffffff", $Rect[0] +402, $Rect[1]+43  ,1220,20, $colorCodes[4][2],"top", $input);
-			    //VFX檔
-				 $n="VFX_".$i;
-				 $input="<input type=file name=".$n."	id=file  size=10   >";
-				 DrawInputRect("特效檔"." ","10","#ffffff", $Rect[0]+ 402, $Rect[1]+65  ,1220,20, $colorCodes[4][2],"top", $input);
-				
-				 //Buff
-				 $n="Buff_C_".$i;
-				 $input="<input type=file name=".$n."	id=file  size=10   >";
-				 DrawInputRect("技能1"." ","10","#ffffff", $Rect[0]+ 202, $Rect[1]   ,1220,20, $colorCodes[4][2],"top", $input);
-				 $n="Buff_P_".$i;
-				 $input="<input type=file name=".$n."	id=file  size=10   >";
-				 DrawInputRect("技能2"." ","10","#ffffff", $Rect[0]+ 202, $Rect[1]+22   ,1220,20, $colorCodes[4][2],"top", $input);
-				 //工作資訊
-				 setWork($data[$i],$Rect[1]+32);
-				 }
+	             if($Up!="" || $Up!="_")   DrawRect("",11,$fontColor,$Rect[0]+200,$Rect[1],900,100,"#000000");
+			     if($Up=="ViewPic")  UpPic($Rect,$i,$data);  //上傳圖檔
+				 if($Up=="Edit")   setWork($data[$i],$Rect[1]+32); //工作資訊
+		 
 			  	  $Rect[1]+=104;
 			  }
 			  if($Up=="ViewPic") $submit ="<input type=submit name=submit value=上傳>";
 	          DrawInputRect("","12","#ffffff", 440 ,  120,100,20, $colorCodes[4][2],"上傳",$submit );
 			  echo "</form>";
+	 }
+	 function UpPic($Rect,$i,$data){
+	             $n="pic_".$i;
+				 $c="c_".$i;
+				  echo "<input type=hidden name=".$c." value=".$data[$i][2].">";
+		     
+				 $input="<input type=file name=".$n."	id=file  size=10   >";
+				 DrawInputRect("設定"." ","10","#ffffff", $Rect[0]+202, $Rect[1]  ,1220,20, $colorCodes[4][2],"top", $input);
+				 //max檔
+				 $n="Max_".$i;
+				 $input="<input type=file name=".$n."	id=file  size=10   >";
+				 DrawInputRect("3D檔"." ","10","#ffffff", $Rect[0] +202, $Rect[1]+22  ,1220,20, $colorCodes[4][2],"top", $input);
+				 //ani檔
+				 $n="Ani_".$i;
+				 $input="<input type=file name=".$n."	id=file  size=10   >";
+				 DrawInputRect("動畫檔"." ","10","#ffffff", $Rect[0] +202, $Rect[1]+43  ,1220,20, $colorCodes[4][2],"top", $input);
+			    //VFX檔
+				 $n="VFX_".$i;
+				 $input="<input type=file name=".$n."	id=file  size=10   >";
+				 DrawInputRect("特效檔"." ","10","#ffffff", $Rect[0]+ 202, $Rect[1]+65  ,1220,20, $colorCodes[4][2],"top", $input);
+				 //Buff
+				 $n="Buff_C_".$i;
+				 $input="<input type=file name=".$n."	id=file  size=10   >";
+				 DrawInputRect("技能1"." ","10","#ffffff", $Rect[0]+ 402, $Rect[1]   ,1220,20, $colorCodes[4][2],"top", $input);
+				 $n="Buff_P_".$i;
+				 $input="<input type=file name=".$n."	id=file  size=10   >";
+				 DrawInputRect("技能2"." ","10","#ffffff", $Rect[0]+ 402, $Rect[1]+22   ,1220,20, $colorCodes[4][2],"top", $input);
 	 }
 	 function BuildnewOrder( $sendArrays,$data,$x,$y){
 		         $code=returnDataCode( );
@@ -378,6 +359,7 @@
 			  global $OutsData,$memberData;
 			  global $Worktype;
 			  $st="角色";
+			  
 		      if($type1=="mob") $st="怪物";
 			  if($type1=="boss") $st="召喚獸王";
 			  $stmp= getMysqlDataArray("fpschedule");
@@ -723,7 +705,7 @@
 				     
 			  }
 			  UpStageFile();
-			  echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
+			 // echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
 	 }
 	 function UPskillIcon($Dir,$i,$nameArray){
 		      for($i=0;$i<count($nameArray);$i++){
