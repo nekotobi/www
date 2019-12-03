@@ -298,7 +298,7 @@
  	  
 			     DrawRect("",11,$fontColor,$Rect[0],$Rect[1],400,100,"#000000");
 			     DrawSingle($data[$i],$Rect,$ListArray,$size[0],$xlsPath[$i]);
-	             if($Up!="" || $Up!="_")   DrawRect("",11,$fontColor,$Rect[0]+200,$Rect[1],900,100,"#000000");
+	             if($Up!="" && $Up!="_")   DrawRect("",11,$fontColor,$Rect[0]+200,$Rect[1],900,100,"#000000");
 			     if($Up=="ViewPic")  UpPic($Rect,$i,$data);  //上傳圖檔
 				 if($Up=="Edit")   setWork($data[$i],$Rect[1]+32); //工作資訊
 		 
@@ -393,8 +393,8 @@
 					  array_push($sendArrays,array("plan", $code));
 					  sendInputHiddenVal($sendArrays);
 					//  echo $Worktype[$i]. count ($s);
-							    if(  $sc[9]!="")   DrawRect("",11,$fontColor,$x,$y,510,20,"#77aaaa");
-					if(  $sc[7]=="已完成")   DrawRect("",11,$fontColor,$x,$y,510,20,"#77aa77");
+				    if(  $sc[9]!="")   DrawRect("",11,$fontColor,$x,$y,210,20,"#77aaaa");
+					if(  $sc[7]=="已完成")   DrawRect("",11,$fontColor,$x,$y,210,20,"#77aa77");
 		
 					  $out=trim($sc[9]); 
 					  //"startDay","principal","outsourcing","workingDays"
