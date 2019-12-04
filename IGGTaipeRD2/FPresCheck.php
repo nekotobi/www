@@ -94,7 +94,6 @@
 	           global $type2Title;
 			   global $ResGroup;
 			   if(count($ResGroup)==0)return;
- 
 			   for($i=0;$i<count($ResGroup)+1;$i++)
 				   array_push($type2Title,array("G".$i,"G".$i));
 	 }
@@ -295,7 +294,6 @@
 			  DrawStageList($Rect,$i);
  		      for($i=0;$i<count($data);$i++){
 				  //內容
- 	  
 			     DrawRect("",11,$fontColor,$Rect[0],$Rect[1],400,100,"#000000");
 			     DrawSingle($data[$i],$Rect,$ListArray,$size[0],$xlsPath[$i]);
 	             if($Up!="" && $Up!="_")   DrawRect("",11,$fontColor,$Rect[0]+200,$Rect[1],900,100,"#000000");
@@ -444,23 +442,29 @@
 			  //圖檔
 			  $state="設定";
 			  $pic="ResourceData/".$type1."/viewPic/".$Base[2].".png";
+			  $p=0;
 			  if( file_exists($pic)){
 			      DrawLinkPic($pic,$Rect[1]-44,$Rect[0]+94,96,96,$pic);
 				  $state="建模";
-				    $Percentage[0]+=1;
+				  $p=1;
 			  }	
+			  if( strpos($Base[5],"完成") !== false    )$p=1;
+			   $Percentage[0]+=$p;
 			  //max
 			  $max="ResourceData/".$type1."/model/".$Base[2] ;
 			  $file=  checkfileExists( $max,"zip");
 			  $pic="Pics/3D.png";
-		
 			  $Code=$Base[2];
+			  $p=0;
 			  if ($file!=""){
 			       DrawLinkPic($pic,$Rect[1] ,$Rect[0],20,20,$file);
 				   $state="動作";
-				    $Percentage[1]+=1;
+				   $$p=1;
 			  } 
+			  if( strpos($Base[6],"完成") !== false    )$p=1;
+			  $Percentage[1]+=$p;
 			  //Ani
+			  $p=0;
 			  $Ani="ResourceData/".$type1."/Ani/".$Base[2] ;
 			  $file=  checkfileExists( $Ani,"zip");
 			  $pic="Pics/Ani.png";
@@ -468,17 +472,22 @@
 				  $Rect[0]+=22;
 			       DrawLinkPic($pic,$Rect[1] ,$Rect[0] ,20,20,$file);
 				   $state="特效";
-				    $Percentage[2]+=1;
+				  $p=1;
 			  } 
+			  if( strpos($Base[7],"完成") !== false    )$p=1;
+			  $Percentage[2]+=$p;
 			  //VFX
+			  $p=0;
 			  $file="ResourceData/".$type1."/VFX/".$Base[2].".unitypackage" ;
 			  $pic="Pics/VFX.png";
 			  if ( file_exists(  $file)){
 				   $Rect[0]+=22;
 			       DrawLinkPic($pic,$Rect[1] ,$Rect[0] ,20,20,$file);
 				   $state="fin";
-				   $Percentage[3]+=1;
+				   $p=1;
 			  } 
+		      if( strpos($Base[8],"完成") !== false    )$p=1;
+			  $Percentage[3]+=$p;
 			  //Xls
 			  $pic="Pics/excel.png";
 			   DrawLinkPic($pic,$Rect[1] ,$Rect[0]+22 ,20,20,$xls);  
