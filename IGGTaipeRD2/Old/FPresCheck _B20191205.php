@@ -12,7 +12,8 @@
      require_once 'ResGDfindApi.php';
      CookieSet();
      DefineBaseData();
-     filterSubmit();
+ 
+	  filterSubmit();
      ListContent();
      ShowButton();
     // filterSubmit();
@@ -46,17 +47,31 @@
 			  //$stmp= getMysqlDataArray("fpschedule");	
 			  global $ResData;
 			  $ResData=getMysqlDataArray( $tableName);	
-			 
+			  global $ResGroup;
+			  $ResGroup=ReturncolectionGroup();
 			  global $type1Title;
 			  $type1Title=array( 
 			           array("英雄","hero" ),
 					   array("小怪","mob"),
 					   array("boss&召喚獸" ,"boss"),
-					   array("場景" ,"stage"),
 					   array("all" ,"all")
 			   );
 			  global $type2Title;
-	       	  CreateTitle2( );
+			  $type2Title=array( 
+			           array("all","all"),
+					   array("m2","m2"),
+					   array("m3","m3"),
+					   array("m4","m4"),
+					   array("m5","m5"),
+					   array("未定","Undefined"),
+			   );
+			   AddT2Group(); //加入group
+			   global $type3Title;
+			   $type3Title=array(array("--","all"));
+			   for($i=1;$i<=$stageNum;$i++){
+				    $s="CH.".$i;
+			        array_push($type3Title,array($s,$i));
+			   } 
 		 	  global $CookieArray;
 			  global $ScheduleData, $ScheduleDataPlan  ;
 			  $stmp= getMysqlDataArray("fpschedule");	
@@ -78,7 +93,6 @@
 	 function AddT2Group(){
 	           global $type2Title;
 			   global $ResGroup;
-               $ResGroup=ReturncolectionGroup();
 			   if(count($ResGroup)==0)return;
 			   for($i=0;$i<count($ResGroup)+1;$i++)
 				   array_push($type2Title,array("G".$i,"G".$i));
@@ -93,6 +107,7 @@
 			  for($i=0;$i<count($tRs);$i++){
 			      if($tRs[$i][14]!=""){
 				     $s=explode("_",$tRs[$i][14]);
+					  // echo "<br>".$s[0];
 				     $n=0;
 					 if(count($s)>1 ) $n=$s[1]-1;
 					 $ResGroup[$s[0]][$n]=$tRs[$i];
@@ -123,11 +138,11 @@
 			  $Rect=array(20,30,100,20);
               
 			  DrawButton($Rect,$type1Title ,"type1" ,array(" "," "),$type1);
-			  $Rect=array(20,55,40,20);
+			  $Rect=array(20,55,30,20);
 		      DrawButton($Rect,$type2Title,"type2",array("type3","all"),$type2 );
 			  $Rect=array(20,80,50,20);
-			 // if($type1!="hero")
-		     // DrawButton($Rect,$type3Title,"type3",array("type2","all"),$type3 );
+			  if($type1!="hero")
+		      DrawButton($Rect,$type3Title,"type3",array("type2","all"),$type3 );
 			  global $BaseURL;
 			  $ValArray=array(array("Up","ViewPic"));
 			  $Rect=array(20,130,98,20);
@@ -166,27 +181,7 @@
 					  DrawRect( "x".count($ResDatafi),10,"#ffffff", $Rect[0]+60, $Rect[1]+3,20,15,"#000000");
 				  $Rect[0]+=$Rect[2]+5;
 			  }
-	 }
-	 function CreateTitle2(){
-              global $type1;
-			  global $type2Title;
-			  if($type1=="")return  ;
-			  global $ResData;
-			  $type2Title=array(  array("all","all"));//, array("m2","m2"), array("m3","m3"), array("m4","m4"));
-			  $tmp=filterArray($ResData,0,$type1);
-			  $a=array();
-			  for($i=0;$i<count($tmp);$i++){
-			      if(!in_array( $tmp[$i][12],$a))  array_push($a,$tmp[$i][12]);
-			  }
-			  $sorts=sortStringArray(  $a);
-			  for($i=0;$i<count($sorts);$i++){
-			     array_push($type2Title,array($sorts[$i],$sorts[$i]));
-			  }
-			  AddT2Group(); //加入group
-			   
-	 }
-	 function colType2(){
-	            
+	 
 	 }
 ?>
 
@@ -209,18 +204,13 @@
 		      global  $CookieArray,$MysQlArray;
 	          global  $ResData;
 			  global $type1,$type2,$type3;
- 
-			  if(strpos($type2,'G') !== false){ //Group
+			   if(strpos($type2,'G') !== false){
 				   global $ResGroup;
 			       $data= array();
 			       $s= str_replace( "G" , "" ,$type2 );
 			       for($i=0;$i<count($ResGroup[$s]);$i++){
 				      array_push($data,$ResGroup[$s][$i]);
 				   }
-				   return $data;
-			  }
-			  if(  $type1=="stage"){
-				   $data=filterArray( $ResData,13,$type2);
 				   return $data;
 			  }
 			  $data=filterArray( $ResData,0,$type1);
@@ -317,9 +307,9 @@
 			  echo "</form>";
 	 }
 	 function UpPic($Rect,$i,$data){
-		         global $type1;
+		         global $type3;
 				// echo ">>>".$type3;
-		 	      if($type1=="stage"  )return;
+		 	      if($type3!="all"  )return;
 				  DrawRect("",11,$fontColor,$Rect[0]+200,$Rect[1],900,100,"#000000");
 	             $n="pic_".$i;
 				 $c="c_".$i;
@@ -459,11 +449,7 @@
 			  $Rect[1]+=22;
 			  //圖檔
 			  $state="設定";
-			  $dir="hero";
-			  if(strpos($Base[2],'m') !== false)$dir="mob";
-			   if(strpos($Base[2],'b') !== false)$dir="boss";
-			  
-			  $pic="ResourceData/".$dir."/viewPic/".$Base[2].".png";
+			  $pic="ResourceData/".$type1."/viewPic/".$Base[2].".png";
 			  $p=0;
 			  if( file_exists($pic)){
 			      DrawLinkPic($pic,$Rect[1]-44,$Rect[0]+94,96,96,$pic);
@@ -473,7 +459,7 @@
 			  if( strpos($Base[5],"完成") !== false    )$p=1;
 			   $Percentage[0]+=$p;
 			  //max
-			  $max="ResourceData/".$dir."/model/".$Base[2] ;
+			  $max="ResourceData/".$type1."/model/".$Base[2] ;
 			  $file=  checkfileExists( $max,"zip");
 			  $pic="Pics/3D.png";
 			  $Code=$Base[2];
@@ -487,7 +473,7 @@
 			  $Percentage[1]+=$p;
 			  //Ani
 			  $p=0;
-			  $Ani="ResourceData/".$dir."/Ani/".$Base[2] ;
+			  $Ani="ResourceData/".$type1."/Ani/".$Base[2] ;
 			  $file=  checkfileExists( $Ani,"zip");
 			  $pic="Pics/Ani.png";
 			  if ($file!=""){
@@ -500,7 +486,7 @@
 			  $Percentage[2]+=$p;
 			  //VFX
 			  $p=0;
-			  $file="ResourceData/".$dir."/VFX/".$Base[2].".unitypackage" ;
+			  $file="ResourceData/".$type1."/VFX/".$Base[2].".unitypackage" ;
 			  $pic="Pics/VFX.png";
 			  if ( file_exists(  $file)){
 				   $Rect[0]+=22;
@@ -569,26 +555,19 @@
 <?php //stage
       function DrawStageList($Rect){
 	        global  $CookieArray;
-			global  $type1,$type2;
-			global  $ResData;
-			$ch= (int) preg_replace('/[^\d]/','',$type2);
-		//	$t=filterArray($ResData,0,$type1);
-			//echo count($t);
-			$info=filterArray($ResData,12,$type2);
-			//echo count($info);
-			if($type1!="stage")return;
-			$Rect[0]+=400;
+			$ch=$_COOKIE[$CookieArray[2]];
+			if($ch=="all")return;
+			$Rect[0]+=500;
 		    DrawRect("",11,$fontColor,$Rect[0],$Rect[1],560,400,"#000000");
             global $Up;
 	        //場景圖
 			$add="0";
-		    $Dir="ResourceData/stage";
+			  $Dir="ResourceData/stage";
 			if($ch>=10)$add="";
 			$picN="level_ch".$add.$ch."_01".".png";
 			$pic= $Dir."/".$picN;
 			//echo $pic;
-			$stagen=$type2.$info[0][3] ;
-			DrawRect($stagen,11,$fontColor,$Rect[0]+2,$Rect[1]+2,220,20,"#ffffff");
+			DrawRect("關卡資料",11,$fontColor,$Rect[0]+2,$Rect[1]+2,120,20,"#ffffff");
 			if ( file_exists( $pic)){
 			       DrawLinkPic($pic,$Rect[1]+24 ,$Rect[0]+2,512,256,$pic);
 			}
@@ -598,7 +577,7 @@
 			$pic="Pics/SCU.png";
 			//echo 	$u3d;
 			if ( file_exists( $u3d)){
-			       DrawLinkPic($pic,$Rect[1]+2  ,$Rect[0]+232,20,20,$u3d);
+			       DrawLinkPic($pic,$Rect[1]+2  ,$Rect[0]+132,20,20,$u3d);
 			}
 			 //上傳
 		    if($Up=="ViewPic"){

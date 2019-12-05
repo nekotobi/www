@@ -7,6 +7,21 @@
 ?>
 
 <?php //Array功能
+       function sortStringArray($array){ //排列 含有英文的數字陣列
+	          $sorts=array();
+			  $lastSn=0;
+			  for($i=0;$i<count($array);$i++){
+			      $int=(int) preg_replace('/[^\d]/','', $array[$i]);
+				  $sorts[$int]=$array[$i];
+			      if($int>$lastSn)$lastSn= $int;
+			  }
+			  $r=array(); 
+			  for($i=0;$i<=$lastSn;$i++){
+				   if( $sorts[$i]!="")array_push($r,$sorts[$i]);
+				}
+			  return $r;
+	   }
+
        function SearchArray($BaseArray,$searchSort,$searchString,$getsort){
 		   for($i=0;$i<count($BaseArray);$i++){
 		   if($BaseArray[$i][$searchSort]==$searchString)return $BaseArray[$i][$getsort];
