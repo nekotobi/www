@@ -296,7 +296,7 @@
 				  //內容
 			     DrawRect("",11,$fontColor,$Rect[0],$Rect[1],200,100,"#000000");
 			     DrawSingle($data[$i],$Rect,$ListArray,$size[0],$xlsPath[$i]);
-	             if($Up!="" && $Up!="_")   DrawRect("",11,$fontColor,$Rect[0]+200,$Rect[1],900,100,"#000000");
+	           //  if($Up!="" && $Up!="_" )   DrawRect("",11,$fontColor,$Rect[0]+200,$Rect[1],900,100,"#000000");
 			     if($Up=="ViewPic")  UpPic($Rect,$i,$data);  //上傳圖檔
 				 if($Up=="Edit")   setWork($data[$i],$Rect[1]+32); //工作資訊
 		 
@@ -307,11 +307,15 @@
 			  echo "</form>";
 	 }
 	 function UpPic($Rect,$i,$data){
+		         global $type3;
+				// echo ">>>".$type3;
+		 	      if($type3!="all"  )return;
+				  DrawRect("",11,$fontColor,$Rect[0]+200,$Rect[1],900,100,"#000000");
 	             $n="pic_".$i;
 				 $c="c_".$i;
 				 echo "<input type=hidden name=".$c." value=".$data[$i][2].">";
 				 $input="<input type=file name=".$n."	id=file  size=10   >";
-				 DrawInputRect("設定"." ","10","#ffffff", $Rect[0]+202, $Rect[1]  ,1220,20, $colorCodes[4][2],"top", $input);
+				 DrawInputRect("設定"." ","10","#ffffff", $Rect[0]+202, $Rect[1]  ,520,20, $colorCodes[4][2],"top", $input);
 				 //max檔
 				 $n="Max_".$i;
 				 $input="<input type=file name=".$n."	id=file  size=10   >";
@@ -324,6 +328,7 @@
 				 $n="VFX_".$i;
 				 $input="<input type=file name=".$n."	id=file  size=10   >";
 				 DrawInputRect("特效檔"." ","10","#ffffff", $Rect[0]+ 202, $Rect[1]+65  ,1220,20, $colorCodes[4][2],"top", $input);
+			
 				 //Buff
 				 $n="Buff_C_".$i;
 				 $input="<input type=file name=".$n."	id=file  size=10   >";
