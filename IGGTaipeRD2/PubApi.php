@@ -718,7 +718,7 @@
 			       $n=$CookieArray[$i];
 				   if($_POST[$n]!=""){
 		         //  echo "[".$n."=".$_POST[$n];
-		            setcookie($n , $_POST[$n], time()+360); 
+		            setcookie($n , $_POST[$n], time()+78000); 
 				   }
 		          }
       //  echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";	 
