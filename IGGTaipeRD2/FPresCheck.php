@@ -309,8 +309,7 @@
 	 function UpPic($Rect,$i,$data){
 	             $n="pic_".$i;
 				 $c="c_".$i;
-				  echo "<input type=hidden name=".$c." value=".$data[$i][2].">";
-		     
+				 echo "<input type=hidden name=".$c." value=".$data[$i][2].">";
 				 $input="<input type=file name=".$n."	id=file  size=10   >";
 				 DrawInputRect("設定"." ","10","#ffffff", $Rect[0]+202, $Rect[1]  ,1220,20, $colorCodes[4][2],"top", $input);
 				 //max檔
@@ -435,9 +434,13 @@
 			  $BgColor="#ffffff";
 		  	  $Rect[0]+=2;
 			  $Rect[1]+=2;
-              DrawRect_Layer($Base[2],12,$fontColor,$Rect,$BgColor,$Layer);
+			   $msg=$Base[2];
+		      if($type1!="hero")$msg= $Base[2]."[".$Base[13]."]";
+              DrawRect_Layer( $msg ,11,$fontColor,$Rect,$BgColor,$Layer);
 			  $Rect[1]+=22;
-			  DrawRect_Layer($Base[3],12,$fontColor,$Rect,$BgColor,$Layer);
+			  $msg=$Base[3];
+			
+			  DrawRect_Layer( $msg,11,$fontColor,$Rect,$BgColor,$Layer);
 			  $Rect[1]+=22;
 			  //圖檔
 			  $state="設定";
