@@ -27,11 +27,11 @@
      function CookieSet(){
 		      global $BaseURL;
 		      global  $CookieArray,$MysQlArray;
-		 	  $CookieArray=array("type1","type2","type3" ,"Up");
+		 	  $CookieArray=array("type1","type2","type3","type4" ,"Up");
 			  $MysQlArray=array(0,12,13);
 			  setcookies($CookieArray,$BaseURL);
 	          SetGlobalcookieData( $CookieArray);
-		      // CheckCookie($CookieArray);
+		    //  CheckCookie($CookieArray);
 			  
 	 }
      function DefineBaseData(){
@@ -53,10 +53,19 @@
 					   array("小怪","mob"),
 					   array("boss&召喚獸" ,"boss"),
 					   array("場景" ,"stage"),
-					   array("all" ,"all")
+					//   array("分派" ,"assign")
 			   );
 			  global $type2Title;
 	       	  CreateTitle2( );
+			  global $type3Title; 
+			  $type3Title=array(
+			              array("-","-"),
+			              array("3D","6"),
+						  array("動作","7"),
+						  array("VFX","8"),	  
+	          );
+		 
+			
 		 	  global $CookieArray;
 			  global $ScheduleData, $ScheduleDataPlan  ;
 			  $stmp= getMysqlDataArray("fpschedule");	
@@ -74,6 +83,10 @@
 			  $mt=getMysqlDataArray( "scheduletype"); 
 	          $mt2  =filterArray($mt,0,"data3");
 			  $workType=returnArraybySort(  $mt2 ,2);
+			  global $ResDatafi;
+			    $ResDatafi=  getData(); 
+			   CreateTitle4( );
+			  
 	 }
 	 function AddT2Group(){
 	           global $type2Title;
@@ -118,14 +131,20 @@
 		  }
 	 }
      function ShowButton(){
-		      global $type1Title,$type2Title,$type3Title;
-			  global $type1,$type2,$type3,$Up;
+		      global $type1Title,$type2Title,$type3Title,$type4Title;
+			  global $type1,$type2,$type3,$type4,$Up;
 			  $Rect=array(20,30,100,20);
-              
 			  DrawButton($Rect,$type1Title ,"type1" ,array(" "," "),$type1);
 			  $Rect=array(20,55,40,20);
-		      DrawButton($Rect,$type2Title,"type2",array("type3","all"),$type2 );
+		      DrawButton($Rect,$type2Title,"type2",array("",""),$type2 );
 			  $Rect=array(20,80,50,20);
+			  DrawButton($Rect,$type3Title,"type3",array("",""),$type3 );
+			  /*
+			  if($type3!="-" || $type3!=""){ 
+			    $Rect=array(20,110,50,20);
+			    DrawButton($Rect,$type4Title,"type4",array("",""),$type4 );
+			  }
+			  */
 			 // if($type1!="hero")
 		     // DrawButton($Rect,$type3Title,"type3",array("type2","all"),$type3 );
 			  global $BaseURL;
@@ -152,7 +171,6 @@
 	 function DrawButton($Rect,$btArray,$arraytype,$AddArray,$typev, $BgColor="#000000",  $fontColor="#ffffff"){
 		    global $BaseURL;
 			global $ResDatafi;
-		 
 		    for($i=0;$i<count( $btArray);$i++){
 			      $BGC=$BgColor;
 			      if( $typev ==$btArray[$i][1]){
@@ -163,7 +181,7 @@
 				  $SubmitVal= $btArray[$i][0] ;
 			 	  sendVal($BaseURL,$valArray,$SubmitName,$SubmitVal,$Rect,10, $BGC,$fontColor,"true");
 				  if($arraytype=="type1" && $_COOKIE[$arraytype]==$btArray[$i][1])
-					  DrawRect( "x".count($ResDatafi),10,"#ffffff", $Rect[0]+60, $Rect[1]+3,20,15,"#000000");
+					   DrawRect( "x".count($ResDatafi),10,"#ffffff", $Rect[0]+60, $Rect[1]+3,20,15,"#000000");
 				  $Rect[0]+=$Rect[2]+5;
 			  }
 	 }
@@ -185,8 +203,22 @@
 			  AddT2Group(); //加入group
 			   
 	 }
-	 function colType2(){
-	            
+     function CreateTitle4() {
+		      global $ResDatafi;
+			  global $type3;
+			  global $type4Title;
+			  $arr=array();
+			  for($i=0;$i<count($ResDatafi);$i++){
+				   $str  = explode(">",$ResDatafi[$i][$type3]);
+				   if($str[0]!="")
+				      if(!in_array( $str[0],$arr))  array_push($arr,$str[0]);
+				 
+			  }
+			  $type4Title=array();
+			  for($i=0;$i<count($arr);$i++) {
+			      array_push($type4Title,array($arr[$i],$i));
+			  }
+				 
 	 }
 ?>
 
@@ -224,9 +256,12 @@
 				   return $data;
 			  }
 			  $data=filterArray( $ResData,0,$type1);
-
 		      if($type2!="all") $data=filterArray( $data,$MysQlArray[1],$type2);
-			  if($type3!="all") $data=filterArray( $data,$MysQlArray[2],"CH.".$type3); 
+			  
+			  if($type3!="-"){
+			  
+			  }
+				  
 			  $data= SortList( $data,3);
 			  
 			
@@ -243,7 +278,7 @@
 				  $b= SortList( $b,3);
 				  array_push($a,  $b);
 				 }
-			   return $a;
+			  return $a;
 	 }
 	 function ListMilestoneAll(){
 		    //  echo "XX";
@@ -276,22 +311,59 @@
 				              array( $data[$i][6],100),
 				  );
 				  DrawTable($tableArray,$x,$yloc,$fontColor,$fontSize,$bgcolor);
- 
 				  $yloc+=22;
 			 }
 	 }
+ 
+	 function ListPrincipal(){
+		      global $type4Title,$type4,$type3;
+			  global $ResDatafi;
+			  $arr=array();
+			  for($j=0;$j<count($type4Title);$j++){
+				   array_push( $arr,array($type4Title[$j][0]));
+				}
+			  array_push( $arr,array("未排進" ));
+			  for($i=0;$i<count($ResDatafi);$i++){
+			      $str  = explode(">",$ResDatafi[$i][$type3]);  
+				  $n=  returnPriNum($str[0],$type4Title);
+				 
+				   array_push( $arr[$n],$ResDatafi[$i][2].$ResDatafi[$i][3]);
+			  }
+			  $x=20;
+			  $y=220;
+			  for($i=0;$i<count($arr);$i++){
+				   $Bgc="#000000";
+				   $fontColor="#ffffff";
+				    for($j=0;$j<count($arr[$i]);$j++){
+			             DrawRect($arr[$i][$j],11,$fontColor,$x+$i*120,$y+$j*22,100,20,$Bgc);
+						  $Bgc="#ffffff";
+						  	   $fontColor="#000000";
+					}
+			 }
+	 }
+	 function returnPriNum($s,$type4Title){
+		      
+	          for($j=0;$j<count($type4Title);$j++){
+				   if($type4Title[$j][0]==$s)return $j;
+				}
+				return count($type4Title) ;
+	 }
+	 
+	 
      function ListContent(){
 	          global  $CookieArray,$MysQlArray;
 			  global $ResData, $ResDatafi;
 			  global $Up;
-			  global $type1;
+			  global $type1,$type3;
+			  if($type3!="-"){
+			  ListPrincipal();
+			  return;
+			  }
 			  if($type1=="all"){
 				  ListMilestoneAll();
 				  return;
 			  }
               for($i=0;$i<2;$i++)  if($_COOKIE[$CookieArray[$i]]=="")return;
-			  $data = getData();
-			  $ResDatafi= $data; 
               $xlsPath=getXlsPath();
 			  global  $Percentage;
 			  $Percentage=array(0,0,0,0);
@@ -302,6 +374,7 @@
 			  echo   "<form id='EditRes'  name='Show' action='".$BackURL."' method='post'  enctype='multipart/form-data'>";
 			  //關卡
 			  DrawStageList($Rect,$i);
+			  $data= $ResDatafi;
  		      for($i=0;$i<count($data);$i++){
 				  //內容
 			     DrawRect("",11,$fontColor,$Rect[0],$Rect[1],200,100,"#000000");
@@ -449,20 +522,18 @@
 			  $BgColor="#ffffff";
 		  	  $Rect[0]+=2;
 			  $Rect[1]+=2;
-			   $msg=$Base[2];
+			  $msg=$Base[2];
 		      if($type1!="hero")$msg= $Base[2]."[".$Base[13]."]";
               DrawRect_Layer( $msg ,11,$fontColor,$Rect,$BgColor,$Layer);
 			  $Rect[1]+=22;
 			  $msg=$Base[3];
-			
 			  DrawRect_Layer( $msg,11,$fontColor,$Rect,$BgColor,$Layer);
 			  $Rect[1]+=22;
 			  //圖檔
 			  $state="設定";
 			  $dir="hero";
 			  if(strpos($Base[2],'m') !== false)$dir="mob";
-			   if(strpos($Base[2],'b') !== false)$dir="boss";
-			  
+			  if(strpos($Base[2],'b') !== false)$dir="boss";
 			  $pic="ResourceData/".$dir."/viewPic/".$Base[2].".png";
 			  $p=0;
 			  if( file_exists($pic)){
