@@ -10,6 +10,7 @@
 	 require_once('mysqlApi.php');
 	 require_once('scheduleApi.php');
      require_once 'ResGDfindApi.php';
+	 DefineUnityResPath();
      CookieSet();
      DefineBaseData();
      filterSubmit();
@@ -31,8 +32,17 @@
 			  $MysQlArray=array(0,12,13);
 			  setcookies($CookieArray,$BaseURL);
 	          SetGlobalcookieData( $CookieArray);
-		    //  CheckCookie($CookieArray);
+		    //  CheckCookie($CookieArray);	  
+	 }
+	 function DefineUnityResPath(){
+		      global $unityUIPath;
+			  $unityUIPath="VTUnity/Main/Assets/AssetBundles/PrimaryBundle/UI/";
+			  global $iconPath;
+			  $iconPath=array("Skill");
 			  
+			  
+			  global $BuffIconDir;
+			  $BuffIconDir="ResourceData/hero/buff";
 	 }
      function DefineBaseData(){
 		      global $BaseURL;
@@ -382,7 +392,6 @@
 	           //  if($Up!="" && $Up!="_" )   DrawRect("",11,$fontColor,$Rect[0]+200,$Rect[1],900,100,"#000000");
 			     if($Up=="ViewPic")  UpPic($Rect,$i,$data);  //上傳圖檔
 				 if($Up=="Edit")   setWork($data[$i],$Rect[1]+32); //工作資訊
-		 
 			  	  $Rect[1]+=104;
 			  }
 			  if($Up=="ViewPic") $submit ="<input type=submit name=submit value=上傳>";
@@ -411,7 +420,7 @@
 				 $n="VFX_".$i;
 				 $input="<input type=file name=".$n."	id=file  size=10   >";
 				 DrawInputRect("特效檔"." ","10","#ffffff", $Rect[0]+ 202, $Rect[1]+65  ,1220,20, $colorCodes[4][2],"top", $input);
-			
+			     /*
 				 //Buff
 				 $n="Buff_C_".$i;
 				 $input="<input type=file name=".$n."	id=file  size=10   >";
@@ -419,6 +428,7 @@
 				 $n="Buff_P_".$i;
 				 $input="<input type=file name=".$n."	id=file  size=10   >";
 				 DrawInputRect("技能2"." ","10","#ffffff", $Rect[0]+ 402, $Rect[1]+22   ,1220,20, $colorCodes[4][2],"top", $input);
+				 */
 	 }
 	 function BuildnewOrder( $sendArrays,$data,$x,$y){
 		         $code=returnDataCode( );
@@ -584,12 +594,21 @@
 			  //Xls
 			  $pic="Pics/excel.png";
 			   DrawLinkPic($pic,$Rect[1] ,$Rect[0]+22 ,20,20,$xls);  
-			  //buff
+			  //skill
+
 			  if ($type1=="hero"){
-			  	 $file="ResourceData/hero/buff/".$Base[2]."_C.png" ;
+				 global $unityUIPath;
+				 $skillPath=$unityUIPath."Skill/";
+				 $file=$unityUIPath."Skill/".$Base[2]."_C.png" ;
                  DrawfileLinkPic( $file, $file,array($Rect[0]+182,$Rect[1]-45,48,48));
-				 $file="ResourceData/hero/buff/".$Base[2]."_P.png" ;
+				 $file=$unityUIPath."Skill/".$Base[2]."_P.png" ;
                  DrawfileLinkPic( $file, $file,array($Rect[0]+182,$Rect[1]+5,48,48));
+				 //技能圖
+			     $file=$unityUIPath."Battle/Skill_lcon/ui_skill_button_sp_".$Base[2].".png" ;
+			     DrawfileLinkPic( $file, $file,array($Rect[0]+230,$Rect[1]-48,50,35));
+				 //頭圖
+				 $file=$unityUIPath."Heropic/heropic_".$Base[2].".png" ;
+			     DrawfileLinkPic( $file, $file,array($Rect[0]+230,$Rect[1]+5,48,48));
 			  }
 
 			 if( $state!="fin")
@@ -782,11 +801,12 @@
      function upfile(){
 			  global $type1;
 			  global $BaseURL;
+			  global $BuffIconDir;
 			  $data = getData();
 			  $dir="ResourceData/".$type1;
 		      $picdir=$dir."/viewPic/Base";
 			  $viewDir=$dir."/viewPic";
-			  $BuffIconDir="ResourceData/hero/buff";
+			
 		      MakeDir($BuffIconDir);	
               MakeDir($picdir);			
 			  MakeDir($viewDir);		
