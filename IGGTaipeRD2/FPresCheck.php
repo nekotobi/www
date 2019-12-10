@@ -387,7 +387,7 @@
 			  $data= $ResDatafi;
  		      for($i=0;$i<count($data);$i++){
 				  //內容
-			     DrawRect("",11,$fontColor,$Rect[0],$Rect[1],200,100,"#000000");
+			     DrawRect("",11,$fontColor,$Rect[0],$Rect[1],300,100,"#000000");
 			     DrawSingle($data[$i],$Rect,$ListArray,$size[0],$xlsPath[$i]);
 	           //  if($Up!="" && $Up!="_" )   DrawRect("",11,$fontColor,$Rect[0]+200,$Rect[1],900,100,"#000000");
 			     if($Up=="ViewPic")  UpPic($Rect,$i,$data);  //上傳圖檔
@@ -594,25 +594,48 @@
 			  //Xls
 			  $pic="Pics/excel.png";
 			   DrawLinkPic($pic,$Rect[1] ,$Rect[0]+22 ,20,20,$xls);  
-			  //skill
-
-			  if ($type1=="hero"){
-				 global $unityUIPath;
-				 $skillPath=$unityUIPath."Skill/";
-				 $file=$unityUIPath."Skill/".$Base[2]."_C.png" ;
-                 DrawfileLinkPic( $file, $file,array($Rect[0]+182,$Rect[1]-45,48,48));
-				 $file=$unityUIPath."Skill/".$Base[2]."_P.png" ;
-                 DrawfileLinkPic( $file, $file,array($Rect[0]+182,$Rect[1]+5,48,48));
-				 //技能圖
-			     $file=$unityUIPath."Battle/Skill_lcon/ui_skill_button_sp_".$Base[2].".png" ;
-			     DrawfileLinkPic( $file, $file,array($Rect[0]+230,$Rect[1]-48,50,35));
-				 //頭圖
-				 $file=$unityUIPath."Heropic/heropic_".$Base[2].".png" ;
-			     DrawfileLinkPic( $file, $file,array($Rect[0]+230,$Rect[1]+5,48,48));
-			  }
+			  //icons
+			   DrawIcons($Base,$Rect);
 
 			 if( $state!="fin")
 			 CheckState($Code, $BaseRect,$state);
+	 }
+	 function DrawIcons($Base,$Rect){
+		      global $unityUIPath;
+			  global $type1;
+              switch ($type1){
+				  case "hero":
+				     $skillPath=$unityUIPath."Skill/";
+				     $file=$unityUIPath."Skill/".$Base[2]."_C.png" ;
+                     DrawfileLinkPic( $file, $file,array($Rect[0]+182,$Rect[1]-45,48,48));
+			    	 $file=$unityUIPath."Skill/".$Base[2]."_P.png" ;
+                     DrawfileLinkPic( $file, $file,array($Rect[0]+182,$Rect[1]+5,48,48));
+				     //頭圖
+				     $file=$unityUIPath."Heropic/heropic_".$Base[2].".png" ;
+			         DrawfileLinkPic( $file, $file,array($Rect[0]+230,$Rect[1]-45,48,48));
+				     //碎片
+				     $na=substr($Base[2], -3);
+				     $file=$unityUIPath."Heropic/hero_piece_11".$na.".png" ;
+			         DrawfileLinkPic( $file, $file,array($Rect[0]+230,$Rect[1]+5,48,48));
+				     //技能圖
+			         $file=$unityUIPath."Battle/Skill_lcon/ui_skill_button_sp_".$Base[2].".png" ;
+			         DrawfileLinkPic( $file, $file,array($Rect[0]+280,$Rect[1]-48,50,35));
+				    break;
+					case "mob":
+					 $file=$unityUIPath."Monster/monster_".$Base[2].".png" ;
+					 DrawfileLinkPic( $file, $file,array($Rect[0]+182,$Rect[1]-45,48,48));
+					break;
+					case "boss":
+					 $file=$unityUIPath."Monster/monster_".$Base[2].".png" ;
+					 DrawfileLinkPic( $file, $file,array($Rect[0]+182,$Rect[1]-45,48,48));
+					break;
+					 case "stage":
+					 $file=$unityUIPath."Monster/monster_".$Base[2].".png" ;
+					 DrawfileLinkPic( $file, $file,array($Rect[0]+182,$Rect[1]-45,48,48));
+					break;
+			  }
+			 
+	 
 	 }
 	 function DrawfileLinkPic($Link,$pic,$Rect){
 		   if ( file_exists( $Link)){
