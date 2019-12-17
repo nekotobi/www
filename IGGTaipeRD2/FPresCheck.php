@@ -149,14 +149,6 @@
 		      DrawButton($Rect,$type2Title,"type2",array("",""),$type2 );
 			  $Rect=array(20,80,50,20);
 			  DrawButton($Rect,$type3Title,"type3",array("",""),$type3 );
-			  /*
-			  if($type3!="-" || $type3!=""){ 
-			    $Rect=array(20,110,50,20);
-			    DrawButton($Rect,$type4Title,"type4",array("",""),$type4 );
-			  }
-			  */
-			 // if($type1!="hero")
-		     // DrawButton($Rect,$type3Title,"type3",array("type2","all"),$type3 );
 			  global $BaseURL;
 			  $ValArray=array(array("Up","ViewPic"));
 			  $Rect=array(20,130,98,20);
@@ -324,7 +316,6 @@
 				  $yloc+=22;
 			 }
 	 }
- 
 	 function ListPrincipal(){
 		      global $type4Title,$type4,$type3;
 			  global $ResDatafi;
@@ -358,8 +349,6 @@
 				}
 				return count($type4Title) ;
 	 }
-	 
-	 
      function ListContent(){
 	          global  $CookieArray,$MysQlArray;
 			  global $ResData, $ResDatafi;
@@ -387,7 +376,7 @@
 			  $data= $ResDatafi;
  		      for($i=0;$i<count($data);$i++){
 				  //內容
-			     DrawRect("",11,$fontColor,$Rect[0],$Rect[1],300,100,"#000000");
+			     DrawRect("",11,$fontColor,$Rect[0],$Rect[1],360,100,"#000000");
 			     DrawSingle($data[$i],$Rect,$ListArray,$size[0],$xlsPath[$i]);
 	           //  if($Up!="" && $Up!="_" )   DrawRect("",11,$fontColor,$Rect[0]+200,$Rect[1],900,100,"#000000");
 			     if($Up=="ViewPic")  UpPic($Rect,$i,$data);  //上傳圖檔
@@ -595,7 +584,7 @@
 			  $pic="Pics/excel.png";
 			   DrawLinkPic($pic,$Rect[1] ,$Rect[0]+22 ,20,20,$xls);  
 			  //icons
-			   DrawIcons($Base,$Rect);
+			   DrawIcons($Base,$BaseRect);
 
 			 if( $state!="fin")
 			 CheckState($Code, $BaseRect,$state);
@@ -603,6 +592,8 @@
 	 function DrawIcons($Base,$Rect){
 		      global $unityUIPath;
 			  global $type1;
+			  $Rect[1]+=48;
+			  $Rect[0]+=12;
               switch ($type1){
 				  case "hero":
 				     $skillPath=$unityUIPath."Skill/";
