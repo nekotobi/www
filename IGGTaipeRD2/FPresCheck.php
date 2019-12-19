@@ -325,20 +325,25 @@
 				}
 			  array_push( $arr,array("未排進" ));
 			  for($i=0;$i<count($ResDatafi);$i++){
+				//  echo $ResDatafi[$i][$type3];
 			      $str  = explode(">",$ResDatafi[$i][$type3]);  
 				  $n=  returnPriNum($str[0],$type4Title);
-				 
-				   array_push( $arr[$n],$ResDatafi[$i][2].$ResDatafi[$i][3]);
+				  $color="#ffcccc";
+				  if($str[1]=="已完成") $color="#ffffff";
+				  array_push( $arr[$n],$ResDatafi[$i][2].$ResDatafi[$i][3]."_".$color);
 			  }
 			  $x=20;
 			  $y=220;
-			  for($i=0;$i<count($arr);$i++){
+			  for($i=0;$i<count($arr) ;$i++){
 				   $Bgc="#000000";
 				   $fontColor="#ffffff";
-				    for($j=0;$j<count($arr[$i]);$j++){
-			             DrawRect($arr[$i][$j],11,$fontColor,$x+$i*120,$y+$j*22,100,20,$Bgc);
-						  $Bgc="#ffffff";
-						  	   $fontColor="#000000";
+				    for($j=0;$j<count($arr[$i]) ;$j++){
+					     $str  = explode("_",$arr[$i][$j]);  
+			             //DrawRect($arr[$i][$j],11,$fontColor,$x+$i*120,$y+$j*22,100,20,$Bgc);
+						  DrawRect($str[0],11,$fontColor,$x+$i*120,$y+$j*22,100,20,$Bgc);
+					      $Bgc="#ffffff";
+						  if($str[1]!="") $Bgc=$str[1];
+						  $fontColor="#000000";
 					}
 			 }
 	 }
@@ -652,17 +657,7 @@
 			  $Rect[3]=32;
 		      DrawRect_Layer($msg,10,"#ffffff",$Rect,$BGC,$Layer);
 	 }
-	 function DrawSingle_old($Base,$Rect,$ListArray,$size){
-		    for($i=0;$i<count($ListArray);$i++){
-				 $s=$ListArray[$i];
-				 $Rect[2]=$size[$s];
-				 $fontColor="#000000";
-				 $BgColor="#ffffff";
-	             DrawRect_Layer($Base[$s],12,$fontColor,$Rect,$BgColor,$Layer);
-				 $Rect[0]+=($Rect[2]+2);
-		       } 
-			 
-	 }
+
      function checkfileExists($Path,$type){
 	          if($type="Zip"){
 			      if( file_exists($Path.".rar"))return $Path.".rar";
@@ -895,7 +890,7 @@
 				   move_uploaded_file($_FILES[$name]["tmp_name"], $Uppath);
 			  }
 	 }
-      function AddDataV2( ){
+     function AddDataV2( ){
 	            //echo "xxx";
 		        global  $data_library;//,$tableName;
 			    global  $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$EditHide;
@@ -928,4 +923,19 @@
 
 ?>
 
+<?php //old
+/*
+	 function DrawSingle_old($Base,$Rect,$ListArray,$size){
+		    for($i=0;$i<count($ListArray);$i++){
+				 $s=$ListArray[$i];
+				 $Rect[2]=$size[$s];
+				 $fontColor="#000000";
+				 $BgColor="#ffffff";
+	             DrawRect_Layer($Base[$s],12,$fontColor,$Rect,$BgColor,$Layer);
+				 $Rect[0]+=($Rect[2]+2);
+		       } 
+			 
+	 }
+	 */
+?>
 <body bgcolor="#b5c4b1">
