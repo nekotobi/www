@@ -376,7 +376,7 @@
 			  $data= $ResDatafi;
  		      for($i=0;$i<count($data);$i++){
 				  //內容
-			     DrawRect("",11,$fontColor,$Rect[0],$Rect[1],360,100,"#000000");
+			     DrawRect("",11,$fontColor,$Rect[0],$Rect[1],400,100,"#000000");
 			     DrawSingle($data[$i],$Rect,$ListArray,$size[0],$xlsPath[$i]);
 	           //  if($Up!="" && $Up!="_" )   DrawRect("",11,$fontColor,$Rect[0]+200,$Rect[1],900,100,"#000000");
 			     if($Up=="ViewPic")  UpPic($Rect,$i,$data);  //上傳圖檔
@@ -611,6 +611,9 @@
 				     //技能圖
 			         $file=$unityUIPath."Battle/Skill_lcon/ui_skill_button_sp_".$Base[2].".png" ;
 			         DrawfileLinkPic( $file, $file,array($Rect[0]+280,$Rect[1]-48,50,35));
+					 //施放技能
+					  $file=$unityUIPath."Battle/banner/ui_ultimate_skill_".$Base[2].".png" ;
+			          DrawfileLinkPic( $file, $file,array($Rect[0]+280,$Rect[1]-2,88,50)); 
 				    break;
 					case "mob":
 					 $file=$unityUIPath."Monster/monster_".$Base[2].".png" ;
