@@ -339,10 +339,11 @@
 				   $fontColor="#ffffff";
 				    for($j=0;$j<count($arr[$i]) ;$j++){
 					     $str  = explode("_",$arr[$i][$j]);  
+					     $Bgc="#000000";
+					     if($str[1]!="") $Bgc=$str[1];
 			             //DrawRect($arr[$i][$j],11,$fontColor,$x+$i*120,$y+$j*22,100,20,$Bgc);
 						  DrawRect($str[0],11,$fontColor,$x+$i*120,$y+$j*22,100,20,$Bgc);
-					      $Bgc="#ffffff";
-						  if($str[1]!="") $Bgc=$str[1];
+				
 						  $fontColor="#000000";
 					}
 			 }
