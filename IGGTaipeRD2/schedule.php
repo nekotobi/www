@@ -1063,7 +1063,7 @@
 	     global $colorCodes;
 		 global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2;
 		 global $Ecode;
-
+         global $OutsData,$memberData,$stateType;
          DrawPopBG($ex,$ey,$w,$h,$title ,"12",$BackURL);
 		 $planstmp=getMysqlDataArray($tableName);
 		 $plansArray=returnDataArray($planstmp,1,$Ecode);
@@ -1086,7 +1086,7 @@
 		 // echo   "<input type=hidden name=type value=細分>"; 
 		 //年
 	     $input="<input id='year'  type=text name=year value='".$startDay[0]."'  size=4>年";
-	     DrawInputRect("新增","12","#ffffff",($ex),$ey ,120,16, $colorCodes[4][2],"top",$input);
+	     DrawInputRect("新增","10","#ffffff",($ex),$ey ,120,16, $colorCodes[4][2],"top",$input);
 	     //月
 	     $input="<input id='month' type=text name=month value='".$startDay[1]."'  size=2>月";
 	     DrawInputRect("","12","#ffffff",($ex+80),$ey ,120,16, $colorCodes[4][2],"top",$input);
@@ -1094,13 +1094,26 @@
 	     $input="<input id='day' type=text name=day value='".$startDay[2]."'  size=2>日".$plansArray[3];
 	     DrawInputRect("","14","#ffffff",($ex+130),$ey ,220,16, $colorCodes[4][2],"top",$input);
 		 //類別計畫
-	     $select=MakeSelectionV2($SelectType_2,"設定","type",14);
-	     DrawInputRect("","14","#ffffff",($ex+310 ),$ey,140,18, $colorCodes[4][2],"top",  $select."計畫");
+	     $select=MakeSelectionV2($SelectType_2,"設定","type",10);
+	     DrawInputRect("","10","#ffffff",($ex+310 ),$ey,140,18, $colorCodes[4][2],"top",  $select."計畫");
+		 //外包
+	     $OutsData2=returnArraybySort(  $OutsData,2);
+		 $select=MakeSelectionV2($OutsData2,"","outsourcing",10);
+	     DrawInputRect("外包","10","#ffffff",($ex+180 ),$ey+22,340,18, $colorCodes[4][2],"top",  $select."");
+		 //負責人
+		 $Member2=returnArraybySort($memberData,1);
+		   $select=MakeSelectionV2($Member2,"","principal",10);
+	     DrawInputRect("負責人","10","#ffffff",($ex+180 ),$ey+45,240,18, $colorCodes[4][2],"top",  $select."");
+		  //狀態
+		 $selectTable= MakeSelectionV2( $stateType,$plansArray[7],"state" ,10);
+         DrawInputRect( "目前狀態","10","#ffffff",($ex+180 ),$ey+69,240,18, $colorCodes[4][2],"top", $selectTable);
+		 
+		 //天數
 	     $workDayinput="<input id='workingDays' type=text name=workingDays  value='5'  size=2   >";
-	     DrawInputRect("天數","12","#ffffff",($ex+240),$ey+40,120,18, $colorCodes[4][2],"top",$workDayinput);
+	     DrawInputRect("天數","12","#ffffff",($ex+240),$ey+90,120,18, $colorCodes[4][2],"top",$workDayinput);
 
 		 $submitP="<input type=submit name=submit value=新增規畫>";
-	     DrawInputRect("",$ey-22 ,"#ffffff",($ex+320),60,120,18, $colorCodes[4][2],"top",$submitP);
+	     DrawInputRect("",$ey-22 ,"#ffffff",($ex+320),110,120,18, $colorCodes[4][2],"top",$submitP);
 		 
          //載入小日曆
 		  include('CalendarPlugin.php');

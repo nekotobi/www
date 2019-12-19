@@ -16,9 +16,9 @@
 			  for($i=0;$i<count($daysLoc);$i++){//日格
 			  	  if($daysLoc[$i][2]==1){
 					  $startM+=1;
-					  if(  $startM==13){
-					  $StartM=1;
-					   $starty+=1;
+					  if($startM ==13){
+					    $startM =1;
+					    $starty+=1;
 					  }
 				  }
 			      $color=$colorCodes[2][4];
