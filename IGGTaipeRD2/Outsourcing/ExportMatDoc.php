@@ -312,6 +312,7 @@ header("Expires:0");
                 $encoded_string = base64_encode(file_get_contents($source_file));
                  return('data:image/' . $mime_type . ';base64,' . $encoded_string);
               }
+			  /*
 	   function sortArrays($BaseArray ,$ArrayNum ,$forwardBool){
   		  $newArray=array();
 		  $lastSn=  getLastSN2($BaseArray,$ArrayNum);
@@ -347,6 +348,7 @@ header("Expires:0");
 			  }
 			  return $newArray;
 	   }
+	   */
 ?>
  
  

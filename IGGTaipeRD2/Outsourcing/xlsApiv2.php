@@ -16,6 +16,40 @@
 				}
 				return $returnData;
 	  }
+	   function getLastSN2($SQLData,$SnNum){
+	      $lastSN=0;
+		  for($i=0;$i<count($SQLData);$i++){
+		 
+		  if($SQLData[$i][$SnNum]>$lastSN)$lastSN=$SQLData[$i][$SnNum];
+		  }
+		  return $lastSN;
+	   }
+	   function sortArrays($BaseArray ,$ArrayNum ,$forwardBool){
+  		  $newArray=array();
+		  $lastSn=  getLastSN2($BaseArray,$ArrayNum); 
+		 if($forwardBool=="true"){//正向
+		  	  for($i=0;$i<= $lastSn;$i++){
+                 $tmpArray= GetArraySn($BaseArray, $ArrayNum ,$i);
+				 if(count($tmpArray)>0)$newArray=  array_merge( $newArray,$tmpArray); 
+			  } 
+		  }
+		  if($forwardBool=="false"){//逆向
+		  	  for( $i=$lastSn;$i>0;$i--){
+                 $tmpArray= GetArraySn($BaseArray, $ArrayNum ,$i );
+				 if(count($tmpArray)>0)$newArray=  array_merge( $newArray,$tmpArray); 
+			  }
+		  }
+	      return  $newArray;
+	  }
+	  function GetArraySn($BaseArray, $ArrayNum ,$sn ){
+			  $newArray=array();
+		      for($i=0;$i<count($BaseArray);$i++){
+			     if($BaseArray[$i][ $ArrayNum]==$sn) {
+					  array_push (  $newArray,$BaseArray[$i]);
+				 }  
+			  }
+			  return $newArray;
+	   }
 	   function getAll_num($SElectTable){
 		  $data_library="IGGTaipeRD2";
 	      $db = mysql_connect("localhost","root","1406");

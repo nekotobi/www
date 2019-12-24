@@ -10,8 +10,9 @@ function DefineData(){
 		 global $outsDetial,$OutsCost, $outsData;
 		 //詳細表單
 		 $outsDetialT=getMysqlDataArray("outsdetail");
-		 $outsDetial= filterArray( $outsDetialT,1,$sn);
- 
+		 $outsDetialT2= filterArray( $outsDetialT,1,$sn);
+         $outsDetial=sortArrays($outsDetialT2 ,2,"true");
+		 
 		 //外包單
 		 $OutsCostT=getMysqlDataArray("fpoutsourcingcost");
 		 $OutsCost= filterArray(  $OutsCostT,1,$sn);
