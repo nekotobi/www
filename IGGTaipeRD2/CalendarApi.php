@@ -39,14 +39,16 @@
 				 $m=1;
 				 $d=1;
 			  }
+			  
 		       $sm=1;
 			    while($sm<$nm){
 				     $td+=getMonthDay($sm,$y);
 				     $sm+=1;
 			    }
-			 
-			     $td+=$nd;
-			 
+				if($startDayArray[1]!=$nowDayArray[1])	    $td+=$nd;
+				if($startDayArray[1]==$nowDayArray[1] && $startDayArray[0]==$nowDayArray[0] )	{
+					$td+=($nowDayArray[2]-$startDayArray[2]);
+				}
 			  
 			  /*
 			  if($ny==$fy){//同一年
