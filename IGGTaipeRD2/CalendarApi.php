@@ -28,7 +28,29 @@
 			  $nm= $nowDayArray[1];
 			  $nd= $nowDayArray[2];
 			  $td=0;//總日
-			  if($ny==$y){//同一年
+			  if($ny>$y){//上一年
+			     $sm=12;
+				 while($sm>=$m){
+				   $td+=getMonthDay($sm,$y);
+				   $sm-=1;
+				 }
+			     $td-=$d;
+                 $y=$ny;
+				 $m=1;
+				 $d=1;
+			  }
+		       $sm=1;
+			    while($sm<$nm){
+				     $td+=getMonthDay($sm,$y);
+				     $sm+=1;
+			    }
+			 
+			     $td+=$nd;
+			 
+			  
+			  /*
+			  if($ny==$fy){//同一年
+ 
 			      if($nowDayArray[1]>$startDayArray[1]){//跨月
 				     $td+=getMonthDay($m,$y)-$d;
 					 $m+=1;
@@ -44,6 +66,7 @@
 					    return $td;
 				  }
 			  }
+			  */
              return $td;
 	  }
        function getVacationDays($YearRange,$MonthRange){
@@ -71,14 +94,41 @@
 				//echo $CurrentDay.">";
 				while($AccumulatekDays<=$workd){ 
 			       if(!in_array(array($y,$m,$CurrentDay),$VacationDays )){
-					
 					 $AccumulatekDays+=1;
 				   }
 			       $CurrentDay+=1;
 				}
 				return  $CurrentDay-$startday ;
 	   } 
- 	   function SetCalendarRange( $TargetYear,$TargetMonth){
+	   function SetCalendarRange( $TargetYear,$TargetMonth){
+	            global $YearRange,$MonthRange,$showMonthNum,$UpMonth;
+				if($UpMonth=="")$UpMonth=-1;
+			    if($showMonthNum==0)$showMonthNum=5;
+				if( $TargetYear=="") $TargetYear=  date("Y");
+				if( $TargetMonth!="") $m=$TargetMonth;
+				if( $TargetMonth=="")
+				  {
+				    $TargetMonth=date("m");
+					$m=$TargetMonth+$UpMonth;
+				  }
+				  
+				$y=$TargetYear;
+				if($m<=0){
+					$y-=1;
+					$m=12+$m; 
+					
+				  }
+				for($i=0;$i<=$showMonthNum;$i++){
+				 	 $MonthRange[$i]=$m;
+					 $YearRange[$i]=$y;
+					 $m+=1;
+					 if($m>12){
+					 $m=1;
+					 $y+=1;
+					 }
+				}
+	   }
+ 	   function SetCalendarRange_bak( $TargetYear,$TargetMonth){
 	            global $YearRange,$MonthRange,$showMonthNum,$UpMonth;
 				if( $TargetYear=="") $TargetYear=  date("Y");
 				if( $TargetMonth!="") $m=$TargetMonth;

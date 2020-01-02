@@ -4,8 +4,24 @@
     include('mysqlApi.php');
     include('scheduleApi.php');
 	global $data_type;
-	$data_type="5678";
-     updata2();
+	//$data_type="5678";
+    // updata2();
+	TestCalendarRangeFunction();
+?>
+<?php
+   function TestCalendarRangeFunction(){
+	   
+
+   }
+   function TestDayFunction(){
+				  $startDay=array(2019,12,21);
+			      $nowDayArray=array(2020,1,4);
+				  $passDays= getPassDays($startDay,$nowDayArray);
+				  echo $passDays;
+				$VacationDays= getVacationDays(array(2019,2020),array(12,1,2));
+				   $realDays=ReturnWorkDaysV2($startDay[0],$startDay[1],$startDay[2],$passDays,$VacationDays);
+				   echo "=".$realDays;
+   }
 ?>
 <?php
    function updata2(){

@@ -39,7 +39,7 @@
 			   //CheckCookie($CookieArray);
  
 	 }
-	 function setTmpPost( $tmpPost){
+	 function  setTmpPost( $tmpPost){
 		 echo "x";
 	       for($i=0;$i<count($tmpPost);$i++){
 			   $t=$tmpost[$i];
@@ -190,7 +190,7 @@
 	              if($passDays>=$realDays && $plansArray[7]!="已完成"){
 					 if( $plansArray[7]=="暫停")return "false";
 					 if( $plansArray[7]=="待優化")return "false";
-					     if($plansArray[7]=="廢棄")return "false";
+					 if( $plansArray[7]=="廢棄")return "false";
 					  return "true";
 				  }
 				//  echo $startDay[1]."-".$startDay[2]."=".$passDays.">".$realDays."]";
