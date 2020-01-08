@@ -2,6 +2,7 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+ 
    <title>FP資源索引v2</title>
 </head>
 
@@ -16,7 +17,7 @@
      filterSubmit();
      ListContent();
      ShowButton();
-    // filterSubmit();
+    //filterSubmit();
      //檢查進度
      GetCode();
      DrawPercentage();
@@ -541,6 +542,8 @@
 			  if(strpos($Base[2],'b') !== false)$dir="boss";
 			  $pic="ResourceData/".$dir."/viewPic/".$Base[2].".png";
 			  $p=0;
+			  $newFileName=$Base[2]."_".$Base[3]."_".$Base[4];
+			  $newFileNamebig5= iconv( "UTF-8" , "big5" , $newFileName);
 			  if( file_exists($pic)){
 			      DrawLinkPic($pic,$Rect[1]-44,$Rect[0]+94,96,96,$pic);
 				  $state="建模";
@@ -549,8 +552,10 @@
 			  if( strpos($Base[5],"完成") !== false    )$p=1;
 			   $Percentage[0]+=$p;
 			  //max
-			  $max="ResourceData/".$dir."/model/".$Base[2] ;
-			  $file=  checkfileExists( $max,"zip");
+			//  $max="ResourceData/".$dir."/model/".$Base[2] ;
+		    	 $max="ResourceData/".$dir."/model/" ;
+			 // $file=  checkfileExists( $max,"zip");
+			   $file=  checkfileExists_New( $max,"zip",$newFileNamebig5,$newFileName);
 			  $pic="Pics/3D.png";
 			  $Code=$Base[2];
 			  $p=0;
@@ -563,8 +568,9 @@
 			  $Percentage[1]+=$p;
 			  //Ani
 			  $p=0;
-			  $Ani="ResourceData/".$dir."/Ani/".$Base[2] ;
-			  $file=  checkfileExists( $Ani,"zip");
+			  //$Ani="ResourceData/".$dir."/Ani/".$Base[2] ;
+			  $Ani="ResourceData/".$dir."/Ani/";
+			  $file=  checkfileExists_New( $Ani,"zip",$newFileNamebig5,$newFileName);
 			  $pic="Pics/Ani.png";
 			  if ($file!=""){
 				  $Rect[0]+=22;
@@ -658,14 +664,22 @@
 			  $Rect[3]=32;
 		      DrawRect_Layer($msg,10,"#ffffff",$Rect,$BGC,$Layer);
 	 }
-
      function checkfileExists($Path,$type){
 	          if($type="Zip"){
 			      if( file_exists($Path.".rar"))return $Path.".rar";
 				  if( file_exists($Path.".zip"))return $Path.".zip";
 				  return "";
-			  }
-			  
+			  }  
+	 }
+     function checkfileExists_New($RootPath,$type,$big5,$base){
+	          if($type="Zip"){
+				  $Path=$RootPath.$big5;
+				  $BPath=$RootPath.$base;
+				//  echo $Path;
+			      if( file_exists($Path.".rar"))return $BPath.".rar";
+				  if( file_exists($Path.".zip"))return $BPath.".zip";
+				  return "";
+			  }  
 	 }
 ?>
 
@@ -787,9 +801,7 @@
 <?php //up
 	 //填表單進度
 	 function AddTypeSchedule(){
-		     //  global $data_library;
-			   // $tableName="fpschedule";
-	           //$tables=returnTables($data_library,$tableName);
+
 			  AddDataV2( );
 	 }
      function EditTypeSchedule(){
@@ -819,7 +831,6 @@
 			  $dir="ResourceData/".$type1;
 		      $picdir=$dir."/viewPic/Base";
 			  $viewDir=$dir."/viewPic";
-			
 		      MakeDir($BuffIconDir);	
               MakeDir($picdir);			
 			  MakeDir($viewDir);		
@@ -867,10 +878,19 @@
 				  MakeDir($fdir);	
 			      if($_FILES[$na]["name"]!=""){
 				     $ext = explode(".",$_FILES[$na]["name"]);
-                     $filePath= $fdir."/".$code.".".$ext[1];
-					 echo $filePath;
-					 move_uploaded_file($_FILES[$na]["tmp_name"], $filePath);
+					 $newname=	   GetFullName($code);
+					$newname= iconv( "UTF-8" , "big5" , $newname );
+					 // $newname=$code;
+					// $fn=mb_convert_encoding($newname,"big5","utf-8");
+                     $filePath= $fdir."/".$newname.".".$ext[1];
+					 // echo $filePath;
+					  move_uploaded_file($_FILES[$na]["tmp_name"], $filePath);
 				  }
+	 }
+	 function GetFullName($code){
+		    global $ResData;
+			$t=filterArray($ResData,2,$code);
+			return $code."_".$t[0][3]."_".$t[0][4];
 	 }
      function UpStageFile(){
 		      global  $CookieArray;
