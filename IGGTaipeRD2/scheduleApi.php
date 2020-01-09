@@ -162,9 +162,9 @@
      function RetrunXpos($daysLoc,$date){
 		       global $StartX;
 		       for($i=0;$i<count($daysLoc);$i++){
-				    $dd=$daysLoc[$i][2];
+				    $dd=(int)$daysLoc[$i][2];
 					if($dd<10)$dd="0".$daysLoc[$i][2];
-		            $d=$daysLoc[$i][0]."/".$daysLoc[$i][1]."/".$dd;
+		            $d=(int)$daysLoc[$i][0]."/".(int)$daysLoc[$i][1]."/".$dd;
 			        if($d==$date){  
 				       return $daysLoc[$i][3];
 			          }
@@ -427,7 +427,7 @@
 		     include('CalendarPlugin.php');
 		  	 DrawSCalender(420,300,"Edit");
    }
-	 function  UpFiles_Res($Etype,$Ecode,$file){
+	 function UpFiles_Res($Etype,$Ecode,$file){
 			   $gdname=trim($Ecode);
 			   $typepath=returnResDirbyGDname($gdname);
 			
@@ -456,7 +456,7 @@
 				   }
 			   }	 
 	 }
-	 function  UpFiles($datas,$gdnamet){
+	 function UpFiles($datas,$gdnamet){
 			   $gdname=trim($gdnamet);
 			   $typepath=returnResDirbyGDname($gdname);
 		       if($typepath=="")return;
@@ -482,7 +482,7 @@
 				   }
 			   }	 
 	 }
-	  function UpEditData( ){
+	 function UpEditData( ){
 		
 		       global $data_library,$tableName,$MainPlanData;
 			   global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1;

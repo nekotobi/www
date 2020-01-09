@@ -385,7 +385,6 @@
 					    DrawLinkRect_newtab($plansLine[$i][12],"9","#000000", $Rect[0]-20,$Rect[1]+2,"22" ,"11", "#ffaabb",$JilaLink,"1" );
 					}   //jilar
 					//排列
-					
 					DrawOrderAdjust($Rect,$plansLine[$i]);
 			   }
 	  }

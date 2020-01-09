@@ -431,7 +431,8 @@
 	             array_push( $sendArrays, array("code",$code));
 				 array_push( $sendArrays, array("plan",$data[2].$data[3]));
 				 array_push( $sendArrays, array("type","工項"));
-			     array_push( $sendArrays, array("startDay",date(Y_m_d)));
+				 $dateup=date(Y)."_".(int)date(m)."_".(int)date(d);
+			     array_push( $sendArrays, array("startDay",$dateup));
 			
 			     echo  "<form   name='Show2' action='".$BaseURL."' method='post'  enctype='multipart/form-data'>";
 				
