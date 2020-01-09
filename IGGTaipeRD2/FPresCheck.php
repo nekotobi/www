@@ -582,11 +582,13 @@
 			  $Percentage[2]+=$p;
 			  //VFX
 			  $p=0;
-			  $file="ResourceData/".$dir."/VFX/".$Base[2].".unitypackage" ;
+			 // $file="ResourceData/".$dir."/VFX/".$Base[2].".unitypackage" ;
+			  $file="ResourceData/".$dir."/VFX/".$newFileNamebig5.".unitypackage" ;
 			  $pic="Pics/VFX.png";
 			  if ( file_exists(  $file)){
 				   $Rect[0]+=22;
-			       DrawLinkPic($pic,$Rect[1] ,$Rect[0] ,20,20,$file);
+				   $file2="ResourceData/".$dir."/VFX/".$newFileName.".unitypackage" ;
+			       DrawLinkPic($pic,$Rect[1] ,$Rect[0] ,20,20,$file2);
 				   $state="fin";
 				   $p=1;
 			  } 
