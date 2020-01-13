@@ -28,6 +28,9 @@
 			  $nm= $nowDayArray[1];
 			  $nd= $nowDayArray[2];
 			  $td=0;//總日
+			  if($y>$ny)return 0;
+			  if($y==$ny && $nm<$m )return 0;
+			 
 			  if($ny>$y){//上一年
 			     $sm=12;
 				 while($sm>=$m){
