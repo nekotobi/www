@@ -32,7 +32,7 @@
 			 $CookieArray=array('SortType','ListType','sn',"SelectOut","Column","info","Rx","Ry","EditType");
              setcookies($CookieArray, $BaseURL);
 			 SetGlobalcookieData($CookieArray);
-			 //CheckCookie($CookieArray);
+			// CheckCookie($CookieArray);
 			 //表單資料
 		     global $ListNames,$ListSize,$OutCosts,$OutsLastSort;
 			 global $data_library,$tableName,$pregressData;
@@ -78,12 +78,12 @@
 			 $FormRect=array(100,140,120,20);
 			 
 			 global  $editList;//編輯欄位
-			   $editList=array(8,9,10,11,13);
+			 $editList=array(8,9,10,11,13);
 			   
 			  //過濾
-			  global $SelectOut;
-			  if($SelectOut!="")
-			   $OutCosts=filterArraycontain($OutCosts,15,  $SelectOut);
+			 global $SelectOut;
+			 if($SelectOut!="")
+			 $OutCosts=filterArraycontain($OutCosts,15,  $SelectOut);
 	}
 	function sortcontact(){  //整理聯絡人
          	 global $OutCosts;
@@ -526,7 +526,7 @@
 			  for($i=1;$i<count($ListNames[0]) ;$i++){
 				  $w= $ListSize[0][$i];
 				  if($w!=""){
-			         DrawRect($ListNames[0][$i],10,"#FFFFFF",$x,$y,$w,$h,"#000000");
+			         DrawRect( $ListNames[0][$i],10,"#FFFFFF",$x,$y,$w,$h,"#000000");
 					 $x+=$w+2;
 				  }
 			  }
@@ -547,8 +547,8 @@
 				  $w= $ListSize[0][$i];
 			      $msg=  $Data[$i];
 				  if($i==1){
-				       $Link=$BaseURL."?SortType=".$SortType."&UpType=EditOutsForm&sn=".$msg;
-				       DrawLinkRect( $msg,10,$fontColor,$x,$y,$w,$h,$BgColor,$Link,$border);
+					   $Link=$BaseURL."?SortType=".$SortType."&ListType=EditOutsForm&sn=".$msg; 
+				       DrawLinkRect2sendVal( $msg,10,$fontColor,$x,$y,$w,$h,$bgc,$Link,$border);
 					   $x+=$w+2;
 				  }else{
 				    if($w!=""){
