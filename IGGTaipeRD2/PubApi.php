@@ -21,7 +21,13 @@
 				}
 			  return $r;
 	   }
-
+     function returnArraybySort($BaseArray,$num){//回傳二維陣列中第幾個陣列的陣列
+	           $Ar=array();
+			   for($i=0;$i<count($BaseArray);$i++){
+			     	 array_push($Ar,$BaseArray[$i][$num]);
+			   }
+			    return $Ar;
+	 }
        function SearchArray($BaseArray,$searchSort,$searchString,$getsort){
 		   for($i=0;$i<count($BaseArray);$i++){
 		   if($BaseArray[$i][$searchSort]==$searchString)return $BaseArray[$i][$getsort];

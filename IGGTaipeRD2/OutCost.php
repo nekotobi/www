@@ -768,21 +768,22 @@
 			  $datas=filterArray( $data,0,"outs");
 			  echo $datas;
 			  for($i=0;$i<count($datas);$i++){
-				  $WHEREData=returnDatafix($datas[$i],$sn,($i+1)); 
+				  $WHEREData=returnDatafix($datas[$i],$sn,($i+1),$WHEREtable); 
 				  $stmt=  MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
 				  SendCommand($stmt,$data_library);
 			      echo $stmt;
 			  }
 			  $Link=$BackURL."?UpType=EditOutsForm&sn=".$sn;
-		     echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
+		      echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
 	 }
-	 function returnDatafix($data,$sn,$sort){
+	 function returnDatafix($data,$sn,$sort,$WHEREtable){
 	          $t=array();
-			  for($i=0;$i<count( $data);$i++){
+			  for($i=0;$i<count($WHEREtable);$i++){
 				  $up=$data[$i];
 				  if($i==1)$up=$sn;
 				  if($i==2)$up=$sort;
 				  if($i==0)$up="outs";
+				  echo $WHEREtable[$i].">".$up;
 			      array_push($t,$up);
 			  }
 			  return $t;

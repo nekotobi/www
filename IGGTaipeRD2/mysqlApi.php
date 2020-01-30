@@ -1,11 +1,5 @@
 <?php
-     function returnArraybySort($BaseArray,$num){//回傳二維陣列中第幾個陣列的陣列
-	           $Ar=array();
-			   for($i=0;$i<count($BaseArray);$i++){
-			     	 array_push($Ar,$BaseArray[$i][$num]);
-			   }
-			    return $Ar;
-	 }
+
      function returnDataArray($BaseData,$sort,$FindName){//二微陣列中回傳含有字元的陣列
 	           for($i=0;$i<count($BaseData);$i++){
 				   if($BaseData[$i][$sort]==$FindName)return $BaseData[$i];
