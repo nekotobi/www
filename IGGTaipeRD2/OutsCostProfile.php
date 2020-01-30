@@ -18,11 +18,12 @@
 	function DefineDatas(){
 		  	 global  $BassClass,$ClassArray,$emptyClass;
 		     global $outs,$outsourcing, $Outsdetail;
-		     $Outsdetail=getMysqlDataArray("outsdetail"); 
+		     $OutsdetailT=getMysqlDataArray("outsdetail"); 
+			 $Outsdetail=filterArray( $OutsdetailT,0,"outs"); 
 			 $outsT=getMysqlDataArray("fpoutsourcingcost"); 
 	         $outs=filterArray($outsT,0,"cost");
-		     $emptyClass=filterArray($outs,12,"");
-		     $BassClassT=filterArray($Outsdetail,0,"class");
+		     $emptyClass=filterArray($Outsdetail,12,"");
+		     $BassClassT=filterArray($OutsdetailT,0,"class");
 	         $BassClass=  ReturnArrayBySort( $BassClassT,3);
 		     $ClassArray= ArrayClassSort($emptyClass,3);
 			 $outsourcing=getMysqlDataArray("outsourcing"); 
@@ -38,8 +39,6 @@
 				 $sn=$outs[$i][1];
 				 $t=filterArray($outsourcing,1,$outsCode);
 				 $SnCurrencys[$sn]=$t[0][30];
-				 echo"</br>";
-				 echo $sn."-".$t[0][30];
 	         }
 	}
     function TypeButton(){
@@ -53,7 +52,7 @@
 			if($viewType=="View" or $viewType=="")$BgColor="#ee2222";
 			$ValArray=array(array("viewType","View"));
 	        sendVal($URL,$ValArray,$SubmitName,$SubmitVal,$Rect,12, $BgColor ) ;
-			 $SubmitVal="Edit";
+			$SubmitVal="Edit";
 			$BgColor="#000000";
 			$ValArray=array(array("viewType","Edit"));
 			if(  $viewType=="Edit")$BgColor="#ee2222";
@@ -77,17 +76,20 @@
       function ViewList(){
 		     global   $BassClass,$ClassArray,$emptyClass;
 	    	 global   $Outsdetail;
- 
 			 echo "</br></br></br></br></br></br>";
-			 echo "<table border=1>";
-
+			 echo "<table border=1  border-collapse: collapse>";
+			 echo "<tr><td >类型</td><td>内部设计数理</td><td>外包数量</td><td>外包金额</td><td>外包金额(nt)</td>";
 			 for($i=0;$i<count($BassClass);$i++){
 			     echo "<tr><td>";
 				 echo  $BassClass[$i];
 				 echo "</td>";
+				 echo "<td></td>";
 			     $t= Collect($BassClass[$i], $Outsdetail);
 				 echo "<td>";
 				 echo $t[0];
+				 echo "</td>";
+				  echo "<td>";
+				 echo $t[1]*0.23;
 				 echo "</td>";
 				 echo "<td>";
 				 echo $t[1];
@@ -97,29 +99,33 @@
 			 echo "</table>";
 	  }
       function Collect($type,$BaseData){
+		  
 		   $Ar=array();
 		   $a=filterArray($BaseData,12,$type);
 		   $total=0;
 		   $totalNum=0;
 	       for($i=0;$i<count($a);$i++){
-			   $totalNum+=1;
-			   $total+=$a[$i][8];
+			   $totalNum+=$a[$i][6];
+			   $cost= returnCost( $a[$i][8],$a[$i][1])  ;
+			   $total+= $cost  ;
 	       }
 		   return array( $totalNum,$total);
 	  }
- 
+      function returnCost($cost,$sn){
+	          global $SnCurrencys; 
+			  $Currencys=$SnCurrencys[$sn];
+			  switch ( $Currencys){
+				  case "美金":
+				  return $cost*30.29;
+				  case "人民幣":
+				  return $cost*4.36;
+			  }
+			  return $cost;
+	  }
 	  
 ?>
-<?php //Sort
-    function SortData(){
-	        
-	
-	}
-?>
-
+ 
 <?php //Edit
-    
-   
     function ListClass( ){
 	     global  $BassClass,$ClassArray,$emptyClass;
 	     $x=10;
@@ -130,6 +136,7 @@
 		 $BgColor="#000000";
 		 $BaseURL="OutsCostProfile.php";
 	     echo "<form action=".$BaseURL." method=post >";
+		 echo count($ClassArray);
 	     for($i=0;$i<count($ClassArray);$i++){
 			 DrawRect($ClassArray[$i],12,$fontColor,$x,$y,$w,$h,$BgColor); 
 		     $input=	MakeSelectionV2($BassClass,$s,"Ch".$i,10);
@@ -139,7 +146,7 @@
 		 }
 		  $submitP="<input type=submit name=submit value=送出 style= font-size:10px; >";
 	      DrawInputRect("",10 ,"#ffffff",$x,$y,$w,$h, $colorCodes[4][2],"top",$submitP);
-		 echo "</form>";
+		  echo "</form>";
 	}
 ?>
 <?php //up
