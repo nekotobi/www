@@ -8,9 +8,13 @@
 <body bgcolor="#b5c4b1">
 <?php  //主控台
     $id=$_COOKIE['IGG_id'];
+	$Rank=$_COOKIE["IGG_Rank"];
+	if($Rank!=1){
+		echo "未登入或無權限觀看此頁";
+		return;
+	}
     include('PubApi.php');
     include('mysqlApi.php');
-	
     defineData();
     filterUpType();
 

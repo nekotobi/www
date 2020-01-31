@@ -9,24 +9,24 @@
 </body>
 <?php
 	    include('PubApi.php');
+		$submit=$_POST["submit"];
 		// $id=$_COOKIE['IGG_id'];
 	    $data_library="iggtaiperd2";
 	    $table="members";
+		$Logout=$_POST['Logout'];
 		if($Logout=="true"){
 		    setcookie("IGG_id","",time()+36000,"/");
-		  
+		    setcookie("IGG_Rank","",time()+36000,"/");
 		    echo " <script language='JavaScript'>window.location.replace('index.php')</script>";
 		}
 		if($submit==""){
 	    	DrawLogin();
 		}
 	    if($submit=="送出"){
-		   CheckLoginData();
-			
+		   CheckLoginData();	
 		}
 		if($submit=="註冊"){
 			AddMemberData();
-	    
 		}	
 		function AddMemberData(){
 			global $ID ,$pass;
@@ -66,6 +66,9 @@
 		}
 		function CheckLoginData(){
 	        	 global $ID ,$pass;
+				 $ID=$_POST['ID'];
+				 $pass=$_POST['pass'];
+				 echo $ID.">".$pass;
 		         $member=getMysqlDataArray("members");
 				 $isID="";
 		        	for($i=0;$i<count($member);$i++){
@@ -75,7 +78,7 @@
 							    echo "Login".$ID;
 								setcookie("IGG_id",$ID,time()+3655000,"/");
 								setcookie("IGG_Rank",$member[$i][6],time()+3655000,"/");
-							    echo " <script language='JavaScript'>window.location.replace('index.php')</script>";
+							     echo " <script language='JavaScript'>window.location.replace('index.php')</script>";
 						   }
 						    if($member[$i][2]!=$pass){
 							    echo "密碼輸入錯誤".$ID; 
@@ -96,6 +99,11 @@
 			DrawInputRect("User:　","12","#ffffff",150,140,200,20, $colorCodes[4][2],"top", $inputID);
 			$inputpass="<input type=password  name=pass size=20    >";
 			DrawInputRect("pass:　","12","#ffffff",150,170,200,20, $colorCodes[4][2],"top",$inputpass);
+			
+					
+		    $submit="<input type=submit name=submit value=送出 >";
+		    DrawInputRect("","12","#ffffff",335,170,100,20, $colorCodes[4][2],"top",$submit);
+			/*
 			DrawRect("註冊新帳號","12", $colorCodes[2][1],110,200,300,110, $colorCodes[0][1]);
 		
 			$inputName="<input type=text name=Name size=20    >";
@@ -106,11 +114,10 @@
 			$TypeSelect=MakeSelection($types,0,"Art","Type");
 		    DrawInputRect("類別:　","12","#ffffff",140,270,200,20, $colorCodes[4][2],"top",$TypeSelect);
 			
-			
-		    $submit="<input type=submit name=submit value=送出 >";
-		    DrawInputRect("","12","#ffffff",335,170,100,20, $colorCodes[4][2],"top",$submit);
+	
  	        $Registered="<input type=submit name=submit value=註冊 >";
 		    DrawInputRect("","12","#ffffff",335,270,200,20, $colorCodes[4][2],"top", $Registered);
+			*/
             echo "</form>";
 		}			
 			
@@ -121,10 +128,9 @@
 			  echo $msg;
 	          echo "</div>";
 	   }
-	   function DrawWorldRect(){
+	    function DrawWorldRect(){
 	         echo "<div  style=' color:".$fontColor."; " ;
 	   }
 
 
 ?>
-

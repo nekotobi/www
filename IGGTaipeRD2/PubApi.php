@@ -235,7 +235,12 @@
 			DrawRect( $id,"12",$colorCodes[0][0]  ,$x+72,$startY+12,60,16, $colorCodes[5][2]);
 			DrawLinkPic("Pics/home.png",$startY+12,$x+10,16,16,"index.php");
 			if($id!="guest"){
-			DrawLinkPic("Pics/Logout.png",$startY+12,$x+150,16,16,"Login.php?Logout=true");
+				$URL="Login.php";
+				$pic="Pics/Logout.png";
+				$Rect=array($x+150,$startY+12,16,16);
+				$ValArray=array(array("Logout","true"));
+			    sendValPic($URL,$pic,$Rect,$ValArray);
+		       //	DrawLinkPic("Pics/Logout.png",$startY+12,$x+150,16,16,"Login.php?Logout=true");
 			}
 			if($id=="guest"){
 			DrawLinkPic("Pics/Logout.png",$startY+12,$x+150,16,16,"Login.php");
