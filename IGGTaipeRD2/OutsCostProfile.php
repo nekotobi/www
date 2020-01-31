@@ -63,6 +63,7 @@
 	    global $viewType;
 	    if($viewType!="View"  )return;
 		ViewList();
+		PrintDetail();
 	}
 	function Edit(){
 	    global $viewType;
@@ -76,9 +77,12 @@
       function ViewList(){
 		     global   $BassClass,$ClassArray,$emptyClass;
 	    	 global   $Outsdetail;
+			 global   $statisticsData;
+			 $statisticsData=array();
 			 echo "</br></br></br></br></br></br>";
-			 echo "<table border=1  border-collapse: collapse>";
+			 echo "<table style= border-collapse:collapse;  border=1 ;>";
 			 echo "<tr><td >类型</td><td>内部设计数理</td><td>外包数量</td><td>外包金额</td><td>外包金额(nt)</td>";
+			 $totalCosts=0;
 			 for($i=0;$i<count($BassClass);$i++){
 			     echo "<tr><td>";
 				 echo  $BassClass[$i];
@@ -88,18 +92,45 @@
 				 echo "<td>";
 				 echo $t[0];
 				 echo "</td>";
-				  echo "<td>";
-				 echo $t[1]*0.23;
+				 echo "<td>";
+				 echo  number_format($t[1]*0.23);
 				 echo "</td>";
 				 echo "<td>";
-				 echo $t[1];
+				 echo  number_format($t[1]);
 				 echo "</td>";
 				 echo  "</tr>";
+				 $totalCosts+=$t[1];
+				 Array_push( $statisticsData,array( $BassClass[$i],$t[0],$t[1])  );
 			 }
 			 echo "</table>";
+			 DrawStatistics($statisticsData,$totalCosts);
+	  }
+	  function DrawStatistics($statisticsData,$totalCosts){
+		   $x=420;
+		   $y=120;
+		   $w=200;
+		   $h=20;
+		   $BgColor="#440000";
+		   $c=round($totalCosts);
+		   $c2= number_format($c);
+		   DrawRect("總計NT".$c2,12,"#ffffff",$x,$y,$w,$h,$BgColor);
+		   $y+=22;
+		   $URL="OutsCostProfile.php";
+		   $SubmitName="submit";
+	       for($i=0;$i<count($statisticsData);$i++){
+		      $p=$statisticsData[$i][2]/$totalCosts;
+		      $w=400*$p;
+			  //$ValArray=array((array("viewType","View"),array("Detail",$statisticsData[$i][2]));
+			  $ValArray=array(array("viewType","View"), array("Detail",$statisticsData[$i][0]));
+			  $Rect=array($x,$y,$w,$h);
+		      $p= round(($statisticsData[$i][2]  /$totalCosts) * 100);	
+			  $SubmitVal=$p."%";
+			  sendVal($URL,$ValArray,$SubmitName,$SubmitVal,$Rect,10, $BgColor);
+             // DrawRect($p."%",12,"#ffffff",$x,$y,$w,$h,$BgColor);
+			  $y+=22;
+		   }
 	  }
       function Collect($type,$BaseData){
-		  
 		   $Ar=array();
 		   $a=filterArray($BaseData,12,$type);
 		   $total=0;
@@ -124,7 +155,41 @@
 	  }
 	  
 ?>
- 
+<?php //viewDetail
+      function PrintDetail(){
+               $detail=$_POST["Detail"];
+			   if($detail=="")return;
+			   echo $detail;
+		       global  $Outsdetail;
+			   global $SnCurrencys; 
+			   $DetailsT=filterArray( $Outsdetail,12, $detail); 
+		       $Details=  sortArrays($DetailsT ,1 ,"true");
+			   echo "<table style= border-collapse:collapse;  border=1 ;>";
+			   echo "<tr><td >工單</td><td>詳細</td><td>數量</td><td>金額</td><td>幣值</td><td>換算台幣</td>";
+			   for($i=0;$i<count($Details);$i++){
+			       echo "<tr><td>";
+				   echo  $Details[$i][1];
+				   echo "</td>";
+				   echo "<td>";
+				   echo  $Details[$i][4]."-".$Details[$i][5];
+				   echo "</td>";
+				    echo "<td>";
+				   echo   $Details[$i][6];
+				   echo "</td>";
+				    echo "<td align=right>";
+				   echo number_format( $Details[$i][8] );
+				   echo "</td>";
+				   echo "<td>";
+				   echo $SnCurrencys[$Details[$i][1]] ;
+				   echo "</td>";
+				   echo "<td align=right>";
+				   echo number_format(returnCost($Details[$i][8],$Details[$i][1])) ;   
+				   echo "</td>";
+				   echo "</tr>";
+			   }
+			   echo "</table>";
+	  }
+?>
 <?php //Edit
     function ListClass( ){
 	     global  $BassClass,$ClassArray,$emptyClass;
