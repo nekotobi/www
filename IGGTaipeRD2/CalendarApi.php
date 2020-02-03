@@ -52,7 +52,7 @@
 				if($startDayArray[1]==$nowDayArray[1] && $startDayArray[0]==$nowDayArray[0] )	{
 					$td+=($nowDayArray[2]-$startDayArray[2]);
 				}
-			  echo $td.">";
+			  //echo $td.">";
 			  /*
 			  if($ny==$fy){//同一年
  
