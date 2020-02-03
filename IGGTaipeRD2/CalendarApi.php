@@ -28,9 +28,9 @@
 			  $nm= $nowDayArray[1];
 			  $nd= $nowDayArray[2];
 			  $td=0;//總日
+			  if($y==$ny && $nm==$m)return  $nd-$d;
 			  if($y>$ny)return 0;
 			  if($y==$ny && $nm<$m )return 0;
-			 
 			  if($ny>$y){//上一年
 			     $sm=12;
 				 while($sm>=$m){
@@ -52,7 +52,7 @@
 				if($startDayArray[1]==$nowDayArray[1] && $startDayArray[0]==$nowDayArray[0] )	{
 					$td+=($nowDayArray[2]-$startDayArray[2]);
 				}
-			  
+			  echo $td.">";
 			  /*
 			  if($ny==$fy){//同一年
  

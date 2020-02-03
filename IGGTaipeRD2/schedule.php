@@ -29,7 +29,7 @@
 	 SetWebCookies();//設定開關
 	 DrawHideSwicth();//開關
      DrawInsertLine( );//
-	  setTargetYM();
+	 setTargetYM();
 ?>
 <?php //主要資料
      function  cookieSet(){
@@ -60,7 +60,6 @@
 			   $ValArray=array(array("UpMonth",$c));
 			   sendVal($BaseURL,$ValArray,"submit","◄",$Rect, 10,  "#222222", "#ffffff","true");
 	 }
-
  	 function  defineData_schedule(){
 		 //基礎數值
 		 global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX,$monthLoc,$showMonthNum,$LineHeight,$LineRec ;
@@ -106,7 +105,6 @@
 				//類別1
 	             getTypes();
 	 }
-
      function  DrawType_v2(){ //類別
 		 	  global $StartX, $StartY,$OneDayWidth,$daysLoc, $CurrentX,$monthLoc,$showMonthNum ;
 	    	  global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2;
@@ -193,7 +191,7 @@
 					 if( $plansArray[7]=="廢棄")return "false";
 					  return "true";
 				  }
-				//  echo $startDay[1]."-".$startDay[2]."=".$passDays.">".$realDays."]";
+				//   echo $startDay[1]."-".$startDay[2]."=".$passDays.">".$realDays."]";
 				  
 	              return "false";
 	 }
