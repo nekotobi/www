@@ -14,7 +14,7 @@
 
    }
    function TestDayFunction(){
-				  $startDay=array(2020,2,3);
+				  $startDay=array(2020,1,15);
 			      $nowDayArray=array(2020,2,3);
 				  $passDays= getPassDays($startDay,$nowDayArray);
 				  echo $passDays;

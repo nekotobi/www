@@ -28,9 +28,31 @@
 			  $nm= $nowDayArray[1];
 			  $nd= $nowDayArray[2];
 			  $td=0;//總日
+ 
 			  if($y==$ny && $nm==$m)return  $nd-$d;
 			  if($y>$ny)return 0;
 			  if($y==$ny && $nm<$m )return 0;
+			  $td=getMonthDay($m,$y)-$d;//第一月已過天數
+			  $m+=1;
+			  while ($y<$ny){
+				     if($m>12){
+						$y+=1;
+					    $m=1;
+					 }
+					 if($m<=12){
+				       $td+=getMonthDay($m,$y);
+					   $m+=1;
+					 }
+			   }
+			  while ($m<$nm){
+				 
+				     $td+=getMonthDay($m,$y);
+					     $m+=1;
+			  }
+			  $td+=$nd;
+			  return $td;
+			  
+			  /*
 			  if($ny>$y){//上一年
 			     $sm=12;
 				 while($sm>=$m){
@@ -41,8 +63,8 @@
                  $y=$ny;
 				 $m=1;
 				 $d=1;
+				 $sm=1;
 			  }
-		       $sm=1;
 			    while($sm<$nm){
 				     $td+=getMonthDay($sm,$y);
 				     $sm+=1;
@@ -52,7 +74,7 @@
 					$td+=($nowDayArray[2]-$startDayArray[2]);
 				}
 			  //echo $td.">";
-			  /*
+ 
 			  if($ny==$fy){//同一年
  
 			      if($nowDayArray[1]>$startDayArray[1]){//跨月

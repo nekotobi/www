@@ -1136,6 +1136,7 @@
 		 echo   "<input type=hidden name=startDay value=".$startDay.">"; 
 		 $lastUpdate=date(Y_m_d_H_i,time()+(8*3600));
 		 echo   "<input type=hidden name=lastUpdate value=".$lastUpdate.">"; 
+		 echo   "<input type=hidden name=milestone value=m5>"; 
 		 $code=returnDataCode( );
 		 echo   "<input type=hidden name=code value=".$code.">"; 
 		 $selecttype= $SelectType_1[$Stype_1];
@@ -1144,7 +1145,6 @@
 		 //input
 	     $Planinput="<input type=text name=plan value='".$plan."'  size=30 >";
 	     DrawInputRect("計畫","12","#ffffff",($ex),$ey+40,300,18, $colorCodes[4][2],"top",$Planinput);
-		
 		 if($Stype_1==0 or  $Stype_1==""){
 		      $workDayinput="<input type=text name=workingDays  value='5'  size=2   >";
 	          DrawInputRect("天數","12","#ffffff",($ex+240),$ey+40,120,18, $colorCodes[4][2],"top",$workDayinput);

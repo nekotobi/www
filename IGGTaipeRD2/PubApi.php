@@ -763,6 +763,7 @@
 	  }
 	    }
 	   function JavasubmitForm($URL,$ValArray){
+		   
 		        echo "<br>send";
 	           echo "<form action=".$URL." enctype=multipart/form-data name=Javaform id=Javaform  >";
 			   for($i=0;$i<count($ValArray);$i++){
@@ -773,7 +774,30 @@
 			   echo " <script language='JavaScript'>Javaform.submit()</script>";
 			   echo "ss";
 	   }
-	   
+	   function upSubmitform($upFormVal,$UpHidenVal, $inputVal){
+	          //  $upFormVal ==>0/id 1/name 2/URL 
+			  //  $UpHidenVal=array 0/name,1/val
+			  //  $inputVal=0/type 1/name 2/showname 3/fontsize 4/5/6/7rect  8/bgcolor 9/fontColor 10/val 11/size
+			  echo  "<form id=".$upFormVal[0]."  name=".$upFormVal[1]." action=".$upFormVal[2]." method='post'>";
+			  for($i=0;$i<count($UpHidenVal);$i++){
+			       echo   "<input type=hidden name=".$UpHidenVal[$i][0]." value=".$UpHidenVal[$i][1].">"; 
+				   //echo   "</br>".$UpHidenVal[$i][0]." value=".$UpHidenVal[$i][1];
+			  }
+			  for($i=0;$i<count($inputVal);$i++){
+			      $input="<input type=".$inputVal[$i][0]." name=".$inputVal[$i][1]."  value='".$inputVal[$i][10]."' size=".$inputVal[$i][11]."  >";
+				  $x=$inputVal[$i][4];
+				  $y=$inputVal[$i][5];
+				  $w=$inputVal[$i][6];
+				  $h=$inputVal[$i][7];
+				  $msg=$inputVal[$i][2];
+				  $WorldAlign="top";
+				  $fontSize=$inputVal[$i][3];
+				  $fontColor=$inputVal[$i][9];
+				  $BgColor=$inputVal[$i][8];
+				  DrawInputRect_size($msg,$fontSize,$fontColor,$x,$y,$w,$h,$BgColor,$WorldAlign,$input);
+			  }
+			  echo "<form>";
+	 }
 ?> 
  
 <?php //排序GD

@@ -13,15 +13,19 @@
 	ListTasks();
 	DrawCallendar();
     ListTask();
+	fastTask();
+	UpPlan();
 ?>
 
 <?php //類別
       function DefineDatas(){
 		       global $tasks,$tasksName;
+			   global $data_library,$tableName;
+			   $tableName="fpschedule";
+			   $data_library="iggtaiperd2";
 		       $tasksT=getMysqlDataArray("fpschedule"); 
 			   $tasksT2=filterArray( $tasksT,0,"data"); 
 			   $tasks= RemoveArray( $tasksT2,5, "工項"); 
-		       
 			   $tasksName=filterArray(  $tasksT2,5, "工項"); 
       }
 	  function DrawMonth(){
@@ -193,6 +197,53 @@
 
 <?php //快速表單
      function fastTask(){
-	      
+	          $x=20;
+			  $y=120;
+			  global $URL;
+			  global $typeName,$typeArray;
+			  $BgColor="#ffffff";
+			  $fontColor="#000000";
+			  
+			  $upFormVal=array("AddPlan","AddPlan",$URL);
+			  $UpHidenVal=array(array("tablename","fpschedule"),
+			                    array("data_type","data"),
+								array("startDay",date("Y_m_d")),
+								array("milestone", "m5" ),
+							    array("code", returnDataCode( ) ),
+								array("type", "工項" ),
+							    array("selecttype", $typeArray[1][1] )
+							    );			
+			  $UpHidenVal=		addArray( $UpHidenVal,$typeArray);			
+			  $inputVal=array(array("text","plan","計畫",10,20,$y,320,20,$BgColor,$fontColor,"" ,40),
+			                  array("text","remark","jila單號",10,320,$y,100,20,$BgColor,$fontColor,"" ,5),
+                              array("submit","submit","",10,420,$y,100,20,$BgColor,$fontColor,"新增計畫" ,20),
+			                  );					 
+			  upSubmitform($upFormVal,$UpHidenVal, $inputVal);
+	 }
+	 function addArray($Base,$Add){
+	         $a=$Base;
+			 for($i=0;$i<count($Add);$i++){
+			     array_push($Base,$Add[$i]);
+			 }
+			 return $Base;
+	 }
+
+	 function UpPlan(){
+		      if ($_POST["submit"]=="")return;
+		        global $data_library,$tableName;
+			       $tables=returnTables($data_library,$tableName);
+				   $WHEREtable=array();
+				   $WHEREData=array();
+		           for($i=0;$i<count( $tables);$i++){
+				        array_push($WHEREtable, $tables[$i] );
+					    array_push($WHEREData,$_POST[$tables[$i]]);
+					    echo  "</br>".$tables[$i].">".$_POST[$tables[$i]]."]";
+		              }
+					$stmt=   MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
+					echo $stmt;
+				  //  SendCommand($stmt,$data_library);
+			     //echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+		    
+	 
 	 }
 ?>
