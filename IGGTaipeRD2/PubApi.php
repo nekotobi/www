@@ -21,7 +21,7 @@
 				}
 			  return $r;
 	   }
-     function returnArraybySort($BaseArray,$num){//回傳二維陣列中第幾個陣列的陣列
+       function returnArraybySort($BaseArray,$num){//回傳二維陣列中第幾個陣列的陣列
 	           $Ar=array();
 			   for($i=0;$i<count($BaseArray);$i++){
 			     	 array_push($Ar,$BaseArray[$i][$num]);
@@ -227,7 +227,7 @@
 
 ?>
 
-<?php //會員相關資料
+<?php  //會員相關資料
 	  function DrawUserData($x,$startY){
 	        global $id,$colorCodes,$startY;
 	        DrawRect("" ,"12","#ffffff",$x+10,$startY+10,160,20, $colorCodes[0][0]);
@@ -371,7 +371,7 @@
 	  
 ?>
 
-<?php   //phpinput表格用
+<?php  //phpinput表格用
        function sendInputHiddenVal($sendArrays){
 		   for($i=0;$i<count($sendArrays);$i++){
 		   echo "<input type=hidden name=".$sendArrays[$i][0]." value=".$sendArrays[$i][1]." >";

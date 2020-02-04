@@ -42,7 +42,6 @@
 				 $m=1;
 				 $d=1;
 			  }
-			  
 		       $sm=1;
 			    while($sm<$nm){
 				     $td+=getMonthDay($sm,$y);
