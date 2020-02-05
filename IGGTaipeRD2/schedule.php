@@ -30,6 +30,7 @@
 	 DrawHideSwicth();//開關
      DrawInsertLine( );//
 	 setTargetYM();
+	  DrawSwitch();
 ?>
 <?php //主要資料
      function  cookieSet(){
@@ -93,7 +94,6 @@
 				$mt=getMysqlDataArray( "scheduletype"); 
 	            $mt2=filterArray($mt,0,"milestone"); 
 			    $milestoneSelect=returnArraybySort($mt2,2);
-		 
 				defineTypeData_v2();
 				
 	 }
@@ -193,6 +193,15 @@
 				//   echo $startDay[1]."-".$startDay[2]."=".$passDays.">".$realDays."]";
 				  
 	              return "false";
+	 }
+	 function DrawSwitch(){
+		      global  $SelectType_1, $Stype_1;
+	           $Rect=array(980, 5,40,12);
+	           $URL= "taskDataform.php";
+			   $up= $SelectType_1[$Stype_1];
+			   $ValArray=array(array("Type1",$up),array("Type3","快速新增"));
+			   sendVal($URL,$ValArray,"submit","task",$Rect,10,"#000000");
+		       //DrawLinkRect_newtab("task","10","#ffffff",$Rect[0],$Rect[1],$Rect[2],$Rect[3],"#000000",$Link,"1");
 	 }
 	 function  DrawMemo(){
 		       $Rect=array(1024,10,40,12);

@@ -11,10 +11,15 @@
     DrawButtons();
 	DefineDatas();
     TypeLink();
-
+    DrawSwitch();
 ?>
 
 <?php //類別
+       function DrawSwitch(){
+	           $Rect=array(980,10,40,12);
+	           $Link= "schedule.php";
+		       DrawLinkRect_newtab("schedule","10","#ffffff",$Rect[0],$Rect[1],$Rect[2],$Rect[3],"#000000",$Link,"1");
+	  }
       function DefineDatas(){
 		       global $tasks,$tasksName;
 			   global $data_library,$tableName;
