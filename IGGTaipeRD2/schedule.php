@@ -169,7 +169,6 @@
 	 function  CollectWarring(){
 	           global $WarringDatas;
 	           global $MainPlanData;
-		 
 			   for( $i=0;$i<count($MainPlanData);$i++){
 			       if(isPlaneWarring($MainPlanData[$i])=="true"){
 				      array_push($WarringDatas,$MainPlanData[$i]);
