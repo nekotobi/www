@@ -122,8 +122,10 @@
 						  if($bool=="")$bool="null";
 						  $color="#444444";
 						  if($bool=="true")$color="#eeffee";
-					      $Link=$BaseURL."?Edit=DNA&code=".$Data[1]."&bool=".$bool;
-						  DrawLinkRect($bool,"12",$fontColor,$x,$y,$w,$h,$color,$Link,1);
+					  //    $Link=$BaseURL."?Edit=DNA&code=".$Data[1]."&bool=".$bool;
+						  $ValArray=array(array("Edit",$tables[$i]),array("code",$Data[1]),array("bool",$bool));
+						  sendVal($BaseURL,$ValArray,"submit",$tables[$i],array($x,$y,$h,$h),10,$color, "#000000");
+						 // DrawLinkRect($bool,"12",$fontColor,$x,$y,$w,$h,$color,$Link,1);
 						  $color=$bc;
 					      break;
 						  }
@@ -131,7 +133,10 @@
  
 	         }
 			 $Link=$BackURL."?Edit=form&code=".$Data[1];
-			 DrawLinkRect("Edit","10","#ffffff",$x,$y,$h,$h,"#441122",$Link,1);
+			 $ValArray=array(array("Edit","form"),array("code",$Data[1]));
+			 sendVal($BaseURL,$ValArray,"submit","Edit",array($x,$y,$h,$h),10,"#441122", "#ffffff");
+			// DrawLinkRect("Edit","10","#ffffff",$x,$y,$h,$h,"#441122",$Link,1);
+			 
     }	
 	function DrawAdd($y,$LastSn){
 			  global   $BaseURL;
@@ -148,32 +153,35 @@
 ?>
 <?php //Data
     function UpData(){
-		global  $Add,$Edit;
+		$Edit=$_POST['Edit'];
+	 
+		$Add=$_POST['Add'];
+        $submit=$_POST['submit'];
 		global  $BackURL;
 	    global $submit;
-		if( $_POST['Add']=="yes")   AddData();
- 
+		if( $Add=="yes")   AddData();
 		if($Edit!=""){
 			if($Edit=="form") EditData();
-		    if($Edit=="DNA") ChangeDNA();
+		    if($Edit=="NDA") Changebool("NDA",$_POST["bool"],$_POST["code"]);
+			if($Edit=="Active") Changebool("Active",$_POST["bool"],$_POST["code"]);
 		}
 		if($submit=="修改"){
 		 UpEdit();
 		}
 	}
-	function ChangeDNA(){
-	          global $code,$bool;
+	function Changebool($Table,$bool,$code ){
+		      echo ">".$Table;
 		      global	 $BaseURL,  $tableName,$data_library;
 			  $WHEREtable=array("data_type", "Code");					 
               $WHEREData=array("data",$code);	
 			  $upbool="false";
 			  if($bool=="null" or $bool=="false" )$upbool="true";
-			  $Base=array("NDA");
+			  $Base=array($Table);
 			  $up=array($upbool);
-			   $stmt= MakeUpdateStmtv2(  $tableName,$Base,$up,$WHEREtable,$WHEREData);	
-			 //  echo $stmt;
-			   SendCommand($stmt,$data_library);
-			   echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
+			  $stmt= MakeUpdateStmtv2(  $tableName,$Base,$up,$WHEREtable,$WHEREData);	
+			  echo $stmt;
+			  SendCommand($stmt,$data_library);
+			  echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
 	}		
 	function UpEdit(){
 		      global $tableName,$data_library;
@@ -214,12 +222,13 @@
 	
 	function EditData(){
 	      global $tableName,$data_library;
-          global $code;	
+           $code=$_POST["code"];	
 		  global $BaseURL;
 		  global $colorCodes;
 		  global $BaseData;
 	      global $width,$TableType,$Names;
 		  global $radio_1,$radio_2;
+		  
 		  $x=300;
 		  $y=100;
 		  $w=800;
@@ -257,6 +266,10 @@
 						break;
 					    case $TableType[$i]=="time" :
 						       $input="<input type=text name=".$tables[$i]." 	value='".$data[$i]."'  size=50  >";
+				             DrawInputRect($Names[$i]." ","12","#ffffff",($x ),$y,420,20, $colorCodes[4][2],"top", $input);
+						break;
+					    case $TableType[$i]=="bool" :
+						     $input="<input type=text name=".$tables[$i]." 	value='".$data[$i]."'  size=5  >";
 				             DrawInputRect($Names[$i]." ","12","#ffffff",($x ),$y,420,20, $colorCodes[4][2],"top", $input);
 						break;
 				  }

@@ -8,6 +8,7 @@
 <?php //主控台
     include('PubApi.php');
     include('mysqlApi.php');
+	 include('CalendarApi.php');
     DrawButtons();
 	DefineDatas();
     TypeLink();
@@ -23,12 +24,14 @@
       function DefineDatas(){
 		       global $tasks,$tasksName;
 			   global $data_library,$tableName;
+			   global $startY;
 			   $tableName="fpschedule";
 			   $data_library="iggtaiperd2";
 		       $tasksT=getMysqlDataArray("fpschedule"); 
 			   $tasksT2=filterArray( $tasksT,0,"data"); 
 			   $tasks= RemoveArray( $tasksT2,5, "工項"); 
 			   $tasksName=filterArray(  $tasksT2,5, "工項"); 
+			   $startY=180;
       }
  
       function DrawButtons(){
@@ -36,18 +39,25 @@
 			   $URL="taskDataform.php";
 			   global $typeName,$typeArray;
 			   $subNameForWard="Type";
-			   $typeName=array(array("負責人",8),array("大類別",10),array("類別",5) ,array("編輯",-1));
+			   $typeName=array(array("負責人",8),array("外包",2), array("大類別",10),array("類別",5) ,array("編輯",-1));
 			   $typeArray=array(); 
 			   for($i=0;$i<count($typeName);$i++){
-				   $n=$subNameForWard.$i;
+				    $n=$subNameForWard.$i;
 				    $s= $_POST[$n];
 			       array_push( $typeArray,array($n,$s));
 			   }
 			   $Rect=array(20,40,60,20);
-			   //工作人
+			   //負責人
 			   $Typestmp=getMysqlDataArray("members"); 
 			   $TypeT=filterArray(  $Typestmp,3,"Art"); 
 			   $Type= returnArraybySort($TypeT,1);
+			   DrawButton($Type,$Rect,$URL,0,$typeArray);
+			   
+			   //外包
+			   $Rect[1]+=22;
+			   $Typestmp=getMysqlDataArray("outsourcing"); 
+			   $TypeT=filterArray($Typestmp,35,"true"); 
+			   $Type= returnArraybySort($TypeT,2);
 			   DrawButton($Type,$Rect,$URL,0,$typeArray);
 			
 	           //大類
@@ -66,7 +76,7 @@
 			   DrawButton($Type,$Rect,$URL,2,$typeArray);
 			   //編輯類別
 			   $Rect[1]+=22;
-			   $Type=array("快速新增","編輯隱藏");
+			   $Type=array("快速新增","甘特(年)","顯示全部","編輯隱藏");
 			   DrawButton($Type,$Rect,$URL,3,$typeArray);
 	  }
 	  function DrawButton($array,$Rect,$URL,$valArrayNum,$ValArray){
@@ -83,19 +93,20 @@
 	  }
 	  function TypeLink(){
 		  global $typeName,$typeArray;
- 
 		  if ($_POST["submit"]=="新增計畫"){
 			  UpPlan();
 			  return;
 		  }
-		  if($typeArray[3][1]=="快速新增"){
+		  if($typeArray[4][1]=="快速新增"){
 			 fastTask();
 		     return;
 		  }
 	      ListTasks();
           ListTask();
+		   DrawCallendarRange();
+	      if($typeArray[4][1]=="顯示甘特(年)"){
 	      DrawCallendar(); 
-	     
+		  }
 	  }
 ?>
 
@@ -105,18 +116,25 @@
 		     global $typeName,$typeArray;
 			 global $finalTasks;
 			 $finalTasks=$tasks;
+			 if($typeArray[4][1]!="顯示全部") $finalTasks=RemoveArray($tasks,7,"已完成"); 
 			 for($i=0;$i<3;$i++){
 				 $s=$typeName[$i][1];
 				 $n=$typeArray[$i][1];
 			     if($typeArray[$i][1]!="--")$finalTasks=filterArray( $finalTasks,$s,$n); 
 			 }
+			$SortNameArr=array("進行中","未定義","已完成");
+			$finalTasks=  SortArraybyNameArray($finalTasks,$SortNameArr,7);
+			
+		 
 	 }
 	 function ListTask(){
+		    global $typeArray;
 		    global $finalTasks;
 			global $CalendarX;
+			global $startY;
 			$taskArray=$finalTasks;
 		    $x=20;
-			$y=140;
+			$y= $startY;
 			$h=20;
 			$fontColor="#ffffff";
 			$BgColor="#000000";
@@ -126,15 +144,17 @@
 				$x=20;
 				$code=$taskArray[$i][3];
 				//工單名
+				$fin=$taskArray[$i][7];
 		        $name=getTaskName($code);
-				$BgColor="#000000";
-			 
-			  
+				$BgColor="#006600";
+				if($fin=="未定義")$BgColor="#660000";
+				if($fin=="進行中")$BgColor="#006600";
+			    if($fin=="已完成")$BgColor="#000000";
 			    DrawRect($name,10,$fontColor,$x,$y ,149,$h,$BgColor);
-				   //隱藏
+			    //隱藏
+			    if($typeArray[4][1]=="編輯隱藏"){
 			    DrawHide($code,$taskArray[$i][18],$x,$y);
-			
-			
+			    }
 				$x+=150;
 				//負責人
 					$BgColor="#777777";
@@ -151,20 +171,16 @@
 				$x+=50;
 				$CalendarX=$x;
 			    //工作時間
-				DrawTime($taskArray,$i,$y);
-				
+				 if($typeArray[4][1]=="顯示甘特(年)")	DrawTime($taskArray,$i,$y);
 		    }
-			
 	 }
 	 function DrawHide($code,$hide,$x,$y){
 		      global  $typeArray;
 			  global  $URL;
-			  $Rect=array($x+2,$y+2,5,5);
-			  
+			  $Rect=array($x-10,$y-2,10,18);
 			  $fontColor="#552222";
 			  $BgColor="#224422";
 			  if($hide=="g1")$BgColor="#444444";
-			  
 		      $ValArray= addArray($typeArray,array("hide",$code));
 	          sendVal($URL,$ValArray,"Submit","_",$Rect,8,$BgColor);
 	 }
@@ -176,7 +192,7 @@
 				if($ww<5)$ww=5;
 				DrawRect($taskArray[$i][6],10,$fontColor,$xx,$y,$ww,$h,"#22aaaa");
 	 }
-	 function DrawCallendar( ){
+	 function DrawCallendar(){
 		 	  global $CalendarX;
 		      global $finalTasks;
 			  global $URL;
@@ -238,7 +254,50 @@
 			return "ss";
 	 }
 ?>
-
+<?php
+     function DrawCallendarRange(){
+		      global $finalTasks;
+			  global $CalendarX, $startY;
+			 
+			  $DateRange= getDateRange($finalTasks,2);
+			  print_r($DateRange);
+		      $y=$DateRange[0];
+			  $m=$DateRange[1];
+			  $sdate="";
+			  $fdate=$DateRange[2]."_".$DateRange[3];
+			  $LocX=  $CalendarX;
+			  $LocY=  $startY;
+			  $BgColor="#999999";
+			  $fontColor="#ffffff";
+			  $wid=15;
+			  $t=0;
+			  while ($sdate!=$fdate){
+				     $days=getMonthDay($m,$y);
+					 DrawRect($m,10,$fontColor,$LocX,$LocY-20,$days* $wid-1,20,$BgColor);
+					 DrawDays($days,$LocX,$LocY ,$wid);
+					 $sdate=$y."_".$m;
+					 echo $sdate.">".$fdate;
+					 if($sdate==$fdate)break;
+					 $m+=1;
+					 if($m>12){
+						 $y+=1;
+					 $m=1;
+					 }
+			        $t++;
+					if($t>12)break;
+					$LocX+=$days* $wid;
+			  }
+	 }
+	 function DrawDays($days,$LocX,$LocY,$w){
+		      $x=$LocX;
+			  $BgColor="#aaaaaa";
+			  $fontColor="#ffffff";
+	          for($i=1;$i<=$days;$i++){
+			      DrawRect($i,10,$fontColor,$x,$LocY,$w-1,20,$BgColor);
+				  $x+=$w;
+			  }
+	 }
+?>
 <?php //function
      function collectMonth($datas,$TargetY,$TargetM){
            $ar=array();	      
@@ -277,14 +336,6 @@
 			                  );					 
 			  upSubmitform($upFormVal,$UpHidenVal, $inputVal);
 	 }
-	 function addArray($Base,$Add){
-	         $a=$Base;
-			 for($i=0;$i<count($Add);$i++){
-			     array_push($Base,$Add[$i]);
-			 }
-			 return $Base;
-	 }
-
 	 function UpPlan(){
 		   
 		        global $data_library,$tableName;
@@ -296,11 +347,22 @@
 					    array_push($WHEREData,$_POST[$tables[$i]]);
 					    echo  "</br>".$tables[$i].">".$_POST[$tables[$i]]."]";
 		              }
-				   $stmt=   MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
+				   $stmt=  MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
 				   echo $stmt;
 				   SendCommand($stmt,$data_library);
-			      // echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
-		    
+			      // echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";		    
 	 
+	 }
+	 function HidePlan( ){
+	          global $URL;
+			  global $Ecode;
+			  global $data_library,$tableName,$MainPlanData;
+			  $WHEREtable=array( "data_type", "code" );
+		      $WHEREData=array( "data",$Ecode );
+			  $Base=array("hide");
+			  $up=array("g1");
+			  $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
+			  SendCommand($stmt,$data_library);		
+			  echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	 }
 ?>

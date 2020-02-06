@@ -114,6 +114,21 @@
 			    }
 	       return $data;
 	   }
+	   function SortArraybyNameArray($baseArr,$SortNameArr,$Num){
+		        $arr=array();
+	            for($i=0;$i<count($SortNameArr);$i++){
+					$ar = filterArray($baseArr,$Num,$SortNameArr[$i]);
+				    $arr= addArray($arr,$ar);
+				}
+				return $arr;
+	   }
+	   function addArray($Base,$Add){
+	         $a=$Base;
+			 for($i=0;$i<count($Add);$i++){
+			     array_push($Base,$Add[$i]);
+			 }
+			 return $Base;
+	   }
 ?>
 
 <?php //功能

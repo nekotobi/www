@@ -204,7 +204,39 @@
 		  }
 		  return  $new_day%7;
 	   }
-   
+       function getDateRange($taskArr,$dateNum){  //判斷陣列2019_x_x 時間範圍
+	            $arr= array(array(2019,1),array(2019,1));//開始 結束
+				$yarr=array();
+				for($i=0;$i<count($taskArr);$i++){ //收集年
+					$date=explode("_",$taskArr[$i][$dateNum]);
+					$y=$date[0];
+				    array_push($yarr,$y);
+				}
+			 
+		    	 sort($yarr);
+				$sy=$yarr[0];
+				$ey=$yarr[count($yarr)-1];
+				$sm=12;
+				$em=1;
+				for($i=0;$i<count($taskArr);$i++){ //整理月
+					$date=explode("_",$taskArr[$i][$dateNum]);
+					$y=$date[0];
+					$m=$date[1];
+					if($sy==$ey){//都在同一年
+					      if($m<$sm)$sm=$m;
+					      if($m>$em)$em=$m;
+					}
+					if($sy!=$ey){//不在同一年
+					   if($y==$sy){
+					     if($m<$sm)$sm=$m;
+					   }
+					   if($y==$ey){
+					     if($m>$em)$em=$m;
+					   }
+					}
+				}
+				return array($sy,$sm,$ey,$em);
+	   }
 ?>
 
  <?php //上傳
