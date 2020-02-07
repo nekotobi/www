@@ -33,7 +33,7 @@
 			  $MysQlArray=array(0,12,13);
 			  setcookies($CookieArray,$BaseURL);
 	          SetGlobalcookieData( $CookieArray);
-		    //  CheckCookie($CookieArray);	  
+		     // CheckCookie($CookieArray);	  
 	 }
 	 function DefineUnityResPath(){
 		      global $unityUIPath;
@@ -102,27 +102,60 @@
 	 function AddT2Group(){
 	           global $type2Title;
 			   global $ResGroup;
-               $ResGroup=ReturncolectionGroup();
+			   global $type1;
+			   $ResGroup=ReturncolectionGroup();
 			   if(count($ResGroup)==0)return;
-			   for($i=0;$i<count($ResGroup)+1;$i++)
-				   array_push($type2Title,array("G".$i,"G".$i));
+			   if($type1=="mob"){
+			       for($i=0;$i<count($ResGroup)+1;$i++)
+				       array_push($type2Title,array("G".$i,"G".$i));
+				  }
+               if($type1=="hero"){
+                   for($i=0;$i<count($ResGroup)+1;$i++){
+					     if($ResGroup[$i]!="")
+				             array_push($type2Title,array( $ResGroup[$i],"G_".$ResGroup[$i]));
+				   }
+				   for($i=1;$i<=3;$i++){
+					   array_push($type2Title,array("星".$i,"S_".$i));
+				   }
+				     array_push($type2Title,array("紅","C_紅"));
+					     array_push($type2Title,array("藍","C_藍"));
+						     array_push($type2Title,array("紫","C_紫"));
+							     array_push($type2Title,array("綠","C_綠"));
+								    array_push($type2Title,array("過去","T_過去"));
+									 array_push($type2Title,array("現在","T_現在"));
+									  array_push($type2Title,array("未來","T_未來"));
+			   }
 	 }
 	 function ReturncolectionGroup(){
 		      global $type1;
-			  if($type1!="mob")return null;
 			  global $ResData;
-			  $bossArray=array();
 			  $tRs=filterArray( $ResData,0,$type1);
-              $ResGroup=array();		  
-			  for($i=0;$i<count($tRs);$i++){
-			      if($tRs[$i][14]!=""){
-				     $s=explode("_",$tRs[$i][14]);
-				     $n=0;
-					 if(count($s)>1 ) $n=$s[1]-1;
-					 $ResGroup[$s[0]][$n]=$tRs[$i];
-				  }
+			  $ResGroup=array();
+			  switch ($type1){
+			         case "mob":
+					 for($i=0;$i<count($tRs);$i++){
+			              if($tRs[$i][14]!=""){
+				             $s=explode("_",$tRs[$i][14]);
+				             $n=0;
+					          if(count($s)>1 ) $n=$s[1]-1;
+				              $ResGroup[$s[0]][$n]=$tRs[$i];
+				            }
+			           }
+			         return $ResGroup;
+				     case "hero":
+				     for($i=0;$i<count($tRs);$i++){
+						 	$s= explode('(',$tRs[$i][14]);
+							// echo $s[0];
+						       if (!in_array($s[0], $ResGroup) ) {
+							      array_push($ResGroup,$s[0]);
+						      }
+					  }
+					 return $ResGroup;
 			  }
-			  return $ResGroup;
+			  return null;
+ 
+       		  
+			 
 	 }
 	 function getXlsPath(){
 		      global  $ResDatafi;
@@ -223,6 +256,7 @@
 			  }
 				 
 	 }
+ 
 ?>
 
 <?php //List
@@ -243,17 +277,34 @@
      function getData(){
 		      global  $CookieArray,$MysQlArray;
 	          global  $ResData;
-			  global $type1,$type2,$type3;
+			  global  $type1,$type2,$type3;
  
-			  if(strpos($type2,'G') !== false){ //Group
 				   global $ResGroup;
 			       $data= array();
-			       $s= str_replace( "G" , "" ,$type2 );
-			       for($i=0;$i<count($ResGroup[$s]);$i++){
-				      array_push($data,$ResGroup[$s][$i]);
+				
+				   if( $type1=="mob"){
+					   if(strpos($type2,'G') !== false){ //Group
+				       $s= str_replace( "G" , "" ,$type2 );
+			           for($i=0;$i<count($ResGroup[$s]);$i++){
+				          array_push($data,$ResGroup[$s][$i]);
+				         }
+					   }
+					      return $data;
 				   }
-				   return $data;
-			  }
+			       if( $type1=="hero"){
+                     // $s= str_replace( "G" , "" ,$type2 );
+					  $s=explode("_",$type2);
+					  if($s[0]=="G") $data =filterArray($ResData,14,$s[1]);
+		              if($s[0]=="S")   $data =filterArray($ResData,13,$s[1]);
+		        	  if($s[0]=="C")   $data =filterArray($ResData,11,$s[1]);
+					    if($s[0]=="T")   $data =filterArray($ResData,10,$s[1]);
+				      return $data;
+				   }
+				
+ 
+			  
+			  
+			  
 			  if(  $type1=="stage"){
 				   $data=filterArray( $ResData,13,$type2);
 				   return $data;
@@ -684,6 +735,7 @@
 				  return "";
 			  }  
 	 }
+	 
 ?>
 
 <?php //stage

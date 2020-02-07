@@ -8,7 +8,8 @@
 <?php //主控台
     include('PubApi.php');
     include('mysqlApi.php');
-	 include('CalendarApi.php');
+	include('CalendarApi.php');
+	include('javaApi.php');
     DrawButtons();
 	DefineDatas();
     TypeLink();
@@ -16,7 +17,7 @@
 ?>
 
 <?php //類別
-       function DrawSwitch(){
+      function DrawSwitch(){
 	           $Rect=array(980,10,40,12);
 	           $Link= "schedule.php";
 		       DrawLinkRect_newtab("schedule","10","#ffffff",$Rect[0],$Rect[1],$Rect[2],$Rect[3],"#000000",$Link,"1");
@@ -32,14 +33,16 @@
 			   $tasks= RemoveArray( $tasksT2,5, "工項"); 
 			   $tasksName=filterArray(  $tasksT2,5, "工項"); 
 			   $startY=180;
+			   global $Vacationdays;
+			   $Vacationdays=getMysqlDataArray("vacationdays"); 
       }
- 
+   
       function DrawButtons(){
 		       global $URL;
 			   $URL="taskDataform.php";
 			   global $typeName,$typeArray;
 			   $subNameForWard="Type";
-			   $typeName=array(array("負責人",8),array("外包",2), array("大類別",10),array("類別",5) ,array("編輯",-1));
+			   $typeName=array(array("負責人",8),array("外包",9), array("大類別",10),array("類別",5) ,array("編輯",-1));
 			   $typeArray=array(); 
 			   for($i=0;$i<count($typeName);$i++){
 				    $n=$subNameForWard.$i;
@@ -58,7 +61,7 @@
 			   $Typestmp=getMysqlDataArray("outsourcing"); 
 			   $TypeT=filterArray($Typestmp,35,"true"); 
 			   $Type= returnArraybySort($TypeT,2);
-			   DrawButton($Type,$Rect,$URL,0,$typeArray);
+			   DrawButton($Type,$Rect,$URL,1,$typeArray);
 			
 	           //大類
 			   $Rect[1]+=22;
@@ -66,18 +69,18 @@
 			   $TypeT=filterArray(  $Typestmp,0,"data"); 
 			   $TypeS=sortArrays( $TypeT ,5 ,"true");
 			   $Type= returnArraybySort($TypeS,2);
-			   DrawButton($Type,$Rect,$URL,1,$typeArray);
+			   DrawButton($Type,$Rect,$URL,2,$typeArray);
 		   	   
 			   //工類
 			   $Rect[1]+=22;
 			   $TypeT=filterArray(  $Typestmp,0,"data2"); 
 			   $TypeS=sortArrays( $TypeT ,5 ,"true");
 			   $Type= returnArraybySort($TypeS,2);
-			   DrawButton($Type,$Rect,$URL,2,$typeArray);
+			   DrawButton($Type,$Rect,$URL,3,$typeArray);
 			   //編輯類別
 			   $Rect[1]+=22;
-			   $Type=array("快速新增","甘特(年)","顯示全部","編輯隱藏");
-			   DrawButton($Type,$Rect,$URL,3,$typeArray);
+			   $Type=array("快速新增","顯示甘特","顯示全部","編輯隱藏");
+			   DrawButton($Type,$Rect,$URL,4,$typeArray);
 	  }
 	  function DrawButton($array,$Rect,$URL,$valArrayNum,$ValArray){
 			   array_unshift( $array,"--");
@@ -101,37 +104,44 @@
 			 fastTask();
 		     return;
 		  }
-	      ListTasks();
-          ListTask();
-		   DrawCallendarRange();
-	      if($typeArray[4][1]=="顯示甘特(年)"){
-	      DrawCallendar(); 
+		  definTasks();
+		  if($typeArray[4][1]=="顯示甘特"){
+	        DrawCallendarRange(); 
 		  }
+	      ListTasks();
+       
+	
 	  }
 ?>
 
 <?php //內容
-     function ListTasks(){
+     function definTasks(){
 	         global $tasks;
 		     global $typeName,$typeArray;
 			 global $finalTasks;
+			 global $DateRange;
+			 global $CalendarX;
 			 $finalTasks=$tasks;
 			 if($typeArray[4][1]!="顯示全部") $finalTasks=RemoveArray($tasks,7,"已完成"); 
-			 for($i=0;$i<3;$i++){
+			 for($i=0;$i<4;$i++){
 				 $s=$typeName[$i][1];
 				 $n=$typeArray[$i][1];
 			     if($typeArray[$i][1]!="--")$finalTasks=filterArray( $finalTasks,$s,$n); 
 			 }
 			$SortNameArr=array("進行中","未定義","已完成");
 			$finalTasks=  SortArraybyNameArray($finalTasks,$SortNameArr,7);
-			
-		 
+			$DateRange= getDateRange($finalTasks,2);
+	        $CalendarX=330;
+		    global $DateWid;
+			$DateWid=15;
+		   // getVacationDays($YearRange,$MonthRange);
 	 }
-	 function ListTask(){
+	 function ListTasks(){
 		    global $typeArray;
 		    global $finalTasks;
 			global $CalendarX;
 			global $startY;
+			global $DateWid;
 			$taskArray=$finalTasks;
 		    $x=20;
 			$y= $startY;
@@ -160,21 +170,24 @@
 					$BgColor="#777777";
 				$principal=$taskArray[$i][8];
 				DrawRect($principal,10,$fontColor,$x,$y,49,$h,$BgColor);
-				//大類
+				//時間
 				$x+=50;
-				$type=$taskArray[$i][10];
+				$type=$taskArray[$i][2];
 				DrawRect($type,10,$fontColor,$x,$y,49,$h,$BgColor);
 				//小類
 				$type2=$taskArray[$i][5];
 				$x+=50;
 				DrawRect($type2,10,$fontColor,$x,$y,49,$h,$BgColor);
 				$x+=50;
-				$CalendarX=$x;
+				
 			    //工作時間
-				 if($typeArray[4][1]=="顯示甘特(年)")	DrawTime($taskArray,$i,$y);
+				 if($typeArray[4][1]=="顯示甘特"){
+				    DrawGantt($taskArray,$i,$y);
+				 }
 		    }
 	 }
-	 function DrawHide($code,$hide,$x,$y){
+	 
+	 function   DrawHide($code,$hide,$x,$y){
 		      global  $typeArray;
 			  global  $URL;
 			  $Rect=array($x-10,$y-2,10,18);
@@ -184,68 +197,29 @@
 		      $ValArray= addArray($typeArray,array("hide",$code));
 	          sendVal($URL,$ValArray,"Submit","_",$Rect,8,$BgColor);
 	 }
-	 function DrawTime($taskArray,$i,$y){
+	 function   DrawGantt($taskArray,$i,$y){
+		        global $DateWid;
+				global $DateRange;
+				global $CalendarX;
 	            $fontColor="#ffffff";
 		     	$BgColor="#000000";
-				$xx= returnposX($taskArray[$i][2]);
-				$ww= $taskArray[$i][6];
-				if($ww<5)$ww=5;
-				DrawRect($taskArray[$i][6],10,$fontColor,$xx,$y,$ww,$h,"#22aaaa");
-	 }
-	 function DrawCallendar(){
-		 	  global $CalendarX;
-		      global $finalTasks;
-			  global $URL;
-	          $startY=2019;
-			  $StartM=1;
-			  $EndY=date("Y");
-			  $EndM=date("m");
-			  $y=$startY;
-			  $m=1;
-			  $x= $CalendarX;
-			  $y=140;
-			  $h=20;
-			  $BgColor="#aaaaaa";
-			  $fontColor="#ffffff";
-			  
-              for($i=0;$i<count($finalTasks);$i+=20){
-				  $sy=$startY;
-				  $m=1;
-			      $x= $CalendarX;
-				   $ValArray=$typeArray;
-			      while( $sy<=$EndY  ){
-				       while($m<=12  ){
-						     $yy=$y+$i*22;
-					         if($i==0){
-				             $ValArray=array();
-						     array_push($ValArray,array("Type3",$m));
-						     sendVal($URL,$ValArray,"Type3",$m,array($x,$yy,29,$h),10, $BgColor ,$fontColor  ) ;
-					         }
-					        if($i!=0){   
-					           DrawRect($m,10,$fontColor,$x,$yy,29,$h,$BgColor);
-					          }
-				           $x+=30;
-					       $m+=1;
-					   }
-					  $m=1;
-				      $sy+=1; 
-			  }			  
-			  }
-			  
-	 }
-	 function returnposX($date){
-		   global $CalendarX;
+	            $nd= explode("_",$taskArray[$i][2]);//= returnposX($taskArray[$i][2]);
+				$s=array($DateRange[0],$DateRange[1],1);
+			    $passDay= getPassDays(array($DateRange[0],$DateRange[1],1), $nd);
+				$xx= $CalendarX+$passDay*$DateWid;
+				$ww= $taskArray[$i][6]*$DateWid;
+				$id="ar".$i;
+				$BgColor="#22aaaa";
+				$h=18;
+				$msg=$taskArray[$i][6];
+				DrawJavaDragbox($msg,$xx,$y,$ww,$h,10, $BgColor, $fontColor,$id);
+			//	DrawRect($taskArray[$i][6],10,$fontColor,$xx,$y,$ww,$h,"#22aaaa");
 	 
-	     $d= explode("_",$date);
-		 $y=  $d[0]-2019;
-		 $m=$d[1];
-	   
-		 return $CalendarX+ $y*30*12+($m-1)*30+$d[2];
 	 }
-	 function getTaskName($code){
  
+
+	 function getTaskName($code){
 	        global  $tasksName;
-			 
 			for($i=0;$i<count($tasksName);$i++){
 			    if($tasksName[$i][1]==$code){
 					return $tasksName[$i][3];
@@ -253,30 +227,31 @@
 			}
 			return "ss";
 	 }
+	 
 ?>
 <?php
      function DrawCallendarRange(){
 		      global $finalTasks;
 			  global $CalendarX, $startY;
-			 
-			  $DateRange= getDateRange($finalTasks,2);
-			  print_r($DateRange);
+			  global $DateWid;
+			  global $DateRange;
+			  echo count($finalTasks);
+              //print_r( $DateRange);
 		      $y=$DateRange[0];
 			  $m=$DateRange[1];
 			  $sdate="";
 			  $fdate=$DateRange[2]."_".$DateRange[3];
 			  $LocX=  $CalendarX;
 			  $LocY=  $startY;
-			  $BgColor="#999999";
+			  $BgColor="#555555";
 			  $fontColor="#ffffff";
-			  $wid=15;
 			  $t=0;
 			  while ($sdate!=$fdate){
 				     $days=getMonthDay($m,$y);
-					 DrawRect($m,10,$fontColor,$LocX,$LocY-20,$days* $wid-1,20,$BgColor);
-					 DrawDays($days,$LocX,$LocY ,$wid);
+					 DrawRect($m,10,$fontColor,$LocX,$LocY-20,$days* $DateWid-1,20,$BgColor);
+					 $arr=  ReturnVacationDays($y,$m,$VacationDays);
+					 DrawDays($days,$LocX,$LocY ,$DateWid,count($finalTasks), $arr);
 					 $sdate=$y."_".$m;
-					 echo $sdate.">".$fdate;
 					 if($sdate==$fdate)break;
 					 $m+=1;
 					 if($m>12){
@@ -285,15 +260,23 @@
 					 }
 			        $t++;
 					if($t>12)break;
-					$LocX+=$days* $wid;
+					$LocX+=$days* $DateWid;
 			  }
 	 }
-	 function DrawDays($days,$LocX,$LocY,$w){
+	 function DrawDays($days,$LocX,$LocY,$w,$h,$arr){
+		      global $Vacationdays;
 		      $x=$LocX;
 			  $BgColor="#aaaaaa";
 			  $fontColor="#ffffff";
+	
 	          for($i=1;$i<=$days;$i++){
+				  $BgColor="#aaaaaa";
+				  if ($arr[$i]==1)     $BgColor="#bbaaaa";
+				  if ($arr[$i]==2)     $BgColor="#bb6666";
 			      DrawRect($i,10,$fontColor,$x,$LocY,$w-1,20,$BgColor);
+				  $id="box".$i;
+				  DrawJavaDragArea("",$x,$LocY+22,$w-1,$h*22,$BgColor,$fontColor,$id);
+				  //DrawRect("",10,"#cccccc",$x,$LocY+22,$w-1,$h*22,$BgColor);
 				  $x+=$w;
 			  }
 	 }
@@ -337,7 +320,6 @@
 			  upSubmitform($upFormVal,$UpHidenVal, $inputVal);
 	 }
 	 function UpPlan(){
-		   
 		        global $data_library,$tableName;
 			       $tables=returnTables($data_library,$tableName);
 				   $WHEREtable=array();
@@ -365,4 +347,60 @@
 			  SendCommand($stmt,$data_library);		
 			  echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	 }
+?>
+
+
+<?php //bak
+/*
+	 function DrawCallendar(){
+		 	  global $CalendarX;
+		      global $finalTasks;
+			  global $DateWid;
+			  global $URL;
+	          $startY=2019;
+			  $StartM=1;
+			  $EndY=date("Y");
+			  $EndM=date("m");
+			  $y=$startY;
+			  $m=1;
+			  $x= $CalendarX;
+			  $y=140;
+			  $h=20;
+			  $BgColor="#aaaaaa";
+			  $fontColor="#ffffff";
+			  
+              for($i=0;$i<count($finalTasks);$i+=20){
+				  $sy=$startY;
+				  $m=1;
+			      $x= $CalendarX;
+				  $ValArray=$typeArray;
+			      while( $sy<=$EndY  ){
+				       while($m<=12  ){
+						     $yy=$y+$i*22;
+					         if($i==0){
+				             $ValArray=array();
+						     array_push($ValArray,array("Type3",$m));
+						     sendVal($URL,$ValArray,"Type3",$m,array($x,$yy,29,$h),10, $BgColor ,$fontColor  ) ;
+					         }
+					        if($i!=0){   
+					           DrawRect($m,10,$fontColor,$x,$yy,29,$h,$BgColor);
+					          }
+				           $x+=30;
+					       $m+=1;
+					   }
+					  $m=1;
+				      $sy+=1; 
+			  }			  
+			  }
+			  
+	 }
+	 function returnposX_b($date){
+		 global $CalendarX;
+	     $d= explode("_",$date);
+		 $y=  $d[0]-2019;
+		 $m=$d[1];
+	   
+		 return $CalendarX+ $y*30*12+($m-1)*30+$d[2];
+	 }
+	 */
 ?>

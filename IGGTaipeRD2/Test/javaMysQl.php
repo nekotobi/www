@@ -8,7 +8,7 @@
 <script>
     const mysql = require('mysql');
 	const con = mysql.createConnection({
-  host: 'localhost',
+    host: 'localhost',
   user: 'root',
   password: '1406',
 });
@@ -20,4 +20,6 @@
 
 
  
- 
+ <?php
+  echo "4";
+ ?>

@@ -11,7 +11,6 @@
 		$tableName="outsourcing";
         DrawMainUI();
 	    UpData();
-  
     function DrawMainUI(){
 		global $tableName;
 		global $data_library;
@@ -151,6 +150,7 @@
 			  sendVal($BaseURL,$ValArray,"submit","+新增外包",$Rect,12, $BgColor , "#ffffff" );
 	}
 ?>
+
 <?php //Data
     function UpData(){
 		$Edit=$_POST['Edit'];
@@ -219,7 +219,6 @@
 			 SendCommand($stmt,$data_library);
 		     echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
 	}
-	
 	function EditData(){
 	      global $tableName,$data_library;
            $code=$_POST["code"];	

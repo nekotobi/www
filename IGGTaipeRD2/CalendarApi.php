@@ -102,6 +102,35 @@
 			  }
 	          return  $VacationDays;
 	  }
+	  function    ReturnVacationDays($y,$m,$VacationDays){
+	              $monthEnd= getMonthDay($m,$y);
+				  $weekStart=GetMonthFirstDay($y,$m);
+				  $arr=array();
+				  for($i=1;$i<=$monthEnd;$i++){
+					     $arr[$i]=0;
+				         if($weekStart==6 or  $weekStart==7){
+						 $arr[$i]=1;
+						 }
+					  $weekStart+=1;
+					  if( $weekStart>7) $weekStart=1;
+					  $f= Returnv($y,$m,$d ,$VacationDays);
+					  if($f!=0)  $arr[$i]=$f;
+					  if($y==date("Y") and $m==date("n") and  $i==date("j"))$arr[$i]=2;
+				  }
+				  return $arr;
+	  }
+	   function   Returnv($y,$m,$d ,$VacationDays){
+		         for($i=1;$i<count($VacationDays);$i++){
+			        if($y==$VacationDays[$i][0]){
+					 if($m==$VacationDays[$i][1]){
+					   if($d==$VacationDays[$i][2])return $VacationDays[$i][3];
+					 }
+					}
+			     }
+				 return 0;
+	   }
+    
+	  
        function getMonthVacationDays($y,$m,$VacationDays){
 	              $monthEnd= getMonthDay($m,$y);
 				  $weekStart=GetMonthFirstDay($y,$m);
