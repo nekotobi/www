@@ -117,15 +117,7 @@
 						   }
 						  break;
 					case  $TableType[$i]=="bool" :
-					      $bool=$Data[$i];
-						  if($bool=="")$bool="null";
-						  $color="#444444";
-						  if($bool=="true")$color="#eeffee";
-					  //    $Link=$BaseURL."?Edit=DNA&code=".$Data[1]."&bool=".$bool;
-						  $ValArray=array(array("Edit",$tables[$i]),array("code",$Data[1]),array("bool",$bool));
-						  sendVal($BaseURL,$ValArray,"submit",$tables[$i],array($x,$y,$h,$h),10,$color, "#000000");
-						 // DrawLinkRect($bool,"12",$fontColor,$x,$y,$w,$h,$color,$Link,1);
-						  $color=$bc;
+					      DrawBool($Data,$i,$tables,array($x,$y,$h,$h));
 					      break;
 						  }
 	    	    $x+=$w+2;
@@ -133,10 +125,23 @@
 	         }
 			 $Link=$BackURL."?Edit=form&code=".$Data[1];
 			 $ValArray=array(array("Edit","form"),array("code",$Data[1]));
-			 sendVal($BaseURL,$ValArray,"submit","Edit",array($x,$y,$h,$h),10,"#441122", "#ffffff");
-			// DrawLinkRect("Edit","10","#ffffff",$x,$y,$h,$h,"#441122",$Link,1);
-			 
+			 sendVal($BaseURL,$ValArray,"submit","Edit",array($x,$y,$h,$h),10,"#441122", "#ffffff"); 
     }	
+	function DrawBool($Data,$i,$tables,$Rect){
+	                      global $BaseURL;
+	                      $bool=$Data[$i];
+						  if($bool=="")$bool="null";
+						  $color="#444444";
+						  if($bool=="true")$color="#eeffee";
+						  $ValArray=array(array("Edit",$tables[$i]),array("code",$Data[1]),array("bool",$bool));
+						  if($tables[$i]=="Active"){
+							 $Rect[0]=0;
+						     $Rect[2]=10;  
+						  }
+						  sendVal($BaseURL,$ValArray,"submit",$tables[$i],$Rect,10,$color, "#000000");
+						  $color=$bc;
+	}
+	
 	function DrawAdd($y,$LastSn){
 			  global   $BaseURL;
 	          $x=20;
