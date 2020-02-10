@@ -40,8 +40,6 @@
 			  $unityUIPath="VTUnity/Main/Assets/AssetBundles/PrimaryBundle/UI/";
 			  global $iconPath;
 			  $iconPath=array("Skill");
-			  
-			  
 			  global $BuffIconDir;
 			  $BuffIconDir="ResourceData/hero/buff";
 	 }
@@ -278,33 +276,33 @@
 		      global  $CookieArray,$MysQlArray;
 	          global  $ResData;
 			  global  $type1,$type2,$type3;
- 
-				   global $ResGroup;
-			       $data= array();
-				
-				   if( $type1=="mob"){
+              global  $ResGroup;
+			  $data= array();
+			  echo $type1;
+		      $ResData=filterArray($ResData,0,$type1);
+		      if( $type1=="mob"){
 					   if(strpos($type2,'G') !== false){ //Group
 				       $s= str_replace( "G" , "" ,$type2 );
 			           for($i=0;$i<count($ResGroup[$s]);$i++){
 				          array_push($data,$ResGroup[$s][$i]);
 				         }
+						   return $data;
 					   }
-					      return $data;
+				    if(strpos($type2,'G')  == false) $data =filterArray($ResData,12,$type2);
+				 
 				   }
 			       if( $type1=="hero"){
                      // $s= str_replace( "G" , "" ,$type2 );
 					  $s=explode("_",$type2);
+			
+					  if(count($s)==1) $data =filterArray($ResData,12,$type2);
 					  if($s[0]=="G") $data =filterArray($ResData,14,$s[1]);
 		              if($s[0]=="S")   $data =filterArray($ResData,13,$s[1]);
 		        	  if($s[0]=="C")   $data =filterArray($ResData,11,$s[1]);
-					    if($s[0]=="T")   $data =filterArray($ResData,10,$s[1]);
+					  if($s[0]=="T")   $data =filterArray($ResData,10,$s[1]);
 				      return $data;
 				   }
-				
  
-			  
-			  
-			  
 			  if(  $type1=="stage"){
 				   $data=filterArray( $ResData,13,$type2);
 				   return $data;
