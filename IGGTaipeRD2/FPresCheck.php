@@ -280,6 +280,10 @@
 			  $data= array();
 			  echo $type1;
 		      $ResData=filterArray($ResData,0,$type1);
+			   if($type2=="all"){
+				   	  $data= SortList(  $ResData,3);
+				   return $data;
+			   }
 		      if( $type1=="mob"){
 					   if(strpos($type2,'G') !== false){ //Group
 				       $s= str_replace( "G" , "" ,$type2 );
@@ -294,7 +298,6 @@
 			       if( $type1=="hero"){
                      // $s= str_replace( "G" , "" ,$type2 );
 					  $s=explode("_",$type2);
-			
 					  if(count($s)==1) $data =filterArray($ResData,12,$type2);
 					  if($s[0]=="G") $data =filterArray($ResData,14,$s[1]);
 		              if($s[0]=="S")   $data =filterArray($ResData,13,$s[1]);
