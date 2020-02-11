@@ -281,7 +281,7 @@
 			  echo $type1;
 		      $ResData=filterArray($ResData,0,$type1);
 			   if($type2=="all"){
-				   	  $data= SortList(  $ResData,3);
+				    $data= SortList(  $ResData,3);
 				   return $data;
 			   }
 		      if( $type1=="mob"){

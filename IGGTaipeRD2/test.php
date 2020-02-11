@@ -1,16 +1,34 @@
+ 
 <?php
     include('PubApi.php');
     include('CalendarApi.php');  
     include('mysqlApi.php');
     include('scheduleApi.php');
+	include('javaApi.php');
 	global $data_type;
-	//$data_type="5678";
-    // updata2();
-	TestDayFunction();
+	testBut();
+    Post2Java();
 ?>
 <?php
+   function testBut(){
+	   echo  "val=".$_POST['val'];
+	   echo "</br>";
+       echo  "val2=".$_POST['val2'];
+	   echo $_POST["submit"];
+	   $URL="test.php";
+	   $ValArray=array(array("val","txxt2"),array("val2","vvvxxt3"));
+	   $Rect=array(420,50,100,20);
+       sendVal($URL,$ValArray,"submit","testjava",$Rect, 12,  "#888888", "#ffffff" );
+   }
+   function Post2Java(){
+        	if($_POST["submit"]=="")return;
+			$PostArray=array("val","val2");
+		    $URL="test.php";
+			JavaPost($PostArray,$URL);
+   }
+
    function TestCalendarRangeFunction(){
-	   
+	      
 
    }
    function TestDayFunction(){

@@ -129,6 +129,15 @@
 			 }
 			 return $Base;
 	   }
+	   function CollectArrayDifferent($baseArr,$num){
+		     $arr=array();
+			 for($i=0;$i<count($baseArr);$i++){
+			     if (!in_array($baseArr[$i][$num], $arr)) {
+                      array_push($arr,$baseArr[$i][$num]);
+                     }
+			 }
+			 return $arr;
+	   }
 ?>
 
 <?php //功能

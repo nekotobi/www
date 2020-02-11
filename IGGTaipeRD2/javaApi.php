@@ -24,7 +24,37 @@
          return true
      }
 </script>
-<?php  
+<script type="text/javascript"> //傳遞變數
+    function post_to_url(path, params, method) {
+    method = method || "post";  
+    var form = document.createElement("form");
+    form.setAttribute("method", method);
+    form.setAttribute("action", path);
+    for(var key in params) {
+        var hiddenField = document.createElement("input");
+        hiddenField.setAttribute("type", "hidden");
+        hiddenField.setAttribute("name", key);
+        hiddenField.setAttribute("value", params[key]);
+        form.appendChild(hiddenField);
+    }
+    document.body.appendChild(form);  
+    form.submit();
+}
+</script>
+<?php  //post
+        function JavaPost($PostArray,$URL){
+			$params="{";
+			for($i=0;$i<count($PostArray);$i++){
+				$n=$PostArray[$i];
+			    $params=$params."'".$PostArray[$i]."':'".$_POST[$PostArray[$i]]."'";
+				if(count($PostArray)>1) $params=$params.",";
+			}
+			$params=$params."}";
+		    $javaCom=  "post_to_url('".$URL."', ".$params.");";
+            echo " <script language='JavaScript'>".$javaCom."</script>"; 
+      }
+?>
+<?php  //Drag  
 	    function DrawJavaDragbox($msg,$x,$y,$w,$h,$fontSize,$BgColor,$fontColor,$id){
 	          echo "<div  id=".$id." ";
 			  echo " draggable='true' ondragstart='Drag(event)' ";
