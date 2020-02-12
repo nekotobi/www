@@ -357,29 +357,25 @@
 			   }
 	           UpResort($postSort);
 	 }
-	 
      function UpResort($postSort){
 		      global $URL;
 			  global $data_library,$tableName,$MainPlanData;
 		      global $PostArray;
-
-			
-	        for($i=0;$i<count($postSort);$i++){
-			    $WHEREtable=array( "data_type", "code" );
-		        $WHEREData=array( "data",$postSort[$i]);
-			    $Base=array("Line");
-			    $up=array($i+1);
-			    $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
-			    echo $stmt;
-			    SendCommand($stmt,$data_library);		
-			}
+	          for($i=0;$i<count($postSort);$i++){
+			     $WHEREtable=array( "data_type", "code" );
+		         $WHEREData=array( "data",$postSort[$i]);
+			     $Base=array("Line");
+			     $up=array($i+1);
+			     $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
+			     echo $stmt;
+			     SendCommand($stmt,$data_library);		
+			   }
 			   JavaPost($PostArray,$URL); 
 	 }
 ?>
 <?php //隱藏編號
 
 	 function returnTask($tasks,$allChildArr,$user,$sortArr){
-		   
 	            for($i=0;$i<count($tasks);$i++){
 					if($allChildArr[$i][0][8]==$user)array_Push( $sortArr,$i) ;
 			        if($allChildArr[$i][0][9]==$user)array_Push( $sortArr,$i) ;
