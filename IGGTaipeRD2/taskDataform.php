@@ -180,7 +180,7 @@
 			 for($i=0;$i<4;$i++){
 				 $s=$typeName[$i][1];
 				 $n=$typeArray[$i][1];
-		      	 echo $s.">".$n;
+		      	 //echo $s.">".$n;
 			     if($typeArray[$i][1]!="--")$finalTasks=filterArray( $finalTasks,$s,$n); 
 			 }
 			$SortNameArr=array("進行中","已排程","未定義","已完成");
@@ -514,9 +514,7 @@
 ?>
 
 <?php //快速表單
-
-
-
+ 
      function fastTask(){
 	          $x=20;
 			  $y=10;
@@ -530,15 +528,19 @@
 								array("startDay",date("Y_n_j")),
 								array("milestone", "m5" ),
 							    array("code", returnDataCode( ) ),
-								array("type", "工項" ),
-							    array("selecttype", $typeArray[1][1] )
+								array("principal", $typeArray[0][1] ),
+							    array("outsourcing", $typeArray[1][1] ),
+							    array("selecttype", $typeArray[2][1] ),
+							    array("type", $typeArray[3][1] ),
 							    );			
 			  $UpHidenVal=		addArray( $UpHidenVal,$typeArray);			
 			  $inputVal=array(array("text","plan","計畫",10,20,$y,320,20,$BgColor,$fontColor,"" ,40),
 			                  array("text","remark","jila單號",10,320,$y,100,20,$BgColor,$fontColor,"" ,5),
-							  array("text","line","行",10,420,$y,60,20,$BgColor,$fontColor,"" ,2),
-                              array("submit","submit","",10,520,$y,100,20,$BgColor,$fontColor,"新增計畫" ,20),
-			                  );					 
+							//  array("text","line","行",10,420,$y,60,20,$BgColor,$fontColor,"" ,2),
+						      array("text","workingDays","天數",10,520,$y,60,20,$BgColor,$fontColor,"" ,2),
+                              array("submit","submit","",10,620,$y,100,20,$BgColor,$fontColor,"新增計畫" ,20),
+			                  );		
+							  
 			  upSubmitform($upFormVal,$UpHidenVal, $inputVal);
 	 }
 	 function DeletPlan(){
@@ -554,19 +556,59 @@
 	 }
 	 function UpPlan(){
 		        global $data_library,$tableName;
+				  $last= returntLine();
 			       $tables=returnTables($data_library,$tableName);
 				   $WHEREtable=array();
 				   $WHEREData=array();
 		           for($i=0;$i<count( $tables);$i++){
 				        array_push($WHEREtable, $tables[$i] );
-					    array_push($WHEREData,$_POST[$tables[$i]]);
+						$data=$_POST[$tables[$i]];
+						if($tables[$i]=="type")$data="工項";
+			     		if($tables[$i]=="line")$data=  $last;
+					    array_push($WHEREData,$data);
 					    echo  "</br>".$tables[$i].">".$_POST[$tables[$i]]."]";
 		              }
 				   $stmt=  MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
 				   echo $stmt;
 				   SendCommand($stmt,$data_library);
-			      // echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";		    
-	 
+				  //子單
+				   $bool=true;
+				   echo "</br>";
+				   
+				   if($_POST["type"]=="--") $bool=false; 
+				   if($bool){
+				      echo "子工項";
+					  $p=$_POST["principal"];
+					  $o=$_POST["outsourcing"];
+					  $w=$_POST["workingDays"];
+				      if($p=="--") $p="未定義";
+                      if($o=="--") $o="未定義";
+                      if($w=="--")	$w=1; 
+					   $WHEREData[8]= $p; 
+				       $WHEREData[9]=$o; 
+					   $WHEREData[6]=$w; 
+					   $WHEREData[5]=$_POST["type"];
+				       $WHEREData[1]="f_".$_POST["code"];
+			           $WHEREData[3]= $_POST["code"];
+					   $WHEREData[12]="";
+					   $WHEREData[7]="未定義";
+			          $stmt=  MakeNewStmtv2($tableName,$WHEREtable,$WHEREData); 
+					   echo $stmt;
+					      SendCommand($stmt,$data_library);
+				   }
+			   
+	 }
+	 function returntLine(){
+		       global $typeArray;
+		      $tasksT=getMysqlDataArray("fpschedule"); 
+			  $tasksT2=filterArray( $tasksT,10,$typeArray[2][1]); 
+			  $tasksT3=filterArray( $tasksT2,18,""); 
+			  $tasksT4=filterArray( $tasksT3,5,"工項");
+              $last=0;
+			  for($i=0;$i<count($tasksT4);$i++){
+				if( $tasksT4[$i][4]>$last)$last=$tasksT4[$i][4];
+			  }
+			  return $last+1;
 	 }
 	 function HidePlan($Ecode,$bool){
 	          global $URL;
