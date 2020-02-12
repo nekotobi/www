@@ -14,7 +14,7 @@
     DrawButtons();
     TypeLink();
     DrawSwitch();
- 
+
 ?>
 
 <?php //類別
@@ -96,7 +96,7 @@
 			   DrawButton($Type,$Rect,$URL,3,$typeArray);
 			   //編輯類別
 			   $Rect[1]+=22;
-			   $Type=array("快速新增","顯示甘特", "編輯隱藏");
+			   $Type=array("快速新增","顯示甘特", "編輯隱藏","整理隱藏");
 			   DrawButton($Type,$Rect,$URL,4,$typeArray);
 			   //顯示
 			  
@@ -128,7 +128,11 @@
 			  return;
 		  } 
 		  if ($_POST["submit"]=="H"){
-			  HidePlan();
+			  $Ecode=$_POST["code"];
+			  $bool=$_POST["bool"];
+			  HidePlan($Ecode, $bool);
+			  global $PostArray;
+			  JavaPost($PostArray,$URL); 
 			  return;
 		  } 
 		  
@@ -155,6 +159,10 @@
      function   definTasks(){
 	         global $tasks,$tasksName;
 		     global $typeName,$typeArray;
+			 if($typeArray[4][1]=="整理隱藏"){
+			       setAllHide();
+				   return;
+			   }
 			 if($typeArray[4][1]=="編輯隱藏"){
 			    $finalTasks=filterArray($tasksName,10,$typeArray[2][1] );
 				if($typeArray[5][1]=="全部"){
@@ -339,12 +347,10 @@
 			  }
 			  echo "</br></br></br></br></br></br></br></br></br></br></br></br></br></br>";
 			  echo "</br></br></br></br></br></br></br></br></br></br></br></br></br></br>";  
-          
               $sortArray =array();
 			  $tmp=$tasks;
 			  for($i=0;$i<count( $sortArr);$i++){
-				   array_Push($sortArray,$tasks[$sortArr[$i]]);
-				 
+				  array_Push($sortArray,$tasks[$sortArr[$i]]);
 				  unset($tmp[$sortArr[$i]]);
 		      }
 		       sort($tmp);
@@ -356,6 +362,8 @@
 				    array_Push( $postSort, $sortArray[$i][1] );
 			   }
 	           UpResort($postSort);
+			    global $PostArray,$URL;
+			    JavaPost($PostArray,$URL); 
 	 }
      function UpResort($postSort){
 		      global $URL;
@@ -374,7 +382,27 @@
 	 }
 ?>
 <?php //隱藏編號
-
+     function setAllHide(){
+		      global $typeName,$typeArray;
+			  if($typeArray[2][1]=="--")return;
+			     echo $typeArray[2][1];
+	          $tasksT=getMysqlDataArray("fpschedule"); 
+			  $tasksc=filterArray( $tasksT,10,$typeArray[2][1]);
+			  $tasksc2=filterArray( $tasksT,18,"");
+			 
+			  $tasksti=filterArray( $tasksc,5, "工項");
+			  $tasksH=filterArray( $tasksti,18,"g1");
+			  $hideCodes= returnArraybySort($tasksH,1);
+			  for($i=0;$i<count(  $hideCodes);$i++){
+				 // echo $hideCodes[$i];
+				 $hs=filterArray( $tasksc2,3, $hideCodes[$i]);
+				// print_r($hs);
+				 foreach($hs as  $task) 
+				       HidePlan($hs[0][1], "g1");
+			  }
+ 
+	 }
+   
 	 function returnTask($tasks,$allChildArr,$user,$sortArr){
 	            for($i=0;$i<count($tasks);$i++){
 					if($allChildArr[$i][0][8]==$user)array_Push( $sortArr,$i) ;
@@ -510,20 +538,17 @@
 			      // echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";		    
 	 
 	 }
-	 function HidePlan(){
-		      $Ecode=$_POST["code"];
-			  $bool=$_POST["bool"];
+	 function HidePlan($Ecode,$bool){
 	          global $URL;
 			  global $data_library,$tableName,$MainPlanData;
-		      global $PostArray;
 			  $WHEREtable=array( "data_type", "code" );
 		      $WHEREData=array( "data",$Ecode );
 			  $Base=array("hide");
 			  $up=array($bool);
 			  $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
 			  echo $stmt;
-			  SendCommand($stmt,$data_library);		
-			  JavaPost($PostArray,$URL); 
+			   SendCommand($stmt,$data_library);		
+			 
 	 }
 ?>
 

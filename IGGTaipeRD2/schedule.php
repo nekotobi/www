@@ -194,7 +194,7 @@
 				  
 	              return "false";
 	 }
-	 function DrawSwitch(){
+	 function  DrawSwitch(){
 		      global  $SelectType_1, $Stype_1;
 	           $Rect=array(980, 5,40,12);
 	           $URL= "taskDataform.php";
@@ -216,7 +216,7 @@
 			   $ValArray=array(array("History", "true"));
 			   if($History=="true"){
 		          $BGColor= "#aa4444";  
-				 $ValArray=array(array("History", "_"));
+				  $ValArray=array(array("History", "_"));
 			   }
 			   sendVal($BaseURL,$ValArray,"submit","History",$Rect, 10,   $BGColor, "#ffffff","true");
 	 }
@@ -248,12 +248,12 @@
 			   }
 	 }
      function  DrawHideSwicth(){
-		      $Rect=array(1324,10,30,12);
+		       $Rect=array(1324,10,30,12);
 		 	   global $BaseURL,$BackURL, $Stype_1,$Stype_2,$SelectType_1,$SelectType_2,$stateType,$EditHide;
 			   if($EditHide==""  ){
 				   $EditHide="on";
 			   }else{
-				     $EditHide="";
+				    $EditHide="";
 			   }
 			   $BackURL= $BaseURL."?Stype_1=".$Stype_1."&Stype_2=".$Stype_2."&EditHide=".$EditHide;
 			   DrawLinkRect_newtab("Hide","10","#ffffff",$Rect[0],$Rect[1],$Rect[2],$Rect[3],"#aaaaaa",$BackURL,"1");
@@ -269,6 +269,7 @@
 		         $type1=$SelectType_1[$Stype_1];
 		         $plansTmp2 =  filterArray( $MainPlanData ,10, $type1);
 		         $plansLine= filterArray($plansTmp2,5,"工項");
+				 
 	             DrawMainPlan($plansLine);
 	  }
 	  function DrawMainPlan($plansLine){
