@@ -115,8 +115,7 @@
 				       sendVal($URL,$ValArray,$SubmitName,$array[$i],$Rect,10,$BgColor);
 				       $Rect[0]+=$Rect[2]+5;
 	           }
-	  }
- 
+	  } 
 	  function TypeLink(){
 		  global $typeName,$typeArray;
 		  if ($_POST["submit"]=="新增計畫"){
@@ -131,8 +130,7 @@
 			  $Ecode=$_POST["code"];
 			  $bool=$_POST["bool"];
 			  HidePlan($Ecode, $bool);
-			  global $PostArray;
-			  JavaPost($PostArray,$URL); 
+	          ReLoad();
 			  return;
 		  } 
 		  
@@ -144,6 +142,10 @@
 	         DrawCallendarRange(); 
 		  }
 	      ListTasks();
+	  }
+	  function ReLoad(){
+	    	   global $PostArray,$URL;
+			   JavaPost($PostArray,$URL); 
 	  }
 ?>
 
@@ -283,13 +285,16 @@
 		    }		
 			if($typeArray[4][1]=="編輯隱藏"){
 			  // $ValArray=addArray($typeArray,$add);
-			  $Rect=array(200,$startY,100,18);
+			   $Rect=array(200,$startY,100,18);
 			   sendVal($URL,$typeArray,"submit","重新排列" ,$Rect,10,"#aaaaaa", "#000000");
 			   if($_POST["submit"]=="重新排列")ReSortTask($taskArray,$allChildArr);
+			   $Rect[0]+=110;
+			   sendVal($URL,$typeArray,"submit","隱藏完成" ,$Rect,10,"#aaaaaa", "#000000");
+			   if($_POST["submit"]=="隱藏完成")SetFinHide($taskArray,$allChildArr);
 			   
 			}
 	 } 
- 	 function DrawChildTask($x,$y,$Tasks){
+ 	 function   DrawChildTask($x,$y,$Tasks){
               global $user;	      
 		      for($i=0;$i<count($Tasks);$i++){
 			 	$t=$Tasks[$i][5];
@@ -362,8 +367,8 @@
 				    array_Push( $postSort, $sortArray[$i][1] );
 			   }
 	           UpResort($postSort);
-			    global $PostArray,$URL;
-			    JavaPost($PostArray,$URL); 
+			   global $PostArray,$URL;
+			   JavaPost($PostArray,$URL); 
 	 }
      function UpResort($postSort){
 		      global $URL;
@@ -382,6 +387,28 @@
 	 }
 ?>
 <?php //隱藏編號
+     function SetFinHide($RootTasks, $allChildArr){
+              $hideRoot=array();
+			  $hideChild=array();
+			  for($i=0;$i<count($RootTasks);$i++){
+				  $bool=isChildFin( $allChildArr[$i]);
+				  if( $bool )
+					  {
+					   HidePlan($RootTasks[$i][1],"g1");
+					   foreach($hs as   $allChildArr[$i]) 
+				            HidePlan($hs[0][1], "g1");
+				      }
+			  }
+			   ReLoad();
+	 }
+	 function isChildFin( $childTask){
+		     $bool=true;
+			 if(count($childTask)==0)$bool=false;
+		     for($i=0;$i<count( $childTask);$i++){
+			     if( $childTask[$i][7]!="已完成") $bool=false;
+			 }
+			 return $bool;
+	 }
      function setAllHide(){
 		      global $typeName,$typeArray;
 			  if($typeArray[2][1]=="--")return;
@@ -487,6 +514,9 @@
 ?>
 
 <?php //快速表單
+
+
+
      function fastTask(){
 	          $x=20;
 			  $y=10;
@@ -547,7 +577,7 @@
 			  $up=array($bool);
 			  $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
 			  echo $stmt;
-			   SendCommand($stmt,$data_library);		
+			  SendCommand($stmt,$data_library);		
 			 
 	 }
 ?>
