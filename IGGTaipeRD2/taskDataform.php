@@ -382,7 +382,7 @@
 	            $fontColor="#ffffff";
 	            $nd= explode("_",$taskArray[$i][2]);//= returnposX($taskArray[$i][2]);
 				$s=array($DateRange[0],$DateRange[1],1);
-			    $passDay=$nd;// getPassDays(array($DateRange[0],$DateRange[1],1), $nd);
+			    $passDay= getPassDays(array($DateRange[0],$DateRange[1],1), $nd);
 				$xx= $CalendarX+$passDay*$DateWid;
 				$ww= $taskArray[$i][6]*$DateWid;
 				$id= "S=".$taskArray[$i][1]."=".$taskArray[$i][6]."=".$DateWid ;
