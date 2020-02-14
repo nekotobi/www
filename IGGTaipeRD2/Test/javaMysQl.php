@@ -1,3 +1,28 @@
+<script type="text/javascript">
+		
+ 
+
+//alert('測試文字');
+ 
+  var data_library="localhost";
+  var mysql   = require(data_library);
+  var database="artindextype";
+  	  alert('測試文字');
+  var connection = mysql.createConnection({
+     host     : 'localhost',
+     user     : 'root',
+     password : '1406',
+     database : database
+    });
+
+  connection.connect();
+
+  connection.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
+  if (error) throw error;
+  console.log('The solution is: ', results[0].solution);
+});
+</script>
+</script>
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,21 +30,12 @@
    <title>javatest</title>
 </head>
 <body> 
-<script>
-    const mysql = require('mysql');
-	const con = mysql.createConnection({
-    host: 'localhost',
-  user: 'root',
-  password: '1406',
-});
-    console.log("XX");
- 
-</script>
+
 
 </body>
 
 
  
  <?php
-  echo "4";
+ echo "php12";
  ?>

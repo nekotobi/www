@@ -133,13 +133,31 @@
 	          ReLoad();
 			  return;
 		  } 
-		  
+		  if ($_POST["Send"]=="sendjava"){
+			   $Ecode=$_POST["DragID"];
+			   $target=$_POST["target"]	;
+			   $workingDays=$_POST["workingDays"]	;
+			   $Base=array( );
+				 $up=array();
+			   if($workingDays!="w"){
+			   	  $Base=array("workingDays" );
+		          $up=array( $workingDays  );
+			   }
+		       if($target!="target"){
+			   	  $Base=array("startDay" );
+		          $up=array( $target	 );
+			   }
+			    ChangePlan($Ecode,$Base,$up);
+			    ReLoad();
+			    return;
+		  }
 		  if($typeArray[4][1]=="快速新增"){
 			 fastTask();
 		     return;
 		  }
 		  if($typeArray[4][1]=="顯示甘特"){
-	         DrawCallendarRange(); 
+	         DrawCallendarRange();
+             CreatJavaForm();			 
 		  }
 	      ListTasks();
 	  }
@@ -279,7 +297,7 @@
 				*/
 			    //工作時間
 				 if($typeArray[4][1]=="顯示甘特"){
-				    DrawGantt($taskArray,$i,$y);
+				    DrawGantt($taskArray,$i,$y, $name);
 				 }
 				}
 		    }		
@@ -312,7 +330,7 @@
 	
 			}
 	 }
-	 function   DrawGantt($taskArray,$i,$y){
+	 function   DrawGantt($taskArray,$i,$y, $name){
 		        global $DateWid;
 				global $DateRange;
 				global $CalendarX;
@@ -323,11 +341,15 @@
 			    $passDay= getPassDays(array($DateRange[0],$DateRange[1],1), $nd);
 				$xx= $CalendarX+$passDay*$DateWid;
 				$ww= $taskArray[$i][6]*$DateWid;
-				$id="ar".$i;
+				$id= "S_".$taskArray[$i][1]."_".$taskArray[$i][6]."_".$DateWid ;
 				$BgColor="#22aaaa";
-				$h=18;
+				$h=12;
 				$msg=$taskArray[$i][6];
-				DrawJavaDragbox($msg,$xx,$y,$ww,$h,10, $BgColor, $fontColor,$id);
+				// $msg= $name ;
+				DrawJavaDragbox($msg,$xx,$y+4,$ww,$h,5, $BgColor, $fontColor,$id);
+				$id= "E_".$taskArray[$i][1]."_".$taskArray[$i][6]."_".$DateWid ;
+			    $BgColor="#228888";
+				DrawJavaDragbox($msg,$xx+$ww,$y+4,10 ,$h,1, $BgColor, $fontColor,$id);
 			//	DrawRect($taskArray[$i][6],10,$fontColor,$xx,$y,$ww,$h,"#22aaaa");
 	 
 	 }
@@ -469,7 +491,7 @@
 				     $days=getMonthDay($m,$y);
 					 DrawRect($m,10,$fontColor,$LocX,$LocY-20,$days* $DateWid-1,20,$BgColor);
 					 $arr=  ReturnVacationDays($y,$m,$VacationDays);
-					 DrawDays($days,$LocX,$LocY ,$DateWid,count($finalTasks), $arr);
+					 DrawDays($days,$LocX,$LocY ,$DateWid,count($finalTasks), $arr,$y."_".$m);
 					 $sdate=$y."_".$m;
 					 if($sdate==$fdate)break;
 					 $m+=1;
@@ -482,18 +504,18 @@
 					$LocX+=$days* $DateWid;
 			  }
 	 }
-	 function DrawDays($days,$LocX,$LocY,$w,$h,$arr){
+	 function DrawDays($days,$LocX,$LocY,$w,$h,$arr,$ym){
 		      global $Vacationdays;
 		      $x=$LocX;
 			  $BgColor="#aaaaaa";
 			  $fontColor="#ffffff";
-	
+	          
 	          for($i=1;$i<=$days;$i++){
 				  $BgColor="#aaaaaa";
 				  if ($arr[$i]==1)     $BgColor="#bbaaaa";
 				  if ($arr[$i]==2)     $BgColor="#bb6666";
 			      DrawRect($i,10,$fontColor,$x,$LocY,$w-1,20,$BgColor);
-				  $id="box".$i;
+				  $id=$ym."_".$i;
 				  DrawJavaDragArea("",$x,$LocY+22,$w-1,$h*22,$BgColor,$fontColor,$id);
 				  //DrawRect("",10,"#cccccc",$x,$LocY+22,$w-1,$h*22,$BgColor);
 				  $x+=$w;
@@ -514,7 +536,25 @@
 ?>
 
 <?php //快速表單
- 
+     function CreatJavaForm(){
+		      $x=20;
+			  $y=10;
+		      global $URL;
+			  global $typeName,$typeArray;
+		      $upFormVal=array("Show","Show",$URL);
+			  $UpHidenVal=array(array("tablename","fpschedule"),
+			                    array("data_type","data"),
+								array( "Send","sendjava" ),
+	                            );
+		      $UpHidenVal=	addArray( $UpHidenVal,$typeArray);	
+		      $inputVal=array(array("text","DragID","DragID",10,520,$y,200,20,$BgColor,$fontColor,"DragIDs" ,10),
+			                  array("text","target","target",10,670,$y,200,20,$BgColor,$fontColor,"target" ,10),
+							  array("text","workingDays","workingDays",10,820,$y,200,20,$BgColor,$fontColor,"w" ,3),
+							  
+			                //  array("submit","submit","",10,620,$y,100,20,$BgColor,$fontColor,"上傳java" ,20),
+	                          );
+		      upSubmitform($upFormVal,$UpHidenVal, $inputVal);
+	 }
      function fastTask(){
 	          $x=20;
 			  $y=10;
@@ -620,6 +660,17 @@
 			  $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
 			  echo $stmt;
 			  SendCommand($stmt,$data_library);		
+			 
+	 }
+	 function ChangePlan($Ecode,$Base,$up){
+	          global $URL;
+			  global $data_library,$tableName,$MainPlanData;
+			  $WHEREtable=array( "data_type", "code" );
+		      $WHEREData=array( "data",$Ecode );
+			 
+			  $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
+			   echo $stmt;
+			   SendCommand($stmt,$data_library);		
 			 
 	 }
 ?>

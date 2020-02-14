@@ -1,14 +1,65 @@
 <script type="text/javascript">
+    var upId="xx";
+	var BaseColor="";
+	var BGColor="";
+	var startX=0;
+	var StartWid=0;
 	function AllowDrop(event) {
+		    event.preventDefault();
+			var OverID= event.currentTarget.id;
+	        if(upId=="xx")upId =OverID;
+			if(BGColor=="")BGColor=  document.getElementById(OverID).style.backgroundColor ;
+		 
+		    if(upId!=OverID){
+	            document.getElementById(upId).style.backgroundColor=BGColor;
+			    upId=OverID;
+				BGColor=  document.getElementById(OverID).style.backgroundColor ;
+	          } 
+		    document.getElementById( OverID).style.backgroundColor="#ffaaaa";
+	}
+ 
+	
+ 
+	function Drop2Area(event) {
 		event.preventDefault();
+		var DragID  = event.dataTransfer.getData("text");
+		var targetID =  event.currentTarget.id;
+	    var tx= document.getElementById( targetID).style.left;
+	    var x=tx.split("px");
+	    var tmp= DragID.split("_");
+	
+	     if( tmp[0]=="S"){
+			 var E= new String( "E_"+tmp[1]+"_"+tmp[2]+"_"+tmp[3]);
+			 document.Show.target.value=DragID;
+			 var x3=(parseInt(x[0])+  parseInt(tmp[2])*parseInt(tmp[3]))+"px";
+			 document.getElementById( DragID).style.left=tx;
+			 document.getElementById(E).style.left=x3 ;
+	         document.Show.target.value=targetID;
+			 document.Show.DragID.value=tmp[1];
+		 }
+		  if( tmp[0]=="E"){
+			  document.getElementById( DragID).style.left=tx;
+			  var SID= new String( "S_"+tmp[1]+"_"+tmp[2]+"_"+tmp[3]);
+			  var sidx= document.getElementById( SID).style.left ;
+		      var sidwx=sidx.split("px");
+		   	  var x3=(parseInt(x[0])-parseInt(sidwx[0]));
+		      document.getElementById(SID).style.width = x3+"px";
+              document.Show.DragID.value=tmp[1];
+	          document.Show.workingDays.value=x3/tmp[3];
+		 }
+          Show.submit();
 	}
-
+    
 	function Drag(event) {
-		event.dataTransfer.setData("text", event.currentTarget.id);
-		document.Show.Dragid.value =event.currentTarget.id
-	    y=document.getElementById(event.currentTarget.id).style.top
+	    event.dataTransfer.setData("text", event.currentTarget.id);
+	    var DragID  = event.dataTransfer.getData("text");
+	    if(BaseColor=="") BaseColor= document.getElementById(DragID).style.backgroundColor;
+		if(startX==0)startX= document.getElementById(DragID).style.left;
+	 
+	    y=document.getElementById(event.currentTarget.id).style.top;
+	   
 	}
-
+   
 	function Drop(event) {
 		event.preventDefault();
 		var DragID  = event.dataTransfer.getData("text");
@@ -16,6 +67,7 @@
 		var x= document.getElementById( tagetID).style.left;
 		document.getElementById( DragID).style.left=x;
 	}
+	 
      document.captureEvents(Event.MOUSEMOVE)
      document.onmousemove = getMouseXY;
      function getMouseXY(e) {
@@ -57,7 +109,9 @@
 <?php  //Drag  
 	    function DrawJavaDragbox($msg,$x,$y,$w,$h,$fontSize,$BgColor,$fontColor,$id){
 	          echo "<div  id=".$id." ";
-			  echo " draggable='true' ondragstart='Drag(event)' ";
+			  	//    echo " ondragover='alert(xxx)' ";
+ 
+			  echo " draggable='true' ondragstart='Drag(event)' ";// ondragend='leave(event)' ";
               echo " style=' " ; //align=left
 			  echo "position:absolute; top:".$y."px; left:".$x."px;  width:".$w."px;height:".$h."px; 
 			        font-size:".$fontSize."px; color:".$fontColor."; background-color:".$BgColor."; '>".$msg;
@@ -65,7 +119,8 @@
 	    }
 	    function DrawJavaDragArea($msg,$x,$y,$w,$h,$BgColor,$fontColor,$id){
 	          echo "<div  id=".$id." ";
-			  echo " ondrop='Drop(event)' ondragover='AllowDrop(event)' ";
+			 // echo " ondragenter='enter(event)' ";
+			  echo " ondrop='Drop2Area(event)'  ondragover='AllowDrop(event)' ";//  ondragleave = 'leave(event)' ";
               echo  " style='   " ;
 			  echo "position:absolute;  top:".$y."px; left:".$x."px;  width:".$w."px;height:".$h."px; background-color:".$BgColor.";  '  >".$msg;
 	          echo "</div>";
