@@ -26,10 +26,10 @@
 		var targetID =  event.currentTarget.id;
 	    var tx= document.getElementById( targetID).style.left;
 	    var x=tx.split("px");
-	    var tmp= DragID.split("_");
+	    var tmp= DragID.split("=");
 	
 	     if( tmp[0]=="S"){
-			 var E= new String( "E_"+tmp[1]+"_"+tmp[2]+"_"+tmp[3]);
+			 var E= new String( "E="+tmp[1]+"="+tmp[2]+"="+tmp[3]);
 			 document.Show.target.value=DragID;
 			 var x3=(parseInt(x[0])+  parseInt(tmp[2])*parseInt(tmp[3]))+"px";
 			 document.getElementById( DragID).style.left=tx;
@@ -39,7 +39,7 @@
 		 }
 		  if( tmp[0]=="E"){
 			  document.getElementById( DragID).style.left=tx;
-			  var SID= new String( "S_"+tmp[1]+"_"+tmp[2]+"_"+tmp[3]);
+			  var SID= new String( "S="+tmp[1]+"="+tmp[2]+"="+tmp[3]);
 			  var sidx= document.getElementById( SID).style.left ;
 		      var sidwx=sidx.split("px");
 		   	  var x3=(parseInt(x[0])-parseInt(sidwx[0]));
@@ -47,6 +47,10 @@
               document.Show.DragID.value=tmp[1];
 	          document.Show.workingDays.value=x3/tmp[3];
 		 }
+	     var tmp2= targetID.split("="); 
+	     if( tmp2[0]=="state"){
+			 document.Show.state.value=tmp2[1];
+			 }
           Show.submit();
 	}
     
@@ -117,12 +121,15 @@
 			        font-size:".$fontSize."px; color:".$fontColor."; background-color:".$BgColor."; '>".$msg;
 	          echo "</div>";
 	    }
-	    function DrawJavaDragArea($msg,$x,$y,$w,$h,$BgColor,$fontColor,$id){
+	    function DrawJavaDragArea($msg,$x,$y,$w,$h,$BgColor,$fontColor,$id,$fontSize=10){
 	          echo "<div  id=".$id." ";
 			 // echo " ondragenter='enter(event)' ";
 			  echo " ondrop='Drop2Area(event)'  ondragover='AllowDrop(event)' ";//  ondragleave = 'leave(event)' ";
               echo  " style='   " ;
-			  echo "position:absolute;  top:".$y."px; left:".$x."px;  width:".$w."px;height:".$h."px; background-color:".$BgColor.";  '  >".$msg;
+			  echo "position:absolute;  top:".$y."px; left:".$x."px;  width:".$w."px;height:".$h."px; background-color:".$BgColor."; ";
+	          echo  " font-size:".$fontSize."px ; color:".$fontColor."; ";
+              echo	 "'  >";
+			  echo $msg;
 	          echo "</div>";
 	    }
 
