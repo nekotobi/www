@@ -138,6 +138,32 @@
 			 }
 			 return $arr;
 	   }
+	   function SortArrayDate($BaseData,$num){
+				$sy=2019;
+				$sortDate=array();
+			 
+				for($i=0;$i<count($BaseData);$i++){
+				    $date= $BaseData[$i][$num];
+					$dates= explode("_", $date);
+					$y=$dates[0]-$sy;
+					$m=$dates[1];
+					$d=$dates[2];
+					$t=$y*365+$m*30+$d;
+					$BaseData[$i]["days"]=$t;
+					if(!in_array($t,$sortDate )	)array_push($sortDate,$t);
+ 
+					 
+				}
+				 sort($sortDate);
+				 $arr=array();
+				 for($i=0;$i<count($sortDate);$i++){
+				     foreach($BaseData as $t){
+					      if($t["days"]==$sortDate[$i])array_push($arr,$t);
+					}
+				}
+			//	print_r($BaseData );
+				return $arr;
+	   }
 ?>
 
 <?php //功能
@@ -177,6 +203,7 @@
 		  }
 		  return  $newArray;
 	  }
+	
 ?>
 
 <?php //MysQl資料

@@ -158,7 +158,12 @@
 			}
 			return $daysLoc;
 	 }
-
+     function returnDateString($y,$m,$d){
+	          $dd="";
+			  if($d<10)$dd="0" ;
+              $d=$y."/".$m."/".$dd.$d;
+			  return $d;
+	  }
      function RetrunXpos($daysLoc,$date){
 		       global $StartX;
 		       for($i=0;$i<count($daysLoc);$i++){
@@ -171,12 +176,7 @@
 			   }
 		      return $StartX;
      }
-     function returnDateString($y,$m,$d){
-	          $dd="";
-			  if($d<10)$dd="0" ;
-              $d=$y."/".$m."/".$dd.$d;
-			  return $d;
-	 }
+
 
      function returnYearMonthNum($YearRange ){
 	         $t=1;
@@ -661,6 +661,3 @@
 	  }
 ?>
 
-<?php //old
-
-?>

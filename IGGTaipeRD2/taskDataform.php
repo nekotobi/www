@@ -228,9 +228,10 @@
 			 $SortNameArr=CollectUser($finalTasks,9);
 			//$SortNameArr=array("進行中","已排程","未定義","已完成");
 			 $finalTasks= SortArraybyNameArray($finalTasks,$SortNameArr,9);
-		      $SortNameArr=CollectUser($finalTasks,8);
-			 $finalTasks= SortArraybyNameArray($finalTasks,$SortNameArr,8);
-	        return $finalTasks;
+		     $SortNameArr=CollectUser($finalTasks,8);
+			  //$finalTasks= SortArraybyNameArray($finalTasks,$SortNameArr,8);
+			  $finalTasks= SortArrayDate($finalTasks,2);
+	          return $finalTasks;
 	 }
      function   CollectUser($finalTasks,$num){
 		      $arr= array();
@@ -305,10 +306,11 @@
 		        $name =$RootTask[3];
 							$BgColor="#006600";
 				if($name=="ss")$name=$taskArray[$i][1];
-				if($fin=="未定義")$BgColor="#664444";
-				if($fin=="進行中")$BgColor="#006600";
-				if($fin=="已排程")$BgColor="#227733";
-				if($fin=="驗證中")$BgColor="#224499";
+				if($fin=="未定義")$BgColor="#616130";
+				if($fin=="進行中")$BgColor="#548C00";
+				if($fin=="已排程")$BgColor="#5B5B00";
+				if($fin=="驗證中")$BgColor="#255211";
+				if($fin=="預排程")$BgColor="#844200";
 			    if($fin=="已完成")$BgColor="#000000";
 				DrawRect($name,10,$fontColor,$x,$y ,149,$h,$BgColor);
 				 $x+=150;
@@ -337,7 +339,7 @@
 	 
 			    //工作時間
 				 if($typeArray[4][1]=="顯示甘特"){
-				    DrawGantt($taskArray,$i,$y, $name,$BgColor2);
+				    DrawGantt($taskArray,$i,$y, $name,$BgColor);
 				 }
 				}
 		    }		
