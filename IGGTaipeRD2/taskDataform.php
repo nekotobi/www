@@ -109,9 +109,8 @@
 			       DrawButton($Type,$Rect,$URL,5,$typeArray);
 			  }
 		        if($typeArray[4][1]== "顯示甘特"){   
-			    
-			       DrawDragFin();
-			  }
+			       DrawDragArea();
+			     }
 	  }
 	  function DrawButton($array,$Rect,$URL,$valArrayNum,$ValArray,$ColorN=-1){
 		       global    $colorCodes;
@@ -178,6 +177,10 @@
 			    if($state!="state"){
 			   	  $Base=array("state" );
 		          $up=array( $state );
+				  if ($state=="刪除"){
+				  $Base=array("hide" );
+		          $up=array( "g1" );
+				  }
 			   } 
 			   ChangePlan($Ecode,$Base,$up);
 			    ReLoad();
@@ -393,16 +396,20 @@
 				$BgColor="#cccccc";
 				DrawJavaDragbox("",$xx+$ww,$y+4,5,$h,5, $BgColor, $fontColor,$id);
 	 }
-	 function   DrawDragFin(){
+	 function   DrawDragArea(){
 		        $x=20;
 				$y=160;
-				 $BgColor="#228888";
-				 $fontColor="#ffffff";
-	            $arr=array("進行中","已排程","驗證中","已完成");
+				 $BgColor="#224444";
+			    $fontColor="#ffffff";
+			    $Typestmp=getMysqlDataArray("scheduletype"); 
+	            $arrT=filterArray( $Typestmp,0,"data3");//  array("進行中","已排程","驗證中","已完成");
+					$arr=returnArraybySort($arrT,2);
+				array_Push( $arr,"刪除");
+			
 			    for($i=0;$i<count($arr);$i++){
 				    $id="state=".$arr[$i];
-				    DrawJavaDragArea($arr[$i],$x,$y,39,18,$BgColor,$fontColor,$id);
-					$x+=40;
+				    DrawJavaDragArea($arr[$i],$x,$y,34,18,$BgColor,$fontColor,$id,9);
+					$x+=35;
 				}
 	  }
 	 function   getRootTask($code){
