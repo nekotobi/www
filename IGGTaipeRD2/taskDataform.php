@@ -189,7 +189,7 @@
 	  }
 ?>
 <?php //內容
-	 function findtaskChild($code){
+	 function   findtaskChild($code){
 	          global $tasks;
 			  $arr=array();
 			  for ($i=0;$i<count($tasks);$i++){

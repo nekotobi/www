@@ -20,7 +20,7 @@
 			}
    }
    function AddTable($data){
-	        echo "xx";
+	        echo "追追</br>";
 	   		$data_library=$data[0][1];
 			$tableName=$data[0][0];
 			echo $data_library;
@@ -28,7 +28,7 @@
             $tables=returnTables($data_library ,$tableName);
             $WHEREtable=array();
 		    for($i=0;$i<count($tables);$i++){
-		         array_push($WHEREtable,$tables[$i]);
+		         array_push($WHEREtable,"`".$tables[$i]."`");
 			}
 			$upTables=array();
 		    for($i=0;$i<count($data[1]);$i++){
@@ -36,8 +36,9 @@
 			}
 		    for($i=2;$i<count($data);$i++){
 				$WHEREData= returnWhereData($data[$i],$upTables,$tables);
-				 $stmt= MakeNewStmt( $data_library,$tableName,$WHEREtable,$WHEREData); 
-				  SendCommand($stmt,$data_library);		
+				// $stmt=MakeNewStmtv2( $data_library,$tableName,$WHEREtable,$WHEREData); 
+				$stmt=MakeNewStmtv2( $tableName,$WHEREtable,$WHEREData); 
+			     SendCommand($stmt,$data_library);		
 			    echo  $stmt;
 			}
 		   
@@ -48,7 +49,7 @@
 				$up="";
 				echo $tables[$i];
 				for($j=0;$j<count($upTables);$j++){
-				     if($tables[$i]==$upTables[$j])$up=$base[$j];
+				     if($tables[$i]==$upTables[$j])$up=$base[$j] ;
 				}
 				array_push($rarray,$up);
 			}
