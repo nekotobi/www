@@ -440,17 +440,22 @@
 <?php //重新排列
      function ReSortTask($tasks,$allChildArr){
 		      global $user;
+		      echo "</br></br></br></br></br></br></br></br></br></br></br></br></br></br>";
+			  echo "</br></br></br></br></br></br></br></br></br></br></br></br></br></br>";  
+			  echo "</br></br></br></br></br></br></br></br></br></br></br></br></br></br>";  
+		
 			  $n=0;
 			  $sortArr=array();
               for($i=0;$i<count($user);$i++){
 			       $sortArr= returnTask($tasks,$allChildArr,$user[$i],$sortArr);
 				  // if($task==null) array_Push(  $nullArr,$task);
 			  }
-			  echo "</br></br></br></br></br></br></br></br></br></br></br></br></br></br>";
-			  echo "</br></br></br></br></br></br></br></br></br></br></br></br></br></br>";  
+		      for($i=0;$i<count($sortArr);$i++){
+			     echo "<br>".$i.">".$sortArr[$i] ;
+			  }
               $sortArray =array();
 			  $tmp=$tasks;
-			  for($i=0;$i<count( $sortArr);$i++){
+			  for($i=0;$i<count($sortArr);$i++){
 				  array_Push($sortArray,$tasks[$sortArr[$i]]);
 				  unset($tmp[$sortArr[$i]]);
 		      }
@@ -463,23 +468,23 @@
 				    array_Push( $postSort, $sortArray[$i][1] );
 			   }
 	           UpResort($postSort);
-			   global $PostArray,$URL;
-			   JavaPost($PostArray,$URL); 
+			   ReLoad();
 	 }
      function UpResort($postSort){
 		      global $URL;
 			  global $data_library,$tableName,$MainPlanData;
 		      global $PostArray;
 	          for($i=0;$i<count($postSort);$i++){
+				//  echo "</br>".$i."_".$postSort[$i];
 			     $WHEREtable=array( "data_type", "code" );
 		         $WHEREData=array( "data",$postSort[$i]);
 			     $Base=array("Line");
 			     $up=array($i+1);
 			     $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
-			     echo $stmt;
+			   //  echo $stmt;
 			     SendCommand($stmt,$data_library);		
 			   }
-			   JavaPost($PostArray,$URL); 
+			 //  JavaPost($PostArray,$URL); 
 	 }
 ?>
 <?php //隱藏編號
@@ -527,9 +532,15 @@
 	 }
    
 	 function returnTask($tasks,$allChildArr,$user,$sortArr){
+		        
 	            for($i=0;$i<count($tasks);$i++){
-					if($allChildArr[$i][0][8]==$user)array_Push( $sortArr,$i) ;
-			        if($allChildArr[$i][0][9]==$user)array_Push( $sortArr,$i) ;
+					if($allChildArr[$i][0][8]==$user){
+						if (!in_array($i,$sortArr))	array_Push( $sortArr,$i) ;
+					}
+			        if($allChildArr[$i][0][9]==$user){
+				    	if (!in_array($i,$sortArr)) array_Push( $sortArr,$i) ;
+					}
+				
 				}
 				return $sortArr;
 	 }
