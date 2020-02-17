@@ -358,7 +358,7 @@
      function   returnNum($name){
 		     global $UserColor ;
 			 for($i=0;$i<count($UserColor[0]);$i++){
-			     if($name==$UserColor[0][$i])return array(11,$i+1);
+			     if($name==$UserColor[0][$i])return array(12,$i+1);
 			 }
 		     for($i=0;$i<count($UserColor[1]);$i++){
 			    if($name==$UserColor[1][$i])return array(11,$i+1);
@@ -557,7 +557,7 @@
 			  global $CalendarX, $startY;
 			  global $DateWid;
 			  global $DateRange;
-			  echo count($finalTasks);
+			//  echo count($finalTasks);
               //print_r( $DateRange);
 		      $y=$DateRange[0];
 			  $m=$DateRange[1];

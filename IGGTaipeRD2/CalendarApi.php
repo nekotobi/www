@@ -233,7 +233,7 @@
 		  }
 		  return  $new_day%7;
 	   }
-       function getDateRange($taskArr,$dateNum){  //判斷陣列2019_x_x 時間範圍
+       function getDateRange($taskArr,$dateNum,$workingDayNum=6){  //判斷陣列2019_x_x 時間範圍
 	            $arr= array(array(2019,1),array(2019,1));//開始 結束
 				$yarr=array();
 				for($i=0;$i<count($taskArr);$i++){ //收集年
@@ -242,7 +242,7 @@
 				    array_push($yarr,$y);
 				}
 			 
-		    	 sort($yarr);
+		    	sort($yarr);
 				$sy=$yarr[0];
 				$ey=$yarr[count($yarr)-1];
 				$sm=12;
@@ -251,6 +251,7 @@
 					$date=explode("_",$taskArr[$i][$dateNum]);
 					$y=$date[0];
 					$m=$date[1];
+				
 					if($sy==$ey){//都在同一年
 					      if($m<$sm)$sm=$m;
 					      if($m>$em)$em=$m;
@@ -263,6 +264,29 @@
 					     if($m>$em)$em=$m;
 					   }
 					}
+					 
+					//判斷工作日
+					$workdays=$taskArr[$i][$workingDayNum];
+					$d=$date[2]+$workdays;
+					//echo $d.">";
+					if($d>30){
+					   $upm=intval( $d /30);
+					   //echo "=".$upm."]";
+					   $m+=$upm;
+				       if($m>12){
+						   $y+=1;
+					   }
+					   if($ey<$y){
+					      $ey=$y;
+				      	}
+				         $em=$m;
+					}
+					 
+				}
+				$em+=1;
+				if($em>12){
+				$ey+=1;
+				$em=1;
 				}
 				return array($sy,$sm,$ey,$em);
 	   }
