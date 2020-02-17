@@ -27,15 +27,17 @@
 	    var tx= document.getElementById( targetID).style.left;
 	    var x=tx.split("px");
 	    var tmp= DragID.split("=");
-	
+	    var tmp2= targetID.split("="); 
 	     if( tmp[0]=="S"){
 			 var E= new String( "E="+tmp[1]+"="+tmp[2]+"="+tmp[3]);
 			 document.Show.target.value=DragID;
 			 var x3=(parseInt(x[0])+  parseInt(tmp[2])*parseInt(tmp[3]))+"px";
 			 document.getElementById( DragID).style.left=tx;
 			 document.getElementById(E).style.left=x3 ;
-	         document.Show.target.value=targetID;
+	      //   document.Show.target.value=targetID;
 			 document.Show.DragID.value=tmp[1];
+			  document.Show.startDay.value=tmp2[1];
+			 
 		 }
 		  if( tmp[0]=="E"){
 			  document.getElementById( DragID).style.left=tx;
@@ -47,11 +49,31 @@
               document.Show.DragID.value=tmp[1];
 	          document.Show.workingDays.value=x3/tmp[3];
 		 }
-	     var tmp2= targetID.split("="); 
+
+		 switch(tmp2[0]){
+		        case  "state":
+			    document.Show.state.value=tmp2[1];
+			    break;
+				 case  "principal":
+			    document.Show.principal.value=tmp2[1];
+			    break;
+				 case  "outsourcing":
+			    document.Show.outsourcing.value=tmp2[1];
+			    break;
+				 case  "type":
+			    document.Show.type.value=tmp2[1];
+			    break;
+		 
+		 }
+		 /*
 	     if( tmp2[0]=="state"){
 			 document.Show.state.value=tmp2[1];
 			 }
-          Show.submit();
+		 if( tmp2[0]=="type"){
+			 document.Show.type.value=tmp2[1];
+			 }	 
+			*/ 
+           Show.submit();
 	}
     
 	function Drag(event) {

@@ -63,8 +63,7 @@
 			   global    $colorCodes;
 			   $colorCodes= GetColorCode();
 			   
-      }
-	 
+      } 
       function DrawButtons(){
 		       global $URL;
 			   global $typeName,$typeArray;
@@ -75,14 +74,14 @@
 			   $Typestmp=getMysqlDataArray("members"); 
 			   $TypeT=filterArray(  $Typestmp,3,"Art"); 
 			   $Type= returnArraybySort($TypeT,1);
-			   DrawButton($Type,$Rect,$URL,0,$typeArray,11);
+			   DrawButton($Type,$Rect,$URL,0,$typeArray,"principal",12);
 			   array_Push( $UserColor,$Type);
 			   //外包
 			   $Rect[1]+=22;
 			   $Typestmp=getMysqlDataArray("outsourcing"); 
 			   $TypeT=filterArray($Typestmp,35,"true"); 
 			   $Type= returnArraybySort($TypeT,2);
-			   DrawButton($Type,$Rect,$URL,1,$typeArray,11);
+			   DrawButton($Type,$Rect,$URL,1,$typeArray,"outsourcing",11);
 		       array_Push( $UserColor,$Type);
  
 	           //大類
@@ -98,7 +97,7 @@
 			   $TypeT=filterArray(  $Typestmp,0,"data2"); 
 			   $TypeS=sortArrays( $TypeT ,5 ,"true");
 			   $Type= returnArraybySort($TypeS,2);
-			   DrawButton($Type,$Rect,$URL,3,$typeArray);
+			   DrawButton($Type,$Rect,$URL,3,$typeArray,"type");
 			   //編輯類別
 			   $Rect[1]+=22;
 			   $Type=array("快速新增","顯示甘特", "編輯隱藏","整理隱藏");
@@ -113,23 +112,31 @@
 			       DrawDragArea();
 			     }
 	  }
-	  function DrawButton($array,$Rect,$URL,$valArrayNum,$ValArray,$ColorN=-1){
+	  function DrawButton($array,$Rect,$URL,$valArrayNum,$ValArray,$Type="",$ColorN=-1){
 		       global    $colorCodes;
-			
 			   array_unshift( $array,"--");
 			   $SubmitName= $ValArray[$valArrayNum][0];
 		       $sa=  $ValArray[$valArrayNum][1];
+			   
 	           for($i=0;$i<count($array);$i++){
 				   	   $BgColor="#000000";
 					   if($ColorN!=-1)  $BgColor=$colorCodes[$ColorN][$i];
-			      
-			    
 					   if( $sa ==$array[$i])$BgColor="#ff1212";
 					   $ValArray[$valArrayNum]=array($SubmitName,$array[$i]);
 				       sendVal($URL,$ValArray,$SubmitName,$array[$i],$Rect,10,$BgColor);
 				       $Rect[0]+=$Rect[2]+5;
+					   if($valArrayNum!=2 & $valArrayNum!=4)  DrawTypeDragArea($Type,$array[$i] ,$Rect);
+
 	           }
 	  } 
+	  function DrawTypeDragArea($Type,$name,$Rect){
+		       $id= $Type."=".$name;
+			   $x=$Rect[0]-$Rect[2]-2 ;
+			   $y=$Rect[1]+4;
+			                // ($msg,$x,$y,$w,$h,$BgColor,$fontColor,$id,$fontSize=10)l
+			   DrawJavaDragArea($i,$x,$y,6,12,"#555555","#555555",$id,5);	
+		         
+	  }
 	  function TypeLink(){
 		  global $typeName,$typeArray;
 		  if ($_POST["submit"]=="新增計畫"){
@@ -163,30 +170,21 @@
 	  function CheckDrag(){
 	           $Ecode=$_POST["DragID"];
 			   $target=$_POST["target"]	;
-			   $workingDays=$_POST["workingDays"]	;
-			   $state=$_POST["state"] ;
+	           $CheckArr= array("startDay","workingDays" ,"principal","outsourcing","type" );
 			   $Base=array( );
-			    $up=array();
-			   if($workingDays!="w"){
-			   	  $Base=array("workingDays" );
-		          $up=array( $workingDays  );
+			   $up=array();
+			 //  echoBr(22);
+			   for($i=0;$i<count($CheckArr);$i++){
+				   echo $CheckArr[$i]."=".$_POST[$CheckArr[$i]];
+				   if($_POST[$CheckArr[$i]]!=$CheckArr[$i]){
+				    $Base=array($CheckArr[$i]);
+		            $up=array( $_POST[$CheckArr[$i]]);
+				   }
 			   }
-		       if($target!="target"){
-			   	  $Base=array("startDay" );
-		          $up=array( $target	 );
-			   }
-			    if($state!="state"){
-			   	  $Base=array("state" );
-		          $up=array( $state );
-				  if ($state=="刪除"){
-				  $Base=array("hide" );
-		          $up=array( "g1" );
-				  }
-			   } 
-			   ChangePlan($Ecode,$Base,$up);
-			    ReLoad();
-		     //  return;
+	            ChangePlan($Ecode,$Base,$up);
+				ReLoad();
 	  }
+	 
 	  function ReLoad(){
 	    	   global $PostArray,$URL;
 			   JavaPost($PostArray,$URL); 
@@ -297,7 +295,6 @@
 					      $x+=20;
 					   DrawChildTask($x,$y,$arr);
 					   }
-				
 					   //重新排列
 					   
 				}
@@ -316,8 +313,8 @@
 				if($fin=="驗證中")$BgColor="#111111";
 				if($fin=="預排程")$BgColor="#844200";
 			    if($fin=="已完成")$BgColor="#000000";
-				DrawRect($name,10,$fontColor,$x,$y ,149,$h,$BgColor);
-				 $x+=150;
+				DrawRect($name,10,$fontColor,$x,$y ,159,$h,$BgColor);
+				 $x+=160;
 				//負責人
 				$n=$taskArray[$i][9];
 			
@@ -325,19 +322,19 @@
 				$c= returnNum($n);
 				$BgColor2= $colorCodes[$c[0]][$c[1]];
 				$principal=$taskArray[$i][8]."-".$taskArray[$i][9];
-				//if($principal=="未定義")$principal=$taskArray[$i][8];
-				DrawRect($n,10,$fontColor,$x,$y,69,$h,$BgColor2);
+				DrawRect($n,10,$fontColor,$x,$y,59,$h,$BgColor2);
+				//類別
+				$x+=60;
+			     DrawRect($taskArray[$i][5],10,$fontColor,$x,$y,29,$h,$BgColor2);
 				//jila
-				$x+=70;
+				$x+=30;
 				$jila=$taskArray[$i][12];
 				if($jila=="")$jila=$RootTask[12];
 				$JilaLink="http://bzbfzjira.iggcn.com/browse/FP-".$jila  ;
-				DrawLinkRect_newtab($jila,"10","#ffffff"  ,$x,$y,29,$h,"#aa8888",$JilaLink,"1" );
-				//DrawRect($type,10,$fontColor,$x,$y,49,$h,$BgColor);
+				DrawLinkRect_newtab($jila,"10","#ffffff"  ,$x,$y,24,$h,"#aa8888",$JilaLink,"1" );
 				//完成
-	
 				$type2=$fin;
-				$x+=30;
+				$x+=25;
 				DrawRect($type2,10,$fontColor,$x,$y,39,$h,$BgColor);
 				$x+=50;
 	 
@@ -530,7 +527,6 @@
 			  }
  
 	 }
-   
 	 function returnTask($tasks,$allChildArr,$user,$sortArr){
 		        
 	            for($i=0;$i<count($tasks);$i++){
@@ -600,7 +596,7 @@
 				  if ($arr[$i]==1)     $BgColor="#bbaaaa";
 				  if ($arr[$i]==2)     $BgColor="#bb6666";
 			      DrawRect($i,10,$fontColor,$x,$LocY,$w-1,20,$BgColor);
-				  $id=$ym."_".$i;
+				  $id="startDay=".$ym."_".$i;
 				  
 				  DrawJavaDragArea("",$x,$LocY+22,$w-1,$h*22,$BgColor,$fontColor,$id);
 				  //DrawRect("",10,"#cccccc",$x,$LocY+22,$w-1,$h*22,$BgColor);
@@ -641,9 +637,13 @@
 			 
 		      $inputVal=array(array("text","DragID","DragID",10,520,$y,200,20,$BgColor,$fontColor,"DragIDs" ,10),
 			                   array("text","target","target",10,670,$y,200,20,$BgColor,$fontColor,"target" ,10),
-						       array("text","workingDays","workingDays",10,820,$y,200,20,$BgColor,$fontColor,"w" ,3),
-							  array("text","state","state",10,920,$y,200,20,$BgColor,$fontColor,"state" ,3),
-			                //  array("submit","submit","",10,620,$y,100,20,$BgColor,$fontColor,"上傳java" ,20),
+						       array("text","workingDays","workingDays",10,820,$y,200,20,$BgColor,$fontColor,"workingDays" ,3),
+							   array("text","state","state",10,920,$y,200,20,$BgColor,$fontColor,"state" ,3),
+							   array("text","principal","principal",10,1020,$y,200,20,$BgColor,$fontColor,"principal" ,3),
+							   array("text","outsourcing","outsourcing",10,1120,$y,200,20,$BgColor,$fontColor,"outsourcing" ,3),
+							   array("text","type","type",10,1220,$y,200,20,$BgColor,$fontColor,"type" ,3),
+							   array("text","startDay","startDay",10,1320,$y,200,20,$BgColor,$fontColor,"startDay" ,3),
+ 
 	                          );
 							 
 		      upSubmitform($upFormVal,$UpHidenVal, $inputVal);
@@ -760,11 +760,45 @@
 			  global $data_library,$tableName,$MainPlanData;
 			  $WHEREtable=array( "data_type", "code" );
 		      $WHEREData=array( "data",$Ecode );
-			 
+			 // echoBr(4);
 			  $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
 			   echo $stmt;
-			    SendCommand($stmt,$data_library);		
+			   SendCommand($stmt,$data_library);		
 			 
 	 }
 ?>
-
+<?php //bak
+/*
+ function CheckDrag_b(){
+	           $Ecode=$_POST["DragID"];
+			   $target=$_POST["target"]	;
+			   $workingDays=$_POST["workingDays"]	;
+			   $state=$_POST["state"] ;
+			   $Base=array( );
+			   $up=array();
+			   
+			   
+			   if($workingDays!="w"){
+			   	  $Base=array("workingDays" );
+		          $up=array( $workingDays  );
+			   }
+		       if($target!="target"){
+			   	  $Base=array("startDay" );
+		          $up=array( $target	 );
+			   }
+			    if($state!="state"){
+			   	  $Base=array("state" );
+		          $up=array( $state );
+				  if ($state=="刪除"){
+				  $Base=array("hide" );
+		          $up=array( "g1" );
+				  }
+			   } 
+			   if($_POST["principal"]!="state"){
+			   }
+			   ChangePlan($Ecode,$Base,$up);
+			    ReLoad();
+		     //  return;
+	  }
+	  */
+?>

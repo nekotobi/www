@@ -418,7 +418,9 @@
 			  }
 	          return $ColorCodes;
 	  }	
-	  
+	  function echoBr($count){
+	    for($i=0;$i<$count;$i++)echo "</br>";
+	  }
 	  
 ?>
 
