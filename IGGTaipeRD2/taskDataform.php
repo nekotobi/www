@@ -64,6 +64,7 @@
 			   $colorCodes= GetColorCode();
 			   
       }
+	 
       function DrawButtons(){
 		       global $URL;
 			   global $typeName,$typeArray;
@@ -105,10 +106,10 @@
 			   //顯示
 			   if($typeArray[4][1]== "編輯隱藏"){   
 			       $Rect[1]+=22;
-			       $Type=array("未隱藏","全部");
+			       $Type=array("未隱藏","全部","不顯示子任務");
 			       DrawButton($Type,$Rect,$URL,5,$typeArray);
 			  }
-		        if($typeArray[4][1]== "顯示甘特"){   
+		       if($typeArray[4][1]== "顯示甘特"){   
 			       DrawDragArea();
 			     }
 	  }
@@ -209,7 +210,7 @@
 			   }
 			 if($typeArray[4][1]=="編輯隱藏"){
 			    $finalTasks=filterArray($tasksName,10,$typeArray[2][1] );
-				if($typeArray[5][1]=="全部"){
+				if($typeArray[5][1]=="全部" or $typeArray[5][1]=="不顯示子任務" ){
 				 $SortNameArr=array("","g1");
 			     $f=SortArraybyNameArray($finalTasks,$SortNameArr,18);
 				return $f ;
@@ -289,11 +290,14 @@
 					   $x+=20;
 					   DrawRect($name,10,"#000000",$x,$y ,149,$h,$color);
 					   $x+=150;
-					   $arr=findtaskChild($taskArray[$i][1]);
-					   array_Push( $allChildArr,$arr);
-					   DrawRect(count($arr),10,$fontColor,$x,$y ,19,$h,$BgColor);
-					   $x+=20;
+					   if($typeArray[5][1]!="不顯示子任務"){
+					   	   $arr=findtaskChild($taskArray[$i][1]);
+					       array_Push( $allChildArr,$arr);
+					      DrawRect(count($arr),10,$fontColor,$x,$y ,19,$h,$BgColor);
+					      $x+=20;
 					   DrawChildTask($x,$y,$arr);
+					   }
+				
 					   //重新排列
 					   
 				}
@@ -309,7 +313,7 @@
 				if($fin=="未定義")$BgColor="#616130";
 				if($fin=="進行中")$BgColor="#548C00";
 				if($fin=="已排程")$BgColor="#5B5B00";
-				if($fin=="驗證中")$BgColor="#255211";
+				if($fin=="驗證中")$BgColor="#111111";
 				if($fin=="預排程")$BgColor="#844200";
 			    if($fin=="已完成")$BgColor="#000000";
 				DrawRect($name,10,$fontColor,$x,$y ,149,$h,$BgColor);
