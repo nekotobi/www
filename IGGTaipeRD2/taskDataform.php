@@ -18,7 +18,7 @@
 ?>
 <?php //類別
       function DrawSwitch(){
-	           $Rect=array(980,10,40,12);
+	           $Rect=array(980,30,40,12);
 	           $Link= "schedule.php";
 		       DrawLinkRect_newtab("schedule","10","#ffffff",$Rect[0],$Rect[1],$Rect[2],$Rect[3],"#000000",$Link,"1");
 	  }
@@ -170,10 +170,10 @@
 	  function CheckDrag(){
 	           $Ecode=$_POST["DragID"];
 			   $target=$_POST["target"]	;
-	           $CheckArr= array("startDay","workingDays" ,"principal","outsourcing","type" );
+	           $CheckArr= array("startDay","workingDays" ,"principal","outsourcing","type","state" );
 			   $Base=array( );
 			   $up=array();
-			 //  echoBr(22);
+			  echoBr(22);
 			   for($i=0;$i<count($CheckArr);$i++){
 				   echo $CheckArr[$i]."=".$_POST[$CheckArr[$i]];
 				   if($_POST[$CheckArr[$i]]!=$CheckArr[$i]){
@@ -182,7 +182,7 @@
 				   }
 			   }
 	            ChangePlan($Ecode,$Base,$up);
-				ReLoad();
+			 	ReLoad();
 	  }
 	 
 	  function ReLoad(){
@@ -408,7 +408,6 @@
 	            $arrT=filterArray( $Typestmp,0,"data3");//  array("進行中","已排程","驗證中","已完成");
 					$arr=returnArraybySort($arrT,2);
 				array_Push( $arr,"刪除");
-			
 			    for($i=0;$i<count($arr);$i++){
 				    $id="state=".$arr[$i];
 				    DrawJavaDragArea($arr[$i],$x,$y,34,18,$BgColor,$fontColor,$id,9);
