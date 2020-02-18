@@ -28,7 +28,6 @@
 			  $nm= $nowDayArray[1];
 			  $nd= $nowDayArray[2];
 			  $td=0;//總日
- 
 			  if($y==$ny && $nm==$m)return  $nd-$d;
 			  if($y>$ny)return 0;
 			  if($y==$ny && $nm<$m )return 0;
@@ -102,35 +101,42 @@
 			  }
 	          return  $VacationDays;
 	  }
-	  function    ReturnVacationDays($y,$m,$VacationDays){
+	   function ReturnVacationDays($y,$m,$Vacationdays){
 	              $monthEnd= getMonthDay($m,$y);
 				  $weekStart=GetMonthFirstDay($y,$m);
 				  $arr=array();
 				  for($i=1;$i<=$monthEnd;$i++){
+				 
 					     $arr[$i]=0;
-				         if($weekStart==6 or  $weekStart==7){
+				         if($weekStart==6 or  $weekStart==7  or  $weekStart==0){
 						 $arr[$i]=1;
 						 }
 					  $weekStart+=1;
 					  if( $weekStart>7) $weekStart=1;
-					  $f= Returnv($y,$m,$d ,$VacationDays);
+					  $f= Returnv($y,$m,$i ,$Vacationdays);
+					 
+					  
 					  if($f!=0)  $arr[$i]=$f;
 					  if($y==date("Y") and $m==date("n") and  $i==date("j"))$arr[$i]=2;
 				  }
 				  return $arr;
 	  }
-	   function   Returnv($y,$m,$d ,$VacationDays){
+	   function Returnv($y,$m,$d ,$VacationDays){
 		         for($i=1;$i<count($VacationDays);$i++){
 			        if($y==$VacationDays[$i][0]){
 					 if($m==$VacationDays[$i][1]){
-					   if($d==$VacationDays[$i][2])return $VacationDays[$i][3];
+					   if($d==$VacationDays[$i][2]){
+						   $r=$VacationDays[$i][4];
+						  if($r=="")$r=1;
+						 
+						   return $r;
+					   }
 					 }
 					}
 			     }
 				 return 0;
 	   }
-    
-	  
+ 
        function getMonthVacationDays($y,$m,$VacationDays){
 	              $monthEnd= getMonthDay($m,$y);
 				  $weekStart=GetMonthFirstDay($y,$m);
@@ -290,6 +296,7 @@
 				}
 				return array($sy,$sm,$ey,$em);
 	   }
+	   
 ?>
 
  <?php //上傳

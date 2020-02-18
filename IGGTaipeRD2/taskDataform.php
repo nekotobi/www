@@ -14,7 +14,6 @@
     DrawButtons();
     TypeLink();
     DrawSwitch();
-   
 ?>
 <?php //類別
       function DrawSwitch(){
@@ -53,6 +52,7 @@
 			   $finalTasks  =definTasks();
 		       global $Vacationdays;
 			   $Vacationdays=getMysqlDataArray("vacationdays"); 
+		
 			   global $CalendarX,$DateWid,$startY;
 			   $CalendarX=330;
 			   $DateWid=15;
@@ -62,6 +62,7 @@
 			   $DateRange= getDateRange($finalTasks,2);
 			   global    $colorCodes;
 			   $colorCodes= GetColorCode();
+			 
 			   
       } 
       function DrawButtons(){
@@ -184,7 +185,6 @@
 	            ChangePlan($Ecode,$Base,$up);
 			 	ReLoad();
 	  }
-	 
 	  function ReLoad(){
 	    	   global $PostArray,$URL;
 			   JavaPost($PostArray,$URL); 
@@ -550,14 +550,13 @@
  
 ?>
 
-<?php
+<?php //日曆
      function DrawCallendarRange(){
 		      global $finalTasks;
 			  global $CalendarX, $startY;
 			  global $DateWid;
 			  global $DateRange;
-			//  echo count($finalTasks);
-              //print_r( $DateRange);
+			  global $Vacationdays;
 		      $y=$DateRange[0];
 			  $m=$DateRange[1];
 			  $sdate="";
@@ -570,7 +569,7 @@
 			  while ($sdate!=$fdate){
 				     $days=getMonthDay($m,$y);
 					 DrawRect($m,10,$fontColor,$LocX,$LocY-20,$days* $DateWid-1,20,$BgColor);
-					 $arr=  ReturnVacationDays($y,$m,$VacationDays);
+					 $arr=  ReturnVacationDays($y,$m,$Vacationdays);
 					 DrawDays($days,$LocX,$LocY ,$DateWid,count($finalTasks), $arr,$y."_".$m);
 					 $sdate=$y."_".$m;
 					 if($sdate==$fdate)break;
@@ -585,7 +584,6 @@
 			  }
 	 }
 	 function DrawDays($days,$LocX,$LocY,$w,$h,$arr,$ym){
-		      global $Vacationdays;
 		      $x=$LocX;
 			  $BgColor="#aaaaaa";
 			  $fontColor="#ffffff";
@@ -704,22 +702,23 @@
 				   echo $stmt;
 				   SendCommand($stmt,$data_library);
 				  //子單
-				   $bool=true;
+			 
 				   echo "</br>";
-				   
-				   if($_POST["type"]=="--") $bool=false; 
+				  
+			 
 				   if($bool){
 				      echo "子工項";
 					  $p=$_POST["principal"];
 					  $o=$_POST["outsourcing"];
-					  $w=$_POST["workingDays"];
+					  $type=$_POST["type"];
+			       	  if( $type=="--") $type="製作";
 				      if($p=="--") $p="未定義";
                       if($o=="--") $o="未定義";
                       if($w=="--")	$w=1; 
 					   $WHEREData[8]= $p; 
 				       $WHEREData[9]=$o; 
 					   $WHEREData[6]=$w; 
-					   $WHEREData[5]=$_POST["type"];
+					   $WHEREData[5]=$type;
 				       $WHEREData[1]="f".$_POST["code"];
 			           $WHEREData[3]= $_POST["code"];
 					   $WHEREData[12]="";
