@@ -55,8 +55,8 @@
 		
 			   global $CalendarX,$DateWid,$startY;
 			   $CalendarX=330;
-			   $DateWid=15;
-			   $startY=180;
+			   $DateWid=12;
+			   $startY=200;
 			   global $DateRange;
 			  // getVacationDays($YearRange,$MonthRange);
 			   $DateRange= getDateRange($finalTasks,2);
@@ -69,21 +69,22 @@
 		       global $URL;
 			   global $typeName,$typeArray;
 			   global $UserColor;
+			   global $principals,$Outs;
 			   $Rect=array(20,40,60,20);
-			   $UserColor=array();
+			 //  $UserColor=array();
 			   //負責人
 			   $Typestmp=getMysqlDataArray("members"); 
 			   $TypeT=filterArray(  $Typestmp,3,"Art"); 
-			   $Type= returnArraybySort($TypeT,1);
-			   DrawButton($Type,$Rect,$URL,0,$typeArray,"principal",12);
-			   array_Push( $UserColor,$Type);
+			   $principals= returnArraybySort($TypeT,1);
+			   DrawButton($principals,$Rect,$URL,0,$typeArray,"principal",12);
+			 //  array_Push( $UserColor,$Type);
 			   //外包
 			   $Rect[1]+=22;
 			   $Typestmp=getMysqlDataArray("outsourcing"); 
 			   $TypeT=filterArray($Typestmp,35,"true"); 
-			   $Type= returnArraybySort($TypeT,2);
-			   DrawButton($Type,$Rect,$URL,1,$typeArray,"outsourcing",11);
-		       array_Push( $UserColor,$Type);
+			   $Outs= returnArraybySort($TypeT,2);
+			   DrawButton($Outs,$Rect,$URL,1,$typeArray,"outsourcing",11);
+		     //  array_Push( $UserColor,$Type);
  
 	           //大類
 			   $Rect[1]+=22;
@@ -100,17 +101,18 @@
 			   $Type= returnArraybySort($TypeS,2);
 			   DrawButton($Type,$Rect,$URL,3,$typeArray,"type");
 			   //編輯類別
-			   $Rect[1]+=22;
+			    $Rect[1]+=22;
 			   $Type=array("快速新增","顯示甘特", "編輯隱藏","整理隱藏");
 			   DrawButton($Type,$Rect,$URL,4,$typeArray);
-			   //顯示
+			   $Rect[1]+=22;
 			   if($typeArray[4][1]== "編輯隱藏"){   
-			       $Rect[1]+=22;
-			       $Type=array("未隱藏","全部","不顯示子任務");
-			       DrawButton($Type,$Rect,$URL,5,$typeArray);
-			  }
+			   $Type=array("未隱藏","全部","不顯示子任務");
+			   DrawButton($Type,$Rect,$URL,5,$typeArray);
+			   } 
 		       if($typeArray[4][1]== "顯示甘特"){   
-			       DrawDragArea();
+			     $Type=array("日期","內部","外部","內未定義","外未定義");
+				 DrawButton($Type,$Rect,$URL,5,$typeArray);
+			     DrawDragArea();
 			     }
 	  }
 	  function DrawButton($array,$Rect,$URL,$valArrayNum,$ValArray,$Type="",$ColorN=-1){
@@ -216,30 +218,52 @@
 			    $f=filterArray($finalTasks,18,"" );
 				return $f ;
 			 }
-          
 			 $finalTasks=RemoveArray($tasks,7,"已完成"); 
 			 for($i=0;$i<4;$i++){
 				 $s=$typeName[$i][1];
 				 $n=$typeArray[$i][1];
-		      	 //echo $s.">".$n;
 			     if($typeArray[$i][1]!="--")$finalTasks=filterArray( $finalTasks,$s,$n); 
 			 }
-			 $SortNameArr=CollectUser($finalTasks,9);
-			//$SortNameArr=array("進行中","已排程","未定義","已完成");
-			 $finalTasks= SortArraybyNameArray($finalTasks,$SortNameArr,9);
-		     $SortNameArr=CollectUser($finalTasks,8);
-			  //$finalTasks= SortArraybyNameArray($finalTasks,$SortNameArr,8);
-			  $finalTasks= SortArrayDate($finalTasks,2);
-	          return $finalTasks;
+	
+			 $finalTasks=sortTask($finalTasks,$typeArray[5][1]);
+	         return $finalTasks;
+	 }
+	 function   sortTask($finalTasks,$sortby){
+                $sortArr= array();
+				if($sortby=="日期"){
+			        $finalTasks= SortArrayDate($finalTasks,2);
+					return  $finalTasks;
+				}
+				if($sortby=="內部"){
+				    $SortNameArr=CollectUser($finalTasks,8);
+			        $finalTasks= SortArraybyNameArray($finalTasks,$SortNameArr,8);
+					return $finalTasks;
+		          
+                }
+		     	if($sortby=="外部"){
+				    $SortNameArr=CollectUser($finalTasks,9);
+				    $finalTasks= SortArraybyNameArray($finalTasks,$SortNameArr,9);
+					return $finalTasks;
+			    }
+			 	if($sortby=="內未定義"){  
+				    $finalTasks= filterArray($finalTasks,8,"未定義");
+					return $finalTasks;
+			    }
+			    if($sortby=="外未定義"){  
+				    $finalTasks= filterArray($finalTasks,9,"未定義");
+					return $finalTasks;
+			    }
+				return $finalTasks;
 	 }
      function   CollectUser($finalTasks,$num){
-		      $arr= array();
-	          for($i=0;$i<count($finalTasks);$i++){
-			//	 echo $finalTasks[$i][1];
-				 if(!in_array($finalTasks[$i][$num],$arr))array_Push($arr,$finalTasks[$i][$num]);
-				 
-			 }
-			 return $arr;
+		         $arr= array();
+	             for($i=0;$i<count($finalTasks);$i++){
+					 if($finalTasks[$i][$num]!="未定義"){
+					  if(!in_array($finalTasks[$i][$num],$arr))array_Push($arr,$finalTasks[$i][$num]);
+					 }
+			    	
+			    }
+			    return $arr;
 	 }
 	 function   ListTasks(){
 		    global $typeArray;
@@ -279,7 +303,6 @@
 					   $add=array(array("code", $code),array("bool",$bool));
 					   $ValArray=addArray($typeArray,$add);
 					   sendVal($URL,$ValArray,"submit","X" ,$Rect,10,"#ffaaaa", "#000000");
-					   
 					   $x+=20;
 				       $Rect=array($x-10,$y,19,$h);
 				       sendVal($URL,$ValArray,"submit","H" ,$Rect,10,"#aaffff", "#000000");
@@ -291,21 +314,19 @@
 					   if($typeArray[5][1]!="不顯示子任務"){
 					   	   $arr=findtaskChild($taskArray[$i][1]);
 					       array_Push( $allChildArr,$arr);
-					      DrawRect(count($arr),10,$fontColor,$x,$y ,19,$h,$BgColor);
-					      $x+=20;
+					       DrawRect(count($arr),10,$fontColor,$x,$y ,19,$h,$BgColor);
+					       $x+=20;
 					   DrawChildTask($x,$y,$arr);
 					   }
 					   //重新排列
-					   
 				}
-				
 				if($typeArray[4][1]!="編輯隱藏"){
 				$code=$taskArray[$i][3];
 				//工單名
 				$fin=$taskArray[$i][7];
 			    $RootTask=getRootTask($code);
 		        $name =$RootTask[3];
-							$BgColor="#006600";
+				$BgColor="#006600";
 				if($name=="ss")$name=$taskArray[$i][1];
 				if($fin=="未定義")$BgColor="#616130";
 				if($fin=="進行中")$BgColor="#548C00";
@@ -314,20 +335,18 @@
 				if($fin=="預排程")$BgColor="#844200";
 			    if($fin=="已完成")$BgColor="#000000";
 				DrawRect($name,10,$fontColor,$x,$y ,159,$h,$BgColor);
-				 $x+=160;
-				//負責人
-				$n=$taskArray[$i][9];
-			
-				if($n=="未定義" or $n=="")    $n=$taskArray[$i][8];
-				$c= returnNum($n);
-				$BgColor2= $colorCodes[$c[0]][$c[1]];
-				$principal=$taskArray[$i][8]."-".$taskArray[$i][9];
-				DrawRect($n,10,$fontColor,$x,$y,59,$h,$BgColor2);
-				//類別
-				$x+=60;
-			     DrawRect($taskArray[$i][5],10,$fontColor,$x,$y,29,$h,$BgColor2);
-				//jila
+				$x+=160;
+			    //類別
+			    DrawRect($taskArray[$i][5],10,$fontColor,$x,$y,29,$h,$BgColor);
 				$x+=30;
+				//負責人
+				$nameColor=returnNameColor($taskArray[$i],$typeArray[5][1] );
+				$name=$nameColor[0];
+				$BgColor2=$nameColor[1];
+ 
+				DrawRect($name,10,$fontColor,$x,$y,59,$h,$BgColor2);
+				$x+=60;
+				//jila
 				$jila=$taskArray[$i][12];
 				if($jila=="")$jila=$RootTask[12];
 				$JilaLink="http://bzbfzjira.iggcn.com/browse/FP-".$jila  ;
@@ -337,10 +356,9 @@
 				$x+=25;
 				DrawRect($type2,10,$fontColor,$x,$y,39,$h,$BgColor);
 				$x+=50;
-	 
 			    //工作時間
 				 if($typeArray[4][1]=="顯示甘特"){
-				    DrawGantt($taskArray,$i,$y, $name,$BgColor);
+				    DrawGantt($taskArray,$i,$y, $name,$BgColor2);
 				 }
 				}
 		    }		
@@ -352,19 +370,38 @@
 			   $Rect[0]+=110;
 			   sendVal($URL,$typeArray,"submit","隱藏完成" ,$Rect,10,"#aaaaaa", "#000000");
 			   if($_POST["submit"]=="隱藏完成")SetFinHide($taskArray,$allChildArr);
-			   
 			}
 	 } 
-     function   returnNum($name){
-		     global $UserColor ;
-			 for($i=0;$i<count($UserColor[0]);$i++){
-			     if($name==$UserColor[0][$i])return array(12,$i+1);
-			 }
-		     for($i=0;$i<count($UserColor[1]);$i++){
-			    if($name==$UserColor[1][$i])return array(11,$i+1);
-			 }
-			 return array(0,0);
+	 function returnNameColor($Task,$SortType ){
+		 	    global $principals,$Outs; 
+			    global $colorCodes;
+				$PorO=9;
+				if($Task[9]=="未定義" or $Task[9]=="") { 
+				   $PorO=8;
+				}
+				if($SortType=="內部" or $SortType=="內未定義" ){
+				   $PorO=8;
+				}
+				if($SortType=="外部" or $SortType=="外未定義" ){
+				   $PorO=9;
+				}
+			    $name=$Task[$PorO];
+				$arr=$Outs;
+				 
+		        $color=$colorCodes[11];
+				if($PorO==8){
+					$arr=$principals;
+				    $color=$colorCodes[12];
+				}
+				$c="#aaaaaa";
+			    for($i=0;$i<count($arr);$i++){
+				    if($arr[$i]==$name)$c= $color[$i];
+				}
+				
+		        return array($name,$c);
 	 }
+ 
+ 
  	 function   DrawChildTask($x,$y,$Tasks){
               global $user;	      
 		      for($i=0;$i<count($Tasks);$i++){
@@ -400,13 +437,14 @@
 				DrawJavaDragbox("",$xx+$ww,$y+4,5,$h,5, $BgColor, $fontColor,$id);
 	 }
 	 function   DrawDragArea(){
-		        $x=20;
-				$y=160;
-				 $BgColor="#224444";
+		        global $startY;
+				$x=20;
+				$y=$startY-20;
+			    $BgColor="#224444";
 			    $fontColor="#ffffff";
 			    $Typestmp=getMysqlDataArray("scheduletype"); 
 	            $arrT=filterArray( $Typestmp,0,"data3");//  array("進行中","已排程","驗證中","已完成");
-					$arr=returnArraybySort($arrT,2);
+			    $arr=returnArraybySort($arrT,2);
 				array_Push( $arr,"刪除");
 			    for($i=0;$i<count($arr);$i++){
 				    $id="state=".$arr[$i];
@@ -518,9 +556,7 @@
 			  $tasksH=filterArray( $tasksti,18,"g1");
 			  $hideCodes= returnArraybySort($tasksH,1);
 			  for($i=0;$i<count(  $hideCodes);$i++){
-				 // echo $hideCodes[$i];
 				 $hs=filterArray( $tasksc2,3, $hideCodes[$i]);
-				// print_r($hs);
 				 foreach($hs as  $task) 
 				       HidePlan($hs[0][1], "g1");
 			  }
@@ -592,7 +628,7 @@
 				  $BgColor="#aaaaaa";
 				  if ($arr[$i]==1)     $BgColor="#bbaaaa";
 				  if ($arr[$i]==2)     $BgColor="#bb6666";
-			      DrawRect($i,10,$fontColor,$x,$LocY,$w-1,20,$BgColor);
+			      DrawRect($i,8,$fontColor,$x,$LocY,$w-1,20,$BgColor);
 				  $id="startDay=".$ym."_".$i;
 				  
 				  DrawJavaDragArea("",$x,$LocY+22,$w-1,$h*22,$BgColor,$fontColor,$id);
