@@ -321,40 +321,44 @@
 				}
 				if($typeArray[4][1]!="編輯隱藏"){
 				$code=$taskArray[$i][3];
+		
 				//工單名
 				$fin=$taskArray[$i][7];
 			    $RootTask=getRootTask($code);
 		        $name =$RootTask[3];
 				$BgColor="#006600";
 				if($name=="ss")$name=$taskArray[$i][1];
-				if($fin=="未定義")$BgColor="#616130";
+				if($fin=="未定義")$BgColor="#844200";
 				if($fin=="進行中")$BgColor="#548C00";
 				if($fin=="已排程")$BgColor="#5B5B00";
 				if($fin=="驗證中")$BgColor="#111111";
-				if($fin=="預排程")$BgColor="#844200";
+				if($fin=="預排程")$BgColor="#616130";
 			    if($fin=="已完成")$BgColor="#000000";
-				DrawRect($name,10,$fontColor,$x,$y ,159,$h,$BgColor);
-				$x+=160;
+				DrawRect($name,10,$fontColor,$x,$y ,179,$h,$BgColor);
+			
+				//jila
+				$jila=$taskArray[$i][12];
+				if($jila=="")$jila=$RootTask[12];
+				if($jila!=""){
+				$JilaLink="http://bzbfzjira.iggcn.com/browse/FP-".$jila  ;
+				DrawLinkRect_newtab($jila,"8","#ffffff"  ,$x,$y+4,20,12,"#aa8888",$JilaLink,"1" );
+				}
+				 $x+=180;
 			    //類別
-			    DrawRect($taskArray[$i][5],10,$fontColor,$x,$y,29,$h,$BgColor);
+			    DrawRect($taskArray[$i][5],10,$fontColor,$x ,$y,29,$h,$BgColor);
 				$x+=30;
 				//負責人
 				$nameColor=returnNameColor($taskArray[$i],$typeArray[5][1] );
 				$name=$nameColor[0];
 				$BgColor2=$nameColor[1];
- 
-				DrawRect($name,10,$fontColor,$x,$y,59,$h,$BgColor2);
-				$x+=60;
-				//jila
-				$jila=$taskArray[$i][12];
-				if($jila=="")$jila=$RootTask[12];
-				$JilaLink="http://bzbfzjira.iggcn.com/browse/FP-".$jila  ;
-				DrawLinkRect_newtab($jila,"10","#ffffff"  ,$x,$y,24,$h,"#aa8888",$JilaLink,"1" );
+				DrawRect($name,9,$fontColor,$x,$y,69,$h,$BgColor2);
+				$x+=70;
+
 				//完成
 				$type2=$fin;
-				$x+=25;
-				DrawRect($type2,10,$fontColor,$x,$y,39,$h,$BgColor);
-				$x+=50;
+				//$x+=25;
+				DrawRect($type2,8,$fontColor,$x,$y,29,$h,$BgColor);
+				$x+=30;
 			    //工作時間
 				 if($typeArray[4][1]=="顯示甘特"){
 				    DrawGantt($taskArray,$i,$y, $name,$BgColor2);
@@ -391,9 +395,14 @@
 					$arr=$principals;
 				    $color=$colorCodes[12];
 				}
+		
 				$c="#aaaaaa";
 			    for($i=0;$i<count($arr);$i++){
 				    if($arr[$i]==$name)$c= $color[$i+1];
+				}
+		        if($PorO==8  ){
+				    if($Task[9]!="未定義" & $Task[9]!="") 
+						$name=$Task[8]."[".$Task[9]."]";
 				}
 		        return array($name,$c);
 	 }
