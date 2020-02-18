@@ -229,9 +229,9 @@
 	         return $finalTasks;
 	 }
 	 function   sortTask($finalTasks,$sortby){
-                $sortArr= array();
+                 $finalTasks= SortArrayDate($finalTasks,2);
 				if($sortby=="日期"){
-			        $finalTasks= SortArrayDate($finalTasks,2);
+			      
 					return  $finalTasks;
 				}
 				if($sortby=="內部"){
@@ -261,7 +261,6 @@
 					 if($finalTasks[$i][$num]!="未定義"){
 					  if(!in_array($finalTasks[$i][$num],$arr))array_Push($arr,$finalTasks[$i][$num]);
 					 }
-			    	
 			    }
 			    return $arr;
 	 }
@@ -363,7 +362,6 @@
 				}
 		    }		
 			if($typeArray[4][1]=="編輯隱藏"){
-			  // $ValArray=addArray($typeArray,$add);
 			   $Rect=array(200,$startY,100,18);
 			   sendVal($URL,$typeArray,"submit","重新排列" ,$Rect,10,"#aaaaaa", "#000000");
 			   if($_POST["submit"]=="重新排列")ReSortTask($taskArray,$allChildArr);
@@ -395,9 +393,8 @@
 				}
 				$c="#aaaaaa";
 			    for($i=0;$i<count($arr);$i++){
-				    if($arr[$i]==$name)$c= $color[$i];
+				    if($arr[$i]==$name)$c= $color[$i+1];
 				}
-				
 		        return array($name,$c);
 	 }
  
