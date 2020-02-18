@@ -30,6 +30,7 @@
 			   $data_library="iggtaiperd2";
 			   //type
 		       global $typeName,$typeArray,$PostArray;
+			   global $noread;
 			   $subNameForWard="Type";
 			   $typeName=array(array("負責人",8),array("外包",9), array("大類別",10),array("類別",5) ,array("編輯",-1),array("顯示",-1));
 			   $typeArray=array(); 
@@ -37,7 +38,10 @@
 			   for($i=0;$i<count($typeName);$i++){
 				    $n=$subNameForWard.$i;
 				    $s= $_POST[$n];
-					if($s=="")$s="--";
+					if($s==""){
+						$s="--";
+						$noread="true";
+					}
 			        array_push( $typeArray,array($n,$s));
 					array_Push( $PostArray,$n);
 			   }
@@ -142,6 +146,8 @@
 	  }
 	  function TypeLink(){
 		  global $typeName,$typeArray;
+		  global 		$noread;
+		  if(		$noread=="true")return;
 		  if ($_POST["submit"]=="新增計畫"){
 			  UpPlan();
 			  return;
@@ -746,9 +752,7 @@
 				  //子單
 			 
 				   echo "</br>";
-				  
-			 
-				   if($bool){
+							 
 				      echo "子工項";
 					  $p=$_POST["principal"];
 					  $o=$_POST["outsourcing"];
@@ -756,7 +760,7 @@
 			       	  if( $type=="--") $type="製作";
 				      if($p=="--") $p="未定義";
                       if($o=="--") $o="未定義";
-                      if($w=="--")	$w=1; 
+                      if($w=="")	$w=1; 
 					   $WHEREData[8]= $p; 
 				       $WHEREData[9]=$o; 
 					   $WHEREData[6]=$w; 
@@ -768,7 +772,7 @@
 			          $stmt=  MakeNewStmtv2($tableName,$WHEREtable,$WHEREData); 
 					   echo $stmt;
 					      SendCommand($stmt,$data_library);
-				   }
+				
 			   
 	 }
 	 function returntLine(){
