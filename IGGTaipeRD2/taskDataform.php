@@ -149,9 +149,22 @@
 		         
 	  }
 	  function TypeLink(){
-		  global $typeName,$typeArray;
-		  global 		$noread;
+		       global $typeName,$typeArray;
+		       global $noread;
+		       global $data_library,$tableName;
+			   global $URL;
 		  if(		$noread=="true")return;
+		  if( $_POST["submitUp"]=="E"){
+			
+			  $code=$_POST["EditCode"];
+			  DrawMysQLEdit($data_library,$tableName,$code,$URL,$typeArray,"修改".$code."表格內容");
+			  return;
+		  }
+		  if ($_POST["submit"]=="修改表單"){
+			  $code=$_POST["code"];
+			  upMysQLEdit($data_library,$tableName,$code,$URL,$PostArray );
+		      ReLoad();
+		  }
 		  if ($_POST["submit"]=="新增計畫"){
 			  UpPlan();
 			  return;
@@ -186,7 +199,7 @@
 	           $CheckArr= array("startDay","workingDays" ,"principal","outsourcing","type","state" );
 			   $Base=array( );
 			   $up=array();
-			  echoBr(22);
+			   echoBr(22);
 			   for($i=0;$i<count($CheckArr);$i++){
 				   echo $CheckArr[$i]."=".$_POST[$CheckArr[$i]];
 				   if($_POST[$CheckArr[$i]]!=$CheckArr[$i]){
@@ -347,10 +360,12 @@
 				$fin=$taskArray[$i][7];
 			    $RootTask=getRootTask($code);
 		        $name =$RootTask[3];
-		 
 				if($name=="ss")$name=$taskArray[$i][1];
 	            $BgColor=getProgressColor($fin);
 				DrawRect($name,10,$fontColor,$x,$y ,179,$h,$BgColor);
+			    $sendarr=addArray($typeArray,array(array("EditCode",$code)));
+			 	$Rect=array($x+160,$y-2,6,12);
+                sendVal($URL,$sendarr,"submitUp","E",$Rect,4,"#777777", $fontColor);
 				//jila
 				$jila=$taskArray[$i][12];
 				if($jila=="")$jila=$RootTask[12];

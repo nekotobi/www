@@ -467,7 +467,7 @@
 			//echo "</br>".$seletProject;
 	        return $seletProject;
 	   }
-       function DrawPopBG($x,$y,$w,$h,$title,$fontSize,$BackURL){
+       function DrawPopBG($x,$y,$w,$h,$title,$fontSize,$BackURL,$PostArray=array()){
 	       DrawPicBG("Pics/Black50Bg.png",$y-40,$x-40,$w+80,$h+80);
 		   DrawLinkPic("Pics/Cancel.png",$y-50,$x+$w+20,32,32,$BackURL);
 		   DrawRect($title,$fontSize,"#ffffff",$x ,$y ,$w,"20","#a27e7e");
@@ -772,17 +772,29 @@
 				 }
 				 return $ValArray;
 	   }
-       function  sendVal($URL,$ValArray,$SubmitName,$SubmitVal,$Rect,$size=12, $BgColor="#eeeeee",$fontColor="#ffffff",$setCookie=false){
-		   echo "<form action=".$URL." method=post >";
-		   for($i=0;$i<count($ValArray);$i++){
-			   echo "<input type=hidden name='".$ValArray[$i][0]."' value='".$ValArray[$i][1]."' >";
-		   }
-	        echo "<input type=hidden name=setCookie value=".$setCookie." >";
-		    $submitP="<input type=submit name=submit   value=".$SubmitVal." 
+	   function  sendVal_v2($URL,$ValArray,$SubmitName,$SubmitVal,$Rect,$size=12, $BgColor="#eeeeee",$fontColor="#ffffff",$setCookie=false){
+		          echo "<form id=test action=".$URL." method=post >";
+				  for($i=0;$i<count($ValArray);$i++){
+			           echo "<input type=hidden name='".$ValArray[$i][0]."' value='".$ValArray[$i][1]."' >";
+		             }
+				  $submitP="<input type=submit name=submit2   value=".$SubmitVal." 
 			           style = 'width:".$Rect[2]."px; height:".$Rect[3]."px; background-color:".$BgColor." ;
        	               font-size:".$size."px; font-weight:bold; border:0; color:".$fontColor.";  '/>";  
-		   echo "<div style= 'position:absolute;  top:".$Rect[1]."px; left:".$Rect[0]."px;  '>".$submitP."</div>";
-		   echo "</form>";
+				 
+		          echo "<div style= 'position:absolute;  top:".$Rect[1]."px; left:".$Rect[0]."px;  '>".$submitP."</div>";
+				  echo "</form>";
+		}
+       function  sendVal($URL,$ValArray,$SubmitName,$SubmitVal,$Rect,$size=12, $BgColor="#eeeeee",$fontColor="#ffffff",$setCookie=false){
+		         echo "<form id=sendval action=".$URL." method=post >";
+			      for($i=0;$i<count($ValArray);$i++){
+			           echo "<input type=hidden name='".$ValArray[$i][0]."' value='".$ValArray[$i][1]."' >";
+		             }
+	             echo "<input type=hidden name=setCookie value=".$setCookie." >";
+		         $submitP="<input type=submit name=".$SubmitName."   value=".$SubmitVal." 
+			           style = 'width:".$Rect[2]."px; height:".$Rect[3]."px; background-color:".$BgColor." ;
+       	               font-size:".$size."px; font-weight:bold; border:0; color:".$fontColor.";  '/>";  
+		         echo "<div style= 'position:absolute;  top:".$Rect[1]."px; left:".$Rect[0]."px;  '>".$submitP."</div>";
+		         echo "</form>";
 	   }  
 	   function  setcookies($CookieArray,$BackURL){
 	           if($_POST['setCookie']!="true") return;
@@ -834,7 +846,8 @@
 			     echo " <script language='JavaScript'>Javaform.submit()</script>";
 			     echo "ss";
 	   }
-	   function upSubmitform($upFormVal,$UpHidenVal, $inputVal){
+ 
+	 	   function upSubmitform($upFormVal,$UpHidenVal, $inputVal){
 	          //  $upFormVal ==>0/id 1/name 2/URL 
 			  //  $UpHidenVal=array 0/name,1/val
 			  //  $inputVal=0/type 1/name 2/showname 3/fontsize 4/5/6/7rect  8/bgcolor 9/fontColor 10/val 11/size
@@ -844,7 +857,8 @@
 				   //echo   "</br>".$UpHidenVal[$i][0]." value=".$UpHidenVal[$i][1];
 			  }
 			  for($i=0;$i<count($inputVal);$i++){
-			      $input="<input id=".$inputVal[$i][1]."  type=".$inputVal[$i][0]." name=".$inputVal[$i][1]."  value='".$inputVal[$i][10]."' size=".$inputVal[$i][11]."  >";
+			      $input="<input  type=".$inputVal[$i][0]."  id=".$inputVal[$i][1]."  name=".$inputVal[$i][1]."
+  				          style='font-size:".$inputVal[$i][3]."px'; value='".$inputVal[$i][10]."' size=".$inputVal[$i][11]."  >";
 				  $x=$inputVal[$i][4];
 				  $y=$inputVal[$i][5];
 				  $w=$inputVal[$i][6];

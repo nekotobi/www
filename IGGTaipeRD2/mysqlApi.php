@@ -1,5 +1,4 @@
 <?php //Base
-
      function returnDataArray($BaseData,$sort,$FindName){//二微陣列中回傳含有字元的陣列
 	           for($i=0;$i<count($BaseData);$i++){
 				   if($BaseData[$i][$sort]==$FindName)return $BaseData[$i];
@@ -137,13 +136,54 @@
           mysql_query("SET NAMES 'utf8'");
 	      return  mysql_query("SELECT * FROM ".$SElectTable,$db);	  
 	  }
+	 
 ?>
 
 <?php //fastForm
-     function DrawMysQLEdit($code,$EditData,$tableName){
+     function upMysQLEdit($data_library,$tableName,$code,$URL,$PostArray ){
+	 		  require_once ('PubApi.php');
+	          $tables=returnTables($data_library ,$tableName); 
+		      $WHEREtable=array( "data_type", "code" );
+		      $WHEREData=array( "data",$code);
+			  $Base=array();
+			  $up=array();
+			  for($i=0;$i<count($tables);$i++){
+			     array_push( $Base,$tables[$i]);
+			     array_push( $up,$_POST[$tables[$i]]);
+			  }
+			  $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
+			  SendCommand($stmt,$data_library);	
+	 }
+     function DrawMysQLEdit($data_library,$tableName,$code,$URL,$PostArray,$title){
 		      require_once ('PubApi.php');
 	          $tables=returnTables($data_library ,$tableName); 
-	          
+			  $base=getMysqlArray($data_library,$tableName);
+			  $data=filterArray($base,1,$code);
+			  echo ">".count($tables);
+			  $x=100;
+			  $y=100;
+			  $w=300;
+			  $fontSize=10;
+			  $h=count($tables)*22+30;
+		      DrawPopBG($x,$y,$w,$h,$title,$fontSize,$URL);
+			  $y+=30;
+			  $fontColor="#ffffff";
+	          $upFormVal=array("EditTask","EditTask",$URL);
+			  $UpHidenVal=array(array("code",$code));
+			  $UpHidenVal=	addArray( $UpHidenVal,$PostArray);	
+			  $inputVal=array();
+			  for($i=0;$i<count($tables);$i++){
+				  $n=$tables[$i];
+				  $v=$data[0][$i];
+			      $tarr=array("text", $n, $n,8,$x,$y,200,20,$BgColor,$fontColor,$v,20);
+				  array_push($inputVal,$tarr);
+				  $y+=22;
+			  }
+			  
+			 $tarr=array("submit", "submit", "submit",8,$x,$y,200,20,$BgColor,$fontColor,"修改表單",20);
+			   	  array_push($inputVal,$tarr);
+			  upSubmitform($upFormVal,$UpHidenVal, $inputVal);
+			  
 	 }
 
 ?>
