@@ -364,8 +364,13 @@
 	            $BgColor=getProgressColor($fin);
 				DrawRect($name,10,$fontColor,$x,$y ,179,$h,$BgColor);
 			    $sendarr=addArray($typeArray,array(array("EditCode",$code)));
-			 	$Rect=array($x+160,$y-2,6,12);
-                sendVal($URL,$sendarr,"submitUp","E",$Rect,4,"#777777", $fontColor);
+				//root
+			 	$Rect=array($x+160,$y-6,10,6);
+                sendVal($URL,$sendarr,"submitUp","E",$Rect,4,"#997777", $fontColor);
+				//childTask
+				  $sendarr=addArray($typeArray,array(array("EditCode",$taskArray[$i][1])));
+				$Rect=array($x+160,$y+2,10,6);
+                sendVal($URL,$sendarr,"submitUp","E",$Rect,4,"#779977", $fontColor);
 				//jila
 				$jila=$taskArray[$i][12];
 				if($jila=="")$jila=$RootTask[12];
