@@ -241,7 +241,6 @@
 	 function   sortTask($finalTasks,$sortby){
                  $finalTasks= SortArrayDate($finalTasks,2);
 				if($sortby=="日期"){
-			      
 					return  $finalTasks;
 				}
 				if($sortby=="內部"){
@@ -251,7 +250,10 @@
 		          
                 }
 		     	if($sortby=="外部"){
+					$finalTasks= RemoveArray ($finalTasks,8,"");
+				 //   $finalTasks= RemoveArray ($finalTasks,8,"未定義");
 				    $SortNameArr=CollectUser($finalTasks,9);
+				//	print_r(  $SortNameArr);
 				    $finalTasks= SortArraybyNameArray($finalTasks,$SortNameArr,9);
 					return $finalTasks;
 			    }
@@ -268,7 +270,7 @@
      function   CollectUser($finalTasks,$num){
 		         $arr= array();
 	             for($i=0;$i<count($finalTasks);$i++){
-					 if($finalTasks[$i][$num]!="未定義"){
+					 if($finalTasks[$i][$num]!="未定義" && $finalTasks[$i][$num]!=""){
 					  if(!in_array($finalTasks[$i][$num],$arr))array_Push($arr,$finalTasks[$i][$num]);
 					 }
 			    }
@@ -384,18 +386,19 @@
 			   if($_POST["submit"]=="隱藏完成")SetFinHide($taskArray,$allChildArr);
 			}
 	 } 
-	 function returnNameColor($Task,$SortType ){
+	 function   returnNameColor($Task,$SortType ){
 		 	    global $principals,$Outs; 
 			    global $colorCodes;
 				$PorO=9;
-				if($Task[9]=="未定義" or $Task[9]=="") { 
-				   $PorO=8;
-				}
+
 				if($SortType=="內部" or $SortType=="內未定義" ){
 				   $PorO=8;
 				}
 				if($SortType=="外部" or $SortType=="外未定義" ){
 				   $PorO=9;
+				}
+			    if($Task[9]=="未定義" or $Task[9]=="") { 
+				   $PorO=8;
 				}
 			    $name=$Task[$PorO];
 				$arr=$Outs;
@@ -405,7 +408,7 @@
 				    $color=$colorCodes[12];
 				}
 		
-				$c="#aaaaaa";
+				$c="#444444";
 			    for($i=0;$i<count($arr);$i++){
 				    if($arr[$i]==$name)$c= $color[$i+1];
 				}
@@ -415,13 +418,11 @@
 				 }
 				 if($PorO==9  ){
 				    if($Task[8]!="未定義" & $Task[8]!="") 
-						$name=$Task[8]."[".$Task[9]."]";
+						$name=$Task[9]."[".$Task[8]."]";
 				 }
 				 
 		        return array($name,$c);
 	 }
- 
- 
  	 function   DrawChildTask($x,$y,$Tasks){
               global $user;	      
 		      for($i=0;$i<count($Tasks);$i++){

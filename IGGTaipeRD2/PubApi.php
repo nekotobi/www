@@ -36,7 +36,12 @@
        function RemoveArray($BaseArray,$num,$RemoveStr){
 	            $returnArray=array();
 				 for($i=0;$i<count($BaseArray);$i++){
-					 if($BaseArray[$i][$num]!=$RemoveStr)array_push($returnArray,$BaseArray[$i] );
+			
+					 $n=trim(  $BaseArray[$i][$num]);  
+					 if( $n!=$RemoveStr){
+						 array_push($returnArray,$BaseArray[$i] );
+						 	//	 echo $BaseArray[$i][$num].">[".$RemoveStr."]";
+					 }
 				 }
 	            return $returnArray;
 	   }  
@@ -884,7 +889,7 @@
 <?php //table
      function DrawTable($tableArray,$x,$y,$fontColor,$fontSize,$bgcolor){
               echo "<div  style=' color:".$fontColor."; "  ;	
-			   echo " text-align:center ; font-weight:bolder ;font-family:Microsoft JhengHei; font-size:".$fontSize."px;";
+			  echo " text-align:center ; font-weight:bolder ;font-family:Microsoft JhengHei; font-size:".$fontSize."px;";
               echo " position:absolute;  top:".$y."px; left:".$x."px; width:".$w."px;height:".$hi."px; background-color:".$BgColor.";'>"; 	  
 			  echo "<table>";
 			  echo "<tr>";
@@ -903,22 +908,7 @@
 			  echo "</div>";
  }
 ?>
-<?php //old
-/*
-       function sendVal($URL,$ValArray,$SubmitName,$SubmitVal,$Rect,$size=12, $BgColor="#eeeeee",$fontColor="#ffffff",$setCookie=false){
-		   echo "<form action=".$URL." method=post >";
-		   for($i=0;$i<count($ValArray);$i++){
-			   echo "<input type=hidden name=".$ValArray[$i][0]." value=".$ValArray[$i][1]." >";
-		   }
-	        echo "<input type=hidden name=setCookie value=".$setCookie." >";
-		    $submitP="<input type=submit name=submit   value=".$SubmitVal." 
-			           style = 'width:".$Rect[2]."px; height:".$Rect[3]."px; background-color:".$BgColor." ;
-       	               font-size:".$size."px; font-weight:bold; border:0; color:".$fontColor.";  '/>";  
-		   echo "<div style= 'position:absolute;  top:".$Rect[1]."px; left:".$Rect[0]."px;  '>".$submitP."</div>";
-		   echo "</form>";
-	   }
-	   */
-?>
+
 
 <?php //中文資料夾轉換相關
  function ReturnPhpDir($BasePath){

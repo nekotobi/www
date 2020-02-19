@@ -1,4 +1,4 @@
-<?php
+<?php //Base
 
      function returnDataArray($BaseData,$sort,$FindName){//二微陣列中回傳含有字元的陣列
 	           for($i=0;$i<count($BaseData);$i++){
@@ -22,8 +22,6 @@
             }
 			return $tables;
 	 }
-	 
-	 
 	 function returnTables($data_library ,$tableName){ //取得資料表所有欄位名稱
 		    $db = mysql_connect("localhost","root","1406");
 	        $db_selected = mysql_select_db( $data_library,$db);
@@ -133,15 +131,20 @@
 			   }
 			   return $lastSn ;
 	  }
-	  
 	 function getDBAll_num( $data_library,$SElectTable){
 	      $db = mysql_connect("localhost","root","1406");
 	      mysql_select_db( $data_library,$db);
           mysql_query("SET NAMES 'utf8'");
 	      return  mysql_query("SELECT * FROM ".$SElectTable,$db);	  
 	  }
+?>
 
-
+<?php //fastForm
+     function DrawMysQLEdit($code,$EditData,$tableName){
+		      require_once ('PubApi.php');
+	          $tables=returnTables($data_library ,$tableName); 
+	          
+	 }
 
 ?>
 
