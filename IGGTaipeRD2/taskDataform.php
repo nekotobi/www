@@ -245,15 +245,12 @@
 				}
 				if($sortby=="內部"){
 				    $SortNameArr=CollectUser($finalTasks,8);
-			        $finalTasks= SortArraybyNameArray($finalTasks,$SortNameArr,8);
+			        $finalTasks= Sort2DArraybyNameArray($finalTasks,$SortNameArr,8);
 					return $finalTasks;
-		          
                 }
 		     	if($sortby=="外部"){
 					$finalTasks= RemoveArray ($finalTasks,8,"");
-				 //   $finalTasks= RemoveArray ($finalTasks,8,"未定義");
 				    $SortNameArr=CollectUser($finalTasks,9);
-				//	print_r(  $SortNameArr);
 				    $finalTasks= SortArraybyNameArray($finalTasks,$SortNameArr,9);
 					return $finalTasks;
 			    }
@@ -266,6 +263,18 @@
 					return $finalTasks;
 			    }
 				return $finalTasks;
+	 }
+	 function   Sort2DArraybyNameArray($baseArr,$SortNameArr,$Num){//二維 重新排列
+		        $arr=array();
+	            for($i=0;$i<count($SortNameArr);$i++){
+					$ar = filterArray($baseArr,$Num,$SortNameArr[$i]);
+				    $Arrc=array("","未定義");
+					$Arrc2=CollectUser($ar,9);
+					$Arrc= addArray($Arrc,$Arrc2);
+				    $sr= SortArraybyNameArray($ar,$Arrc,9);
+				    $arr= addArray($arr,$sr);
+				}
+				return $arr;
 	 }
      function   CollectUser($finalTasks,$num){
 		         $arr= array();
@@ -338,16 +347,10 @@
 				$fin=$taskArray[$i][7];
 			    $RootTask=getRootTask($code);
 		        $name =$RootTask[3];
-				$BgColor="#006600";
+		 
 				if($name=="ss")$name=$taskArray[$i][1];
-				if($fin=="未定義")$BgColor="#844200";
-				if($fin=="進行中")$BgColor="#548C00";
-				if($fin=="已排程")$BgColor="#5B5B00";
-				if($fin=="驗證中")$BgColor="#111111";
-				if($fin=="預排程")$BgColor="#616130";
-			    if($fin=="已完成")$BgColor="#000000";
+	            $BgColor=getProgressColor($fin);
 				DrawRect($name,10,$fontColor,$x,$y ,179,$h,$BgColor);
-			
 				//jila
 				$jila=$taskArray[$i][12];
 				if($jila=="")$jila=$RootTask[12];
@@ -386,6 +389,16 @@
 			   if($_POST["submit"]=="隱藏完成")SetFinHide($taskArray,$allChildArr);
 			}
 	 } 
+	 function   getProgressColor($fin){
+	        	$BgColor= "#006600";
+	 			if($fin=="未定義")$BgColor="#844200";
+				if($fin=="進行中")$BgColor="#548C00";
+				if($fin=="已排程")$BgColor="#516C00";
+				if($fin=="驗證中")$BgColor="#111111";
+				if($fin=="預排程")$BgColor="#515130";
+			    if($fin=="已完成")$BgColor="#000000";
+				return $BgColor;
+	 }
 	 function   returnNameColor($Task,$SortType ){
 		 	    global $principals,$Outs; 
 			    global $colorCodes;
@@ -406,17 +419,19 @@
 				if($PorO==8){
 					$arr=$principals;
 				    $color=$colorCodes[12];
+				    if($Task[9]!="未定義" & $Task[9]!="") $color=$colorCodes[11];
 				}
 		
 				$c="#444444";
+				
 			    for($i=0;$i<count($arr);$i++){
 				    if($arr[$i]==$name)$c= $color[$i+1];
 				}
-		        if($PorO==8  ){
-				    if($Task[9]!="未定義" & $Task[9]!="") 
-						$name=$Task[8]."[".$Task[9]."]";
+		        if($PorO==8){
+				     if($Task[9]!="未定義" & $Task[9]!="") $name=$Task[8]."[".$Task[9]."]";
+					 
 				 }
-				 if($PorO==9  ){
+				if($PorO==9  ){
 				    if($Task[8]!="未定義" & $Task[8]!="") 
 						$name=$Task[9]."[".$Task[8]."]";
 				 }
