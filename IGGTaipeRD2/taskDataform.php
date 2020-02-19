@@ -399,7 +399,6 @@
 				}
 			    $name=$Task[$PorO];
 				$arr=$Outs;
-				 
 		        $color=$colorCodes[11];
 				if($PorO==8){
 					$arr=$principals;
@@ -413,7 +412,12 @@
 		        if($PorO==8  ){
 				    if($Task[9]!="未定義" & $Task[9]!="") 
 						$name=$Task[8]."[".$Task[9]."]";
-				}
+				 }
+				 if($PorO==9  ){
+				    if($Task[8]!="未定義" & $Task[8]!="") 
+						$name=$Task[8]."[".$Task[9]."]";
+				 }
+				 
 		        return array($name,$c);
 	 }
  
