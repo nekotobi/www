@@ -35,17 +35,18 @@
 			   $typeName=array(array("負責人",8),array("外包",9), array("大類別",10),array("類別",5) ,array("編輯",-1),array("顯示",-1));
 			   $typeArray=array(); 
 			   $PostArray=array();
+			   $nc=0;
 			   for($i=0;$i<count($typeName);$i++){
 				    $n=$subNameForWard.$i;
 				    $s= $_POST[$n];
 					if($s==""){
 						$s="--";
-						$noread="true";
+					   $nc++;
 					}
 			        array_push( $typeArray,array($n,$s));
 					array_Push( $PostArray,$n);
 			   }
-			   if($noread="true"){
+			   if( $nc>4){
 			        $typeArray[4][1]="顯示甘特";
 					$typeArray[5][1]="內部";
 			   }
