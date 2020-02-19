@@ -30,7 +30,7 @@
 			   $data_library="iggtaiperd2";
 			   //type
 		       global $typeName,$typeArray,$PostArray;
-			   global $noread;
+			 
 			   $subNameForWard="Type";
 			   $typeName=array(array("負責人",8),array("外包",9), array("大類別",10),array("類別",5) ,array("編輯",-1),array("顯示",-1));
 			   $typeArray=array(); 
@@ -45,7 +45,10 @@
 			        array_push( $typeArray,array($n,$s));
 					array_Push( $PostArray,$n);
 			   }
-			   
+			   if($noread="true"){
+			        $typeArray[4][1]="顯示甘特";
+					$typeArray[5][1]="內部";
+			   }
 			   //task
 		       $tasksT=getMysqlDataArray("fpschedule"); 
 			   $tasksT2=filterArray( $tasksT,0,"data"); 
