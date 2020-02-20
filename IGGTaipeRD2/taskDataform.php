@@ -170,7 +170,7 @@
 			  return;
 		  } 
 		  if ($_POST["submit"]=="X"){
-			  DeletPlan();
+			  DeletPlan( $_POST["code"]);
 			  return;
 		  } 
 		  if ($_POST["submit"]=="H"){
@@ -182,6 +182,7 @@
 		  } 
 		  if ($_POST["Send"]=="sendjava"){
 			  CheckDrag();
+			  
 		  }
 		  if($typeArray[4][1]=="快速新增"){
 			 fastTask();
@@ -200,6 +201,11 @@
 			   $Base=array( );
 			   $up=array();
 			   echoBr(22);
+			   if($_POST["state"]=="刪除"){
+				   DeletPlan($Ecode);
+				   ReLoad();
+				    return;
+			   }
 			   for($i=0;$i<count($CheckArr);$i++){
 				   echo $CheckArr[$i]."=".$_POST[$CheckArr[$i]];
 				   if($_POST[$CheckArr[$i]]!=$CheckArr[$i]){
@@ -208,7 +214,7 @@
 				   }
 			   }
 	            ChangePlan($Ecode,$Base,$up);
-			 	ReLoad();
+			 	//ReLoad();
 	  }
 	  function ReLoad(){
 	    	   global $PostArray,$URL;
@@ -508,6 +514,7 @@
 					$x+=35;
 				}
 	  }
+	 
 	 function   getRootTask($code){
 	        global  $tasksName;
 			for($i=0;$i<count($tasksName);$i++){
@@ -765,16 +772,16 @@
 							  
 			  upSubmitform($upFormVal,$UpHidenVal, $inputVal);
 	 }
-	 function DeletPlan(){
+	 function DeletPlan($Ecode){
+		    
 		      global $data_library,$tableName;
 	          global $PostArray;
 			  global $URL;
-	          $Ecode= $_POST["code"];
+			  //RootTask
 		      $WHEREtable=array( "data_type", "code" );
 		      $WHEREData=array( "data",$Ecode );
 			  $stmt=   MakeDeleteStmt($tableName,$WHEREtable,$WHEREData);
 			  SendCommand($stmt,$data_library);
-		      JavaPost($PostArray,$URL); 
 	 }
 	 function UpPlan(){
 		        global $data_library,$tableName;
