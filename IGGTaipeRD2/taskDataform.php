@@ -214,7 +214,7 @@
 				   }
 			   }
 	            ChangePlan($Ecode,$Base,$up);
-			 	//ReLoad();
+			 	 ReLoad();
 	  }
 	  function ReLoad(){
 	    	   global $PostArray,$URL;
