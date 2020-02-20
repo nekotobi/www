@@ -167,7 +167,7 @@
 		  }
 		  if ($_POST["submit"]=="新增計畫"){
 			  UpPlan();
-			  return;
+			   	 ReLoad();
 		  } 
 		  if ($_POST["submit"]=="X"){
 			  DeletPlan( $_POST["code"]);
