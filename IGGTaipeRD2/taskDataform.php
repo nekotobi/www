@@ -30,7 +30,6 @@
 			   $data_library="iggtaiperd2";
 			   //type
 		       global $typeName,$typeArray,$PostArray;
-			 
 			   $subNameForWard="Type";
 			   $typeName=array(array("負責人",8),array("外包",9), array("大類別",10),array("類別",5) ,array("編輯",-1),array("顯示",-1));
 			   $typeArray=array(); 
@@ -60,24 +59,21 @@
 			   $finalTasks  =definTasks();
 		       global $Vacationdays;
 			   $Vacationdays=getMysqlDataArray("vacationdays"); 
-		
 			   global $CalendarX,$DateWid,$startY;
 			   $CalendarX=330;
 			   $DateWid=12;
 			   $startY=200;
 			   global $DateRange;
-			  // getVacationDays($YearRange,$MonthRange);
 			   $DateRange= getDateRange($finalTasks,2);
 			   global    $colorCodes;
 			   $colorCodes= GetColorCode();
-			 
-			   
       } 
       function DrawButtons(){
 		       global $URL;
 			   global $typeName,$typeArray;
 			   global $UserColor;
 			   global $principals,$Outs;
+			   global $Bigtypes;
 			   $Rect=array(20,40,60,20);
 			 //  $UserColor=array();
 			   //負責人
@@ -100,6 +96,7 @@
 			   $TypeT=filterArray(  $Typestmp,0,"data"); 
 			   $TypeS=sortArrays( $TypeT ,5 ,"true");
 			   $Type= returnArraybySort($TypeS,2);
+			   $Bigtypes=$Type;
 			   DrawButton($Type,$Rect,$URL,2,$typeArray);
 		   	   
 			   //工類
@@ -153,6 +150,10 @@
 		       global $noread;
 		       global $data_library,$tableName;
 			   global $URL;
+		       if ($_POST["submit2"]!=""){
+			 	   printSc();
+				   return;
+			   }
 		  if(		$noread=="true")return;
 		  if( $_POST["submitUp"]=="E"){
 			
@@ -182,7 +183,6 @@
 		  } 
 		  if ($_POST["Send"]=="sendjava"){
 			  CheckDrag();
-			  
 		  }
 		  if($typeArray[4][1]=="快速新增"){
 			 fastTask();
@@ -513,8 +513,7 @@
 				    DrawJavaDragArea($arr[$i],$x,$y,34,18,$BgColor,$fontColor,$id,9);
 					$x+=35;
 				}
-	  }
-	 
+	  }	 
 	 function   getRootTask($code){
 	        global  $tasksName;
 			for($i=0;$i<count($tasksName);$i++){
@@ -646,8 +645,48 @@
 					   $ValArray=array(array("Edit",$tables[$i]),array("code",$Data[1]),array("bool",$bool));
 					   sendVal($URL,$ValArray,"submit",$tables ,$Rect,10,$color, "#000000");
 	}
- 
 ?>
+<?php //列印區間完成
+       function printSc(){
+	 		  // $tasksT=getMysqlDataArray("fpschedule"); 
+			 //  $tasksT2=filterArray( $tasksT,0,"data"); 
+			 //  $tasks= RemoveArray( $tasksT2,5, "工項"); 
+			  // $tasks= RemoveArray( $tasks,5, "目標"); 
+			   echoBr(12);
+			   global $tasks, $tasksName;
+			   global  $Bigtypes;
+               $WeekDateEnd= $_POST["viewSc"];			   
+ 
+			   $Range=ReturnDateRange($WeekDateEnd);
+			   $Rangetasks=returnTaskInRang($tasks,$Range);
+               for($i=0;$i<count($Bigtypes);$i++){
+			        printType($Bigtypes[$i],$Rangetasks) ;
+			   }
+		
+			   
+	 }
+     function printType($type,$Rangetasks){
+	 	      $bool=false;
+			  for($i=0;$i<count($Rangetasks);$i++){
+				  if($Rangetasks[$i][10]==$type){
+				     $code=$Rangetasks[$i][3];
+			         $task= getRootTask($code);
+					 if(!$bool){
+					     echo "</br>"."[".$type."]" ;
+						 $bool=true;
+					 }
+					  echo "</br>";
+					 //if($type=="角色")
+						 echo"[". $Rangetasks[$i][5]."]";
+				     echo $task[3] ;
+				  }
+			   }
+			   echo "</br>";
+	 }
+    
+
+?>
+
 
 <?php //日曆
      function DrawCallendarRange(){
@@ -683,6 +722,8 @@
 			  }
 	 }
 	 function DrawDays($days,$LocX,$LocY,$w,$h,$arr,$ym){
+		      global $URL;
+		      //global $ValArray;
 		      $x=$LocX;
 			  $BgColor="#aaaaaa";
 			  $fontColor="#ffffff";
@@ -691,9 +732,11 @@
 				  $BgColor="#aaaaaa";
 				  if ($arr[$i]==1)     $BgColor="#bbaaaa";
 				  if ($arr[$i]==2)     $BgColor="#bb6666";
-			      DrawRect($i,8,$fontColor,$x,$LocY,$w-1,20,$BgColor);
-				  $id="startDay=".$ym."_".$i;
+			      $ValArray= array(array("viewSc",$ym."_".$i));
 				  
+				  sendVal($URL,$ValArray,"submit2",$i,array($x,$LocY-10,$w-1,10),8,"#222222","#222222");
+			      DrawRect($i,8,$fontColor,$x,$LocY+5,$w-1,15,$BgColor);
+				  $id="startDay=".$ym."_".$i;
 				  DrawJavaDragArea("",$x,$LocY+22,$w-1,$h*22,$BgColor,$fontColor,$id);
 				  //DrawRect("",10,"#cccccc",$x,$LocY+22,$w-1,$h*22,$BgColor);
 				  $x+=$w;

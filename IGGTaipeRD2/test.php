@@ -6,8 +6,40 @@
     include('scheduleApi.php');
 	include('javaApi.php');
 	global $data_type;
-	testBut();
-    Post2Java();
+  printSc();
+?>
+<?php
+     function printSc(){
+	 		   $tasksT=getMysqlDataArray("fpschedule"); 
+			   $tasksT2=filterArray( $tasksT,0,"data"); 
+			   $tasks= RemoveArray( $tasksT2,5, "工項"); 
+			   $tasks= RemoveArray( $tasks,5, "目標"); 
+			   global  $tasksName;
+			   $tasksName=filterArray($tasksT2,5, "工項"); 
+	
+			   $WeekDateEnd="2020_2_26";
+			   $Range=ReturnDateRange($WeekDateEnd);
+			   $Rangetasks=returnTaskInRang($tasks,$Range);
+ 
+				
+		 
+			   for($i=0;$i<count($Rangetasks);$i++){
+				   $code=$Rangetasks[$i][3];
+			       $task= getRootTask($code);
+				   echo "</br>"."[".$Rangetasks[$i][5]."]".$task[3] ;
+			   }
+			 
+	 }
+	 function   getRootTask($code){
+	        global  $tasksName;
+			for($i=0;$i<count($tasksName);$i++){
+			    if($tasksName[$i][1]==$code){
+					return $tasksName[$i] ;
+				}
+			}
+			return "ss";
+	 }
+	 
 ?>
 <?php
    function testBut(){

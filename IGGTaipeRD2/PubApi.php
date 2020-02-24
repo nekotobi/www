@@ -791,7 +791,8 @@
 		             }
 	             echo "<input type=hidden name=setCookie value=".$setCookie." >";
 		         $submitP="<input type=submit name=".$SubmitName."   value=".$SubmitVal." 
-			           style = 'width:".$Rect[2]."px; height:".$Rect[3]."px; background-color:".$BgColor." ;
+			           style = 'width:".$Rect[2]."px; height:".$Rect[3]."px; background-color:".$BgColor." ; 
+					    text-align:left;    
        	               font-size:".$size."px; font-weight:bold; border:0; color:".$fontColor.";  '/>";  
 		         echo "<div style= 'position:absolute;  top:".$Rect[1]."px; left:".$Rect[0]."px;  '>".$submitP."</div>";
 		         echo "</form>";

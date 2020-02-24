@@ -296,9 +296,74 @@
 				}
 				return array($sy,$sm,$ey,$em);
 	   }
-	   
+	   function returnUpYM($y,$m,$d){
+	      
+				if($d<=0){
+				   $m-=1;
+				   if($m<=0){
+					  $m=12;
+					  $y-=1;
+					 }
+				  $d=getMonthDay($m,$y);
+				  }
+				return array($y,$m,$d);
+	   }
+	   function ReturnFinDay($startDay,$workingDays){
+	        	$d= explode("_",$startDay); 
+	            $y=$d[0];
+			    $m=$d[1];
+			    $d=$d[2];
+				$ed=$d+$workingDays;
+				$monthEnd=getMonthDay($m,$y);
+				while ($ed>$monthEnd){
+				       $ed-=$monthEnd;
+					   $m+=1;
+					   if($m>12){
+						   $y+=1;
+						   $m=1;
+					   }
+					   	$monthEnd=getMonthDay($m,$y);
+				}
+				return $y."_".$m."_".$ed;
+	   } 
+	   function  ReturnDateRange($WeekDateEnd){
+		      $arr=array();
+			  $d=  explode("_",$WeekDateEnd);
+			  $y=$d[0];
+			  $m=$d[1];
+			  $d=$d[2];
+			  array_Push($arr,$WeekDateEnd);
+			  for($i=0;$i<6;$i++){
+				  $d=$d-1;
+				  $a=returnUpYM($y,$m,$d);
+			      $ar=$a[0]."_".$a[1]."_".$a[2];
+				  	      array_Push($arr,$ar);
+			  }
+			  return $arr;
+	 }
+ 	 function ReturnMonthRange($WeekDateEnd){
+		      $d=explode("_",$WeekDateEnd);
+			  $arr=array();
+			  array_Push($arr, $d[0]."_".$d[1]);
+			  $sd=$d[2]-6;
+			  $ar= returnUpYM($d[0],$d[1],$sd);
+			  if($ar[1]!=$d[1]){
+			     array_Push($arr, $ar[0]."_".$ar[1] );
+			  }
+			  return $arr;
+	 }
 ?>
-
+<?php //行程表用
+	 function  returnTaskInRang($tasks,$Range){
+		 	   $arr=array();
+	            for($i=0;$i<count($tasks);$i++){
+				   $endDay=ReturnFinDay($tasks[$i][2],$tasks[$i][6]);
+				    if (in_array($endDay,$Range))  array_push( $arr,$tasks[$i]);
+			    }
+			    return $arr;
+			  
+	 }
+?>
  <?php //上傳
       function AddTypeData( ){
 		       global $data_library,$tableName;
