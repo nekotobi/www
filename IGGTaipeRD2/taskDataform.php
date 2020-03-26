@@ -371,11 +371,11 @@
 				DrawRect($name,10,$fontColor,$x,$y ,179,$h,$BgColor);
 			    $sendarr=addArray($typeArray,array(array("EditCode",$code)));
 				//root
-			 	$Rect=array($x+160,$y-6,10,6);
+			 	$Rect=array($x-22,$y-4,4,17);
                 sendVal($URL,$sendarr,"submitUp","E",$Rect,4,"#997777", $fontColor);
 				//childTask
-				  $sendarr=addArray($typeArray,array(array("EditCode",$taskArray[$i][1])));
-				$Rect=array($x+160,$y+2,10,6);
+				$sendarr=addArray($typeArray,array(array("EditCode",$taskArray[$i][1])));
+				$Rect=array($x+160,$y+1,4,6);
                 sendVal($URL,$sendarr,"submitUp","E",$Rect,4,"#779977", $fontColor);
 				//jila
 				$jila=$taskArray[$i][12];
