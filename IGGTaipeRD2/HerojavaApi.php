@@ -24,6 +24,9 @@
 		event.preventDefault();
 		var DragID  = event.dataTransfer.getData("text");
 		var targetID =  event.currentTarget.id;
+		document.Show.target.value =targetID ;
+		  Show.submit();
+		/*
 	    var tx= document.getElementById( targetID).style.left;
 	    var x=tx.split("px");
 	    var tmp= DragID.split("=");
@@ -49,31 +52,9 @@
               document.Show.DragID.value=tmp[1];
 	          document.Show.workingDays.value=x3/tmp[3];
 		 }
-
-		 switch(tmp2[0]){
-		        case  "state":
-			    document.Show.state.value=tmp2[1];
-			    break;
-				 case  "principal":
-			    document.Show.principal.value=tmp2[1];
-			    break;
-				 case  "outsourcing":
-			    document.Show.outsourcing.value=tmp2[1];
-			    break;
-				 case  "type":
-			    document.Show.type.value=tmp2[1];
-			    break;
-		 
-		 }
-		 /*
-	     if( tmp2[0]=="state"){
-			 document.Show.state.value=tmp2[1];
-			 }
-		 if( tmp2[0]=="type"){
-			 document.Show.type.value=tmp2[1];
-			 }	 
-			*/ 
-           Show.submit();
+ 
+         
+		   */
 	}
     
 	function Drag(event) {
@@ -82,7 +63,7 @@
 	    if(BaseColor=="") BaseColor= document.getElementById(DragID).style.backgroundColor;
 		if(startX==0)startX= document.getElementById(DragID).style.left;
 	    y=document.getElementById(event.currentTarget.id).style.top;
-	   
+	     document.Show.DragID.value= DragID  ;
 	}
    
 	function Drop(event) {

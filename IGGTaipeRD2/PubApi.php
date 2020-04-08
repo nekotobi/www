@@ -70,6 +70,39 @@
 		  }
 		  return  $num;
 	  }
+ 	   function sortGDCodeArrays($BaseArray ,$ArrayNum ,$forwardBool){ //排列GD流水號
+  		  $newArray=array(array() );
+		  $lastSn= getLastGDSN($BaseArray ,$ArrayNum ) ; 
+		  $n=0;
+		  if($forwardBool=="true"){//正向
+		  	  for($i=0;$i<= $lastSn;$i++){
+                 $tmpArray=  GetGDArraySn($BaseArray, $ArrayNum ,$i);
+			 	 if(count($tmpArray)!=0){
+				 	 $newArray[$n ]=  $tmpArray ; 
+					 $n+=1;
+				 }
+				
+				   // $newArray=  array_merge( $newArray,$tmpArray); 
+			   
+			  } 
+		  }
+		  if($forwardBool=="false"){//逆向
+		  	  for( $i=$lastSn;$i>0;$i--){
+                 $tmpArray=  GetGDArraySn($BaseArray, $ArrayNum ,$i );
+				 if(count($tmpArray)>0)$newArray=  array_merge( $newArray,$tmpArray); 
+			  }
+		  }
+	      return  $newArray;
+	  }
+	   function  GetGDArraySn($BaseArray, $ArrayNum ,$num){//取得數字的GD編碼
+	         for($i=0;$i<count($BaseArray);$i++){
+			     $n=  returnGDCode2Int($BaseArray[$i][$ArrayNum]);
+				 if($n==$num)return $BaseArray[$i];
+			 }
+			 return null;
+	   }
+	  
+	  //======================
 	   function sortArrays($BaseArray ,$ArrayNum ,$forwardBool){
   		  $newArray=array();
 		  $lastSn=  getLastSN2($BaseArray,$ArrayNum); 
@@ -184,6 +217,20 @@
 			  }
 			  return $n;
 	  }
+	  function getLastGDSN($Arr,$SnNum){//找回含有英文編碼的最後編碼
+	      $lastSN=0;
+		  for($i=0;$i<count($Arr);$i++){
+		       $int= returnGDCode2Int( $Arr[$i][$SnNum]);
+		        if($int>$lastSN)
+				$lastSN=$int;
+		      }
+		  return $lastSN;
+	   }
+	   function returnGDCode2Int($GDcode){ // 將含有英文編碼轉成數字
+			    $s=(int) preg_replace('/[^\d]/','',  $GDcode);
+		        $int=intval($s);   
+				return $int;
+	   }
        function getLastSN2($SQLData,$SnNum){
 	      $lastSN=0;
 		  for($i=0;$i<count($SQLData);$i++){

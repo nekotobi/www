@@ -6,9 +6,36 @@
     include('scheduleApi.php');
 	include('javaApi.php');
 	global $data_type;
-  printSc();
+     TestSortGD();
 ?>
 <?php
+    function TestSortGD(){
+		global $HeroRes;
+		     $data_library="iggtaiperd2";
+			 $ResData=getMysqlDataArray("fpresdata");
+			 $HeroResT=filterArray($ResData,0,"hero");
+			 $HeroResT2=filterArray( $HeroResT,9,"");
+			 $HeroRes= sortGDCodeArrays($HeroResT2 ,2 ,"true");
+			 $remove=array("h0008","h0035");
+			 
+			 for($i=0;$i<count($HeroRes);$i++){
+				 if(in_array( $HeroRes[$i][2],  $remove)){
+				    unset($HeroRes[$i]);
+             		// array_delete($HeroRes,$HeroRes[$i]); 
+				 }
+			 }
+		    $HeroRes=	 array_values($HeroRes);
+			 	 for($i=0;$i<count($HeroRes);$i++){
+			         echo "</br>".$i.">".$HeroRes[$i][2];
+				 }
+		/*
+	      $Arr=array(array(1,"h006"),array(2,"h005"),array(2,"h001"));
+		  //$LastSN=getLastGDSN($Arr,1);
+		  $sort= sortGDCodeArrays($Arr ,1 ,"true");
+		  print_r($sort);
+		  //echo $LastSN;
+		  */
+	 }
      function printSc(){
 	 		   $tasksT=getMysqlDataArray("fpschedule"); 
 			   $tasksT2=filterArray( $tasksT,0,"data"); 
