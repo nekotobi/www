@@ -55,7 +55,8 @@
 			 $fpschedule=getMysqlDataArray("fpschedule");
 			 global $HeroSc;
 			 $HeroSc=filterArray(  $fpschedule,10,"角色");
- 
+ 		     global $StartCalendarDay;
+		     $StartCalendarDay=array( $DateRange[0],$DateRange[1],1);
    }
 ?>
 <?php //上傳區
@@ -197,9 +198,9 @@
    function returnLocX($date){
 	   	    global $CalendarX, $startY;
 		    global $DateRange;
-			$nd=array( $DateRange[0],$DateRange[1],1);
+			global $StartCalendarDay;
 	        $day = explode("_",$date);
-		    $passDay= getPassDays( $nd,$day);
+		    $passDay= getPassDays( $StartCalendarDay,$day);
 		    
 			return $passDay;
 		         
@@ -310,7 +311,7 @@
 			global $HeroSc;
 			$Hs=filterArray($HeroSc,3,$HeroData[1]);
 		    $fontColor="#ffffff";
-		    $BGColor="#aa11cc";
+		    $BGColor="#555555";
 			$LastX= $startx;
 			$upX;
 			$y+=10;
@@ -324,10 +325,7 @@
 					  $w=$x-$upX;
 					  DrawRect("",10,$fontColor,$upX,$y,$w,20,"#999999");
 					}
-				  
 					$w=$Hs[$i][6]*$DateWid;
-					
-				
 				    $BGColor= returnTypeColor($Hs[$i][5]);
 					DrawRect( $Hs[$i][5],10,$fontColor,$x,$y,$w,20, $BGColor);
 					$x+=$w;
@@ -341,7 +339,7 @@
 				if($t>$LastState)$LastState=$t;
 			}
 			//未排定
-			$states=array("設定","建模","動作","特效");
+			$states=array("設定","建模","動作","特效","InGame");
 		    if($LastState==0){
 		           $d=returnLocX(date("Y_n_j"));
 		           $LastX= $d*$DateWid+ $startx;
@@ -349,17 +347,23 @@
 	         
 			$x= $LastX;
 			for($i=$LastState;$i<count($states);$i++){
-				$BGColor=returnTypeColor2( $states[$i]);
+				$BGColor2=returnTypeColor2( $states[$i]);
 				$fontColor="#bbbbbb";
-				DrawRect( $states[$i],10,$fontColor,$x,$y,$DateWid*10,20, $BGColor);
+				DrawRect( $states[$i],10,$fontColor,$x,$y,$DateWid*10,20, $BGColor2);
 				$x+=$DateWid*10;
 			}
  
 			$y-=10;
-		    DrawRect( "" ,10,"#ffffff",$x ,$y,120,40,"#000000");
-		    DrawJavaDragPic($pic,$y+2,$x+2,36,36,$HeroData[2]);
+		    DrawRect( "" ,10,"#ffffff",$x ,$y,120,38,"#000000");
+		    DrawJavaDragPic($pic,$y+2,$x+2,34,34,$HeroData[2]);
 		  	DrawRect( $HeroData[2].$HeroData[3] ,10,"#ffffff",$x+40,$y,80,20,"#000000");
-		 	DrawRect( $LastState ,10,"#ffffff",$x+40,$y+20,40,20,"#000000");
+			//計算預計完成日
+			 global $StartCalendarDay;
+			 
+			$Passday =($x- $startx)/$DateWid;
+			$finDay= getPassDaysDay($StartCalendarDay,	$Passday);
+		    $f= "Fin[".$finDay[0]."_".$finDay[1]."_".$finDay[2]."]";
+		 	DrawRect($f,10,"#ffffff",$x+40,$y+20,78,16,$BGColor);
    }
    
  
@@ -369,16 +373,17 @@
             return $pic;
    }
     function returnTypeColor($type){
-       if($type=="設定")return "#552222";
-       if($type=="建模")return "#555522";
-       if($type=="動作")return "#225555";
-       if($type=="特效")return "#222255";
+       if($type=="設定")return "#662222";
+       if($type=="建模")return "#666622";
+       if($type=="動作")return "#226666";
+       if($type=="特效")return "#222266";
    }
    function returnTypeColor2($type){
        if($type=="設定")return "#998888";
        if($type=="建模")return "#999988";
        if($type=="動作")return "#889999";
        if($type=="特效")return "#888899";
+	   if($type=="InGame")return "#777799";
    }
 ?>
 <?php //快速表單
