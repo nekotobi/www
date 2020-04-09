@@ -109,7 +109,20 @@
 			}
 			$params=$params."}";
 		    $javaCom=  "post_to_url('".$URL."', ".$params.");";
-            echo " <script language='JavaScript'>".$javaCom."</script>"; 
+           //echo $javaCom;
+		   echo " <script language='JavaScript'>".$javaCom."</script>"; 
+      }
+	  function JavaPostArray($PostArray,$URL){
+			$params="{";
+			for($i=0;$i<count($PostArray);$i++){
+				$n=$PostArray[$i];
+			    $params=$params."'".$PostArray[$i][0]."':'".$PostArray[$i][1]."'";
+				if(count($PostArray)>1) $params=$params.",";
+			}
+			$params=$params."}";
+		    $javaCom=  "post_to_url('".$URL."', ".$params.");";
+         //  echo $javaCom;
+	      echo " <script language='JavaScript'>".$javaCom."</script>"; 
       }
 ?>
 <?php  //Drag  

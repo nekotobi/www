@@ -7,18 +7,17 @@
    include('PubApi.php');
    include('CalendarApi.php');  
    include('mysqlApi.php');
-   //include('scheduleApi.php');
    include('HerojavaApi.php');
-
    defineData_schedule();
-   submitCont();
    DrawTitle();
    DrawDragHeros();
    DrawCallendarRange();
+  // DrawButtons();
    DrawEvents();
    CreatJavaForm();
    ListProgressHeros();
-  // ListHero() ;
+   submitCont();
+   
 ?>
 
 <?php //主要資料
@@ -57,11 +56,55 @@
 			 $HeroSc=filterArray(  $fpschedule,10,"角色");
  		     global $StartCalendarDay;
 		     $StartCalendarDay=array( $DateRange[0],$DateRange[1],1);
+			 //高度
+			 global  $maxHeight;
+			 $maxHeight = GetMaxHeros($EventDatas);
+			 //post陣列
+			 global $typeArray;
+			 global $WebPostRecData;
+			// $WebPostRecData=array();
+			 $typeArray=array(array());
    }
 ?>
-<?php //上傳區
- 
-   
+<?php //submitCont
+     function submitCont(){
+		      global $data_library,$tableName;
+			  global $URL;
+		      echo ">". $_POST["submitUp"];
+              if($_POST["DragID"]!=""){
+			  	 if( $_POST["DragID"]!="DragIDs" &&   $_POST["target"]!= "target") 
+	                  UPEdit();
+			  }
+		 	  if ($_POST["submitUp"]!="" ){
+			      $code=$_POST["code"];
+				  $postArray=array(array("code", $code),array("submitUp","xxxx"));
+			      DrawMysQLEdit($data_library,$tableName,$code,$URL,$PostArray,"修改資料",9);
+		      }
+			  if ($_POST["submit"]=="修改表單"){
+				   $code=$_POST["code"];
+				   upMysQLEdit($data_library,$tableName,$code,$URL,$PostArray ,"code" ,"ver");
+				   ReLoad();
+			  }
+			  if($_POST["submitNew"]!=""){
+                  AddEvent();
+			  }
+	 }
+	 function DrawButtons(){
+		      global $URL;
+			  global $finalTasks;
+			  global $CalendarX, $startY;
+			  global $EventDatas;
+	    
+			  $x=20;
+			  echo $startY;
+			  $y= $startY;
+		
+		
+	 }
+     function ReLoad(){
+	    	   global $PostArray,$URL;
+			   JavaPostArray($PostArray,$URL); 
+	  }
 ?>
 <?php //隱藏/取得進度
     function filterQueued( ){ //去掉已排入英雄
@@ -82,12 +125,14 @@
 	         $EventHerosSTR= returnInEventHeros($EventDatas);
 			 $EventHeros=explode("_", $EventHerosSTR) ;
 			 $OnProgressHeros=array();
+	 		
 	         for($i=0;$i<count( $EventHeros) ;$i++){
 				 $hr=filterArray( $HeroRes,2,$EventHeros[$i]);
 			     if(strpos( $hr[0][8],'已完成') ==false){
 				 array_push($OnProgressHeros,$hr[0]);
 			   }
 			 }
+			 
 			 return  $OnProgressHeros;
 	}
 	function returnInEventHeros($EventDatas){
@@ -97,6 +142,15 @@
 			 }
 			 return $str;
 	}
+	function GetMaxHeros($EventDatas){
+		     $maxHeight=0;
+		     for($i=0;$i<count($EventDatas);$i++){
+				  $EventHeros=explode("_", $EventDatas[$i][6]) ;
+				//  echo ">".count($EventHeros);
+				  if($maxHeight<count($EventHeros))  $maxHeight=count($EventHeros);
+		     }
+			 return $maxHeight;
+	}
 ?>
 <?php //列印
    function DrawTitle(){
@@ -104,10 +158,37 @@
    }
    function DrawEvents(){
             global $EventDatas;
+		    global $CalendarX, $startY;
+			global $maxHeight;
+			DrawRect( $start."-".$end,10,$fontColor,$CalendarX,$startY,1440,($maxHeight+1)*64+20,"#c5d4c1");
 			for($i=0;$i<count($EventDatas);$i++){
                 DrawSingelEvent($EventDatas[$i],$i);
 			}
-   } 
+    } 
+   function DrawSingelEvent($EventData,$i  ){
+		    global $DateWid;
+	   	    global $CalendarX, $startY;
+			global $typeArray,$URL;
+		    $BgColor="#222222";
+			$fontColor="#ffffff";
+			$LocY=$startY;
+   		    $LocX= (returnLocX($EventData[4])*$DateWid)+$CalendarX;
+			$passDay= getPassDays( explode("_",$EventData[4]) ,explode("_",$EventData[5]));
+			$w= $passDay*$DateWid;
+			//標題
+			$sendarr=addArray($typeArray,array(array("code",$EventData[9]) ));
+			sendVal($URL,$sendarr,"submitUp",$EventData[3],array($LocX,$LocY,$w,20),10,$BgColor, $fontColor);
+		   // DrawRect($EventData[3],10,$fontColor,$LocX,$LocY,$w,20,$BgColor);
+			//日期
+			$LocY+=20;
+			$currentYear= date("y")."_";
+			$start= str_replace($currentYear,'',$EventData[4]);
+			$end=str_replace($currentYear,'',$EventData[5]);
+		    DrawRect( $start."-".$end,10,$fontColor,$LocX,$LocY,$w,20,"#555555");
+			$LocY+=20;
+		    //拖曳區
+           	DrawMatDatas($EventData,$i,$LocX,$LocY,$w,$h );
+   }
    function DrawDragHeros(){
 	        global  $QueuedHerosData;
 		   	global $CalendarX, $startY;
@@ -129,7 +210,7 @@
 				    $y+=$h+12;
 				}
 			}
-            $startY+=$y+20  ;
+            $startY+=$y  ;
    }
    function DrawHeroProgress($HeroData,$x,$y,$w,$h){
 		     $BgColor="#222222";
@@ -146,35 +227,13 @@
 			 }
 	 
 	}
-   function DrawSingelEvent($EventData,$i  ){
-		    global $DateWid;
-	   	    global $CalendarX, $startY;
-		    $BgColor="#222222";
-			$fontColor="#ffffff";
-			$LocY=$startY;
-   		    $LocX= (returnLocX($EventData[4])*$DateWid)+$CalendarX;
-			$passDay= getPassDays( explode("_",$EventData[4]) ,explode("_",$EventData[5]));
-			$w= $passDay*$DateWid;
-			//標題
-		    DrawRect($EventData[3],10,$fontColor,$LocX,$LocY,$w,20,$BgColor);
-			//日期
-			$LocY+=20;
-			$currentYear= date("y")."_";
-			$start= str_replace($currentYear,'',$EventData[4]);
-			$end=str_replace($currentYear,'',$EventData[5]);
-		    DrawRect( $start."-".$end,10,$fontColor,$LocX,$LocY,$w,20,"#555555");
-			$LocY+=20;
-		    //拖曳區
-           	DrawMatDatas($EventData,$i,$LocX,$LocY,$w,$h );
-		    
-   }
    function DrawMatDatas($EventData,$i,$LocX,$LocY,$w,$h ){
             global $HeroRes;
 			global $LargeY;//記錄高度
 			$heroH=64;
 			$heros=explode("_",$EventData[6]) ;
 			$id="E_".$EventData[2];
-			$h=count($heros)*$heroH+10;
+			$h=(count($heros))*$heroH +40;
 	        if($h>$LargeY)$LargeY=$h;
 		    DrawJavaDragArea("",$LocX,$LocY,$w,$h,"#999999",$fontColor,$id);
 			//英雄區
@@ -195,22 +254,14 @@
 		    DrawJavaDragArea("",$LocX,$y,$w,20,$BgColor,$fontColor,$id);;
 			 */
    }
-   function returnLocX($date){
-	   	    global $CalendarX, $startY;
-		    global $DateRange;
-			global $StartCalendarDay;
-	        $day = explode("_",$date);
-		    $passDay= getPassDays( $StartCalendarDay,$day);
-		    
-			return $passDay;
-		         
-   }
    function DrawCallendarRange(){
 		      global $finalTasks;
 			  global $CalendarX, $startY;
 			  global $DateWid;
 			  global $DateRange;
 			  global $Vacationdays;
+			  global $EventDatas;
+			  global $URL;
 			  $BgColor="#555555";
 			  $fontColor="#ffffff";
 		      $y=$DateRange[0];
@@ -218,54 +269,22 @@
 			  $Ey=$DateRange[2];
 			  $Em=$DateRange[3];
 			  $LocX=  $CalendarX;
-			  $LocY=  $startY;
+		      $LocY=  $startY;
 			  $sdate=$y."_".$m;
 			  $fdate=$DateRange[2]."_".$DateRange[3];
 			  while ($sdate!=$fdate){
 				    $days=getMonthDay($m,$y);
-			        DrawRect($m,10,$fontColor,$LocX,$LocY-20,$days* $DateWid-1,20,$BgColor);
+				    $w=$days* $DateWid-1;
+			        DrawRect($m,10,$fontColor,$LocX,$LocY ,$w,20,$BgColor);
+					$sendarr= array(array("eventSn",count($EventDatas)+1 ) ,array("newM",$m));
+			        sendVal($URL,$sendarr,"submitNew","+",array($LocX+$w-20,$LocY+1,18,18),10,"#662222","#993333");
 					$LocX+=$days* $DateWid;
 					$m+=1;
 				    $sdate=$y."_".$m;
 			  }
-			  $days=getMonthDay($m,$y);
-					
-			  /*
-			  $sdate="";
-			  $fdate=$DateRange[2]."_".$DateRange[3];
-			
-		
-			  $t=0;
-			  while ($sdate!=$fdate){
-				     $days=getMonthDay($m,$y);
-					 DrawRect($m,10,$fontColor,$LocX,$LocY-20,$days* $DateWid-1,20,$BgColor);
-					 $arr=  ReturnVacationDays($y,$m,$Vacationdays);
-					 DrawDays($days,$LocX,$LocY ,$DateWid,count($finalTasks), $arr,$y."_".$m);
-					 $sdate=$y."_".$m;
-					 if($sdate==$fdate)break;
-					 $m+=1;
-					 if($m>12){
-						 $y+=1;
-					 $m=1;
-					 }
-			        $t++;
-					if($t>12)break;
-					$LocX+=$days* $DateWid;
-			  }
-			  */
+			  $days=getMonthDay($m,$y);		
+	 	      $startY+=20;
 	 }
-   function ListHero() {
-	        global $HeroRes;
-			$x=20;
-			$y=100;
-			$w=64;
-			$h=64;
-			$Layer=1;
-            for($i=0;$i<count($HeroRes);$i++){
-			    DrawHero($x,$y,$w,$h,$HeroRes[$i]);
-			    $y+=70;
-			}
-   }
    function DrawHero($x,$y,$w,$h,$HeroData){
             $pic=getPicLink($HeroData[2]);
 			$BGColor=returnColor($HeroData[11]);
@@ -280,13 +299,7 @@
 			}
 		 
    }
-   function returnColor($ChineseColor){
-	   if($ChineseColor=="紅")return "#cc1111";
-	   if($ChineseColor=="藍")return "#11aacc";
-	   if($ChineseColor=="綠")return "#11cc11";
-	   if($ChineseColor=="紫")return "#aa11cc";
-	    return "#000000";
-   }
+
    function ListProgressHeros(){
             global $OnProgressHeros;
 			global $startY;
@@ -301,7 +314,6 @@
 	     		}
 			}
    }
-
    function DrawEventHeroProgress($HeroData,$y){
 	        global $DateWid;
 	   	    $startx=20;
@@ -365,14 +377,33 @@
 		    $f= "Fin[".$finDay[0]."_".$finDay[1]."_".$finDay[2]."]";
 		 	DrawRect($f,10,"#ffffff",$x+40,$y+20,78,16,$BGColor);
    }
-   
- 
+
+
+?>
+<?php //function
+   function returnLocX($date){
+	   	    global $CalendarX, $startY;
+		    global $DateRange;
+			global $StartCalendarDay;
+	        $day = explode("_",$date);
+		    $passDay= getPassDays( $StartCalendarDay,$day);
+		    
+			return $passDay;
+		         
+   }
    function getPicLink($GDcode){
             $pic="ResourceData/hero/viewPic/".$GDcode.".png";
 		    if(!file_exists($pic))$pic="Pics/nopic.png";
             return $pic;
    }
-    function returnTypeColor($type){
+   function returnColor($ChineseColor){
+	   if($ChineseColor=="紅")return "#cc1111";
+	   if($ChineseColor=="藍")return "#11aacc";
+	   if($ChineseColor=="綠")return "#11cc11";
+	   if($ChineseColor=="紫")return "#aa11cc";
+	    return "#000000";
+   }
+   function returnTypeColor($type){
        if($type=="設定")return "#662222";
        if($type=="建模")return "#666622";
        if($type=="動作")return "#226666";
@@ -385,18 +416,27 @@
        if($type=="特效")return "#888899";
 	   if($type=="InGame")return "#777799";
    }
+
 ?>
 <?php //快速表單
-     function submitCont(){
-		
-			//  if( $_POST["DragID"]=="" &&   $_POST["target"]!= "target"){
-				if($_POST["DragID"]=="")return;
-			    if( $_POST["DragID"]!="DragIDs" &&   $_POST["target"]!= "target"){
-			 
-				    UPEdit();
-			  }
-			  
-	 }		
+	 function AddEvent(){
+	          global $data_library,$tableName;
+			  global $PostArray,$URL;
+			  $code=returnDataCode( );
+			  $sd=date("Y")."_".$_POST["newM"]."_1";
+			   $ed=date("Y")."_".$_POST["newM"]."_28";
+			  $sendVal=array(
+			           "data_type"=>"ver",
+			           "Ver"=>"1.".$_POST["eventSn"].".0",
+			           "EventSerialNum"=>$_POST["eventSn"],
+					   "EventName"=>"未定",
+					   "EventStartDay"=>$sd,
+					   "EventEndDay"=>$ed,
+					   "code"=>$code);
+			  FastAddMysQLData($data_library,$tableName,$code,$URL,$sendVal);
+              $PostArray=array(array("submitUp","cc"),array("code",$code));
+		      ReLoad();
+	 }
 	 function UPEdit(){
 	          global $EventDatas;
 			  global $URL;
@@ -414,7 +454,6 @@
 			  JavaPost($PostArray,$URL);
 			//  echo " <script language='JavaScript'>".$URL."</script>"; 
 	 }
-	 
 	 function ReturnHeros($BaseStr,$AddHero){
 	          $strs= explode("_",$BaseStr);
 			  $Rs="";
@@ -432,8 +471,7 @@
 				   $Rs=$Rs.$AddHero ;
 			  }
 			  return $Rs;
-	 }
-	 
+	 } 
      function CreatJavaForm(){
 		      $x=1920;
 			  $y=10;
@@ -451,5 +489,21 @@
 	                          );			 
 		      upSubmitform($upFormVal,$UpHidenVal, $inputVal);
 	 }
+?>
+<?php //不用
+/*
+   function ListHero() {
+	        global $HeroRes;
+			$x=20;
+			$y=100;
+			$w=64;
+			$h=64;
+			$Layer=1;
+            for($i=0;$i<count($HeroRes);$i++){
+			    DrawHero($x,$y,$w,$h,$HeroRes[$i]);
+			    $y+=70;
+			}
+   }
+   */
 ?>
 <body bgcolor="#b5c4b1">

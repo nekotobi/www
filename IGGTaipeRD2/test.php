@@ -6,9 +6,16 @@
     include('scheduleApi.php');
 	include('javaApi.php');
 	global $data_type;
-     TestSortGD();
+  //  testNewAdd();
 ?>
 <?php
+    function testNewAdd(){
+	            $data_library="iggtaiperd2";
+			    $tableName="vtevent";
+			 	$code=returnDataCode( );
+				$sendVal=array("EventSerialNum"=>"4","code"=>$code,"EventName"=>"未定","data_type"=>"ver");
+				FastAddMysQLData($data_library,$tableName,$code,$URL,$sendVal);
+	}
     function TestSortGD(){
 		global $HeroRes;
 		     $data_library="iggtaiperd2";
@@ -17,7 +24,6 @@
 			 $HeroResT2=filterArray( $HeroResT,9,"");
 			 $HeroRes= sortGDCodeArrays($HeroResT2 ,2 ,"true");
 			 $remove=array("h0008","h0035");
-			 
 			 for($i=0;$i<count($HeroRes);$i++){
 				 if(in_array( $HeroRes[$i][2],  $remove)){
 				    unset($HeroRes[$i]);

@@ -140,11 +140,11 @@
 ?>
 
 <?php //fastForm
-     function upMysQLEdit($data_library,$tableName,$code,$URL,$PostArray ){
+     function upMysQLEdit($data_library,$tableName,$code,$URL,$PostArray,$codeName="code",$data_type="data" ){
 	 		  require_once ('PubApi.php');
 	          $tables=returnTables($data_library ,$tableName); 
-		      $WHEREtable=array( "data_type", "code" );
-		      $WHEREData=array( "data",$code);
+		      $WHEREtable=array( "data_type", $codeName );
+		      $WHEREData=array( $data_type,$code);
 			  $Base=array();
 			  $up=array();
 			  for($i=0;$i<count($tables);$i++){
@@ -152,14 +152,15 @@
 			     array_push( $up,$_POST[$tables[$i]]);
 			  }
 			  $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
-			  SendCommand($stmt,$data_library);	
+			  //echo $stmt;
+			   SendCommand($stmt,$data_library);	
 	 }
-     function DrawMysQLEdit($data_library,$tableName,$code,$URL,$PostArray,$title){
+     function DrawMysQLEdit($data_library,$tableName,$code,$URL,$PostArray,$title,$filterNum=1){
 		      require_once ('PubApi.php');
 	          $tables=returnTables($data_library ,$tableName); 
 			  $base=getMysqlArray($data_library,$tableName);
-			  $data=filterArray($base,1,$code);
-			  echo ">".count($tables);
+			  $data=filterArray($base,$filterNum,$code);
+			//  echo ">".count($tables);
 			  $x=100;
 			  $y=100;
 			  $w=300;
@@ -171,6 +172,7 @@
 	          $upFormVal=array("EditTask","EditTask",$URL);
 			  $UpHidenVal=array(array("code",$code));
 			  $UpHidenVal=	addArray( $UpHidenVal,$PostArray);	
+			  print_r($UpHidenVal);
 			  $inputVal=array();
 			  for($i=0;$i<count($tables);$i++){
 				  $n=$tables[$i];
@@ -185,7 +187,20 @@
 			  upSubmitform($upFormVal,$UpHidenVal, $inputVal);
 			  
 	 }
-
+     function FastAddMysQLData($data_library,$tableName,$code,$URL,$sendVal){
+	          require_once ('PubApi.php');
+	          $tables=returnTables($data_library ,$tableName); 
+			  $WHEREtable=$tables;
+			  //print_r($sendVal);
+			  $WHEREData=array();
+			  for($i=0;$i<count($WHEREtable);$i++){
+				  array_push($WHEREData,$sendVal[ $WHEREtable[$i]]);
+			  }
+			  
+			  $stmt= MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
+			  //echo $stmt;
+			   SendCommand($stmt,$data_library);
+	 }
 ?>
 
 <?php //Stmt
@@ -263,6 +278,6 @@
 			  if($i!=(count($WHEREData)-1)) $stmt=$stmt.",";
 		   }
 		   $stmt=$stmt.");";
-          return $stmt;
+         return $stmt;
 	  }
 ?>

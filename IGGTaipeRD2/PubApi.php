@@ -217,7 +217,7 @@
 			  }
 			  return $n;
 	  }
-	  function getLastGDSN($Arr,$SnNum){//找回含有英文編碼的最後編碼
+	   function getLastGDSN($Arr,$SnNum){//找回含有英文編碼的最後編碼
 	      $lastSN=0;
 		  for($i=0;$i<count($Arr);$i++){
 		       $int= returnGDCode2Int( $Arr[$i][$SnNum]);
