@@ -21,6 +21,7 @@
 <?php //主要資料
    function  defineData(){
              defineData_Base();
+			 defineData_schedule();
 			 defineData_mats();
    }
    function  defineData_Base(){
@@ -45,36 +46,57 @@
 			// $WebPostRecData=array();
 			 $typeArray=array(array());
    }
-   function defineData_mats(){
-             global $HeroRes; 
-			 $ResData=getMysqlDataArray("fpresdata");
-			 $HeroResT=filterArray($ResData,0,"hero");
-			 $HeroResT2=filterArray( $HeroResT,9,"");
-			 $HeroRes= sortGDCodeArrays($HeroResT2 ,2 ,"true");
-			 global $EventDatas;
-			 $EventDatasT=getMysqlDataArray("vtevent");
-			 $EventDatas=filterArray($EventDatasT,0,"ver");
-			  //去掉已排入英雄
-		     global $QueuedHerosData;
-			 filterQueued();
-			 //排定進度英雄
-	         global $OnProgressHeros;
-			 $OnProgressHeros=collectUnFinHeros();
-			 //排定怪物
-			 global $MobRes;
-		 	 $MobResT=filterArray($ResData,0,"mob");
-			 $MobResT2=filterArray( $MobResT,9,"");
-			 $MobRes= sortGDCodeArrays($MobResT2 ,2 ,"true");
-		     //行程表
+   function defineData_schedule(){
+             //行程表
 			 global $fpschedule;
 			 $fpschedule=getMysqlDataArray("fpschedule");
 			 global $HeroSc;
-			 $HeroSc=filterArray(  $fpschedule,10,"角色");
- 		     global $mobSc;
+			 $HeroSc=filterArray(  $fpschedule,10,"角色"); 
+		     global $mobSc;
 			 $mobSc=filterArray(  $fpschedule,10,"怪物");
+			 global $AllSchedule;
+			 $AllSchedule=$HeroSc;
+			 $AllSchedule=addArray( $AllSchedule,$mobSc);
+   
+   }
+   
+   function defineData_mats(){
+			 //活動表
+	   		 global $EventDatas;
+			 $EventDatasT=getMysqlDataArray("vtevent");
+			 $EventDatas=filterArray($EventDatasT,0,"ver");
+			 //所有素材字串
+			 global $InEventMats;
+			 $InEventMats=returnInEventMats($EventDatas);
 			 //高度
 			 global  $maxHeight;
-			 $maxHeight = GetMaxHeros($EventDatas);
+			 $maxHeight = GetMaxHeight($EventDatas);
+			 //英雄素材=========================================
+             global $HeroRes; 
+			 $ResData=getMysqlDataArray("fpresdata");
+			 $HeroResT=filterArray($ResData,0,"hero");
+			 $HeroResT2=filterArray( $HeroResT,13,"");
+			 $HeroRes= sortGDCodeArrays($HeroResT2 ,2 ,"true");
+			 //怪物素材=========================================
+			 global $MobRes;
+		 	 $MobResT=filterArray($ResData,0,"mob");
+			 $MobResT2=filterArray( $MobResT,13,"");
+			 $MobRes= sortGDCodeArrays($MobResT2 ,2,"true");
+			 
+			 //所有素材陣列
+             $AllMatRes=$HeroRes;	 
+		  	 $AllMatRes=addArray($AllMatRes,$MobRes);
+			  
+			  
+		    
+		     //去掉已排入英雄
+		     global $QueuedHerosData;
+			 $QueuedHerosData= filterQueuedMat($HeroRes);
+			 
+			 //排定進度英雄
+	         global $OnProgressMats;
+			 $OnProgressMats=collectUnFinMats( $AllMatRes);
+
    }
  
 ?>
@@ -89,11 +111,11 @@
 			  }
 			  if($type=="Hero"){
 				 global $QueuedHerosData;
-			     global $OnProgressHeros;
-				 $OnProgressHeros=array();
+			     global $OnProgressMats;
+				 $OnProgressMats=array();
 				 for($i=0;$i<count( $QueuedHerosData);$i++){
-				   if(strpos( $QueuedHerosData[$i][8],'已完成') ==false)
-					   array_push($OnProgressHeros,$QueuedHerosData[$i]);
+				   if(strpos(  $QueuedHerosData[$i][8],'已完成') ==false)
+					   array_push($OnProgressMats,$QueuedHerosData[$i]);
 				 }
 				 ListProgressHeros();
 			  }
@@ -150,6 +172,25 @@
 	  }
 ?>
 <?php //隱藏/取得進度
+    function filterQueuedMat($matData){ //去掉已排入素材
+			 global $InEventMats; 
+			 for($i=0;$i<count($matData)-1;$i++){
+			      if(in_array( $matData[$i][2],  $InEventMats))unset( $matData[$i]);
+			 }
+			 return  array_values($matData);
+	}
+    function collectUnFinMats($matData){
+             global $InEventMats;
+			 $OnProgressMats=array();
+	         for($i=0;$i<count($InEventMats) ;$i++){
+				 $hr=filterArray( $matData,2,$InEventMats[$i]);
+			     if(strpos( $hr[0][8],'已完成') ==false){
+				 array_push( $OnProgressMats,$hr[0]);
+			   }
+			 }
+			 return   $OnProgressMats;
+	}
+/*
     function filterQueued( ){ //去掉已排入英雄
 	         global $EventDatas;
 		     global $QueuedHerosData;
@@ -162,30 +203,17 @@
 			 }
 			 $QueuedHerosData=array_values(  $QueuedHerosData);
 	}
-    function collectUnFinHeros(){
-		     global $EventDatas;
-			 global $HeroRes;
-	         $EventHerosSTR= returnInEventHeros($EventDatas);
-			 $EventHeros=explode("_", $EventHerosSTR) ;
-			 $OnProgressHeros=array();
-	 		
-	         for($i=0;$i<count( $EventHeros) ;$i++){
-				 $hr=filterArray( $HeroRes,2,$EventHeros[$i]);
-			     if(strpos( $hr[0][8],'已完成') ==false){
-				 array_push($OnProgressHeros,$hr[0]);
-			   }
-			 }
-			 
-			 return  $OnProgressHeros;
-	}
-	function returnInEventHeros($EventDatas){
+
+
+		*/
+	function returnInEventMats($EventDatas){
 	         $str="";
 			 for($i=0;$i<count($EventDatas);$i++){
 				 $str= $str.$EventDatas[$i][6]."_";
 			 }
-			 return $str;
+			 return explode("_",$str) ;
 	}
-	function GetMaxHeros($EventDatas){
+	function GetMaxHeight($EventDatas){
 		     $maxHeight=0;
 		     for($i=0;$i<count($EventDatas);$i++){
 				  $EventHeros=explode("_", $EventDatas[$i][6]) ;
@@ -233,6 +261,49 @@
 			$LocY+=20;
 		    //拖曳區
            	DrawMatDatas($EventData,$i,$LocX,$LocY,$w,$h );
+   }
+    function DrawMatDatas($EventData,$i,$LocX,$LocY,$w,$h ){
+            global $HeroRes;
+			global $MobRes;
+			global $LargeY;//記錄高度
+			$heroH=64;
+			$mats=explode("_",$EventData[6]) ;
+			$id="E_".$EventData[2];
+			$h=(count($mats))*$heroH +40;
+	        if($h>$LargeY)$LargeY=$h;
+		    DrawJavaDragArea("",$LocX,$LocY,$w,$h,"#999999",$fontColor,$id);
+			//英雄區
+			$x=$LocX+8;
+			$y=$LocY+4;
+			for($i=0;$i<count($mats);$i++){
+				if($mats[$i]!=""){
+				   $t=substr($mats[$i],0,1);
+				   $datas=$HeroRes;
+				   $type="hero";
+				   if($t=="m"){
+					   $datas=$MobRes;
+					   $type="mob";
+				   }
+				   $matData=filterArray( $datas,2, $mats[$i]);
+				   Drawmat($x,$y,$heroH,$heroH, $matData[0],$type);
+				   $y+=$heroH+8;
+				}
+			}
+ 
+   }
+    function Drawmat($x,$y,$w,$h,$matData,$type){
+            $pic=getPicLink($matData[2],$type);
+			$BGColor=returnColor($matData[11]);
+			DrawRect("",$fontSize,$fontColor,$x-2,$y-2,$w+4,$h+4,$BGColor);
+			DrawJavaDragPic($pic,$y+2,$x+2,$w-4,$h-4,$matData[2]);
+		//	DrawPic_Layer($pic,$x+2,$y+2,$w-4,$h-4,$Layer);
+			$msg=$matData[2].$matData[3];
+			DrawRect($msg,10,"#ffffff",$x-2,$y+52,$w+4,14,$BGColor);
+			$pic="Pics/construction.png";
+		    if(strpos($matData[8],'已完成') ==false){
+				DrawPic_Layer($pic,$x+$w-30,$y,32,32,$Layer);
+			}
+		 
    }
    function DrawAllDragMats(){
 	        global $QueuedHerosData;
@@ -282,33 +353,7 @@
 			 }
 	 
 	}
-   function DrawMatDatas($EventData,$i,$LocX,$LocY,$w,$h ){
-            global $HeroRes;
-			global $LargeY;//記錄高度
-			$heroH=64;
-			$heros=explode("_",$EventData[6]) ;
-			$id="E_".$EventData[2];
-			$h=(count($heros))*$heroH +40;
-	        if($h>$LargeY)$LargeY=$h;
-		    DrawJavaDragArea("",$LocX,$LocY,$w,$h,"#999999",$fontColor,$id);
-			//英雄區
-			$x=$LocX+8;
-			$y=$LocY+4;
-			for($i=0;$i<count($heros);$i++){
-				if($heros[$i]!=""){
-				  $HeroData=filterArray( $HeroRes,2,$heros[$i]);
-				DrawHero($x,$y,$heroH,$heroH, $HeroData[0]);
-				$y+=$heroH+8;
-				}
-			}
-			/*
-			//移除
-			$BgColor="#aa6666";
-			$id="D_".$i;
-			$y+=56;
-		    DrawJavaDragArea("",$LocX,$y,$w,20,$BgColor,$fontColor,$id);;
-			 */
-   }
+
    function DrawCallendarRange(){
 		      global $finalTasks;
 			  global $CalendarX, $startY;
@@ -340,43 +385,30 @@
 			  $days=getMonthDay($m,$y);		
 	 	      $startY+=20;
 	 }
-   function DrawHero($x,$y,$w,$h,$HeroData){
-            $pic=getPicLink($HeroData[2],"Hero");
-			$BGColor=returnColor($HeroData[11]);
-			DrawRect("",$fontSize,$fontColor,$x-2,$y-2,$w+4,$h+4,$BGColor);
-			DrawJavaDragPic($pic,$y+2,$x+2,$w-4,$h-4,$HeroData[2]);
-		//	DrawPic_Layer($pic,$x+2,$y+2,$w-4,$h-4,$Layer);
-			$msg=$HeroData[2].$HeroData[3];
-			DrawRect($msg,10,"#ffffff",$x-2,$y+52,$w+4,14,$BGColor);
-			$pic="Pics/construction.png";
-		    if(strpos($HeroData[8],'已完成') ==false){
-				DrawPic_Layer($pic,$x+$w-30,$y,32,32,$Layer);
-			}
-		 
-   }
+
    function ListProgressHeros(){
-            global $OnProgressHeros;
+            global $OnProgressMats;
 			global $startY;
 			global $DateWid;
 			global $LargeY;
 			if($LargeY=="")$LargeY=-30;
 			$y= $startY+$LargeY;
 		 	$w=40;
-			for($i=0;$i<count($OnProgressHeros);$i++){
-			   if($OnProgressHeros[$i]!=""){
+			for($i=0;$i<count($OnProgressMats);$i++){
+			   if($OnProgressMats[$i]!=""){
 				  $y+=$w  ;
-			      DrawEventHeroProgress($OnProgressHeros[$i],$y);
+			      DrawEventMatProgress($OnProgressMats[$i],$y);
 	     		}
 			}
    }
-   function DrawEventHeroProgress($HeroData,$y){
+   function DrawEventMatProgress($matData,$y){
 	        global $DateWid;
 	   	    $startx=20;
             $w=40;
 			$h=40;
-            $pic= getPicLink($HeroData[2],"Hero");
-			global $HeroSc;
-			$Hs=filterArray($HeroSc,3,$HeroData[1]);
+            $pic= getPicLink($matData[2],"Hero");
+			global  $AllSchedule;//$HeroSc;
+			$Hs=filterArray( $AllSchedule,3,$matData[1]);
 		    $fontColor="#ffffff";
 		    $BGColor="#555555";
 			$LastX= $startx;
@@ -411,7 +443,6 @@
 		           $d=returnLocX(date("Y_n_j"));
 		           $LastX= $d*$DateWid+ $startx;
      		}
-	         
 			$x= $LastX;
 			for($i=$LastState;$i<count($states);$i++){
 				$BGColor2=returnTypeColor2( $states[$i]);
@@ -422,8 +453,8 @@
  
 			$y-=10;
 		    DrawRect( "" ,10,"#ffffff",$x ,$y,120,38,"#000000");
-		    DrawJavaDragPic($pic,$y+2,$x+2,34,34,$HeroData[2]);
-		  	DrawRect( $HeroData[2].$HeroData[3] ,10,"#ffffff",$x+40,$y,80,20,"#000000");
+		    DrawJavaDragPic($pic,$y+2,$x+2,34,34,$matData[2]);
+		  	DrawRect( $matData[2].$matData[3] ,10,"#ffffff",$x+40,$y,80,20,"#000000");
 			//計算預計完成日
 			 global $StartCalendarDay;
 			 
@@ -447,6 +478,9 @@
 		         
    }
    function getPicLink($GDcode,$MatType){
+	        $t=substr($GDcode,0,1);
+			$MatType="hero";
+			if($t=="m")	$MatType="mob";
             $pic="ResourceData/".$MatType."/viewPic/".$GDcode.".png";
 		    if(!file_exists($pic))$pic="Pics/nopic.png";
             return $pic;
