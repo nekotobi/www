@@ -38,24 +38,26 @@
 			$y=20;
 		    $input=	MakeSelectionV2($tables,$selectable,"selectable",10);
 		    DrawInputRect("表單列表",10,"#222222",$x,$y,$w,$h,$BgColor,$WorldAlign,$input);
-	
-	 
 			$x=200;
             $submitP="<input type=submit name=submit value=搜尋 style= font-size:10px; >";
 	        DrawInputRect("",8 ,"#ffffff",$x,$y,$w,$h, $colorCodes[4][2],"top",$submitP);
-
 		    echo "</form>";
-			
 		    echo   "<form id='ChangeOut2'  name='Show2' action='".$exportURL."' method='post'>";
-			 $x=20;
-			 $y+=20;
-			 echo $data_library;  
-			     echo   "<input type=hidden name=data_library value=".$data_library.">";
+			$x=20;
+			$y+=20;
+			echo $data_library;  
+			 //過濾
+		    $input2="<input id='filternum'  type=text name=filterNum    size=10>";
+	        DrawInputRect("過濾欄位編號","10","#000000",$x,$y+40,$w,$h, "#aaaaaa","top",$input2);
+			//過濾內容
+		    $input3="<input id='checkName'  type=text name=checkName  size=10>";
+	        DrawInputRect("過濾內容","10","#000000",$x+200,$y+40,$w,$h, "#aaaaaa","top",$input3);
+		    echo   "<input type=hidden name=data_library value=".$data_library.">";
                      DrawInputRect("表單列表",10,"#222222",$x,$y,$w,$h,$BgColor,$WorldAlign,$input);			
 			         $x+=  200;
                      $submitP="<input type=submit name=submit value=輸出 style= font-size:10px; >";
 	                 DrawInputRect("",8 ,"#ffffff",$x,$y,$w,$h, $colorCodes[4][2],"top",$submitP);
-		  echo "</form>";
+		    echo "</form>";
 	}
  
 ?>

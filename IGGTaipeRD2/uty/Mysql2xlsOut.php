@@ -1,25 +1,26 @@
 <?php
        require_once dirname(dirname(dirname(__FILE__))) .'/phpexcel/Classes/PHPExcel.php';
 	   require_once 'xlsApi.php';
-       OutExcel();
+     OutExcel();
+	 //  OutExceltest();
+  function OutExceltest(){
+	  echo $_POST['selectable']; 
+      echo $_POST['filterNum'];
+	   echo "</br>";
+     echo	$_POST['checkName'];
+  }
  function OutExcel(){
-	 	     global  $selectable;
-			  global $data_library;
-	         $data_library=  $_POST['data_library'];
-	        
-			 $selectable=$_POST['selectable']; 
-		
-			// echo "xx";
-            // echo $data_library;
-			//   echo $selectable;
-			// return;
-			 $tables=  returnTables($data_library ,$selectable);
-		
+	 	    global  $selectable;
+		    global $data_library;
+	        $data_library=  $_POST['data_library'];
+            $selectable=$_POST['selectable']; 
+	        $tables=  returnTables($data_library ,$selectable);
 			$tableDatas=getMysqlDataArray($selectable); 
-		
+			if($_POST['filterNum']!=""){
+			$tableDatas=filterArray($tableDatas,$_POST['filterNum'],$_POST['checkName']);
+			}
 		    $objPHPExcel = new PHPExcel();
             $objPHPExcel->setActiveSheetIndex(0)  ;
-			
 			//97-122 chr($a);
 			$f=count($tableDatas)+97;
 		    for($i=97;$i<$f;$i++){
@@ -34,8 +35,7 @@
 			
 	 	    for($i=0;$i<count($tables);$i++){
 			    $area=getAreaA($i)."2";
-	    
-			     setCellStyle($objPHPExcel,$tables[$i],$area,"10",'center',"",$area); 
+	            setCellStyle($objPHPExcel,$tables[$i],$area,"10",'center',"",$area); 
 		    }
 			 
 		 

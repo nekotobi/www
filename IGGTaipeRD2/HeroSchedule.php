@@ -21,10 +21,8 @@
 <?php //主要資料
    function  defineData(){
              defineData_Base();
-			  defineData_mats();
-			// defineData_schedule();
+			 defineData_mats();
    }
-
    function  defineData_Base(){
 	         global $data_library,$tableName;
 		     $data_library="iggtaiperd2";
@@ -47,7 +45,7 @@
 			// $WebPostRecData=array();
 			 $typeArray=array(array());
    }
- function defineData_mats(){
+   function defineData_mats(){
              global $HeroRes; 
 			 $ResData=getMysqlDataArray("fpresdata");
 			 $HeroResT=filterArray($ResData,0,"hero");
@@ -73,7 +71,7 @@
 			 global $HeroSc;
 			 $HeroSc=filterArray(  $fpschedule,10,"角色");
  		     global $mobSc;
-			 $HeroSc=filterArray(  $fpschedule,10,"怪物");
+			 $mobSc=filterArray(  $fpschedule,10,"怪物");
 			 //高度
 			 global  $maxHeight;
 			 $maxHeight = GetMaxHeros($EventDatas);
