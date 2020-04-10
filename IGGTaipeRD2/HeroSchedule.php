@@ -8,20 +8,24 @@
    include('CalendarApi.php');  
    include('mysqlApi.php');
    include('HerojavaApi.php');
-   defineData_schedule();
+   defineData();
    DrawTitle();
-   DrawDragHeros();
+   DrawButtons();
+   DrawAllDragMats();
    DrawCallendarRange();
-  // DrawButtons();
-   DrawEvents();
-   CreatJavaForm();
-   ListProgressHeros();
+   typeCont();
    submitCont();
    
 ?>
 
 <?php //主要資料
-   function  defineData_schedule(){
+   function  defineData(){
+             defineData_Base();
+			  defineData_mats();
+			// defineData_schedule();
+   }
+
+   function  defineData_Base(){
 	         global $data_library,$tableName;
 		     $data_library="iggtaiperd2";
 			 $tableName="vtevent";
@@ -29,13 +33,22 @@
              $URL="HeroSchedule.php";
 	         global $CalendarX, $startY;
 		     $CalendarX=20;
-			 $startY=80;
+			 $startY=40;
+			 //日期
 			 global $DateRange;
 			 $DateRange=array(2020,4,2020,12);
+		     global $StartCalendarDay;
+		     $StartCalendarDay=array( $DateRange[0],$DateRange[1],1);
 			 global $DateWid;
 			 $DateWid=6;
-             global $HeroRes;
-		     $data_library="iggtaiperd2";
+			 //post陣列
+			 global $typeArray;
+			 global $WebPostRecData;
+			// $WebPostRecData=array();
+			 $typeArray=array(array());
+   }
+ function defineData_mats(){
+             global $HeroRes; 
 			 $ResData=getMysqlDataArray("fpresdata");
 			 $HeroResT=filterArray($ResData,0,"hero");
 			 $HeroResT2=filterArray( $HeroResT,9,"");
@@ -49,28 +62,48 @@
 			 //排定進度英雄
 	         global $OnProgressHeros;
 			 $OnProgressHeros=collectUnFinHeros();
-			 //行程表
+			 //排定怪物
+			 global $MobRes;
+		 	 $MobResT=filterArray($ResData,0,"mob");
+			 $MobResT2=filterArray( $MobResT,9,"");
+			 $MobRes= sortGDCodeArrays($MobResT2 ,2 ,"true");
+		     //行程表
 			 global $fpschedule;
 			 $fpschedule=getMysqlDataArray("fpschedule");
 			 global $HeroSc;
 			 $HeroSc=filterArray(  $fpschedule,10,"角色");
- 		     global $StartCalendarDay;
-		     $StartCalendarDay=array( $DateRange[0],$DateRange[1],1);
+ 		     global $mobSc;
+			 $HeroSc=filterArray(  $fpschedule,10,"怪物");
 			 //高度
 			 global  $maxHeight;
 			 $maxHeight = GetMaxHeros($EventDatas);
-			 //post陣列
-			 global $typeArray;
-			 global $WebPostRecData;
-			// $WebPostRecData=array();
-			 $typeArray=array(array());
    }
+ 
 ?>
 <?php //submitCont
+     function typeCont(){
+	          $type=$_POST["type"];
+			  if($type=="")$type="Event";
+			  if($type=="Event"   ){
+			     DrawEvents();
+                 CreatJavaForm();
+                 ListProgressHeros();
+			  }
+			  if($type=="Hero"){
+				 global $QueuedHerosData;
+			     global $OnProgressHeros;
+				 $OnProgressHeros=array();
+				 for($i=0;$i<count( $QueuedHerosData);$i++){
+				   if(strpos( $QueuedHerosData[$i][8],'已完成') ==false)
+					   array_push($OnProgressHeros,$QueuedHerosData[$i]);
+				 }
+				 ListProgressHeros();
+			  }
+	 }
      function submitCont(){
 		      global $data_library,$tableName;
 			  global $URL;
-		      echo ">". $_POST["submitUp"];
+		      //echo ">". $_POST["submitUp"];
               if($_POST["DragID"]!=""){
 			  	 if( $_POST["DragID"]!="DragIDs" &&   $_POST["target"]!= "target") 
 	                  UPEdit();
@@ -94,11 +127,23 @@
 			  global $finalTasks;
 			  global $CalendarX, $startY;
 			  global $EventDatas;
-	    
-			  $x=20;
-			  echo $startY;
-			  $y= $startY;
-		
+			  $LocX= $CalendarX+300;
+              $LocY=  $startY+8;
+			  $w=80;
+			  $type=$_POST["type"];
+			  if($type=="")$type="Event";
+			  $typeArray=array(array("Event","活動排程"),
+			                   array("Hero","英雄排程"));
+							   //array("mob","scene");
+			  for($i=0;$i<count($typeArray);$i++){
+			  	  $BgColor="#aaaaaa";
+				  $fontColor="#000000";
+			      if($type==$typeArray[$i][0])$BgColor="#ffaaaa";
+				   $sendarr= array(array("type",$typeArray[$i][0]) ) ;
+		           sendVal($URL,$sendarr,"change",$typeArray[$i][1],array($LocX,$LocY,$w,18),10,$BgColor, $fontColor);
+				   $LocX+=5+$w;
+			  }
+		      $startY+=35;
 		
 	 }
      function ReLoad(){
@@ -146,7 +191,6 @@
 		     $maxHeight=0;
 		     for($i=0;$i<count($EventDatas);$i++){
 				  $EventHeros=explode("_", $EventDatas[$i][6]) ;
-				//  echo ">".count($EventHeros);
 				  if($maxHeight<count($EventHeros))  $maxHeight=count($EventHeros);
 		     }
 			 return $maxHeight;
@@ -154,7 +198,10 @@
 ?>
 <?php //列印
    function DrawTitle(){
-            DrawRect("英雄進度及活動對照表",24,"#ffffff",20,40,1400,30,"#222222");
+	        global $startY;
+			 DrawRect("",16,"#ffffff",20,$startY,1400,30,"#222222");
+			DrawRect("  英雄進度及活動對照表",18,"#ffffff",20,$startY,200,30,"#222222");
+           
    }
    function DrawEvents(){
             global $EventDatas;
@@ -169,7 +216,7 @@
 		    global $DateWid;
 	   	    global $CalendarX, $startY;
 			global $typeArray,$URL;
-		    $BgColor="#222222";
+		    $BgColor="#333333";
 			$fontColor="#ffffff";
 			$LocY=$startY;
    		    $LocX= (returnLocX($EventData[4])*$DateWid)+$CalendarX;
@@ -189,28 +236,38 @@
 		    //拖曳區
            	DrawMatDatas($EventData,$i,$LocX,$LocY,$w,$h );
    }
-   function DrawDragHeros(){
-	        global  $QueuedHerosData;
-		   	global $CalendarX, $startY;
+   function DrawAllDragMats(){
+	        global $QueuedHerosData;
+	        DrawDragMat($QueuedHerosData,"Hero");
+			global $MobRes;
+	        DrawDragMat($MobRes,"Mob");
+    }
+   function DrawDragMat($matDatas,$MatType){    
+		   	global  $CalendarX, $startY;
 			$x=20;
-			$y=$startY;
+			//$y=$startY;
 			$w=40;
 			$h=40;
-			$Layer=1;
 		    $BgColor="#222222";
-            for($i=0;$i<count( $QueuedHerosData);$i++){
-				$id= $QueuedHerosData[$i][2];
-			    $pic=getPicLink($QueuedHerosData[$i][2] );
-			    DrawJavaDragPic($pic,$y,$x,$w,$h,$id);
-				DrawRect($id,10,"#ffffff",$x,$y+28,$w,14,$BgColor);
-				DrawHeroProgress( $QueuedHerosData[$i],$x,$y,$w,$h);
+		    DrawRect("未使用區",10,"#ffffff",$x, $startY ,$w,50,$BgColor);
+			$x+=$w;
+            for($i=0;$i<count( $matDatas);$i++){
+                DragSingleMat($matDatas[$i],$x, $startY,$w,$h,$MatType);
 			    $x+=$w;
 				if($x>1400){
 					$x=20;
-				    $y+=$h+12;
+				    $startY+=$h+2;
 				}
 			}
-            $startY+=$y  ;
+            $startY+=$h+15;
+   }
+   function DragSingleMat($data,$x,$y,$w,$h,$MatType){
+	        $BgColor="#222222";
+   			$id= $data [2];
+			$pic=getPicLink($data [2],$MatType );
+			DrawJavaDragPic($pic,$y,$x,$w,$h,$id);
+		    DrawRect($id,10,"#ffffff",$x,$y+28,$w,14,$BgColor);
+		    DrawHeroProgress( $data ,$x,$y,$w,$h);
    }
    function DrawHeroProgress($HeroData,$x,$y,$w,$h){
 		     $BgColor="#222222";
@@ -218,7 +275,7 @@
 			 //$w=1;
 			 DrawRect("",10,"#ffffff",$x,$y,$w,10,$BgColor);
 			 for($i=0;$i<4;$i++){
-				 	    $BgColor="#117711";
+				  $BgColor="#117711";
 			      if($HeroData[$i+5]!="" && $HeroData[$i+5]!=">"){
 				 	 if(strpos($HeroData[$i+5],'已完成') !== false) $BgColor="#99ff99";
 				      DrawRect("",10,"#ffffff",($x+1+$i*10),$y+1,9,8,$BgColor);
@@ -262,7 +319,7 @@
 			  global $Vacationdays;
 			  global $EventDatas;
 			  global $URL;
-			  $BgColor="#555555";
+			  $BgColor="#222222";
 			  $fontColor="#ffffff";
 		      $y=$DateRange[0];
 			  $m=$DateRange[1];
@@ -286,7 +343,7 @@
 	 	      $startY+=20;
 	 }
    function DrawHero($x,$y,$w,$h,$HeroData){
-            $pic=getPicLink($HeroData[2]);
+            $pic=getPicLink($HeroData[2],"Hero");
 			$BGColor=returnColor($HeroData[11]);
 			DrawRect("",$fontSize,$fontColor,$x-2,$y-2,$w+4,$h+4,$BGColor);
 			DrawJavaDragPic($pic,$y+2,$x+2,$w-4,$h-4,$HeroData[2]);
@@ -299,12 +356,12 @@
 			}
 		 
    }
-
    function ListProgressHeros(){
             global $OnProgressHeros;
 			global $startY;
 			global $DateWid;
 			global $LargeY;
+			if($LargeY=="")$LargeY=-30;
 			$y= $startY+$LargeY;
 		 	$w=40;
 			for($i=0;$i<count($OnProgressHeros);$i++){
@@ -319,7 +376,7 @@
 	   	    $startx=20;
             $w=40;
 			$h=40;
-            $pic= getPicLink($HeroData[2]);
+            $pic= getPicLink($HeroData[2],"Hero");
 			global $HeroSc;
 			$Hs=filterArray($HeroSc,3,$HeroData[1]);
 		    $fontColor="#ffffff";
@@ -391,8 +448,8 @@
 			return $passDay;
 		         
    }
-   function getPicLink($GDcode){
-            $pic="ResourceData/hero/viewPic/".$GDcode.".png";
+   function getPicLink($GDcode,$MatType){
+            $pic="ResourceData/".$MatType."/viewPic/".$GDcode.".png";
 		    if(!file_exists($pic))$pic="Pics/nopic.png";
             return $pic;
    }
