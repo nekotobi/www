@@ -300,7 +300,7 @@
 					  $s=explode("_",$type2);
 					  if(count($s)==1) $data =filterArray($ResData,12,$type2);
 					  if($s[0]=="G") $data =filterArray($ResData,14,$s[1]);
-		              if($s[0]=="S")   $data =filterArray($ResData,13,$s[1]);
+		              if($s[0]=="S")   $data =filterArray($ResData,9,$s[1]);
 		        	  if($s[0]=="C")   $data =filterArray($ResData,11,$s[1]);
 					  if($s[0]=="T")   $data =filterArray($ResData,10,$s[1]);
 				      return $data;
