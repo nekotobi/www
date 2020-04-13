@@ -45,6 +45,10 @@
 			 global $WebPostRecData;
 			// $WebPostRecData=array();
 			 $typeArray=array(array());
+			 //mats
+		     global  $matX,$matY;
+			 $matX=20;
+			 $matY=80;
    }
    function defineData_schedule(){
              //行程表
@@ -68,12 +72,13 @@
 			 //所有素材字串
 			 global $InEventMats;
 			 $InEventMats=returnInEventMats($EventDatas);
+			 
 			 //高度
 			 global  $maxHeight;
 			 $maxHeight = GetMaxHeight($EventDatas);
 			 //英雄素材=========================================
+		     $ResData=getMysqlDataArray("fpresdata");
              global $HeroRes; 
-			 $ResData=getMysqlDataArray("fpresdata");
 			 $HeroResT=filterArray($ResData,0,"hero");
 			 $HeroResT2=filterArray( $HeroResT,13,"");
 			 $HeroRes= sortGDCodeArrays($HeroResT2 ,2 ,"true");
@@ -82,16 +87,28 @@
 		 	 $MobResT=filterArray($ResData,0,"mob");
 			 $MobResT2=filterArray( $MobResT,13,"");
 			 $MobRes= sortGDCodeArrays($MobResT2 ,2,"true");
+			 //Boss素材=========================================
+			 global $BossRes;
+		 	 $BossResT=filterArray($ResData,0,"boss");
+			 $BossResT2=filterArray( $BossResT,13,"");
+			 $BossRes= sortGDCodeArrays($BossResT2 ,2,"true");
+			 
 			 
 			 //所有素材陣列
              $AllMatRes=$HeroRes;	 
 		  	 $AllMatRes=addArray($AllMatRes,$MobRes);
-			  
+		     $AllMatRes=addArray($AllMatRes,$BossRes);
 			  
 		    
 		     //去掉已排入英雄
 		     global $QueuedHerosData;
 			 $QueuedHerosData= filterQueuedMat($HeroRes);
+		     //去掉已排入怪物
+		     global $QueuedMobData;
+			 $QueuedMobData= filterQueuedMat($MobRes);
+			 //去掉已排入boss
+			  global $QueuedBossData;
+			 $QueuedBossData= filterQueuedMat($BossRes);
 			 
 			 //排定進度英雄
 	         global $OnProgressMats;
@@ -174,8 +191,10 @@
 <?php //隱藏/取得進度
     function filterQueuedMat($matData){ //去掉已排入素材
 			 global $InEventMats; 
-			 for($i=0;$i<count($matData)-1;$i++){
-			      if(in_array( $matData[$i][2],  $InEventMats))unset( $matData[$i]);
+			 for($i=0;$i<count($matData) ;$i++){   
+			      if(in_array( $matData[$i][2],  $InEventMats)){
+					  unset( $matData[$i]);
+				  }
 			 }
 			 return  array_values($matData);
 	}
@@ -190,22 +209,7 @@
 			 }
 			 return   $OnProgressMats;
 	}
-/*
-    function filterQueued( ){ //去掉已排入英雄
-	         global $EventDatas;
-		     global $QueuedHerosData;
-			 $str= returnInEventHeros($EventDatas);
-			 $QueuedHeros=explode("_",$str) ;
-			 global $HeroRes;
-			 $QueuedHerosData=$HeroRes;
-			 for($i=0;$i<count($QueuedHerosData)-1;$i++){
-			      if(in_array( $QueuedHerosData[$i][2],  $QueuedHeros))unset( $QueuedHerosData[$i]);
-			 }
-			 $QueuedHerosData=array_values(  $QueuedHerosData);
-	}
-
-
-		*/
+ 
 	function returnInEventMats($EventDatas){
 	         $str="";
 			 for($i=0;$i<count($EventDatas);$i++){
@@ -265,6 +269,7 @@
     function DrawMatDatas($EventData,$i,$LocX,$LocY,$w,$h ){
             global $HeroRes;
 			global $MobRes;
+		    global $BossRes;
 			global $LargeY;//記錄高度
 			$heroH=64;
 			$mats=explode("_",$EventData[6]) ;
@@ -283,6 +288,10 @@
 				   if($t=="m"){
 					   $datas=$MobRes;
 					   $type="mob";
+				   }
+				   if($t=="b"){
+					   $datas=$BossRes;
+					   $type="boss";
 				   }
 				   $matData=filterArray( $datas,2, $mats[$i]);
 				   Drawmat($x,$y,$heroH,$heroH, $matData[0],$type);
@@ -308,27 +317,38 @@
    function DrawAllDragMats(){
 	        global $QueuedHerosData;
 	        DrawDragMat($QueuedHerosData,"Hero");
-			global $MobRes;
-	        DrawDragMat($MobRes,"Mob");
+			global $QueuedMobData;
+	        DrawDragMat($QueuedMobData,"Mob");
+		    global $QueuedBossData;
+	        DrawDragMat($QueuedBossData,"boss");
+			global  $matX,$matY;
+		    global  $CalendarX, $startY;
+	        $startY=$matY+55;
     }
    function DrawDragMat($matDatas,$MatType){    
 		   	global  $CalendarX, $startY;
-			$x=20;
-			//$y=$startY;
+			global  $matX,$matY;
 			$w=40;
 			$h=40;
 		    $BgColor="#222222";
-		    DrawRect("未使用區",10,"#ffffff",$x, $startY ,$w,50,$BgColor);
-			$x+=$w;
+            if($MatType=="Mob"){
+			    $matX=20;
+			    $matY+=$h+20;
+			}
+		    DrawRect($MatType ,10,"#ffffff",$matX, $matY,$w,50,$BgColor);
+		    DrawRect("(x".count($matDatas).")" ,10,"#ffffff",$matX+3, $matY+33,$w-7,10,"#882222");
+			$matX+=$w;
+
             for($i=0;$i<count( $matDatas);$i++){
-                DragSingleMat($matDatas[$i],$x, $startY,$w,$h,$MatType);
-			    $x+=$w;
-				if($x>1400){
-					$x=20;
-				    $startY+=$h+2;
+                DragSingleMat($matDatas[$i],$matX, $matY,$w,$h,$MatType);
+			    $matX+=$w;
+				if( $matX>1400){
+					$matX=20;
+				    $matY+=$h+2;
 				}
 			}
-            $startY+=$h+15;
+			$matX+=20;
+         
    }
    function DragSingleMat($data,$x,$y,$w,$h,$MatType){
 	        $BgColor="#222222";
@@ -481,6 +501,7 @@
 	        $t=substr($GDcode,0,1);
 			$MatType="hero";
 			if($t=="m")	$MatType="mob";
+		    if($t=="b")	$MatType="boss";
             $pic="ResourceData/".$MatType."/viewPic/".$GDcode.".png";
 		    if(!file_exists($pic))$pic="Pics/nopic.png";
             return $pic;
