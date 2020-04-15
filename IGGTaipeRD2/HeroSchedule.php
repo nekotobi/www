@@ -58,10 +58,16 @@
 			 $HeroSc=filterArray(  $fpschedule,10,"角色"); 
 		     global $mobSc;
 			 $mobSc=filterArray(  $fpschedule,10,"怪物");
+		     global $bossSc;
+			 $mobSc=filterArray(  $fpschedule,10,"召喚獸王");
+			 global $eventSc;
+			 $eventSc=filterArray(  $fpschedule,10,"活動");
 			 global $AllSchedule;
 			 $AllSchedule=$HeroSc;
 			 $AllSchedule=addArray( $AllSchedule,$mobSc);
-   
+             $AllSchedule=addArray( $AllSchedule,$bossSc);
+			 $AllSchedule=addArray( $AllSchedule,$eventSc);
+			 
    }
    
    function defineData_mats(){
@@ -76,8 +82,9 @@
 			 //高度
 			 global  $maxHeight;
 			 $maxHeight = GetMaxHeight($EventDatas);
+			 $ResData=getMysqlDataArray("fpresdata");
 			 //英雄素材=========================================
-		     $ResData=getMysqlDataArray("fpresdata");
+		   
              global $HeroRes; 
 			 $HeroResT=filterArray($ResData,0,"hero");
 			 $HeroResT2=filterArray( $HeroResT,13,"");
@@ -92,13 +99,19 @@
 		 	 $BossResT=filterArray($ResData,0,"boss");
 			 $BossResT2=filterArray( $BossResT,13,"");
 			 $BossRes= sortGDCodeArrays($BossResT2 ,2,"true");
+			 //Event素材=========================================
+			 global $EventRes;
+		 	 $EventResT=filterArray($ResData,0,"event");
+			 $EventResT2=filterArray( $EventResT,13,"");
+			 $EventRes= sortGDCodeArrays( $EventResT2 ,2,"true");
+			 
 			 
 			 
 			 //所有素材陣列
              $AllMatRes=$HeroRes;	 
 		  	 $AllMatRes=addArray($AllMatRes,$MobRes);
 		     $AllMatRes=addArray($AllMatRes,$BossRes);
-			  
+		     $AllMatRes=addArray($AllMatRes,$EventRes);
 		    
 		     //去掉已排入英雄
 		     global $QueuedHerosData;
@@ -107,9 +120,11 @@
 		     global $QueuedMobData;
 			 $QueuedMobData= filterQueuedMat($MobRes);
 			 //去掉已排入boss
-			  global $QueuedBossData;
+			 global $QueuedBossData;
 			 $QueuedBossData= filterQueuedMat($BossRes);
-			 
+			 //去掉已排入event
+			 global $QueuedEventData;
+			 $QueuedEventData= filterQueuedMat($EventRes);
 			 //排定進度英雄
 	         global $OnProgressMats;
 			 $OnProgressMats=collectUnFinMats( $AllMatRes);
@@ -266,10 +281,11 @@
 		    //拖曳區
            	DrawMatDatas($EventData,$i,$LocX,$LocY,$w,$h );
    }
-    function DrawMatDatas($EventData,$i,$LocX,$LocY,$w,$h ){
+   function DrawMatDatas($EventData,$i,$LocX,$LocY,$w,$h ){
             global $HeroRes;
 			global $MobRes;
 		    global $BossRes;
+			global $EventRes;
 			global $LargeY;//記錄高度
 			$heroH=64;
 			$mats=explode("_",$EventData[6]) ;
@@ -284,24 +300,24 @@
 				if($mats[$i]!=""){
 				   $t=substr($mats[$i],0,1);
 				   $datas=$HeroRes;
-				   $type="hero";
 				   if($t=="m"){
 					   $datas=$MobRes;
-					   $type="mob";
 				   }
 				   if($t=="b"){
 					   $datas=$BossRes;
-					   $type="boss";
+				   }
+				   if($t=="e"){
+					   $datas=$EventRes;
 				   }
 				   $matData=filterArray( $datas,2, $mats[$i]);
-				   Drawmat($x,$y,$heroH,$heroH, $matData[0],$type);
+				   Drawmat($x,$y,$heroH,$heroH, $matData[0]);
 				   $y+=$heroH+8;
 				}
 			}
  
    }
-    function Drawmat($x,$y,$w,$h,$matData,$type){
-            $pic=getPicLink($matData[2],$type);
+   function Drawmat($x,$y,$w,$h,$matData){
+            $pic=getPicLink($matData[2]);
 			$BGColor=returnColor($matData[11]);
 			DrawRect("",$fontSize,$fontColor,$x-2,$y-2,$w+4,$h+4,$BGColor);
 			DrawJavaDragPic($pic,$y+2,$x+2,$w-4,$h-4,$matData[2]);
@@ -321,6 +337,8 @@
 	        DrawDragMat($QueuedMobData,"Mob");
 		    global $QueuedBossData;
 	        DrawDragMat($QueuedBossData,"boss");
+			global $QueuedEventData;
+	        DrawDragMat($QueuedEventData,"event");
 			global  $matX,$matY;
 		    global  $CalendarX, $startY;
 	        $startY=$matY+55;
@@ -351,24 +369,40 @@
          
    }
    function DragSingleMat($data,$x,$y,$w,$h,$MatType){
+	    
 	        $BgColor="#222222";
    			$id= $data [2];
-			$pic=getPicLink($data [2],$MatType );
+			$pic=getPicLink($data [2]);
 			DrawJavaDragPic($pic,$y,$x,$w,$h,$id);
-		    DrawRect($id,10,"#ffffff",$x,$y+28,$w,14,$BgColor);
-		    DrawHeroProgress( $data ,$x,$y,$w,$h);
+		
+		    DrawRect($data[3],9,"#ffffff",$x,$y+28,$w,14,$BgColor);
+		    DrawMatProgress( $data ,$x,$y,$w,$h,$MatType);
+			DrawRect($data[2],7,"#cccccc",$x,$y+45 ,$w,8,$BgColor);
    }
-   function DrawHeroProgress($HeroData,$x,$y,$w,$h){
+   function DrawMatProgress($HeroData,$x,$y,$w,$h,$MatType){
 		     $BgColor="#222222";
 			 $y+=$w;
 			 //$w=1;
 			 DrawRect("",10,"#ffffff",$x,$y,$w,10,$BgColor);
+			 if($MatType=="event"){
+				 $s=0;
+				for($i=0;$i<4;$i++){
+					if($i!=2){
+					  $BgColor="#117711";
+			          if($HeroData[$i+5]!="" && $HeroData[$i+5]!=">"){
+				 	     if(strpos($HeroData[$i+5],'已完成') !== false) $BgColor="#99ff99";
+				          DrawRect("",10,"#ffffff",($x+1+$s*14),$y+1,11,8,$BgColor);
+					    }
+						$s+=1;
+				     }
+			    }
+				return;
+			 }
 			 for($i=0;$i<4;$i++){
 				  $BgColor="#117711";
 			      if($HeroData[$i+5]!="" && $HeroData[$i+5]!=">"){
 				 	 if(strpos($HeroData[$i+5],'已完成') !== false) $BgColor="#99ff99";
 				      DrawRect("",10,"#ffffff",($x+1+$i*10),$y+1,9,8,$BgColor);
-					// }
 				 }
 			 }
 	 
@@ -426,7 +460,8 @@
 	   	    $startx=20;
             $w=40;
 			$h=40;
-            $pic= getPicLink($matData[2],"Hero");
+            $pic= getPicLink($matData[2]);
+		    $matType=returnMatType($matData[2]);
 			global  $AllSchedule;//$HeroSc;
 			$Hs=filterArray( $AllSchedule,3,$matData[1]);
 		    $fontColor="#ffffff";
@@ -435,6 +470,7 @@
 			$upX;
 			$y+=10;
 			$LastState=0;
+	
 			//表單中的
 			for($i=0;$i<count($Hs);$i++){
 				$d=returnLocX($Hs[$i][2]);
@@ -458,17 +494,21 @@
 				if($t>$LastState)$LastState=$t;
 			}
 			//未排定
-			$states=array("設定","建模","動作","特效","InGame");
+			$states=array(array("設定",10),array("建模",10),array("動作",10),array("特效",6),array("InGame",5));
+			if($matType=="event"){
+			   $states=array(array("設定",10),array("建模",30)  ,array("特效",6) );
+			   if($t==2)$t==3;
+			}
 		    if($LastState==0){
 		           $d=returnLocX(date("Y_n_j"));
 		           $LastX= $d*$DateWid+ $startx;
      		}
 			$x= $LastX;
 			for($i=$LastState;$i<count($states);$i++){
-				$BGColor2=returnTypeColor2( $states[$i]);
+				$BGColor2=returnTypeColor2( $states[$i][0]);
 				$fontColor="#bbbbbb";
-				DrawRect( $states[$i],10,$fontColor,$x,$y,$DateWid*10,20, $BGColor2);
-				$x+=$DateWid*10;
+				DrawRect( $states[$i][0],10,$fontColor,$x,$y,$DateWid*$states[$i][1],20, $BGColor2);
+				$x+=$DateWid*$states[$i][1];
 			}
  
 			$y-=10;
@@ -497,14 +537,19 @@
 			return $passDay;
 		         
    }
-   function getPicLink($GDcode,$MatType){
-	        $t=substr($GDcode,0,1);
-			$MatType="hero";
-			if($t=="m")	$MatType="mob";
-		    if($t=="b")	$MatType="boss";
+   function getPicLink($GDcode){
+	        $MatType= returnMatType($GDcode);
             $pic="ResourceData/".$MatType."/viewPic/".$GDcode.".png";
 		    if(!file_exists($pic))$pic="Pics/nopic.png";
             return $pic;
+   }
+   function returnMatType($GDcode){
+            $t=substr($GDcode,0,1);
+			$MatType="hero";
+			if($t=="m")	$MatType="mob";
+		    if($t=="b")	$MatType="boss";
+		    if($t=="e")	$MatType="event";
+			return $MatType;
    }
    function returnColor($ChineseColor){
 	   if($ChineseColor=="紅")return "#cc1111";

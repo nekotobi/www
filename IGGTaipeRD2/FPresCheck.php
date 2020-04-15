@@ -62,7 +62,7 @@
 					   array("小怪","mob"),
 					   array("boss&召喚獸" ,"boss"),
 					   array("場景" ,"stage"),
-					//   array("分派" ,"assign")
+					   array("活動" ,"event")
 			   );
 			  global $type2Title;
 	       	  CreateTitle2( );
@@ -73,7 +73,14 @@
 						  array("動作","7"),
 						  array("VFX","8"),	  
 	          );
-		 
+		      if($_POST["type2"]=="event"){
+			  	  $type3Title=array(
+			              array("-","-"),
+						      array("設定","5"),
+							        array("3D","6"),
+									      array("VFX","7"),
+						  );
+			  }
 			
 		 	  global $CookieArray;
 			  global $ScheduleData, $ScheduleDataPlan  ;
@@ -336,7 +343,6 @@
 			  return $a;
 	 }
 	 function ListMilestoneAll(){
-		    //  echo "XX";
 	          $data = getMileData();
 			  $x=20;
 			  global  $yloc;
@@ -422,7 +428,7 @@
 				  return;
 			  }
               for($i=0;$i<2;$i++)  if($_COOKIE[$CookieArray[$i]]=="")return;
-              $xlsPath=getXlsPath();
+               $xlsPath=getXlsPath();
 			  global  $Percentage;
 			  $Percentage=array(0,0,0,0);
 			  $size= filterArray( $ResData,0,"size");
@@ -435,11 +441,10 @@
 			  $data= $ResDatafi;
  		      for($i=0;$i<count($data);$i++){
 				  //內容
-			     DrawRect("",11,$fontColor,$Rect[0],$Rect[1],400,100,"#000000");
+			      DrawRect("",11,$fontColor,$Rect[0],$Rect[1],400,100,"#000000");
 			     DrawSingle($data[$i],$Rect,$ListArray,$size[0],$xlsPath[$i]);
-	           //  if($Up!="" && $Up!="_" )   DrawRect("",11,$fontColor,$Rect[0]+200,$Rect[1],900,100,"#000000");
-			     if($Up=="ViewPic")  UpPic($Rect,$i,$data);  //上傳圖檔
-				 if($Up=="Edit")   setWork($data[$i],$Rect[1]+32); //工作資訊
+			      if($Up=="ViewPic")  UpPic($Rect,$i,$data);  //上傳圖檔
+				  if($Up=="Edit")   setWork($data[$i],$Rect[1]+32); //工作資訊
 			  	  $Rect[1]+=104;
 			  }
 			  if($Up=="ViewPic") $submit ="<input type=submit name=submit value=上傳>";
@@ -506,6 +511,7 @@
 			  
 		      if($type1=="mob") $st="怪物";
 			  if($type1=="boss") $st="召喚獸王";
+			  if($type1=="event") $st="活動";
 			  $stmp= getMysqlDataArray("fpschedule");
 			  $ScheduleData  =  filterArray($stmp,5,"工項");
 			  $code=  returnCode($ScheduleData, $data[2]);
@@ -535,11 +541,11 @@
 					  array_push($sendArrays,array("code",$Ecode));
 					  array_push($sendArrays,array("type",$Worktype[$i]));
 					  array_push($sendArrays,array("plan", $code));
+			 
 					  sendInputHiddenVal($sendArrays);
 					//  echo $Worktype[$i]. count ($s);
-				    if(  $sc[9]!="")   DrawRect("",11,$fontColor,$x,$y,510,20,"#aa7777");
-					if(  $sc[7]=="已完成")   DrawRect("",11,$fontColor,$x,$y,510,20,"#77aa77");
-		
+				      if(  $sc[9]!="")   DrawRect("",11,$fontColor,$x,$y,510,20,"#aa7777");
+					  if(  $sc[7]=="已完成")   DrawRect("",11,$fontColor,$x,$y,510,20,"#77aa77");
 					  $out=trim($sc[9]); 
 					  //"startDay","principal","outsourcing","workingDays"
                       $selectTable= MakeSelectionV2($OutsData, $out,"outsourcing", $size);
@@ -593,6 +599,7 @@
 			  $dir="hero";
 			  if(strpos($Base[2],'m') !== false)$dir="mob";
 			  if(strpos($Base[2],'b') !== false)$dir="boss";
+			  if(strpos($Base[2],'e') !== false)$dir="event";
 			  $pic="ResourceData/".$dir."/viewPic/".$Base[2].".png";
 			  $p=0;
 			  $newFileName=$Base[2]."_".$Base[3]."_".$Base[4];
@@ -603,12 +610,9 @@
 				  $p=1;
 			  }	
 			  if( strpos($Base[5],"完成") !== false    )$p=1;
-			   $Percentage[0]+=$p;
-			  //max
-			//  $max="ResourceData/".$dir."/model/".$Base[2] ;
-		    	 $max="ResourceData/".$dir."/model/" ;
-			 // $file=  checkfileExists( $max,"zip");
-			   $file=  checkfileExists_New( $max,"zip",$newFileNamebig5,$newFileName);
+			  $Percentage[0]+=$p;;
+		      $max="ResourceData/".$dir."/model/" ;
+			  $file=  checkfileExists_New( $max,"zip",$newFileNamebig5,$newFileName);
 			  $pic="Pics/3D.png";
 			  $Code=$Base[2];
 			  $p=0;
@@ -983,7 +987,7 @@
 		              }
 					$stmt=   MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
 					echo $stmt;
-				     SendCommand($stmt,$data_library);
+				    SendCommand($stmt,$data_library);
 			        echo " <script language='JavaScript'>window.location.replace('".$_POST[$BaseURL]."')</script>";
 		      	  
  	 }
