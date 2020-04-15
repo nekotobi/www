@@ -104,9 +104,7 @@
 		 	 $EventResT=filterArray($ResData,0,"event");
 			 $EventResT2=filterArray( $EventResT,13,"");
 			 $EventRes= sortGDCodeArrays( $EventResT2 ,2,"true");
-			 
-			 
-			 
+ 
 			 //所有素材陣列
              $AllMatRes=$HeroRes;	 
 		  	 $AllMatRes=addArray($AllMatRes,$MobRes);
@@ -130,7 +128,7 @@
 			 $OnProgressMats=collectUnFinMats( $AllMatRes);
 
    }
- 
+
 ?>
 <?php //submitCont
      function typeCont(){
@@ -204,15 +202,18 @@
 	  }
 ?>
 <?php //隱藏/取得進度
-    function filterQueuedMat($matData){ //去掉已排入素材
+     function filterQueuedMat($matData){ //去掉已排入素材
 			 global $InEventMats; 
+			 echo count($matData);
+			 $Arr=array();
 			 for($i=0;$i<count($matData) ;$i++){   
-			      if(in_array( $matData[$i][2],  $InEventMats)){
-					  unset( $matData[$i]);
+			      if(!in_array( $matData[$i][2],  $InEventMats)){
+					  array_push( $Arr,$matData[$i]);
 				  }
 			 }
-			 return  array_values($matData);
+			 return $Arr;
 	}
+
     function collectUnFinMats($matData){
              global $InEventMats;
 			 $OnProgressMats=array();
@@ -369,12 +370,10 @@
          
    }
    function DragSingleMat($data,$x,$y,$w,$h,$MatType){
-	    
 	        $BgColor="#222222";
    			$id= $data [2];
 			$pic=getPicLink($data [2]);
 			DrawJavaDragPic($pic,$y,$x,$w,$h,$id);
-		
 		    DrawRect($data[3],9,"#ffffff",$x,$y+28,$w,14,$BgColor);
 		    DrawMatProgress( $data ,$x,$y,$w,$h,$MatType);
 			DrawRect($data[2],7,"#cccccc",$x,$y+45 ,$w,8,$BgColor);
@@ -622,7 +621,9 @@
 				  }
 			  }
 			  if(!$bool){
-				   if(count($strs)!=0) $Rs=$Rs."_"; 
+				   if(count($strs)!=0)
+					     if( $strs[0]!="")
+					           $Rs=$Rs."_"; 
 				   $Rs=$Rs.$AddHero ;
 			  }
 			  return $Rs;
@@ -647,6 +648,15 @@
 ?>
 <?php //不用
 /*
+    function filterQueuedMatOld($matData){ //去掉已排入素材
+			 global $InEventMats; 
+			 for($i=0;$i<count($matData) ;$i++){   
+			      if(in_array( $matData[$i][2],  $InEventMats)){
+					  unset( $matData[$i]);
+				  }
+			 }
+			 return  array_values($matData);
+	}
    function ListHero() {
 	        global $HeroRes;
 			$x=20;
