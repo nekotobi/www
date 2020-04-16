@@ -35,7 +35,7 @@
 			 $startY=40;
 			 //日期
 			 global $DateRange;
-			 $DateRange=array(2020,4,2021,1);
+			 $DateRange=array(2020,4,2021,2);
 		     global $StartCalendarDay;
 		     $StartCalendarDay=array( $DateRange[0],$DateRange[1],1);
 			 global $DateWid;
@@ -325,7 +325,9 @@
 			DrawRect($msg,10,"#ffffff",$x-2,$y+52,$w+4,14,$BGColor);
 			$pic="Pics/construction.png";
 		    if(strpos($matData[8],'已完成') ==false){
-				DrawPic_Layer($pic,$x+$w-30,$y,32,32,$Layer);
+				$matType=returnMatType($matData[2]);
+				DrawMatProgress($matData,$x,$y-19,$w,$h ,$MatType);
+		     	DrawPic_Layer($pic,$x+$w-20,$y+35,16,16,$Layer);
 			}
 		 
    }
@@ -366,7 +368,6 @@
 				}
 			}
 			$matX+=20;
- 
             $DateY=$matY+$h+35;
    }
    function DragSingleMat($data,$x,$y,$w,$h,$MatType){
