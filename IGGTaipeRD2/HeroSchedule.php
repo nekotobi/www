@@ -35,7 +35,7 @@
 			 $startY=40;
 			 //日期
 			 global $DateRange;
-			 $DateRange=array(2020,4,2020,12);
+			 $DateRange=array(2020,4,2021,1);
 		     global $StartCalendarDay;
 		     $StartCalendarDay=array( $DateRange[0],$DateRange[1],1);
 			 global $DateWid;
@@ -253,7 +253,7 @@
             global $EventDatas;
 		    global $CalendarX, $startY;
 			global $maxHeight;
-			DrawRect( $start."-".$end,10,$fontColor,$CalendarX,$startY,1440,($maxHeight+1)*64+20,"#c5d4c1");
+			DrawRect( $start."-".$end,10,$fontColor,$CalendarX,$startY,1640,($maxHeight+1)*64+20,"#c5d4c1");
 			for($i=0;$i<count($EventDatas);$i++){
                 DrawSingelEvent($EventDatas[$i],$i);
 			}
@@ -288,7 +288,7 @@
 		    global $BossRes;
 			global $EventRes;
 			global $LargeY;//記錄高度
-			$heroH=64;
+			$heroH=60;
 			$mats=explode("_",$EventData[6]) ;
 			$id="E_".$EventData[2];
 			$h=(count($mats))*$heroH +40;
@@ -406,7 +406,6 @@
 			 }
 	 
 	}
-
    function DrawCallendarRange(){
 		      global $finalTasks;
 			  global $CalendarX, $startY;
@@ -433,12 +432,15 @@
 			        sendVal($URL,$sendarr,"submitNew","+",array($LocX+$w-20,$LocY+1,18,18),10,"#662222","#993333");
 					$LocX+=$days* $DateWid;
 					$m+=1;
+					if($m>12){
+						$m=1;
+						$y+=1;
+					}
 				    $sdate=$y."_".$m;
 			  }
 			  $days=getMonthDay($m,$y);		
 	 	      $startY+=20;
 	 }
-
    function ListProgressHeros(){
             global $OnProgressMats;
 			global $startY;
