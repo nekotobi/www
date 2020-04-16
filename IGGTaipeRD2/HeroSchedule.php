@@ -15,7 +15,7 @@
    DrawCallendarRange();
    typeCont();
    submitCont();
-   
+   DrawCurrentDate();
 ?>
 
 <?php //主要資料
@@ -50,7 +50,7 @@
 			 $matX=20;
 			 $matY=80;
    }
-   function defineData_schedule(){
+   function  defineData_schedule(){
              //行程表
 			 global $fpschedule;
 			 $fpschedule=getMysqlDataArray("fpschedule");
@@ -69,8 +69,7 @@
 			 $AllSchedule=addArray( $AllSchedule,$eventSc);
 			 
    }
-   
-   function defineData_mats(){
+   function  defineData_mats(){
 			 //活動表
 	   		 global $EventDatas;
 			 $EventDatasT=getMysqlDataArray("vtevent");
@@ -202,9 +201,8 @@
 	  }
 ?>
 <?php //隱藏/取得進度
-     function filterQueuedMat($matData){ //去掉已排入素材
+    function filterQueuedMat($matData){ //去掉已排入素材
 			 global $InEventMats; 
-			 echo count($matData);
 			 $Arr=array();
 			 for($i=0;$i<count($matData) ;$i++){   
 			      if(!in_array( $matData[$i][2],  $InEventMats)){
@@ -347,6 +345,7 @@
    function DrawDragMat($matDatas,$MatType){    
 		   	global  $CalendarX, $startY;
 			global  $matX,$matY;
+			global  $DateY;
 			$w=40;
 			$h=40;
 		    $BgColor="#222222";
@@ -367,7 +366,8 @@
 				}
 			}
 			$matX+=20;
-         
+ 
+            $DateY=$matY+$h+35;
    }
    function DragSingleMat($data,$x,$y,$w,$h,$MatType){
 	        $BgColor="#222222";
@@ -524,7 +524,15 @@
 		    $f= "Fin[".$finDay[0]."_".$finDay[1]."_".$finDay[2]."]";
 		 	DrawRect($f,10,"#ffffff",$x+40,$y+20,78,16,$BGColor);
    }
-
+   function DrawCurrentDate(){
+	        global  $DateY;
+			global  $DateWid;
+            $date=date("Y_n_j");
+			$x= returnLocX($date);
+			//echo $date.">".$x;
+			DrawRect(" " ,10,"#ffffff",$x*$DateWid,  $DateY,1,600,"#6699bb");
+			DrawRect($date,8,"#ffffff",$x*$DateWid-45,  $DateY-12,45,12,"#6699bb");
+   }
 
 ?>
 <?php //function
