@@ -128,7 +128,10 @@
 			   
 	           for($i=0;$i<count($array);$i++){
 				   	   $BgColor="#000000";
-					   if($ColorN!=-1)  $BgColor=$colorCodes[$ColorN][$i];
+					   if($ColorN!=-1){
+						   $n=$i%9;
+						   $BgColor=$colorCodes[$ColorN][$n];
+					   }
 					   if( $sa ==$array[$i])$BgColor="#ff1212";
 					   $ValArray[$valArrayNum]=array($SubmitName,$array[$i]);
 				       sendVal($URL,$ValArray,$SubmitName,$array[$i],$Rect,10,$BgColor);
