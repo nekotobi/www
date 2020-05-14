@@ -528,11 +528,12 @@
    function DrawCurrentDate(){
 	        global  $DateY;
 			global  $DateWid;
+			 global $CalendarX;
             $date=date("Y_n_j");
 			$x= returnLocX($date);
 			//echo $date.">".$x;
-			DrawRect(" " ,10,"#ffffff",$x*$DateWid,  $DateY,1,600,"#6699bb");
-			DrawRect($date,8,"#ffffff",$x*$DateWid-45,  $DateY-12,45,12,"#6699bb");
+			DrawRect(" " ,10,"#ffffff",$CalendarX+$x*$DateWid,  $DateY,1,600,"#6699bb");
+			DrawRect($date,8,"#ffffff",$CalendarX+$x*$DateWid-45,  $DateY-12,45,12,"#6699bb");
    }
 
 ?>
