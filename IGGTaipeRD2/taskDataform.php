@@ -18,7 +18,7 @@
 <?php //類別
       function DrawSwitch(){
 	           $Rect=array(980,30,40,12);
-	           $Link= "schedule.php";
+	           $Link= "taskSearch.php";
 		       DrawLinkRect_newtab("schedule","10","#ffffff",$Rect[0],$Rect[1],$Rect[2],$Rect[3],"#000000",$Link,"1");
 	  }
       function DefineDatas(){
