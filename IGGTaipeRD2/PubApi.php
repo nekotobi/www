@@ -7,6 +7,7 @@
 ?>
 
 <?php //Array功能
+ 
        function sortStringArray($array){ //排列 含有英文的數字陣列
 	          $sorts=array();
 			  $lastSn=0;

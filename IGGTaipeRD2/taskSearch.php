@@ -10,13 +10,15 @@
     include('mysqlApi.php');
 	include('CalendarApi.php');
 	DefineDatas();
-	DrawButtons();
-	
-	 ListRangeSC();
-	 SortFinTask();
+	checkSubmit();
+	if($_POST["submit"]==""){
+	   DrawButtons();
+	   ListRangeSC();
+       SortFinTask();
+    }
+	fastTask();
 ?>
 <?php //主控台
- 
      function DefineDatas(){ 			  
 	          global $URL;
 			  $URL="taskSearch.php";
@@ -35,20 +37,87 @@
 		      //取得工單區間
 			  global $getDateRanges,$weekArray;
 			  SortFinTask();
-         
 			  //取得工單資料
 			  global $RangeScData;
-			  global  $TaskTitle;
+			  global $TaskTitle;
+			  global $fpschedule;
 			  $fpschedule=getMysqlDataArray("fpschedule");
 			  $TaskTitle= filterArray($fpschedule,5,"工項");
 			  $filterData=CollectRangeSchedule($fpschedule,2,$getDateRanges,$weekArray);
 			  $RangeScData=$filterData;
 			 // $RangeScData= CollectRangeSchedule($fpschedule,2, $typeVal[0][1], $typeVal[1][1], $typeVal[2][1]);
-			   
-			  
 	 }
      
 ?> 
+<?php //search
+  function fastTask(){
+	          $x=20;
+			  $y=10;
+			  global $URL;
+			  global $typeName,$typeArray;
+			  $BgColor="#ffffff";
+			  $fontColor="#000000";
+			  $upFormVal=array("search","search",$URL);
+			  $UpHidenVal=array(array("tablename","fpschedule"),
+			                    array("data_type","data"),
+							    );			
+			  $UpHidenVal=		addArray( $UpHidenVal,$typeArray);			
+			  $inputVal=array(array("text","search","",10,20,$y,120,20,$BgColor,$fontColor,"" ,30),
+                              array("submit","submit","",10,200,$y,50,20,$BgColor,$fontColor,"搜尋" ,20),
+							  array("submit","submit","",10,250,$y,50,20,$BgColor,$fontColor,"負責人" ,20),
+							  array("submit","submit","",10,300,$y,100,20,$BgColor,$fontColor,"外包" ,20),
+							  array("submit","submit","",10,350,$y,100,20,$BgColor,$fontColor,"Jila" ,20),
+			                  );					  
+			  upSubmitform($upFormVal,$UpHidenVal, $inputVal);
+	 }
+	 function checkSubmit(){
+	          if($_POST["submit"]=="")return;
+			  global $fpschedule;	 
+			  $s=3;
+			  if($_POST["submit"]=="負責人")$s=8;
+			  if($_POST["submit"]=="外包")$s=9;
+	          if($_POST["submit"]=="Jila")$s=12;
+			  global $searchScs;
+			  $searchScs=filterArrayContain($fpschedule,$s,$_POST["search"]);
+			  echo "</br>";
+			  echo count($searchScs);
+			  echo $_POST["search"];
+			  ListSCs();
+	 }
+	 function ListSCs(){
+	          global $searchScs;
+			  global $fpschedule;
+		      echo "</br>";
+			  $x=20;
+			  global $gy;
+			  $gy=100;
+			  for($i=0;$i<count($searchScs);$i++){
+				  if($searchScs[$i][5]=="工項"){
+			      $arrays=filterArray($fpschedule,3,$searchScs[$i][1]);
+				  DrawRect($searchScs[$i][3],10,"#ffffff",$x,$gy,500,20,"#000000");
+				  $gy+=20;
+				  ListSearchTasks($arrays,$x,$searchScs[$i][12]);
+				  }else{
+				   $name= getTaskTitle($searchScs[$i][3]);
+				    DrawRect( $name,10,"#ffffff",$x,$gy,500,20,"#000000");
+				  }
+				 // ListTasks($arrays,$x,$y);
+			  	 // echo "</br>";
+			  }
+	 }
+	 
+     function ListSearchTasks($arrays,$x,$j ){
+		      global $gy;
+	          for($i=0;$i<count($arrays);$i++){
+				//  $j=$arrays[$i][12];
+				  if($arrays[$i][16]!="")$j=$arrays[$i][16];
+				  $msg="[".$j."]"."[".$arrays[$i][5]."]"."[".$arrays[$i][2]."][".$arrays[$i][6]."]".$arrays[$i][8]."-".$arrays[$i][9];
+		          DrawRect($msg,10,"#000000",$x,$gy,500,18,"#bbbbbb");
+		     	 $gy+=20;
+		       }
+			
+	 }
+?>
 <?php //UI
     function DrawButtons(){
              global $typeArray,$typeRangeArray; 
@@ -108,6 +177,7 @@
 			 }
 	}
 	function ListTasks($task,$x){
+		   
 	         global $listY;
 		     $x=20;
 			 $w=500;
@@ -128,7 +198,6 @@
 ?>
 
 <?php //function
- 
      function SortFinTask(){
 	          global $typeVal;
 			  global $getDateRanges,$weekArray;
