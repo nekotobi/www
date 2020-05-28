@@ -113,7 +113,7 @@
 				  if($arrays[$i][16]!="")$j=$arrays[$i][16];
 				  $msg="[".$j."]"."[".$arrays[$i][5]."]"."[".$arrays[$i][2]."][".$arrays[$i][6]."]".$arrays[$i][8]."-".$arrays[$i][9];
 		          DrawRect($msg,10,"#000000",$x,$gy,500,18,"#bbbbbb");
-		     	 $gy+=20;
+		     	  $gy+=20;
 		       }
 			
 	 }

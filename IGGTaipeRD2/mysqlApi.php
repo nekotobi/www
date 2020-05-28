@@ -201,6 +201,20 @@
 			  //echo $stmt;
 			   SendCommand($stmt,$data_library);
 	 }
+     function FastAddMysQLDataV2($data_library,$tableName,$URL,$sendVal){
+	          require_once ('PubApi.php');
+	          $tables=returnTables($data_library ,$tableName); 
+			  $WHEREtable=$tables;
+			  //print_r($sendVal);
+			  $WHEREData=array();
+			  for($i=0;$i<count($WHEREtable);$i++){
+				  array_push($WHEREData,$sendVal[ $WHEREtable[$i]]);
+			  }
+			  
+			  $stmt= MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
+			   echo $stmt;
+			 //  SendCommand($stmt,$data_library);
+	 }
 ?>
 
 <?php //Stmt

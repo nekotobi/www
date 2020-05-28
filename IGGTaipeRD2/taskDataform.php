@@ -370,7 +370,8 @@
 			    $RootTask=getRootTask($code);
 		        $name =$RootTask[3];
 				if($name=="ss")$name=$taskArray[$i][1];
-	            $BgColor=getProgressColor($fin);
+	            if($taskArray[$i][14]!="")$name=$taskArray[$i][14];
+				$BgColor=getProgressColor($fin);
 				DrawRect($name,10,$fontColor,$x,$y ,179,$h,$BgColor);
 			    $sendarr=addArray($typeArray,array(array("EditCode",$code)));
 				//root
@@ -650,7 +651,7 @@
 	}
 ?>
 <?php //列印區間完成
-       function printSc(){
+     function printSc(){
 	 		  // $tasksT=getMysqlDataArray("fpschedule"); 
 			 //  $tasksT2=filterArray( $tasksT,0,"data"); 
 			 //  $tasks= RemoveArray( $tasksT2,5, "工項"); 

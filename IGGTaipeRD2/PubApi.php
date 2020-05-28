@@ -7,7 +7,16 @@
 ?>
 
 <?php //Array功能
- 
+       function getTypesArray($data,$num){//取得不重複的陣列
+		        $ar=array();
+				for($i=0;$i<count($data);$i++){
+				if (!in_array($data[$i][$num], $ar)){
+					array_push($ar,$data[$i][$num]);
+				}
+				}
+				return $ar;
+	   }
+	  
        function sortStringArray($array){ //排列 含有英文的數字陣列
 	          $sorts=array();
 			  $lastSn=0;

@@ -54,6 +54,8 @@
              //行程表
 			 global $fpschedule;
 			 $fpschedule=getMysqlDataArray("fpschedule");
+			 global $TargetSchedule;
+			 $TargetSchedule=filterArray(  $fpschedule,10,"目標"); 
 			 global $HeroSc;
 			 $HeroSc=filterArray(  $fpschedule,10,"角色"); 
 		     global $mobSc;
@@ -67,7 +69,6 @@
 			 $AllSchedule=addArray( $AllSchedule,$mobSc);
              $AllSchedule=addArray( $AllSchedule,$bossSc);
 			 $AllSchedule=addArray( $AllSchedule,$eventSc);
-			 
    }
    function  defineData_mats(){
 			 //活動表
@@ -535,7 +536,9 @@
 			DrawRect(" " ,10,"#ffffff",$CalendarX+$x*$DateWid,  $DateY,1,600,"#6699bb");
 			DrawRect($date,8,"#ffffff",$CalendarX+$x*$DateWid-45,  $DateY-12,45,12,"#6699bb");
    }
+   function DrawTarget(){
 
+   }
 ?>
 <?php //function
    function returnLocX($date){
