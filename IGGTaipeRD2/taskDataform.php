@@ -149,7 +149,7 @@
 			   $x=$Rect[0]-$Rect[2]-2 ;
 			   $y=$Rect[1]+4;
 			                // ($msg,$x,$y,$w,$h,$BgColor,$fontColor,$id,$fontSize=10)l
-			   DrawJavaDragArea($id,$x,$y,8,12,"#155555","#555555",$id,5);	
+			   DrawJavaDragArea($i,$x,$y,8,12,"#155555","#555555",$id,5);	
 		         
 	  }
 	  function TypeLink(){
