@@ -13,6 +13,7 @@
    DrawCheckers();
    fastTask();
    checkSubmit();
+   CreatJavaForm();
  ?>
  
  <?php //預設資料`
@@ -41,18 +42,21 @@
 			 $x=20;
 			 $y=60;
 			 $w=60;
-			 $h=20;
+			 $h=16;
 			 $fontSize=10;
 			 $fontColor="#ffffff";
 			 $BgColor="#222222";
+			  $BgColor2="#225533";
 			 for($i=0;$i<count($TypeResCheck);$i++){
 				 $msg=$TypeResCheck[$i][1];
-				 $id=$i;
+				 $id="S=".$i;
 		         DrawJavaDragbox($msg,$x,$y,$w,$h,$fontSize,$BgColor,$fontColor,$id);
-				  $x+=$w+2;
+				 $id="E=".$i+1;
+				 DrawJavaDragArea($i+1,$x,$y+20,$w,$h,$BgColor2,$fontColor,$id);
+				 $x+=$w+2;
 			 }
 	}
-   function fastTask(){
+    function fastTask(){
 	   	      global $typeArray;
 			  global $TypeResCheck;
 	          $x=20+count($typeArray)*65;
@@ -69,22 +73,58 @@
 			  $UpHidenVal=		addArray( $UpHidenVal,$typeVal);			
 			  $inputVal=array(array("text","addChecker","",10,$x,$y,120,20,$BgColor,$fontColor,"" ,10),
                               array("submit","submit","",10,$x+90,$y,50,20,$BgColor,$fontColor,"新增" ,20),
+							   array("text","addChecker","",10,$x,$y,120,20,$BgColor,$fontColor,"" ,10),
 			                  );					  
 			  upSubmitform($upFormVal,$UpHidenVal, $inputVal);
 	 }
-	 function  checkSubmit(){
+     function CreatJavaForm(){
+		      $x=20;
+			  $y=10;
+		      global $URL;
+			  global $typeName,$typeArray;
+		      $upFormVal=array("Show","Show",$URL);
+			  $UpHidenVal=array(array("tablename","fpschedule"),
+			                    array("data_type","data"),
+								array( "Send","sendjava" ),
+	                            );
+		      $UpHidenVal=	addArray( $UpHidenVal,$typeArray);	
+			//  $inputVal=array();
+			 
+		      $inputVal=array(array("text","DragID","DragID",10,520,$y,200,20,$BgColor,$fontColor,"DragIDs" ,10),
+			                   array("text","target","target",10,670,$y,200,20,$BgColor,$fontColor,"target" ,10),
+						       array("text","workingDays","workingDays",10,820,$y,200,20,$BgColor,$fontColor,"workingDays" ,3),
+							   array("text","state","state",10,920,$y,200,20,$BgColor,$fontColor,"state" ,3),
+							   array("text","principal","principal",10,1020,$y,200,20,$BgColor,$fontColor,"principal" ,3),
+							   array("text","outsourcing","outsourcing",10,1120,$y,200,20,$BgColor,$fontColor,"outsourcing" ,3),
+							   array("text","type","type",10,1220,$y,200,20,$BgColor,$fontColor,"type" ,3),
+							   array("text","startDay","startDay",10,1320,$y,200,20,$BgColor,$fontColor,"startDay" ,3),
+ 
+	                          );
+							 
+		      upSubmitform($upFormVal,$UpHidenVal, $inputVal);
+	 }
+	function checkSubmit(){
+		       global $URL;
 	           global $typeVal; 
-	           echo $_POST["addChecker"];
-			   echo $typeVal[0][1];
-			   if($submit=="新增"){
-
-				   FastAddMysQLData($data_library,$tableName,$code,$URL,$sendVal);
+		       global  $data_library,$tableName;
+	          // echo $_POST["addChecker"];
+			  // echo $typeVal[0][1];
+			   global $TypeResCheck;
+			   $lastSn=getLastGDSN($TypeResCheck,2 ) ; 
+               $lastSn+=1;
+			   $code=returnDataCode( );
+			   if($_POST["submit"]=="新增"){
+                   $sendVal=array(datatype=>$typeVal[0][1],
+				                  name=>$_POST["addChecker"],
+								  sort=>$lastSn,
+								  BaseCode=>returnDataCode( ));
+				   FastAddMysQLDataV2($data_library,$tableName,$URL,$sendVal);
 			   }
 	 }
  ?>
  
  <?php
-     function DrawButtons(){
+    function DrawButtons(){
              global $typeArray ; 
 			 global $URL;
 			 $x=20;
@@ -95,8 +135,7 @@
 				 $BgColor="#111111";
 				  if( $type==$typeArray[$i])$BgColor="#aa1111";
 			     $sendarr =array( array("type",$typeArray[$i]))  ;
-			     sendVal($URL, $sendarr,"change",$typeArray[$i],array($x+$i*50,$y,46,18),10,$BgColor, $fontColor);
-				   
+			     sendVal($URL, $sendarr,"change",$typeArray[$i],array($x+$i*50,$y,46,18),10,$BgColor, $fontColor); 
 			 }				 
 	}
 	function DrawButton($typeName ,$x,$y){

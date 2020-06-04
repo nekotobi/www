@@ -207,13 +207,16 @@
 			  $WHEREtable=$tables;
 			  //print_r($sendVal);
 			  $WHEREData=array();
-			  for($i=0;$i<count($WHEREtable);$i++){
-				  array_push($WHEREData,$sendVal[ $WHEREtable[$i]]);
-			  }
+			  echo $sendVal["datatype"];
 			  
+			  for($i=0;$i<count($WHEREtable);$i++){
+			 
+				  array_push($WHEREData,$sendVal[$WHEREtable[$i]]);
+			  }
+			  echo "xx";
 			  $stmt= MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
-			   echo $stmt;
-			 //  SendCommand($stmt,$data_library);
+		      echo $stmt;
+			   SendCommand($stmt,$data_library);
 	 }
 ?>
 

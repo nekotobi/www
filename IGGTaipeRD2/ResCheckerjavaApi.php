@@ -9,17 +9,25 @@
 			var OverID= event.currentTarget.id;
 	        if(upId=="xx")upId =OverID;
 			if(BGColor=="")BGColor=  document.getElementById(OverID).style.backgroundColor ;
-		 
 		    if(upId!=OverID){
 	            document.getElementById(upId).style.backgroundColor=BGColor;
 			    upId=OverID;
 				BGColor=  document.getElementById(OverID).style.backgroundColor ;
 	          } 
-		    document.getElementById( OverID).style.backgroundColor="#ffaaaa";
+			   // document.Show.DragID.value="xxx";
+		       document.getElementById( OverID).style.backgroundColor="#ffaaaa";
 	}
- 
-	
- 
+    function Drop2Area(event) {
+		event.preventDefault();
+		var DragID  = event.dataTransfer.getData("text");
+		var targetID =  event.currentTarget.id;
+	    var tx= document.getElementById( targetID).style.left;
+		var tmp= DragID.split("=");
+	    var tmp2= targetID.split("="); 
+		    document.Show.target.value=DragID;
+			 document.Show.DragID.value="xxx";
+	}
+ /*
 	function Drop2Area(event) {
 		event.preventDefault();
 		var DragID  = event.dataTransfer.getData("text");
@@ -65,17 +73,9 @@
 			    break;
 		 
 		 }
-		 /*
-	     if( tmp2[0]=="state"){
-			 document.Show.state.value=tmp2[1];
-			 }
-		 if( tmp2[0]=="type"){
-			 document.Show.type.value=tmp2[1];
-			 }	 
-			*/ 
            Show.submit();
 	}
-    
+   */ 
 	function Drag(event) {
 	    event.dataTransfer.setData("text", event.currentTarget.id);
 	    var DragID  = event.dataTransfer.getData("text");

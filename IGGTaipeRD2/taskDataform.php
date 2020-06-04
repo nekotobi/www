@@ -67,6 +67,8 @@
 			   $DateRange= getDateRange($finalTasks,2);
 			   global    $colorCodes;
 			   $colorCodes= GetColorCode();
+			   global $target;
+			   $target=filterArray($tasks,5, "目標");
       } 
       function DrawButtons(){
 		       global $URL;
@@ -97,7 +99,7 @@
 			   $TypeS=sortArrays( $TypeT ,5 ,"true");
 			   $Type= returnArraybySort($TypeS,2);
 			   $Bigtypes=$Type;
-			   DrawButton($Type,$Rect,$URL,2,$typeArray);
+			   DrawButton($Type,$Rect,$URL,2,$typeArray,"selecttype");
 		   	   
 			   //工類
 			   $Rect[1]+=22;
@@ -136,7 +138,9 @@
 					   $ValArray[$valArrayNum]=array($SubmitName,$array[$i]);
 				       sendVal($URL,$ValArray,$SubmitName,$array[$i],$Rect,10,$BgColor);
 				       $Rect[0]+=$Rect[2]+5;
-					   if($valArrayNum!=2 & $valArrayNum!=4)  DrawTypeDragArea($Type,$array[$i] ,$Rect);
+					 
+						  if(  $valArrayNum!=4)  
+					   DrawTypeDragArea($Type,$array[$i] ,$Rect);
 
 	           }
 	  } 
@@ -145,7 +149,7 @@
 			   $x=$Rect[0]-$Rect[2]-2 ;
 			   $y=$Rect[1]+4;
 			                // ($msg,$x,$y,$w,$h,$BgColor,$fontColor,$id,$fontSize=10)l
-			   DrawJavaDragArea($i,$x,$y,6,12,"#555555","#555555",$id,5);	
+			   DrawJavaDragArea($id,$x,$y,8,12,"#155555","#555555",$id,5);	
 		         
 	  }
 	  function TypeLink(){
@@ -360,7 +364,7 @@
 					       $x+=20;
 					   DrawChildTask($x,$y,$arr);
 					   }
-					   //重新排列
+					   //重新排列`
 				}
 				if($typeArray[4][1]!="編輯隱藏"){
 				$code=$taskArray[$i][3];
@@ -697,7 +701,7 @@
 		      global $finalTasks;
 			  global $CalendarX, $startY;
 			  global $DateWid;
-			  global $DateRange;
+			  global $DateRange;//開始 結束
 			  global $Vacationdays;
 		      $y=$DateRange[0];
 			  $m=$DateRange[1];
@@ -731,7 +735,6 @@
 		      $x=$LocX;
 			  $BgColor="#aaaaaa";
 			  $fontColor="#ffffff";
-	          
 	          for($i=1;$i<=$days;$i++){
 				  $BgColor="#aaaaaa";
 				  if ($arr[$i]==1)     $BgColor="#bbaaaa";
@@ -744,6 +747,12 @@
 				  DrawJavaDragArea("",$x,$LocY+22,$w-1,$h*22,$BgColor,$fontColor,$id);
 				  //DrawRect("",10,"#cccccc",$x,$LocY+22,$w-1,$h*22,$BgColor);
 				  $x+=$w;
+			  }
+	 }
+	 function DrawTarget(){
+	          global $target;
+			  global $DateRange;
+              for($i=0;$i<count($target);$i++){
 			  }
 	 }
 ?>
@@ -905,7 +914,7 @@
 			 // echoBr(4);
 			  $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
 			   echo $stmt;
-			   SendCommand($stmt,$data_library);		
+		     SendCommand($stmt,$data_library);		
 			 
 	 }
 ?>
