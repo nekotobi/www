@@ -7,7 +7,6 @@
 	function AllowDrop(event) {
 		    event.preventDefault();
 			var OverID= event.currentTarget.id;
-
 	        if(upId=="xx")upId =OverID;
 			if(BGColor=="")BGColor=  document.getElementById(OverID).style.backgroundColor ;
 		    if(upId!=OverID){
@@ -15,21 +14,70 @@
 			    upId=OverID;
 				BGColor=  document.getElementById(OverID).style.backgroundColor ;
 	          } 
-		    document.getElementById( OverID).style.backgroundColor="#ffaaaa";
+			   // document.Show.DragID.value="xxx";
+		       document.getElementById( OverID).style.backgroundColor="#ffaaaa";
 	}
- 
+	/*
+    function Drop2Area(event) {
+		event.preventDefault();
+		var DragID  = event.dataTransfer.getData("text");
+		var targetID =  event.currentTarget.id;
+	    var tx= document.getElementById( targetID).style.left;
+		var tmp= DragID.split("=");
+	    var tmp2= targetID.split("="); 
+		    document.Show.target.value=DragID;
+			 document.Show.DragID.value="xxx";
+	}
+	*/
+ /*
 	function Drop2Area(event) {
 		event.preventDefault();
 		var DragID  = event.dataTransfer.getData("text");
 		var targetID =  event.currentTarget.id;
-		var tmp= DragID.split("=");
+	    var tx= document.getElementById( targetID).style.left;
+	    var x=tx.split("px");
+	    var tmp= DragID.split("=");
 	    var tmp2= targetID.split("="); 
-	    document.Show.DragID.value=DragID ;
-	    document.Show.target.value= targetID;
-	     Show.submit();
+	     if( tmp[0]=="S"){
+			 var E= new String( "E="+tmp[1]+"="+tmp[2]+"="+tmp[3]);
+			 document.Show.target.value=DragID;
+			 var x3=(parseInt(x[0])+  parseInt(tmp[2])*parseInt(tmp[3]))+"px";
+			 document.getElementById( DragID).style.left=tx;
+			 document.getElementById(E).style.left=x3 ;
+	      //   document.Show.target.value=targetID;
+			 document.Show.DragID.value=tmp[1];
+			  document.Show.startDay.value=tmp2[1];
+			 
+		 }
+		  if( tmp[0]=="E"){
+			  document.getElementById( DragID).style.left=tx;
+			  var SID= new String( "S="+tmp[1]+"="+tmp[2]+"="+tmp[3]);
+			  var sidx= document.getElementById( SID).style.left ;
+		      var sidwx=sidx.split("px");
+		   	  var x3=(parseInt(x[0])-parseInt(sidwx[0]));
+		      document.getElementById(SID).style.width = x3+"px";
+              document.Show.DragID.value=tmp[1];
+	          document.Show.workingDays.value=x3/tmp[3];
+		 }
 
+		 switch(tmp2[0]){
+		        case  "state":
+			    document.Show.state.value=tmp2[1];
+			    break;
+				 case  "principal":
+			    document.Show.principal.value=tmp2[1];
+			    break;
+				 case  "outsourcing":
+			    document.Show.outsourcing.value=tmp2[1];
+			    break;
+				 case  "type":
+			    document.Show.type.value=tmp2[1];
+			    break;
+		 
+		 }
+           Show.submit();
 	}
-    
+   */ 
 	function Drag(event) {
 	    event.dataTransfer.setData("text", event.currentTarget.id);
 	    var DragID  = event.dataTransfer.getData("text");
