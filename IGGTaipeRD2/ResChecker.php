@@ -14,7 +14,7 @@
    checkSubmit();
    DrawButtons();
    DrawCheckers();
-    fastTask();
+   fastTask();
     
  
  ?>

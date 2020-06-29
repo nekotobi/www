@@ -68,7 +68,9 @@
 			   global    $colorCodes;
 			   $colorCodes= GetColorCode();
 			   global $target;
-			   $target=filterArray($tasks,5, "目標");
+			   $targetT=filterArray($tasksT,5, "目標");
+			   $startDate=date("Y_n_1");
+			   $target= filterDate( $targetT,2,$startDate,$dateRange);
       } 
       function DrawButtons(){
 		       global $URL;
@@ -728,6 +730,31 @@
 					if($t>12)break;
 					$LocX+=$days* $DateWid;
 			  }
+			  DrawTarget();
+	 }
+     function DrawTarget(){
+	          global $target,$DateRange;
+			  global  $CalendarX,$DateWid;
+			  $y=190;
+			  $fontColor="#ffffff";
+			  $BgColor="#ff5555";
+			  $Bg2="#5566ff";
+			  $w=100;
+			  for($i=0;$i<count($target);$i++){
+				  $nd= explode("_",$target[$i][2]);
+			      $passDay= getPassDays(array($DateRange[0],$DateRange[1],1), $nd);
+				 
+				  $LocX= $CalendarX+$passDay*$DateWid;
+				   $LocXup= $CalendarX+($passDay-7)*$DateWid;
+				  $m=$target[$i][3];
+				  //前推
+				  DrawRect("",10,$fontColor,$LocXup,$y+12,$DateWid*7,1,$Bg2);
+				  DrawRect("",10,$fontColor,$LocXup,$y+12,2,80,$Bg2);
+				  DrawRect($m,10,$fontColor,$LocX,$y,$w,12,$BgColor);
+				  DrawRect("",10,$fontColor,$LocX,$y+12,2,20,$BgColor);
+				 
+			  }
+	 
 	 }
 	 function DrawDays($days,$LocX,$LocY,$w,$h,$arr,$ym){
 		      global $URL;
@@ -749,11 +776,24 @@
 				  $x+=$w;
 			  }
 	 }
-	 function DrawTarget(){
-	          global $target;
-			  global $DateRange;
-              for($i=0;$i<count($target);$i++){
+ 
+	 function filterDate($data,$dateNum,$startDate,$dateRange){ //static
+		      $ar=array();
+			  for($i=0;$i<count($data);$i++){
+				  $d= returnPassDay($data[$i][2],$startDate);
+				  if($d>0){
+				   array_Push($ar,$data[$i]);
+				  }
 			  }
+              return $ar;
+	 }
+	 function returnPassDay($date_1,$date_2){
+              $Ds=explode("_",$date_1);
+			  $De=explode("_",$date_2);
+              $d1=mktime(0,0,0,$Ds[1],$Ds[2],$Ds[0]);
+              $d2=mktime(0,0,0,$De[1],$De[2],$De[0]);
+              $Days=round(($d1-$d2)/3600/24);
+			  return $Days;
 	 }
 ?>
 <?php //function
