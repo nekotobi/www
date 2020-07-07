@@ -67,6 +67,7 @@
 			   $DateRange= getDateRange($finalTasks,2);
 			   global    $colorCodes;
 			   $colorCodes= GetColorCode();
+			 
 			   global $target;
 			   $targetT=filterArray($tasksT,5, "目標");
 			   $startDate=date("Y_n_1");
@@ -401,7 +402,7 @@
 				//負責人
 				$nameColor=returnNameColor($taskArray[$i],$typeArray[5][1] );
 				$name=$nameColor[0];
-				$BgColor2=$nameColor[1];
+				$BgColor2= $nameColor[1];
 				DrawRect($name,9,$fontColor,$x,$y,69,$h,$BgColor2);
 				$x+=70;
 
@@ -435,6 +436,7 @@
 			    if($fin=="已完成")$BgColor="#000000";
 				return $BgColor;
 	 }
+ 
 	 function   returnNameColor($Task,$SortType ){
 		 	    global $principals,$Outs; 
 			    global $colorCodes;
@@ -457,11 +459,12 @@
 				    $color=$colorCodes[12];
 				    if($Task[9]!="未定義" & $Task[9]!="") $color=$colorCodes[11];
 				}
-		
-				$c="#444444";
-				
+				$c="#ff4444";
 			    for($i=0;$i<count($arr);$i++){
-				    if($arr[$i]==$name)$c= $color[$i+1];
+				    if($arr[$i]==$name){
+						$n=($i+1)%(count($color)-1);
+						$c= $color[$n];
+					}
 				}
 		        if($PorO==8){
 				     if($Task[9]!="未定義" & $Task[9]!="") $name=$Task[8]."[".$Task[9]."]";
@@ -743,7 +746,6 @@
 			  for($i=0;$i<count($target);$i++){
 				  $nd= explode("_",$target[$i][2]);
 			      $passDay= getPassDays(array($DateRange[0],$DateRange[1],1), $nd);
-				 
 				  $LocX= $CalendarX+$passDay*$DateWid;
 				   $LocXup= $CalendarX+($passDay-7)*$DateWid;
 				  $m=$target[$i][3];
