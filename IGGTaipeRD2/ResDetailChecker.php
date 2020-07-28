@@ -123,7 +123,14 @@
 			  $nStr="";
 			  $f="1";
 			  if($fin=="1") $f="0";
+			  if($sort=="0" ){
+				  for($i=1;$i<=$Checkcount;$i++){
+					  $nStr=$nStr."_1";
+				  }
+				  return  $nStr;
+			  }
 			  for($i=1;$i<=$Checkcount;$i++){
+				 
 				  $nStr =$nStr."_".$str[$i];
 			      if($i==($sort-2)){
 				     $nStr=$nStr."_".$f;
@@ -204,6 +211,15 @@
 				 }
 				 $x+=52;
 			 }
+			  //all
+				  $ValArray=array(array("code",$data [2]),
+					             array("type",$_POST["type"]),
+				                 array("BaseSort",0),
+						         array("BaseCode",$data[15]),
+								 array("fin", $fin),
+							     array("Checkcount", count($TypeResCheck)) );
+			    	 $Rect=array($x ,$y,40,20);
+			         sendVal_v2($URL,$ValArray,$SubmitName,"all",$Rect,  $fontSize, $BgColor ,$fontColor );
 	}
  ?>
  
