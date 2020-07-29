@@ -71,6 +71,9 @@
 			$fpResDataT=getMysqlDataArray($ResTable);
 			$fpResDataT2=filterArray($fpResDataT,0,$typeVal[0][1]);
 			$fpResData=sortGDCodeArrays($fpResDataT2 ,2,"true");
+			global $hideSort;
+			$hideSortT=filterArray($ResChecker,0,"hero_hide");
+			$hideSort=$hideSortT[0][4];
    }
     function DrawButtons(){
              global $typeArray ; 
@@ -152,7 +155,9 @@
 			 $x=20;
 			 $y=100;
 			 $BgColor="#000000";
-			 for($i=0;$i<count($fpResData);$i++){
+			 	 global $hideSort;
+	 
+			 for($i=$hideSort;$i<count($fpResData);$i++){
 				 $msg=$fpResData[$i][2].$fpResData[$i][3];
 			     DrawRect($msg,$fontSize,$fontColor,$x,$y,100,20,$BgColor);
 				 DrawChecks($fpResData[$i], $y);
@@ -186,6 +191,7 @@
 			 $SubmitName="submit";
 			 $Ch=$data[15];
 			 $onOff=0;
+		
 			 for($i=0;$i<count($TypeResCheck);$i++){
 				 $BgColor="#666666";
 				 $SubmitVal =$TypeResCheck[$i][1];
