@@ -35,7 +35,8 @@
 			 $startY=40;
 			 //日期
 			 global $DateRange;
-			 $DateRange=array(2020,4,2021,2);
+ 
+			$DateRange=  gethDateRange();// array(2020,4,2021,2);
 		     global $StartCalendarDay;
 		     $StartCalendarDay=array( $DateRange[0],$DateRange[1],1);
 			 global $DateWid;
@@ -49,6 +50,15 @@
 		     global  $matX,$matY;
 			 $matX=20;
 			 $matY=80;
+   }
+   function gethDateRange(){
+	        $sy=date("Y");
+            $sm=date("n");
+			if($sm==1){
+				$sy =$sy-1;
+			    $sm=12;
+			}
+			return array($sy,$sm,$sy+1,$sm);
    }
    function  defineData_schedule(){
              //行程表
