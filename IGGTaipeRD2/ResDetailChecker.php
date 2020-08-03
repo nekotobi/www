@@ -97,8 +97,7 @@
 <?php  //submit
      function CheckSubmit(){
 	         if( $_POST["BaseSort"]=="")return;
-			 PregressUpdate();
-			   
+			 PregressUpdate();		   
 	 }
      function PregressUpdate(){
               global  $data_library,$tableName;
@@ -106,7 +105,7 @@
               global $ResTable ;
 		      $WHEREtable=array( "gdcode", "data_type" );
 		      $WHEREData=array( $_POST["code"],$_POST["type"]);
-			  echo ">>".$_POST["BaseSort"].">".$_POST["code"].">".$_POST["fin"];
+			 // echo ">>".$_POST["BaseSort"].">".$_POST["code"].">".$_POST["fin"];
 			  $Base=array( "checker");
 			  $nstr= reFinCode($_POST["BaseCode"],$_POST["BaseSort"],$_POST["fin"],$_POST["Checkcount"]);
 			  $up=array(  $nstr);
@@ -114,8 +113,9 @@
 			  SendCommand($stmt,$data_library);
 		      global $PostArray;
 			  $PostArray=array(array("type",$_POST["type"]));	
-			   ReLoad();
+			  ReLoad();
 	 } 
+ 
      function ReLoad(){
 	    	   global $PostArray,$URL;
 			   JavaPost($PostArray,$URL); 
@@ -133,12 +133,10 @@
 				  return  $nStr;
 			  }
 			  for($i=1;$i<=$Checkcount;$i++){
-				 
-				  $nStr =$nStr."_".$str[$i];
-			      if($i==($sort-2)){
+			      if($i==($sort-1)){
 				     $nStr=$nStr."_".$f;
 				  }else{
-				  
+				  	 $nStr =$nStr."_".$str[$i];
 				  }
 			  }
 			  return $nStr;
@@ -150,21 +148,25 @@
  
     function DrawList(){
 	         global $fpResData;
+			 global $TypeResCheck;
 			 $fontSize=10;
 			 $fontColor="#ffffff";
 			 $x=20;
 			 $y=100;
 			 $BgColor="#000000";
-			 	 global $hideSort;
+			  global $hideSort;
 	 
 			 for($i=$hideSort;$i<count($fpResData);$i++){
 				 $msg=$fpResData[$i][2].$fpResData[$i][3];
 			     DrawRect($msg,$fontSize,$fontColor,$x,$y,100,20,$BgColor);
 				 DrawChecks($fpResData[$i], $y);
+				 DrawRemark($fpResData[$i],$y,$x );
 				 $y+=22;
 			 }
 	}
-	
+	function DrawRemark($data,$y,$x){
+	         
+	}
 	
 
 	 
