@@ -60,7 +60,7 @@
 		       global $Vacationdays;
 			   $Vacationdays=getMysqlDataArray("vacationdays"); 
 			   global $CalendarX,$DateWid,$startY;
-			   $CalendarX=330;
+			   $CalendarX=430;
 			   $DateWid=12;
 			   $startY=200;
 			   global $DateRange;
@@ -328,7 +328,7 @@
 			$h=20;
 			$fontColor="#ffffff";
 			$BgColor="#000000";
-			DrawRect("總計X".count($taskArray),10,$fontColor,$x,$y,255,$h,$BgColor);
+			DrawRect("總計X".count($taskArray),10,$fontColor,$x,$y,$CalendarX-20,$h,$BgColor);
             $allChildArr=array();
 			global $user;
 			$user=array();
@@ -379,14 +379,15 @@
 				if($name=="ss")$name=$taskArray[$i][1];
 	            if($taskArray[$i][14]!="")$name=$taskArray[$i][14];
 				$BgColor=getProgressColor($fin);
-				DrawRect($name,10,$fontColor,$x,$y ,179,$h,$BgColor);
+				$w=$CalendarX-120;
+				DrawRect($name,10,$fontColor,$x,$y ,$w,$h,$BgColor);
 			    $sendarr=addArray($typeArray,array(array("EditCode",$code)));
 				//root
 			 	$Rect=array($x-22,$y-4,4,17);
                 sendVal($URL,$sendarr,"submitUp","E",$Rect,4,"#997777", $fontColor);
 				//childTask
 				$sendarr=addArray($typeArray,array(array("EditCode",$taskArray[$i][1])));
-				$Rect=array($x+160,$y+1,4,6);
+				$Rect=array($x+$w-20 ,$y+1,4,6);
                 sendVal($URL,$sendarr,"submitUp","E",$Rect,4,"#779977", $fontColor);
 				//jila
 				$jila=$taskArray[$i][12];
@@ -395,10 +396,10 @@
 				$JilaLink="http://bzbfzjira.iggcn.com/browse/FP-".$jila  ;
 				DrawLinkRect_newtab($jila,"8","#ffffff"  ,$x,$y+4,20,12,"#aa8888",$JilaLink,"1" );
 				}
-				 $x+=180;
+				// $x+=$w;
 			    //類別
-			    DrawRect($taskArray[$i][5],10,$fontColor,$x ,$y,29,$h,$BgColor);
-				$x+=30;
+			 //    DrawRect($taskArray[$i][5],10,$fontColor,$x ,$y,29,$h,$BgColor);
+				$x+=$w;
 				//負責人
 				$nameColor=returnNameColor($taskArray[$i],$typeArray[5][1] );
 				$name=$nameColor[0];
@@ -488,7 +489,7 @@
 				$BgColor="#ffaaaa";
 				$state=$Tasks[$i][7];
 				if($state=="已完成")$BgColor="#aaaaaa";
-			    DrawRect($n,10,$fontColor,$x,$y ,49,$h,$BgColor);
+			    DrawRect($n,10,$fontColor,$x,$y , 49,$h,$BgColor);
 			    $x+=50;
 		   	    DrawRect($t,10,$fontColor,$x,$y ,49,$h,$BgColor);
 			}
