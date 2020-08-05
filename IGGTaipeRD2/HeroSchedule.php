@@ -54,6 +54,11 @@
    function gethDateRange(){
 	        $sy=date("Y");
             $sm=date("n");
+			$sm-=1;
+			if($sm<1){
+				$sm=12;
+			   $sy-=1;
+			}
 			if($sm==1){
 				$sy =$sy-1;
 			    $sm=12;
