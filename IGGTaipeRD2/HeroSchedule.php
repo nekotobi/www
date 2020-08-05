@@ -36,7 +36,7 @@
 			 //日期
 			 global $DateRange;
  
-			$DateRange=  gethDateRange();// array(2020,4,2021,2);
+		 	$DateRange=  gethDateRange();// array(2020,4,2021,2);
 		     global $StartCalendarDay;
 		     $StartCalendarDay=array( $DateRange[0],$DateRange[1],1);
 			 global $DateWid;
@@ -259,7 +259,7 @@
 <?php //列印
    function DrawTitle(){
 	        global $startY;
-			 DrawRect("",16,"#ffffff",20,$startY,1400,30,"#222222");
+			DrawRect("",16,"#ffffff",20,$startY,1400,30,"#222222");
 			DrawRect("  英雄進度及活動對照表",18,"#ffffff",20,$startY,200,30,"#222222");
            
    }
@@ -279,13 +279,15 @@
 		    $BgColor="#333333";
 			$fontColor="#ffffff";
 			$LocY=$startY;
+			//$inRange=returnLocX($EventData[5]);
+	        if(returnLocX($EventData[5])==0)return;
    		    $LocX= (returnLocX($EventData[4])*$DateWid)+$CalendarX;
 			$passDay= getPassDays( explode("_",$EventData[4]) ,explode("_",$EventData[5]));
 			$w= $passDay*$DateWid;
 			//標題
 			$sendarr=addArray($typeArray,array(array("code",$EventData[9]) ));
 			sendVal($URL,$sendarr,"submitUp",$EventData[3],array($LocX,$LocY,$w,20),10,$BgColor, $fontColor);
-		   // DrawRect($EventData[3],10,$fontColor,$LocX,$LocY,$w,20,$BgColor);
+		    // DrawRect($EventData[3],10,$fontColor,$LocX,$LocY,$w,20,$BgColor);
 			//日期
 			$LocY+=20;
 			$currentYear= date("y")."_";
