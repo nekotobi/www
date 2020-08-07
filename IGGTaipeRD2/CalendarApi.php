@@ -34,7 +34,7 @@
 			  $td=getMonthDay($m,$y)-$d;//第一月已過天數
 			  $m+=1;
 			  while ($y<$ny){
-				     if($m>12){
+				     if($m>=12){
 						$y+=1;
 					    $m=1;
 					 }
@@ -49,49 +49,7 @@
 			  }
 			  $td+=$nd;
 			  return $td;
-			  
-			  /*
-			  if($ny>$y){//上一年
-			     $sm=12;
-				 while($sm>=$m){
-				   $td+=getMonthDay($sm,$y);
-				   $sm-=1;
-				 }
-			     $td-=$d;
-                 $y=$ny;
-				 $m=1;
-				 $d=1;
-				 $sm=1;
-			  }
-			    while($sm<$nm){
-				     $td+=getMonthDay($sm,$y);
-				     $sm+=1;
-			    }
-				if($startDayArray[1]!=$nowDayArray[1])	    $td+=$nd;
-				if($startDayArray[1]==$nowDayArray[1] && $startDayArray[0]==$nowDayArray[0] )	{
-					$td+=($nowDayArray[2]-$startDayArray[2]);
-				}
-			  //echo $td.">";
- 
-			  if($ny==$fy){//同一年
- 
-			      if($nowDayArray[1]>$startDayArray[1]){//跨月
-				     $td+=getMonthDay($m,$y)-$d;
-					 $m+=1;
-				     while($m<$nm){
-			            $td+=getMonthDay($m,$y);
-				        $m+=1;
-				       }
-				       $td+=$nd;
-					   return $td;
-				    }
-		          if($nm==$startDayArray[1]){//同月
-				    $td=$nd-$d;
-					    return $td;
-				  }
-			  }
-			  */
-             return $td;
+			
 	  }
        function getVacationDays($YearRange,$MonthRange){
 	          $VacationDays=array();

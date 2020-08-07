@@ -279,11 +279,15 @@
 		    $BgColor="#333333";
 			$fontColor="#ffffff";
 			$LocY=$startY;
-			//$inRange=returnLocX($EventData[5]);
+			//$inRange=returnLocX($EventData[5])
+			
 	        if(returnLocX($EventData[5])==0)return;
    		    $LocX= (returnLocX($EventData[4])*$DateWid)+$CalendarX;
+		
 			$passDay= getPassDays( explode("_",$EventData[4]) ,explode("_",$EventData[5]));
 			$w= $passDay*$DateWid;
+			// echo $EventData[5].">".$w."=".$LocX.",".$LocY.",".$w."]";
+		   // DrawRect(  ">".returnLocX($EventData[4]) ,10,$fontColor,$LocX,22,$w,20,"#555555");
 			//標題
 			$sendarr=addArray($typeArray,array(array("code",$EventData[9]) ));
 			sendVal($URL,$sendarr,"submitUp",$EventData[3],array($LocX,$LocY,$w,20),10,$BgColor, $fontColor);
