@@ -38,14 +38,15 @@
 						$y+=1;
 					    $m=1;
 					 }
-					 if($m<=12){
+					 if($m<12){
 				       $td+=getMonthDay($m,$y);
 					   $m+=1;
 					 }
-			   }
+			  }
+			  if($startDayArray[0]!=$ny && $nm!=1)$nm+=1;
 			  while ($m<$nm){
 				     $td+=getMonthDay($m,$y);
-					     $m+=1;
+					 $m+=1;
 			  }
 			  $td+=$nd;
 			  return $td;
