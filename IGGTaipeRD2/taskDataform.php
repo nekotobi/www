@@ -9,7 +9,7 @@
     include('PubApi.php');
     include('mysqlApi.php');
 	include('CalendarApi.php');
-	include('javaApi.php');
+	include('TaskDataFormJavaApi.php');
 	DefineDatas();
     DrawButtons();
     TypeLink();
@@ -222,17 +222,17 @@
 			   if($_POST["state"]=="刪除"){
 				   DeletPlan($Ecode);
 				   ReLoad();
-				    return;
+				   return;
 			   }
 			   for($i=0;$i<count($CheckArr);$i++){
 				   echo $CheckArr[$i]."=".$_POST[$CheckArr[$i]];
 				   if($_POST[$CheckArr[$i]]!=$CheckArr[$i]){
-				    $Base=array($CheckArr[$i]);
-		            $up=array( $_POST[$CheckArr[$i]]);
+				      $Base=array($CheckArr[$i]);
+		              $up=array( $_POST[$CheckArr[$i]]);
 				   }
 			   }
-	            ChangePlan($Ecode,$Base,$up);
-			 	 ReLoad();
+	           ChangePlan($Ecode,$Base,$up);
+			   ReLoad();
 	  }
 	  function ReLoad(){
 	    	   global $PostArray,$URL;
@@ -519,13 +519,13 @@
 					if($undefine=="undefined")$passDay+=7;
 				$xx= $CalendarX+$passDay*$DateWid;
 				$ww= $taskArray[$i][6]*$DateWid;
-				$id= "S=".$taskArray[$i][1]."=".$taskArray[$i][6]."=".$DateWid ;
+				$id= "S=".$taskArray[$i][1]."=".$taskArray[$i][6]."=".$DateWid ."=".$taskArray[$i][7];
 				$h=12;
 				$msg=$taskArray[$i][6];
 				DrawJavaDragbox($msg,$xx,$y+4,$ww,$h,10, $BgColor, $fontColor,$id);
-				$id= "E=".$taskArray[$i][1]."=".$taskArray[$i][6]."=".$DateWid ;
+				$id= "E=".$taskArray[$i][1]."=".$taskArray[$i][6]."=".$DateWid ;//."=".$taskArray[$i][7];
 				$BgColor="#cccccc";
-				DrawJavaDragbox("",$xx+$ww,$y+4,5,$h,5, $BgColor, $fontColor,$id);
+				 DrawJavaDragbox("",$xx+$ww,$y+4,5,$h,5, $BgColor, $fontColor,$id);
 	 }
 	 function   DrawDragArea(){
 		        global $startY;
@@ -845,8 +845,8 @@
 		      $UpHidenVal=	addArray( $UpHidenVal,$typeArray);	
 			//  $inputVal=array();
 			 
-		      $inputVal=array(array("text","DragID","DragID",10,520,$y,200,20,$BgColor,$fontColor,"DragIDs" ,10),
-			                   array("text","target","target",10,670,$y,200,20,$BgColor,$fontColor,"target" ,10),
+		      $inputVal=array(array("text","DragID","DragID",10,420,$y,300,20,$BgColor,$fontColor,"DragIDs" ,20),
+			                   array("text","target","target",10,570,$y,200,20,$BgColor,$fontColor,"target" ,20),
 						       array("text","workingDays","workingDays",10,820,$y,200,20,$BgColor,$fontColor,"workingDays" ,3),
 							   array("text","state","state",10,920,$y,200,20,$BgColor,$fontColor,"state" ,3),
 							   array("text","principal","principal",10,1020,$y,200,20,$BgColor,$fontColor,"principal" ,3),
@@ -876,7 +876,7 @@
 							    array("selecttype", $typeArray[2][1] ),
 							    array("type", $typeArray[3][1] ),
 							    );			
-			  $UpHidenVal=		addArray( $UpHidenVal,$typeArray);			
+			  $UpHidenVal=	addArray( $UpHidenVal,$typeArray);			
 			  $inputVal=array(array("text","plan","計畫",10,20,$y,320,20,$BgColor,$fontColor,"" ,40),
 			                  array("text","remark","jila單號",10,320,$y,100,20,$BgColor,$fontColor,"" ,5),
 							//  array("text","line","行",10,420,$y,60,20,$BgColor,$fontColor,"" ,2),
