@@ -39,7 +39,7 @@
 				    $n=$subNameForWard.$i;
 				    $s= $_POST[$n];
 					if($s==""){
-						$s="--";
+						$s="";
 					   $nc++;
 					}
 			        array_push( $typeArray,array($n,$s));
@@ -55,8 +55,13 @@
 			   $tasks= RemoveArray( $tasksT2,5, "工項"); 
 			   $tasks= RemoveArray( $tasks,5, "目標"); 
 			   $tasksName=filterArray($tasksT2,5, "工項"); 
-			   global  $finalTasks;
-			   $finalTasks  =definTasks();
+
+			   global  $finalTasks, $finalTasksT;
+			   $finalTasksT  =definTasks();
+			   $finalTasks=RemoveArray( $finalTasksT  ,7,"未定義"); 
+		       global $undefineTasks;
+		       $undefineTasks =filterArray(  $finalTasksT,7,"未定義"); 
+			   
 		       global $Vacationdays;
 			   $Vacationdays=getMysqlDataArray("vacationdays"); 
 			   global $CalendarX,$DateWid,$startY;
@@ -199,10 +204,13 @@
 		     return;
 		  }
 		  if($typeArray[4][1]=="顯示甘特"){
+			 
 	         DrawCallendarRange();
              CreatJavaForm();			 
 		  }
-	      ListTasks();
+		   global $finalTasks,$undefineTasks;
+	      ListTasks( $finalTasks,"defined");
+	      ListTasks( $undefineTasks,"undefined");
 	  }
 	  function CheckDrag(){
 	           $Ecode=$_POST["DragID"];
@@ -258,12 +266,12 @@
 				return $f ;
 			 }
 			 $finalTasks=RemoveArray($tasks,7,"已完成"); 
+		     //$finalTasks=RemoveArray($finalTasks,7,"未定義"); 
 			 for($i=0;$i<4;$i++){
 				 $s=$typeName[$i][1];
 				 $n=$typeArray[$i][1];
 			     if($typeArray[$i][1]!="--")$finalTasks=filterArray( $finalTasks,$s,$n); 
 			 }
-	
 			 $finalTasks=sortTask($finalTasks,$typeArray[5][1]);
 	         return $finalTasks;
 	 }
@@ -314,26 +322,26 @@
 			    }
 			    return $arr;
 	 }
-	 function   ListTasks(){
+	 function   ListTasks($taskArray,$undefine){
 		    global $typeArray;
-		    global $finalTasks;
 			global $CalendarX;
 			global $startY;
 			global $DateWid;
             global $URL;
 			global $colorCodes;
-			$taskArray=$finalTasks;
 		    $x=20;
 			$y= $startY;
 			$h=20;
 			$fontColor="#ffffff";
 			$BgColor="#000000";
-			DrawRect("總計X".count($taskArray),10,$fontColor,$x,$y,$CalendarX-20,$h,$BgColor);
+			if($undefine!="undefined")
+			   DrawRect("總計X".count($taskArray),10,$fontColor,$x,$y,$CalendarX-20,$h,$BgColor);
             $allChildArr=array();
 			global $user;
 			$user=array();
 		    for($i=0;$i<count($taskArray);$i++){
 			    $y+=22;
+				$startY+=22;
 				$x=20;
 				if($typeArray[4][1]=="編輯隱藏"){
 			           $name=$taskArray[$i][3];
@@ -414,7 +422,7 @@
 				$x+=30;
 			    //工作時間
 				 if($typeArray[4][1]=="顯示甘特"){
-				    DrawGantt($taskArray,$i,$y, $name,$BgColor2);
+				    DrawGantt($taskArray,$i,$y, $name,$BgColor2,$undefine);
 				 }
 				}
 		    }		
@@ -429,7 +437,7 @@
 	 } 
 	 function   getProgressColor($fin){
 	        	$BgColor= "#006600";
-	 			if($fin=="未定義")$BgColor="#844200";
+	 			if($fin=="未定義")$BgColor="#555555";
 				if($fin=="進行中")$BgColor="#548C00";
 				if($fin=="已排程")$BgColor="#516C00";
 				if($fin=="驗證中")$BgColor="#111111";
@@ -494,14 +502,21 @@
 		   	    DrawRect($t,10,$fontColor,$x,$y ,49,$h,$BgColor);
 			}
 	 }
-	 function   DrawGantt($taskArray,$i,$y, $name,$BgColor){
+	 function   DrawGantt($taskArray,$i,$y, $name,$BgColor,$undefine){
 		        global $DateWid;
 				global $DateRange;
 				global $CalendarX;
 	            $fontColor="#ffffff";
-	            $nd= explode("_",$taskArray[$i][2]);//= returnposX($taskArray[$i][2]);
-				$s=array($DateRange[0],$DateRange[1],1);
+                
+				if($undefine!="undefined"){
+		           $nd= explode("_",$taskArray[$i][2]);//= returnposX($taskArray[$i][2]);
+				 }else{
+				   $nd=array(date("Y"),date("n"),date("j")); 
+				   $BgColor="#999999";
+				 }
+			    $s=array($DateRange[0],$DateRange[1],1);
 			    $passDay= getPassDays(array($DateRange[0],$DateRange[1],1), $nd);
+					if($undefine=="undefined")$passDay+=7;
 				$xx= $CalendarX+$passDay*$DateWid;
 				$ww= $taskArray[$i][6]*$DateWid;
 				$id= "S=".$taskArray[$i][1]."=".$taskArray[$i][6]."=".$DateWid ;
@@ -704,7 +719,7 @@
 
 <?php //日曆
      function DrawCallendarRange(){
-		      global $finalTasks;
+		      global $finalTasks, $finalTasksT;
 			  global $CalendarX, $startY;
 			  global $DateWid;
 			  global $DateRange;//開始 結束
@@ -722,7 +737,7 @@
 				     $days=getMonthDay($m,$y);
 					 DrawRect($m,10,$fontColor,$LocX,$LocY-20,$days* $DateWid-1,20,$BgColor);
 					 $arr=  ReturnVacationDays($y,$m,$Vacationdays);
-					 DrawDays($days,$LocX,$LocY ,$DateWid,count($finalTasks), $arr,$y."_".$m);
+					 DrawDays($days,$LocX,$LocY ,$DateWid,count($finalTasksT), $arr,$y."_".$m);
 					 $sdate=$y."_".$m;
 					 if($sdate==$fdate)break;
 					 $m+=1;
