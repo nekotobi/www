@@ -29,7 +29,7 @@
 	    var tmp= DragID.split("=");
 	    var tmp2= targetID.split("="); 
 	     if( tmp[0]=="S"){
-			 var E= new String( "E="+tmp[1]+"="+tmp[2]+"="+tmp[3]);
+			 var E= new String( "E="+tmp[1]+"="+tmp[2]+"="+tmp[3]+"="+tmp[4]);
 			 document.Show.target.value=DragID;
 			 var x3=(parseInt(x[0])+  parseInt(tmp[2])*parseInt(tmp[3]))+"px";
 			 document.getElementById( DragID).style.left=tx;
@@ -39,31 +39,36 @@
 			 document.Show.startDay.value=tmp2[1];
 			 if(tmp[4]=="未定義"){
 			  document.Show.state.value= "預排程";
+			  
 			 }
 			
 		 }
 		  if( tmp[0]=="E"){
 			  document.getElementById( DragID).style.left=tx;
-			  var SID= new String( "S="+tmp[1]+"="+tmp[2]+"="+tmp[3]);
-			  var sidx= document.getElementById( SID).style.left ;
+			  var SID= new String( "S="+tmp[1]+"="+tmp[2]+"="+tmp[3]+"="+tmp[4]);
+              document.Show.DragID.value= tmp[1];
+			  var sidx= document.getElementById(SID).style.left ;
 		      var sidwx=sidx.split("px");
-		   	  var x3=(parseInt(x[0])-parseInt(sidwx[0]));
+		      var x3=(parseInt(x[0])-parseInt(sidwx[0]));
 		      document.getElementById(SID).style.width = x3+"px";
-              document.Show.DragID.value=tmp[1];
 	          document.Show.workingDays.value=x3/tmp[3];
 		 }
 
 		 switch(tmp2[0]){
 		        case  "state":
+				 document.Show.startDay.value="";
 			    document.Show.state.value=tmp2[1];
 			    break;
 				 case  "principal":
+				  document.Show.startDay.value="";
 			    document.Show.principal.value=tmp2[1];
 			    break;
 				 case  "outsourcing":
+				  document.Show.startDay.value="";
 			    document.Show.outsourcing.value=tmp2[1];
 			    break;
 				 case  "type":
+				  document.Show.startDay.value="";
 			    document.Show.type.value=tmp2[1];
 			    break;
 		 

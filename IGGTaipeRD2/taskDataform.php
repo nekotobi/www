@@ -224,15 +224,25 @@
 				   ReLoad();
 				   return;
 			   }
+			       $Base=array( );
+				   $up=array( );
 			   for($i=0;$i<count($CheckArr);$i++){
-				   echo $CheckArr[$i]."=".$_POST[$CheckArr[$i]];
-				   if($_POST[$CheckArr[$i]]!=$CheckArr[$i]){
-				      $Base=array($CheckArr[$i]);
-		              $up=array( $_POST[$CheckArr[$i]]);
+				 //  echo "[".$CheckArr[$i]."=".$_POST[$CheckArr[$i]];
+		       
+				  // if($_POST[$CheckArr[$i]]!=$CheckArr[$i]){
+		           if($_POST[$CheckArr[$i]]!=""){
+					 
+					   array_push( $Base,$CheckArr[$i]);
+					   array_push( $up,$_POST[$CheckArr[$i]] );
+					   echo  $CheckArr[$i].">".$_POST[$CheckArr[$i]] ;
+				    //  $Base=array($CheckArr[$i]);
+		             // $up=array( $_POST[$CheckArr[$i]]);
 				   }
 			   }
+			   echo "xxxxxxxxx";
+			   print_r( $up);
 	           ChangePlan($Ecode,$Base,$up);
-			   ReLoad();
+		   ReLoad();
 	  }
 	  function ReLoad(){
 	    	   global $PostArray,$URL;
@@ -523,9 +533,9 @@
 				$h=12;
 				$msg=$taskArray[$i][6];
 				DrawJavaDragbox($msg,$xx,$y+4,$ww,$h,10, $BgColor, $fontColor,$id);
-				$id= "E=".$taskArray[$i][1]."=".$taskArray[$i][6]."=".$DateWid ;//."=".$taskArray[$i][7];
+				$id= "E=".$taskArray[$i][1]."=".$taskArray[$i][6]."=".$DateWid  ."=".$taskArray[$i][7];
 				$BgColor="#cccccc";
-				 DrawJavaDragbox("",$xx+$ww,$y+4,5,$h,5, $BgColor, $fontColor,$id);
+				DrawJavaDragbox("",$xx+$ww,$y+4,5,$h,5, $BgColor, $fontColor,$id);
 	 }
 	 function   DrawDragArea(){
 		        global $startY;
@@ -845,14 +855,14 @@
 		      $UpHidenVal=	addArray( $UpHidenVal,$typeArray);	
 			//  $inputVal=array();
 			 
-		      $inputVal=array(array("text","DragID","DragID",10,420,$y,300,20,$BgColor,$fontColor,"DragIDs" ,20),
-			                   array("text","target","target",10,570,$y,200,20,$BgColor,$fontColor,"target" ,20),
-						       array("text","workingDays","workingDays",10,820,$y,200,20,$BgColor,$fontColor,"workingDays" ,3),
-							   array("text","state","state",10,920,$y,200,20,$BgColor,$fontColor,"state" ,3),
-							   array("text","principal","principal",10,1020,$y,200,20,$BgColor,$fontColor,"principal" ,3),
-							   array("text","outsourcing","outsourcing",10,1120,$y,200,20,$BgColor,$fontColor,"outsourcing" ,3),
-							   array("text","type","type",10,1220,$y,200,20,$BgColor,$fontColor,"type" ,3),
-							   array("text","startDay","startDay",10,1320,$y,200,20,$BgColor,$fontColor,"startDay" ,3),
+		      $inputVal=array(array("text","DragID","DragID",10,420,$y,300,20,$BgColor,$fontColor,"" ,15),
+			                   array("text","target","target",10,570,$y,200,20,$BgColor,$fontColor,"" ,20),
+						       array("text","workingDays","workingDays",10,820,$y,200,20,$BgColor,$fontColor,"" ,3),
+							   array("text","state","state",10,920,$y,200,20,$BgColor,$fontColor,"" ,3),
+							   array("text","principal","principal",10,1020,$y,200,20,$BgColor,$fontColor,"" ,3),
+							   array("text","outsourcing","outsourcing",10,1120,$y,200,20,$BgColor,$fontColor,"" ,3),
+							   array("text","type","type",10,1220,$y,200,20,$BgColor,$fontColor,"" ,3),
+							   array("text","startDay","startDay",10,1320,$y,200,20,$BgColor,$fontColor,"" ,3),
  
 	                          );
 							 
