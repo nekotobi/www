@@ -57,10 +57,10 @@
 			   $tasksName=filterArray($tasksT2,5, "工項"); 
 
 			   global  $finalTasks, $finalTasksT;
-			   $finalTasksT  =definTasks();
-			   $finalTasks=RemoveArray( $finalTasksT  ,7,"未定義"); 
+			   $finalTasks  =definTasks();
+			   $finalTasksT=RemoveArray( $finalTasks  ,7,"未定義"); 
 		       global $undefineTasks;
-		       $undefineTasks =filterArray(  $finalTasksT,7,"未定義"); 
+		       $undefineTasks =filterArray(  $finalTasks,7,"未定義"); 
 			   
 		       global $Vacationdays;
 			   $Vacationdays=getMysqlDataArray("vacationdays"); 
@@ -70,6 +70,7 @@
 			   $startY=200;
 			   global $DateRange;
 			   $DateRange= getDateRange($finalTasks,2);
+			  // print_r($DateRange);
 			   global    $colorCodes;
 			   $colorCodes= GetColorCode();
 			 
@@ -208,8 +209,8 @@
 	         DrawCallendarRange();
              CreatJavaForm();			 
 		  }
-		   global $finalTasks,$undefineTasks;
-	      ListTasks( $finalTasks,"defined");
+		   global $finalTasksT,$undefineTasks;
+	      ListTasks( $finalTasksT,"defined");
 	      ListTasks( $undefineTasks,"undefined");
 	  }
 	  function CheckDrag(){
@@ -747,7 +748,7 @@
 				     $days=getMonthDay($m,$y);
 					 DrawRect($m,10,$fontColor,$LocX,$LocY-20,$days* $DateWid-1,20,$BgColor);
 					 $arr=  ReturnVacationDays($y,$m,$Vacationdays);
-					 DrawDays($days,$LocX,$LocY ,$DateWid,count($finalTasksT), $arr,$y."_".$m);
+					 DrawDays($days,$LocX,$LocY ,$DateWid,count($finalTasks), $arr,$y."_".$m);
 					 $sdate=$y."_".$m;
 					 if($sdate==$fdate)break;
 					 $m+=1;

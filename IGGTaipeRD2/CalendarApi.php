@@ -209,8 +209,9 @@
 		    	sort($yarr);
 				$sy=$yarr[0];
 				$ey=$yarr[count($yarr)-1];
-				$sm=12;
-				$em=1;
+				 $sm=12;
+		 
+				 $em=1;
 				for($i=0;$i<count($taskArr);$i++){ //整理月
 					$date=explode("_",$taskArr[$i][$dateNum]);
 					$y=$date[0];
@@ -251,6 +252,14 @@
 				if($em>12){
 				$ey+=1;
 				$em=1;
+				}
+	            if($sy==""){
+		          $sy=date("Y");
+				  $ey=date("Y");
+	            }
+				if($sm==""){
+				   $sm=date("n");
+				   $em=date("n");
 				}
 				return array($sy,$sm,$ey,$em);
 	   }
