@@ -126,7 +126,7 @@
 			   DrawButton($Type,$Rect,$URL,5,$typeArray);
 			   } 
 		       if($typeArray[4][1]== "顯示甘特"){   
-			     $Type=array("日期","內部","外部","內未定義","外未定義");
+			     $Type=array("日期","內部","外部","內未定義","外未定義","type1未分類");
 				 DrawButton($Type,$Rect,$URL,5,$typeArray);
 			     DrawDragArea();
 			     }
@@ -243,7 +243,7 @@
 			   echo "xxxxxxxxx";
 			   print_r( $up);
 	           ChangePlan($Ecode,$Base,$up);
-		     //  ReLoad();
+		       ReLoad();
 	  }
 	  function ReLoad(){
 	    	   global $PostArray,$URL;
@@ -310,6 +310,9 @@
 				    $finalTasks= filterArray($finalTasks,9,"未定義");
 					return $finalTasks;
 			    }
+				if($sortby=="type1未分類"){
+				   $finalTasks= filterArray($finalTasks,10,"--");
+				}
 				return $finalTasks;
 	 }
 	 function   Sort2DArraybyNameArray($baseArr,$SortNameArr,$Num){//二維 重新排列
