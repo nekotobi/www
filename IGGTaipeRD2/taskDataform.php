@@ -118,7 +118,7 @@
 			   DrawButton($Type,$Rect,$URL,3,$typeArray,"type");
 			   //編輯類別
 			    $Rect[1]+=22;
-			   $Type=array("快速新增","顯示甘特", "編輯隱藏","整理隱藏");
+			   $Type=array("快速新增","顯示甘特");//, "編輯隱藏","整理隱藏");
 			   DrawButton($Type,$Rect,$URL,4,$typeArray);
 			   $Rect[1]+=22;
 			   if($typeArray[4][1]== "編輯隱藏"){   
@@ -243,7 +243,7 @@
 			   echo "xxxxxxxxx";
 			   print_r( $up);
 	           ChangePlan($Ecode,$Base,$up);
-		   ReLoad();
+		       ReLoad();
 	  }
 	  function ReLoad(){
 	    	   global $PostArray,$URL;
@@ -858,12 +858,13 @@
 			 
 		      $inputVal=array(array("text","DragID","DragID",10,420,$y,300,20,$BgColor,$fontColor,"" ,15),
 			                   array("text","target","target",10,570,$y,200,20,$BgColor,$fontColor,"" ,20),
-						       array("text","workingDays","workingDays",10,820,$y,200,20,$BgColor,$fontColor,"" ,3),
-							   array("text","state","state",10,920,$y,200,20,$BgColor,$fontColor,"" ,3),
-							   array("text","principal","principal",10,1020,$y,200,20,$BgColor,$fontColor,"" ,3),
-							   array("text","outsourcing","outsourcing",10,1120,$y,200,20,$BgColor,$fontColor,"" ,3),
-							   array("text","type","type",10,1220,$y,200,20,$BgColor,$fontColor,"" ,3),
-							   array("text","startDay","startDay",10,1320,$y,200,20,$BgColor,$fontColor,"" ,3),
+						       array("text","workingDays","workingDays",10,820,$y,200,20,$BgColor,$fontColor,"" ,6),
+							   array("text","state","state",10,920,$y,200,20,$BgColor,$fontColor,"" ,6),
+							   array("text","principal","principal",10,1020,$y,200,20,$BgColor,$fontColor,"" ,6),
+							   array("text","outsourcing","outsourcing",10,1120,$y,200,20,$BgColor,$fontColor,"" ,6),
+							   array("text","type","type",10,1220,$y,200,20,$BgColor,$fontColor,"" ,6),
+							   array("text","selecttype","selecttype",10,1420,$y,200,20,$BgColor,$fontColor,"" ,6),
+							   array("text","startDay","startDay",10,1320,$y,200,20,$BgColor,$fontColor,"" ,6),
  
 	                          );
 							 

@@ -60,21 +60,24 @@
 			    document.Show.state.value=tmp2[1];
 			    break;
 				 case  "principal":
-				  document.Show.startDay.value="";
+				 document.Show.startDay.value="";
 			    document.Show.principal.value=tmp2[1];
 			    break;
 				 case  "outsourcing":
-				  document.Show.startDay.value="";
+			   document.Show.startDay.value="";
 			    document.Show.outsourcing.value=tmp2[1];
 			    break;
 				 case  "type":
 				  document.Show.startDay.value="";
 			    document.Show.type.value=tmp2[1];
 			    break;
-		 
+		        case  "selecttype":
+				  document.Show.startDay.value="";
+			    document.Show.selecttype.value=tmp2[1];
+			    break;
 		 }
  
-         Show.submit();
+        Show.submit();
 	}
     
 	function Drag(event) {
