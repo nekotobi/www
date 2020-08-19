@@ -216,7 +216,7 @@
 	  function CheckDrag(){
 	           $Ecode=$_POST["DragID"];
 			   $target=$_POST["target"]	;
-	           $CheckArr= array("startDay","workingDays" ,"principal","outsourcing","type","state" );
+	           $CheckArr= array("startDay","workingDays" ,"principal","outsourcing","type","state","selecttype");
 			   $Base=array( );
 			   $up=array();
 			   echoBr(22);
@@ -243,7 +243,7 @@
 			   echo "xxxxxxxxx";
 			   print_r( $up);
 	           ChangePlan($Ecode,$Base,$up);
-		       ReLoad();
+		     //  ReLoad();
 	  }
 	  function ReLoad(){
 	    	   global $PostArray,$URL;
