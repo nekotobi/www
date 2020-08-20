@@ -38,9 +38,9 @@
 			   for($i=0;$i<count($typeName);$i++){
 				    $n=$subNameForWard.$i;
 				    $s= $_POST[$n];
-					if($s==""){
-						$s="";
-					   $nc++;
+					if($s=="" && $i!=0 ){
+						$s="--";
+					    $nc++;
 					}
 			        array_push( $typeArray,array($n,$s));
 					array_Push( $PostArray,$n);
@@ -357,6 +357,7 @@
 			    $y+=22;
 				$startY+=22;
 				$x=20;
+				/*
 				if($typeArray[4][1]=="編輯隱藏"){
 			           $name=$taskArray[$i][3];
 					   $Line=$taskArray[$i][4];
@@ -391,9 +392,9 @@
 					   }
 					   //重新排列`
 				}
+				*/
 				if($typeArray[4][1]!="編輯隱藏"){
 				$code=$taskArray[$i][3];
-		
 				//工單名
 				$fin=$taskArray[$i][7];
 			    $RootTask=getRootTask($code);
@@ -490,14 +491,15 @@
 					}
 				}
 		        if($PorO==8){
-				     if($Task[9]!="未定義" & $Task[9]!="") $name=$Task[8]."[".$Task[9]."]";
-					 
+				     if($Task[9]!="未定義" & $Task[9]!="")
+				         $name=$Task[9]."[".$Task[8]."]"; 
 				 }
 				if($PorO==9  ){
 				    if($Task[8]!="未定義" & $Task[8]!="") 
 						$name=$Task[9]."[".$Task[8]."]";
 				 }
-				 
+				
+			 
 		        return array($name,$c);
 	 }
  	 function   DrawChildTask($x,$y,$Tasks){
