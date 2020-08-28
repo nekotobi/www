@@ -41,8 +41,10 @@
 		$data_library= "iggtaiperd2";
 		$tableName="fpresdata"; 
 		$stmp= getMysqlDataArray("fpschedule");	
-		$ScheduleData  =  filterArray($stmp,0,"data");
+		$ScheduleData   =  filterArray($stmp,0,"data");
+		//$ScheduleData=mixSC($ScheduleData_n);
 		$ScheduleDataTitle=filterArray($ScheduleData,5,"工項");
+	 
 		
 		$typeDatat = getMysqlDataArray("scheduletype");	
 	    $typeDatat2=  filterArray($typeDatat,0,"ResType");

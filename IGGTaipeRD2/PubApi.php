@@ -1,3 +1,13 @@
+<?php //VT
+    function mixSC($ScheduleData){
+	      	 $old="fpschedule_old"; 
+		     $old = getMysqlDataArray($old);	
+			 $sc=addArray($ScheduleData,$old);
+			 return $sc;
+	}
+
+?>
+
 <?php //主功能
 	   $id=$_COOKIE['IGG_id'];
 	   $rank=$_COOKIE['IGG_Rank'];
@@ -5,6 +15,7 @@
 	   $colorCodes= GetColorCode();
  
 ?>
+
 
 <?php //Array功能
        function getTypesArray($data,$num){//取得不重複的陣列

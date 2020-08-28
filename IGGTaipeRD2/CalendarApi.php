@@ -293,7 +293,7 @@
 				}
 				return $y."_".$m."_".$ed;
 	   } 
-	   function  ReturnDateRange($WeekDateEnd){
+	   function ReturnDateRange($WeekDateEnd){
 		      $arr=array();
 			  $d=  explode("_",$WeekDateEnd);
 			  $y=$d[0];
@@ -308,7 +308,7 @@
 			  }
 			  return $arr;
 	 }
- 	 function ReturnMonthRange($WeekDateEnd){
+ 	   function ReturnMonthRange($WeekDateEnd){
 		      $d=explode("_",$WeekDateEnd);
 			  $arr=array();
 			  array_Push($arr, $d[0]."_".$d[1]);
