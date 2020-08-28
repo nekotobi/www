@@ -17,11 +17,11 @@
      filterSubmit();
      ListContent();
      ShowButton();
-    //filterSubmit();
+ 
      //檢查進度
      GetCode();
      DrawPercentage();
-	// ExportMilestone();
+ 
 ?>
 
 
@@ -33,7 +33,7 @@
 			  $MysQlArray=array(0,12,13);
 			  setcookies($CookieArray,$BaseURL);
 	          SetGlobalcookieData( $CookieArray);
-		     // CheckCookie($CookieArray);	  
+	 	  
 	 }
 	 function DefineUnityResPath(){
 		      global $unityUIPath;
@@ -52,10 +52,8 @@
 		      $BaseURL="FPresCheck.php";
 	          $data_library= "iggtaiperd2";
 		      $tableName="fpresdata"; 
-			  //$stmp= getMysqlDataArray("fpschedule");	
 			  global $ResData;
 			  $ResData=getMysqlDataArray( $tableName);	
-			 
 			  global $type1Title;
 			  $type1Title=array( 
 			           array("英雄","hero" ),
@@ -84,15 +82,19 @@
 			
 		 	  global $CookieArray;
 			  global $ScheduleData, $ScheduleDataPlan  ;
-			  $stmp= getMysqlDataArray("fpschedule");	
-			  $ScheduleData=$stmp;
-	          $ScheduleDataPlan  =filterArray($stmp,5,"工項");
+			  //基本行事曆
+			  global $fpSCBase, $fpBaseName;
+			  $fpBaseName= returnScName("now");
+			  $fpSCBase= getSCData("mix");
+	          $ScheduleDataPlan  =filterArray($fpSCBase,5,"工項");
+			  
               global $OutsData, $memberData;
 			  $OutsDatat1=getMysqlDataArray("outsourcing");	
 			  $OutsDatat=filterArray($OutsDatat1,0,"data");	
 			  $OutsData=returnArraybySort(  $OutsDatat,2);
 			  $memberDataT=getMysqlDataArray("members");
 			  $memberData=returnArraybySort(  $memberDataT,1);
+			  
 			  global $Worktype;
 			  $Worktype=array("設定","建模","動作","特效");
 			  global  $workType;
@@ -100,8 +102,8 @@
 	          $mt2  =filterArray($mt,0,"data3");
 			  $workType=returnArraybySort(  $mt2 ,2);
 			  global $ResDatafi;
-			    $ResDatafi=  getData(); 
-			   CreateTitle4( );
+			  $ResDatafi=  getData(); 
+			  CreateTitle4( );
 			  
 	 }
 	 function AddT2Group(){
@@ -512,8 +514,9 @@
 		      if($type1=="mob") $st="怪物";
 			  if($type1=="boss") $st="召喚獸王";
 			  if($type1=="event") $st="活動";
-			  $stmp= getMysqlDataArray("fpschedule");
-			  $ScheduleData  =  filterArray($stmp,5,"工項");
+			  global $fpSCBase,$fpBaseName;
+		 
+			  $ScheduleData  =  filterArray($fpSCBase,5,"工項");
 			  $code=  returnCode($ScheduleData, $data[2]);
 			  //$code=$data[1];
 			  $sendArrays=array(
@@ -521,7 +524,7 @@
 				       array("milestone",$type2),
 					   array("BaseURL",$BaseURL),
 					   array("selecttype",$st),
-					   array("sendtableName","fpschedule"),
+					   array("sendtableName",$fpBaseName),
 			 	       array("lastUpdate",date(Y_m_d_H_i,time()+(8*3600))) 
 				 );
 			  if($code==""){
@@ -529,8 +532,8 @@
 			     return;    
 			  }
 			  $size=10;
-	          $ScheduleData  =  filterArray($stmp,3,$code);
-			  //echo count($ScheduleData);
+	          $ScheduleData  =  filterArray($fpSCBase,3,$code);
+			 
 			  $y-=20;
 			  for($i=0;$i<count($Worktype);$i++){
 				  	  echo  "<form   name='Show2' action='".$BaseURL."' method='post'  enctype='multipart/form-data'>";
@@ -799,12 +802,12 @@
 	           global $ResData;
 			   global $type1;
 			   global $data_library;
-	           $stmp= getMysqlDataArray("fpschedule");	
-	           $ScheduleData  =  filterArray($stmp,5,"工項");
+			   global $fpSCBase;
+	           $ScheduleData  =  filterArray($fpSCBase,5,"工項");
 			   $type=array("設定","建模","動作","特效");
 			   $sc=array( );
 			   for($i=0;$i<count($type);$i++){
-				   $t=filterArray($stmp,5,$type[$i]);
+				   $t=filterArray($fpSCBase,5,$type[$i]);
 				   array_push($sc,$t);
 			   }
 	 }
@@ -816,12 +819,12 @@
 			   global $data_library;
 			 //  setcookie("codeDate" , date(Y_m_d_H), time()+360);
 			   $tableName="fpresdata";
-			   $stmp= getMysqlDataArray("fpschedule");	
-	           $ScheduleData  =  filterArray($stmp,5,"工項");
+			   global $fpSCBase;
+	           $ScheduleData  =  filterArray($fpSCBase,5,"工項");
 			   $type=array("設定","建模","動作","特效");
 			   $sc=array( );
 			   for($i=0;$i<count($type);$i++){
-				   $t=filterArray($stmp,5,$type[$i]);
+				   $t=filterArray($fpSCBase,5,$type[$i]);
 				   array_push($sc,$t);
 			   }
 			   $WHEREtable=array( "data_type", "gdcode" );
@@ -866,13 +869,14 @@
 	 }
      function EditTypeSchedule(){
 		       global $data_library;
-			   $tableName="fpschedule";
+			   global $fpBaseName;
+			   $tableName=$fpBaseName;
 		      $WHEREtable=array( "data_type", "code" );
 		      $WHEREData=array( "data",$_POST["code"] );
 			  $Base=array("startDay","principal","outsourcing","workingDays","state");
 			  $up=array($_POST["startDay"],$_POST["principal"],$_POST["outsourcing"],$_POST["workingDays"],$_POST["state"]);
-			  $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
-			//  echo $stmt;
+			  $stmt= MakeUpdateStmt(  $data_library,$fpBaseName,$Base,$up,$WHEREtable,$WHEREData);
+			   echo $stmt;
 			   SendCommand($stmt,$data_library);		
 			 //   echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	 }

@@ -26,7 +26,8 @@
 			   global $data_library,$tableName;
 			   global $URL;
 			   $URL="taskDataform.php";
-			   $tableName="fpschedule";
+			  // $tableName="fpschedule";
+			   $tableName=returnScName("now");
 			   $data_library="iggtaiperd2";
 			   //type
 		       global $typeName,$typeArray,$PostArray;

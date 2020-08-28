@@ -1,4 +1,31 @@
 <?php //VT
+    function defineName(){
+			   global   $tableName,$mergeSC,$nowSc,$oldSc;
+			   $tableName="fpschedule";
+			   $mergeSC =  $tableName."_merge";
+		       $nowSc=  $tableName."_now";
+			   $oldSc=  $tableName."_old";
+	}
+	function returnScName($type){
+		     global   $tableName,$mergeSC,$nowSc,$oldSc;
+	         defineName();
+			 if($type=="now")return $nowSc;
+		    if($type=="")return $tableName;
+	}
+    function getSCData($type){
+		     global   $tableName,$mergeSC,$nowSc,$oldSc;
+			 global  $data_library;
+		     defineName();
+			 if($type=="")return getMysqlDataArray( $tableName);
+	         if($type=="now")return getMysqlDataArray($nowSc);
+			 if($type=="mix"){
+		      	 $joinTables=array("fpschedule_now","fpschedule_old");
+                 mergeTableData($data_library,$mergeSC,$joinTables);
+				 return getMysqlDataArray($mergeSC);
+			 }
+	}
+	
+	
     function mixSC($ScheduleData){
 	      	 $old="fpschedule_old"; 
 		     $old = getMysqlDataArray($old);	

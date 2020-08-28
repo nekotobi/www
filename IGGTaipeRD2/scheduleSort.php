@@ -22,9 +22,10 @@
 		       $data_library="iggtaiperd2";
 		       $tableName="fpschedule";
 			   global   $mergeSC,$nowSc,$oldSc;
-			   $mergeSC =  $tableName."_merge";
-		       $nowSc=  $tableName."_now";
-			   $oldSc=  $tableName."_old";
+			   defineName();
+			  // $mergeSC =  $tableName."_merge";
+		     //  $nowSc=  $tableName."_now";
+			 //  $oldSc=  $tableName."_old";
 			   global $Sc_now,$SC_Merge;
 			   $SC_Merge=getMysqlDataArray( $tableName);
 			   $Sc_now_T =getMysqlDataArray(  $nowSc);

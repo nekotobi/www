@@ -233,7 +233,7 @@
      }
      function   JoinTableData($data_library,$mergeTable,$joinTable){
 	            $stmt= "INSERT INTO `".$data_library."`.`".$mergeTable."` SELECT * FROM `".$data_library."`.`".$joinTable."`;";
-				echo $stmt;
+				//echo $stmt;
 				SendCommand($stmt,$data_library);
 	 }
      function MakeUpdateStmtv2($tableName,$Base,$up,$WHEREtable,$WHEREData){
