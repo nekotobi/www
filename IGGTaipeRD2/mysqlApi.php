@@ -221,6 +221,21 @@
 ?>
 
 <?php //Stmt
+     function   ClearAllData($data_library,$tableName){
+		        $stmt= 'TRUNCATE TABLE '.$tableName.';';
+				SendCommand($stmt,$data_library);
+	 }
+	 function mergeTableData($data_library,$mergeTable,$joinTables){
+            ClearAllData($data_library,$mergeTable);
+			for ($i=0;$i<count($joinTables);$i++){
+			    JoinTableData($data_library,$mergeTable,$joinTables[$i]);
+			}
+     }
+     function   JoinTableData($data_library,$mergeTable,$joinTable){
+	            $stmt= "INSERT INTO `".$data_library."`.`".$mergeTable."` SELECT * FROM `".$data_library."`.`".$joinTable."`;";
+				echo $stmt;
+				SendCommand($stmt,$data_library);
+	 }
      function MakeUpdateStmtv2($tableName,$Base,$up,$WHEREtable,$WHEREData){
 	       $stmt="UPDATE `".$tableName."` SET ";
            for($i=0;$i<count($Base);$i++){

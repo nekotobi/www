@@ -21,14 +21,16 @@
 			   $URL="scheduleSort.php";
 		       $data_library="iggtaiperd2";
 		       $tableName="fpschedule";
-			   global   $nowSc,$oldSc;
-		      /// $nowSc="_now";
-			   $nowSc="";
-			   $oldSc="_old";
-			   global $Sc_now;
-			   $Sc_now_T =getMysqlDataArray( $tableName.$nowSc);
+			   global   $mergeSC,$nowSc,$oldSc;
+			   $mergeSC =  $tableName."_merge";
+		       $nowSc=  $tableName."_now";
+			   $oldSc=  $tableName."_old";
+			   global $Sc_now,$SC_Merge;
+			   $SC_Merge=getMysqlDataArray( $tableName);
+			   $Sc_now_T =getMysqlDataArray(  $nowSc);
 			   $Sc_now=filterArray(   $Sc_now_T,0,"data"); 
-			   
+			   global  $tables;
+			   $tables=returnTables($data_library,$tableName);
 	  }
 	  function colectionTasks($end_y,$end_m){
 	  		   global $Sc_now;
@@ -39,7 +41,6 @@
 				   }
 				}
 				moveTasks( $colectSCs);
-			 
 	  }
 	  function iSDateBefor($Sc,$end_y,$end_m){
 		       $st=explode("_", $Sc[2]);
@@ -48,18 +49,20 @@
 			   }
 			   return false;
 	  }
-	  
+	  function mergeTasks(){
+	           global  $data_library,$tableName;
+			   	   global   $mergeSC,$nowSc,$oldSc;
+               $joinTables=array($nowSc,$oldSc);
+               mergeTableData($data_library, $mergeSC,$joinTables);
+	  }
 	  function moveTasks( $colectSCs){
 		  	   global  $data_library,$tableName;
-		       global   $nowSc,$oldSc;
-		       $now_table=$tableName.$nowSc;
-			   $old_table=$tableName.$oldSc;
-		       $tables=returnTables($data_library,$tableName);
+			   global   $mergeSC,$nowSc,$oldSc;
+			   global  $tables;
 			   echo "</br>一共有".count($colectSCs)."單要搬移";
-	            for($i=0;$i<count($colectSCs);$i++){
-			  // for($i=0;$i<1;$i++){
-			       AddTask($colectSCs[$i],$old_table, $tables);
-				   RemoveTask ($colectSCs[$i],$now_table);
+	           for($i=0;$i<count($colectSCs);$i++){
+			       AddTask($colectSCs[$i],$oldSc, $tables);
+				   RemoveTask ($colectSCs[$i],$nowSc);
 				   echo "<br/>"."正在搬移:no.".$i.">>".$colectSCs[$i][1];
 			   }
 	  }
@@ -71,8 +74,6 @@
 					    array_push($WHEREData,$task[$i]);
 		              }
 			   $stmt=  MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
-			   //echo "</br>";
-			  // echo $stmt;
 			   SendCommand($stmt,$data_library);
 	  }
 	  function RemoveTask ($task,$tableName){
@@ -81,14 +82,16 @@
 			   $stmt=MakeDeleteStmt($tableName,$WHEREtable,$WHEREData);
 			   SendCommand($stmt,$data_library);
 	  }
+	  
 
 ?>
 
 <?php
       function submit_cont(){
-	           if( $_POST["submit"]!="移動")return; 
+	           if( $_POST["submit"]=="移動")  colectionTasks($_POST["startY"],$_POST["startM"]);
+			       if( $_POST["submit"]=="合併主資料")  mergeTasks(); 
 			 //  if($_POST["startY"]=="" )return; 
-		       colectionTasks($_POST["startY"],$_POST["startM"]);
+		     
                //
 	  }
 	  
@@ -106,6 +109,7 @@
 		      $inputVal=array(array("text","startY","startY",10,220,$y,300,20,$BgColor,$fontColor,"" ,4),
 			                  array("text","startM","startM",10,320,$y,300,20,$BgColor,$fontColor,"" ,4),
 							  array("submit","submit","submit",10,420,$y,300,20,$BgColor,$fontColor,"移動" ,4),
+							  array("submit","submit","submit",10,520,$y,300,20,$BgColor,$fontColor,"合併主資料" ,4),
 	                          );		 
 		      upSubmitform($upFormVal,$UpHidenVal, $inputVal);
 	 }

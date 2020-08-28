@@ -50,8 +50,9 @@
 					$typeArray[5][1]="內部";
 			   }
 			   //task
-		       $tasksT=getMysqlDataArray("fpschedule"); 
-			   $tasksT2=filterArray( $tasksT,0,"data"); 
+		       global $Base_Task;
+		       $Base_Task=getMysqlDataArray($tableName); 
+			   $tasksT2=filterArray( $Base_Task,0,"data"); 
 			   $tasks= RemoveArray( $tasksT2,5, "工項"); 
 			   $tasks= RemoveArray( $tasks,5, "目標"); 
 			   $tasksName=filterArray($tasksT2,5, "工項"); 
@@ -75,7 +76,7 @@
 			   $colorCodes= GetColorCode();
 			 
 			   global $target;
-			   $targetT=filterArray($tasksT,5, "目標");
+			   $targetT=filterArray($Base_Task,5, "目標");
 			   $startDate=date("Y_n_1");
 			   $target= filterDate( $targetT,2,$startDate,$dateRange);
       } 
@@ -652,12 +653,13 @@
 			 return $bool;
 	 }
      function setAllHide(){
+		 global $tableName;
 		      global $typeName,$typeArray;
 			  if($typeArray[2][1]=="--")return;
-			     echo $typeArray[2][1];
-	          $tasksT=getMysqlDataArray("fpschedule"); 
-			  $tasksc=filterArray( $tasksT,10,$typeArray[2][1]);
-			  $tasksc2=filterArray( $tasksT,18,"");
+			  //  echo $typeArray[2][1];
+			   global $Base_Task; 
+			  $tasksc=filterArray( $Base_Task,10,$typeArray[2][1]);
+			  $tasksc2=filterArray( $Base_Task,18,"");
 			 
 			  $tasksti=filterArray( $tasksc,5, "工項");
 			  $tasksH=filterArray( $tasksti,18,"g1");
@@ -692,11 +694,7 @@
 	}
 ?>
 <?php //列印區間完成
-     function printSc(){
-	 		  // $tasksT=getMysqlDataArray("fpschedule"); 
-			 //  $tasksT2=filterArray( $tasksT,0,"data"); 
-			 //  $tasks= RemoveArray( $tasksT2,5, "工項"); 
-			  // $tasks= RemoveArray( $tasks,5, "目標"); 
+     function printSc(){ 
 			   echoBr(12);
 			   global $tasks, $tasksName;
 			   global  $Bigtypes;
@@ -849,8 +847,9 @@
 			  $y=10;
 		      global $URL;
 			  global $typeName,$typeArray;
+			  global $tableName;
 		      $upFormVal=array("Show","Show",$URL);
-			  $UpHidenVal=array(array("tablename","fpschedule"),
+			  $UpHidenVal=array(array("tablename",$tableName),
 			                    array("data_type","data"),
 								array( "Send","sendjava" ),
 						       // array( "DragID","DragID" ),
@@ -880,10 +879,11 @@
 			  $y=10;
 			  global $URL;
 			  global $typeName,$typeArray;
+			  global $tableName;
 			  $BgColor="#ffffff";
 			  $fontColor="#000000";
 			  $upFormVal=array("AddPlan","AddPlan",$URL);
-			  $UpHidenVal=array(array("tablename","fpschedule"),
+			  $UpHidenVal=array(array("tablename",$tableName),
 			                    array("data_type","data"),
 								array("startDay",date("Y_n_j")),
 								array("milestone", "m5" ),
@@ -959,8 +959,9 @@
 	 }
 	 function returntLine(){
 		       global $typeArray;
-		      $tasksT=getMysqlDataArray("fpschedule"); 
-			  $tasksT2=filterArray( $tasksT,10,$typeArray[2][1]); 
+			   global $tableName;
+			   global $Base_Task;
+			  $tasksT2=filterArray( $Base_Task,10,$typeArray[2][1]); 
 			  $tasksT3=filterArray( $tasksT2,18,""); 
 			  $tasksT4=filterArray( $tasksT3,5,"工項");
               $last=0;
