@@ -44,9 +44,6 @@
 ?>
 <?php //tmp
 
-//require_once dirname(dirname(dirname(__FILE__))) .'/phpexcel/Classes/PHPExcel.php';
- //header("Content-type: text/html; charset=unicode"); //頁面編碼
- //header("Content-type: text/html; charset=UTF-8"); //頁面編碼
  
  function Listxls($dir, $file){
 	  for ($i=0;$i<count($file);$i++){

@@ -21,7 +21,7 @@
 			   $URL="scheduleSort.php";
 		       $data_library="iggtaiperd2";
 		       $tableName="fpschedule";
-			   global   $mergeSC,$nowSc,$oldSc;
+			   global  $tableName,$mergeSC,$nowSc,$oldSc;
 			   defineName();
 			  // $mergeSC =  $tableName."_merge";
 		     //  $nowSc=  $tableName."_now";
@@ -88,10 +88,12 @@
 ?>
 
 <?php
+   
+
       function submit_cont(){
 	           if( $_POST["submit"]=="移動")  colectionTasks($_POST["startY"],$_POST["startM"]);
 			       if( $_POST["submit"]=="合併主資料")  mergeTasks(); 
-			 //  if($_POST["startY"]=="" )return; 
+		  	 //  if($_POST["startY"]=="" )return; 
 		     
                //
 	  }

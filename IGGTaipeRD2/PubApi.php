@@ -10,7 +10,7 @@
 		     global   $tableName,$mergeSC,$nowSc,$oldSc;
 	         defineName();
 			 if($type=="now")return $nowSc;
-		    if($type=="")return $tableName;
+		     if($type=="")return $tableName;
 	}
     function getSCData($type){
 		     global   $tableName,$mergeSC,$nowSc,$oldSc;

@@ -12,20 +12,11 @@
     $data_library="iggtaiperd2";
     $tableName="fpschedule";
 	$joinTables=array("fpschedule_now","fpschedule_old");
-    mergeTableData($data_library,"fpschedule",$joinTables);
+    mergeTableData($data_library,"fpschedule_merge",$joinTables);
 	///ClearAllData($data_library,"fpschedule_merge");
 ?>
 <?php
-   function mergeTableData($data_library,$mergeTable,$joinTables){
-            ClearAllData($data_library,$mergeTable);
-			for ($i=0;$i<count($joinTables);$i++){
-			    JoinTableData($data_library,$mergeTable,$joinTables[$i]);
-			}
-		
  
-   }
-
-
     function test1(){
 		/*
 	$Sc  =getMysqlDataArray( $tableName);

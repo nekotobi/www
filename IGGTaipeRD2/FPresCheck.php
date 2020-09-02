@@ -10,7 +10,8 @@
      require_once('PubApi.php');
 	 require_once('mysqlApi.php');
 	 require_once('scheduleApi.php');
-     require_once 'ResGDfindApi.php';
+     require_once ('ResGDfindApi.php');
+     require_once ('VTApi.php');
 	 DefineUnityResPath();
      CookieSet();
      DefineBaseData();
@@ -21,7 +22,6 @@
      //檢查進度
      GetCode();
      DrawPercentage();
- 
 ?>
 
 
@@ -84,8 +84,9 @@
 			  global $ScheduleData, $ScheduleDataPlan  ;
 			  //基本行事曆
 			  global $fpSCBase, $fpBaseName;
-			  $fpBaseName= returnScName("now");
-			  $fpSCBase= getSCData("mix");
+			  $fpBaseName= "fpschedule_now";
+		   	  $fpSCBase=getVTSCData("mix");
+		       
 	          $ScheduleDataPlan  =filterArray($fpSCBase,5,"工項");
 			  
               global $OutsData, $memberData;
@@ -515,9 +516,11 @@
 			  if($type1=="boss") $st="召喚獸王";
 			  if($type1=="event") $st="活動";
 			  global $fpSCBase,$fpBaseName;
-		 
-			  $ScheduleData  =  filterArray($fpSCBase,5,"工項");
+		      global   $ScheduleDataPlan  ;
+			  $ScheduleData  =$ScheduleDataPlan ;//  filterArray($fpSCBase,5,"工項");
+		
 			  $code=  returnCode($ScheduleData, $data[2]);
+			
 			  //$code=$data[1];
 			  $sendArrays=array(
 			           array("data_type","data"),
@@ -532,12 +535,12 @@
 			     return;    
 			  }
 			  $size=10;
-	          $ScheduleData  =  filterArray($fpSCBase,3,$code);
-			 
+	          $ScheduleData2  =  filterArray($fpSCBase,3,$code);
+			   
 			  $y-=20;
 			  for($i=0;$i<count($Worktype);$i++){
 				  	  echo  "<form   name='Show2' action='".$BaseURL."' method='post'  enctype='multipart/form-data'>";
-				      $s= filterArray($ScheduleData,5,$Worktype[$i]);
+				      $s= filterArray($ScheduleData2,5,$Worktype[$i]);
 				      $sc=$s[0];
 					  $Ecode=$sc[1];
 					  if(count($s)==0)$Ecode=returnDataCode();
@@ -546,7 +549,6 @@
 					  array_push($sendArrays,array("plan", $code));
 			 
 					  sendInputHiddenVal($sendArrays);
-					//  echo $Worktype[$i]. count ($s);
 				      if(  $sc[9]!="")   DrawRect("",11,$fontColor,$x,$y,510,20,"#aa7777");
 					  if(  $sc[7]=="已完成")   DrawRect("",11,$fontColor,$x,$y,510,20,"#77aa77");
 					  $out=trim($sc[9]); 
@@ -854,7 +856,7 @@
 	 
 	 function returnCode($ScheduleData,$Code){
 	          for($i=0;$i<count($ScheduleData);$i++){
-			      if(strpos($ScheduleData[$i][3],$Code) !== false)
+			      if(strpos($ScheduleData[$i][3],$Code) !== false &&  $ScheduleData[$i][6]==""  )
 					  return $ScheduleData[$i][1];				  
 			  }
 	 }
@@ -870,14 +872,16 @@
      function EditTypeSchedule(){
 		       global $data_library;
 			   global $fpBaseName;
-			   $tableName=$fpBaseName;
+			  // $tableName=$fpBaseName;
+		      $tableName=  getVTSCData($type);
 		      $WHEREtable=array( "data_type", "code" );
 		      $WHEREData=array( "data",$_POST["code"] );
 			  $Base=array("startDay","principal","outsourcing","workingDays","state");
 			  $up=array($_POST["startDay"],$_POST["principal"],$_POST["outsourcing"],$_POST["workingDays"],$_POST["state"]);
 			  $stmt= MakeUpdateStmt(  $data_library,$fpBaseName,$Base,$up,$WHEREtable,$WHEREData);
 			   echo $stmt;
-			   SendCommand($stmt,$data_library);		
+			   SendCommand($stmt,$data_library);	
+               saveUpdateTime("");			   
 			 //   echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	 }
      function filterSubmit(){
