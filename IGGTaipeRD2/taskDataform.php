@@ -253,13 +253,13 @@
 	  }
 ?>
 <?php //內容
-	 function   findtaskChild($code){
-	          global $tasks;
-			  $arr=array();
-			  for ($i=0;$i<count($tasks);$i++){
-			       if($tasks[$i][3]==$code)array_push($arr,$tasks[$i]);
-			  }
-			  return $arr;
+	 function  findtaskChild($code){
+	           global $tasks;
+			   $arr=array();
+			   for ($i=0;$i<count($tasks);$i++){
+			        if($tasks[$i][3]==$code)array_push($arr,$tasks[$i]);
+			   }
+			   return $arr;
 	 }
      function   definTasks(){
 	         global $tasks,$tasksName;
@@ -562,12 +562,24 @@
 				}
 	  }	 
 	 function   getRootTask($code){
-	        global  $tasksName;
-			for($i=0;$i<count($tasksName);$i++){
-			    if($tasksName[$i][1]==$code){
-					return $tasksName[$i] ;
-				}
-			}
+	            global  $tasksName;
+			    for($i=0;$i<count($tasksName);$i++){
+			       if($tasksName[$i][1]==$code){
+					      return $tasksName[$i] ;
+				     }
+			    }
+				global $oldTask,$tableName;
+				 
+				if(count($oldTask)==0){
+					$oldTask_T=getMysqlDataArray("fpschedule_old");
+					$oldTask=filterArray($oldTask_T,5,"工項");
+					echo count($oldTask);
+				}			
+				 for($i=0;$i<count($oldTask);$i++){
+			       if($oldTask[$i][1]==$code){
+					      return $oldTask[$i] ;
+				     }
+			    }
 			return "ss";
 	 } 
 	 function   getTaskName($code){
