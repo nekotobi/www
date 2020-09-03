@@ -33,7 +33,7 @@
 		       $WHEREData=array( "Update","Update" );
 			   $Base=array("plan");
 			   if($type=="merge")  $Base=array("line");
-			   $up=array(date("Y_j_n_H"));
+			   $up=array(date("Y_j_n_H_i_s"));
 			   $stmt= MakeUpdateStmt(  $data_library,$SC_tableName_now,$Base,$up,$WHEREtable,$WHEREData);
 		       SendCommand($stmt,$data_library);		
 	  }
