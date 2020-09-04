@@ -10,6 +10,7 @@
     include('mysqlApi.php');
 	include('CalendarApi.php');
 	include('TaskDataFormJavaApi.php');
+	 require_once('VTApi.php');
 	DefineDatas();
     DrawButtons();
     TypeLink();
@@ -242,10 +243,10 @@
 		             // $up=array( $_POST[$CheckArr[$i]]);
 				   }
 			   }
-			   echo "xxxxxxxxx";
-			   print_r( $up);
+			 //  echo "xxxxxxxxx";
+			   //print_r( $up);
 	           ChangePlan($Ecode,$Base,$up);
-		       ReLoad();
+		      ReLoad();
 	  }
 	  function ReLoad(){
 	    	   global $PostArray,$URL;
@@ -966,8 +967,8 @@
 					   $WHEREData[7]="未定義";
 			          $stmt=  MakeNewStmtv2($tableName,$WHEREtable,$WHEREData); 
 					   echo $stmt;
-					      SendCommand($stmt,$data_library);
-				
+				     SendCommand($stmt,$data_library);
+				      saveUpdateTime("","");
 			   
 	 }
 	 function returntLine(){
@@ -1002,9 +1003,10 @@
 		      $WHEREData=array( "data",$Ecode );
 			 // echoBr(4);
 			  $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
-			   echo $stmt;
-		     SendCommand($stmt,$data_library);		
-			 
+			 // echo $stmt;
+			 		  saveUpdateTime("",array(""));
+		      SendCommand($stmt,$data_library);		
+	
 	 }
 ?>
 <?php //bak

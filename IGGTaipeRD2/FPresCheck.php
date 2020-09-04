@@ -879,11 +879,11 @@
 			  $Base=array("startDay","principal","outsourcing","workingDays","state");
 			  $up=array($_POST["startDay"],$_POST["principal"],$_POST["outsourcing"],$_POST["workingDays"],$_POST["state"]);
 			  $stmt= MakeUpdateStmt(  $data_library,$fpBaseName,$Base,$up,$WHEREtable,$WHEREData);
-			 // echo $stmt;
+			  echo $stmt;
 			  SendCommand($stmt,$data_library);	
               saveUpdateTime("");		
-              ReLoad();			  
-			 // echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+             // ReLoad();			  
+			  //echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	 }
      function filterSubmit(){
 	          if($_POST['submit']=="")return;

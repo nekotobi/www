@@ -20,30 +20,38 @@
 			    $sc_now=getMysqlDataArray($SC_tableName_now);
 	            if($type=="now")return 	 $sc_now;
 			    if($type=="mix"){
-                    if(CheckandMerge(	 $sc_now)) {
-		           $joinTables=array($SC_tableName_now,$SC_tableName_old);
-                   mergeTableData($data_library,$SC_tableName_merge,$joinTables);
+                    if( CheckandMerge(	 $sc_now)) {
+		               $joinTables=array($SC_tableName_now,$SC_tableName_old);
+                       mergeTableData($data_library,$SC_tableName_merge,$joinTables);
 			        }
 				   return getMysqlDataArray($SC_tableName_merge);
 			 }
 	  }
-	  function saveUpdateTime($type){ //更新排程表最後更新日期
+	  function saveUpdateTime($type,$upd){ //更新排程表最後更新日期
 	           global $data_library,$SC_tableName_now;
+		    	 DefineVTTableName();
+			   //echo "xxx";
 			   $WHEREtable=array( "data_type", "code" );
 		       $WHEREData=array( "Update","Update" );
 			   $Base=array("plan");
-			   if($type=="merge")  $Base=array("line");
 			   $up=array(date("Y_j_n_H_i_s"));
+	           if($type=="merge") {
+	         	  $Base=array("line");
+				  $up=$upd;
+           	   }
+	        
 			   $stmt= MakeUpdateStmt(  $data_library,$SC_tableName_now,$Base,$up,$WHEREtable,$WHEREData);
+			  // 	echo  $stmt;
 		       SendCommand($stmt,$data_library);		
 	  }
 	  function CheckandMerge($SCData){
 	           $upd=filterArray($SCData,0,"Update");
-			   if($upd[0][2]==$upd[0][3])return false;
-			   saveUpdateTime("merge");  
+			   if($upd[0][3]==$upd[0][4])return false;
+			   
+			   saveUpdateTime("merge",array($upd[0][3]));  
 			   return true;
 	  }
-	  function gettaskName( ){ //整理工項到now
+	  function gettaskNames( ){ //整理工項到now
 	           global $SC_tableName_now,$SC_tableName_old,$SC_tableName_merge;
 			   DefineVTTableName();
 			   $SC_old= getMysqlDataArray($SC_tableName_old);
@@ -62,7 +70,7 @@
 					    array_push($LostArray, $SC_old_Task[$i] );
 					}
 			   }
-			   print_r(  $LostArray) ;
+			  // print_r(  $LostArray) ;
 	  }
 	  
 	  
