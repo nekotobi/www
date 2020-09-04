@@ -12,13 +12,13 @@
 	 require_once('scheduleApi.php');
      require_once ('ResGDfindApi.php');
      require_once ('VTApi.php');
+	 //require_once ('javaApi.php');
 	 DefineUnityResPath();
      CookieSet();
      DefineBaseData();
      filterSubmit();
      ListContent();
      ShowButton();
- 
      //檢查進度
      GetCode();
      DrawPercentage();
@@ -870,19 +870,20 @@
 			  AddDataV2( );
 	 }
      function EditTypeSchedule(){
-		       global $data_library;
-			   global $fpBaseName;
-			  // $tableName=$fpBaseName;
-		      $tableName=  getVTSCData($type);
+		      global $data_library;
+			  global $fpBaseName;
+			  //$tableName=$fpBaseName;
+		      $tableName=  getVTSCData("now");
 		      $WHEREtable=array( "data_type", "code" );
 		      $WHEREData=array( "data",$_POST["code"] );
 			  $Base=array("startDay","principal","outsourcing","workingDays","state");
 			  $up=array($_POST["startDay"],$_POST["principal"],$_POST["outsourcing"],$_POST["workingDays"],$_POST["state"]);
 			  $stmt= MakeUpdateStmt(  $data_library,$fpBaseName,$Base,$up,$WHEREtable,$WHEREData);
-			   echo $stmt;
-			   SendCommand($stmt,$data_library);	
-               saveUpdateTime("");			   
-			 //   echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+			 // echo $stmt;
+			  SendCommand($stmt,$data_library);	
+              saveUpdateTime("");		
+              ReLoad();			  
+			 // echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	 }
      function filterSubmit(){
 	          if($_POST['submit']=="")return;
@@ -994,11 +995,24 @@
 					    array_push($WHEREData,$_POST[$tables[$i]]);
 		              }
 					$stmt=   MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
-					echo $stmt;
+				//	echo $stmt;
 				    SendCommand($stmt,$data_library);
-			        echo " <script language='JavaScript'>window.location.replace('".$_POST[$BaseURL]."')</script>";
+			      //  echo " <script language='JavaScript'>window.location.replace('".$_POST[$BaseURL]."')</script>";
+				  ReLoad();
 		      	  
  	 }
+      function ReLoad(){
+	            /*
+			   global $BaseURL;
+		       global  $CookieArray,$MysQlArray;
+			   $PostArray=array();
+			   for($i=0;$i<count($CookieArray);$i++){
+				   echo  $i.">".$_POST[$CookieArray[$i]];
+			       array_push($PostArray,array($CookieArray[$i] ,($_POST[$CookieArray[$i]])));
+			   }
+			   */
+			 //  JavaPost($PostArray,$BaseURL); 
+	  }
 ?>
 
 <?php //xls
@@ -1009,7 +1023,7 @@
 		      $data = getMileData();
 			  Exporxls($data,"test");
 	 }
-
+     
 ?>
 
 <?php //old
