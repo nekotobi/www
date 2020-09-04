@@ -86,7 +86,7 @@
 			  global $fpSCBase, $fpBaseName;
 			  $fpBaseName= "fpschedule_now";
 		   	  $fpSCBase=getVTSCData("mix");
-		       
+		       echo count(  $fpSCBase);
 	          $ScheduleDataPlan  =filterArray($fpSCBase,5,"工項");
 			  
               global $OutsData, $memberData;
@@ -881,9 +881,9 @@
 			  $stmt= MakeUpdateStmt(  $data_library,$fpBaseName,$Base,$up,$WHEREtable,$WHEREData);
 			  echo $stmt;
 			  SendCommand($stmt,$data_library);	
-              saveUpdateTime("");		
+              saveUpdateTime("",array(""));		
              // ReLoad();			  
-			  //echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+			   echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	 }
      function filterSubmit(){
 	          if($_POST['submit']=="")return;
@@ -997,8 +997,8 @@
 					$stmt=   MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
 				//	echo $stmt;
 				    SendCommand($stmt,$data_library);
-			      //  echo " <script language='JavaScript'>window.location.replace('".$_POST[$BaseURL]."')</script>";
-				  ReLoad();
+			       echo " <script language='JavaScript'>window.location.replace('".$_POST[$BaseURL]."')</script>";
+				//  ReLoad();
 		      	  
  	 }
       function ReLoad(){

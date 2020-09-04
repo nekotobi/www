@@ -20,7 +20,8 @@
 			    $sc_now=getMysqlDataArray($SC_tableName_now);
 	            if($type=="now")return 	 $sc_now;
 			    if($type=="mix"){
-                    if( CheckandMerge(	 $sc_now)) {
+					echo ">".$SC_tableName_merge."[";
+                     if( CheckandMerge(	 $sc_now)) {
 		               $joinTables=array($SC_tableName_now,$SC_tableName_old);
                        mergeTableData($data_library,$SC_tableName_merge,$joinTables);
 			        }
