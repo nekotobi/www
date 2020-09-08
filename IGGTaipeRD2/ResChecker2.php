@@ -12,8 +12,8 @@
 	 require_once('scheduleApi.php');
      require_once('VTApi.php');
      DefineBaseData();
-	 saveUpdateTime("");
-    ListRes("hero");
+	// saveUpdateTime("",);
+     ListRes("hero");
 	// gettaskName( );
 ?>
 

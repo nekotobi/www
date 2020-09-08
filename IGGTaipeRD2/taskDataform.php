@@ -232,7 +232,6 @@
 				   $up=array( );
 			   for($i=0;$i<count($CheckArr);$i++){
 				 //  echo "[".$CheckArr[$i]."=".$_POST[$CheckArr[$i]];
-		       
 				  // if($_POST[$CheckArr[$i]]!=$CheckArr[$i]){
 		           if($_POST[$CheckArr[$i]]!=""){
 					 

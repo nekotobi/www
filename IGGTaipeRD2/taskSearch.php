@@ -6,17 +6,18 @@
 </head>
  <body bgcolor="#b5c4b1"> 
 <?php //主控台
-    include('PubApi.php');
-    include('mysqlApi.php');
-	include('CalendarApi.php');
-	DefineDatas();
-	checkSubmit();
+    require_once('PubApi.php');
+    require_once('mysqlApi.php');
+	require_once('CalendarApi.php');
+    require_once('VTApi.php');
+	 DefineDatas();
+	 checkSubmit();
 	if($_POST["submit"]==""){
-	   DrawButtons();
-	   ListRangeSC();
-       SortFinTask();
+	    DrawButtons();
+	    ListRangeSC();
+        SortFinTask();
     }
-	fastTask();
+	 fastTask();
 ?>
 <?php //主控台
      function DefineDatas(){ 			  
@@ -40,11 +41,13 @@
 			  //取得工單資料
 			  global $RangeScData;
 			  global $TaskTitle;
-			  global $fpschedule;
-			  $fpschedule=getMysqlDataArray("fpschedule");
+              global $fpschedule;
+ 
+		 	  $fpschedule=getVTSCData("mix");
+	          
 			  $TaskTitle= filterArray($fpschedule,5,"工項");
-			  $filterData=CollectRangeSchedule($fpschedule,2,$getDateRanges,$weekArray);
-			  $RangeScData=$filterData;
+			   $filterData=CollectRangeSchedule($fpschedule,2,$getDateRanges,$weekArray);
+			   $RangeScData=$filterData;
 			 // $RangeScData= CollectRangeSchedule($fpschedule,2, $typeVal[0][1], $typeVal[1][1], $typeVal[2][1]);
 	 }
      
@@ -227,6 +230,7 @@
 			  return $Wa;
 	 }
 	 function CollectRangeSchedule($data,$num,$getDateRanges,$weekArray){
+ 
 			  $filterData=array();
 			  for($i=0;$i<count($data);$i++){
 				  $strs=explode("_",$data[$i][$num]);
@@ -248,6 +252,7 @@
 			  }
 			  $sortData=SortRangeSchedules($filterData,$weekArray);
 			  return $sortData;
+			 
 	 }
 	 function getTaskTitle($code){
 	          global  $TaskTitle;
@@ -298,6 +303,33 @@
 				  }
 			  }
 			  return $filterData;
+	 }
+	 */
+?>
+<?php //備份
+/*
+	 function CollectRangeSchedule($data,$num,$getDateRanges,$weekArray){
+			  $filterData=array();
+			  for($i=0;$i<count($data);$i++){
+				  $strs=explode("_",$data[$i][$num]);
+				  $str=$strs[0]."_".$strs[1];
+				  if($data[$i][5]!="工項"){
+			         if(in_array($str, $getDateRanges)){ 
+				      $add=$data[$i];
+					  //加入完成日
+					  $d=  $strs[0]."-".$strs[1]."-".$strs[2];
+					  $finday =date("Y_m_d",strtotime("+".$data[$i][6]."day",strtotime($d)));
+				      array_push($add,$finday);
+				      //取得工項
+					  $MainTask= getTaskTitle($data[$i][3]);
+				      array_push($add, $MainTask[3]);
+					  array_push($add, $MainTask[12]);
+				      array_push( $filterData,$add);
+				  }
+				  }
+			  }
+			  $sortData=SortRangeSchedules($filterData,$weekArray);
+			  return $sortData;
 	 }
 	 */
 ?>
