@@ -24,7 +24,7 @@
 	           global $typeVal;
 			   global $typeArray,$typeRangeArray;
 			   echo $typeVal[0][1];
-			   	   echo $typeVal[1][1];
+			    echo $typeVal[1][1];
 	           if($typeVal[0][1]!=""  ){
 				   if($typeVal[0][1]=="type_5")$typeVal[1][1]=="製作";
 				   if($typeVal[0][1]=="selecttype_10")$typeVal[1][1]=="--";
@@ -58,7 +58,7 @@
 			   $s2= filterArray($s1,$n[1],$typeVal[1][1]);   
 		       $Range=array(0,1);
 		       global $Tasks;
-		       $Tasks =  getSCRange($s2, $startDate,$Range);
+		       $Tasks =  getSCRange($s2, $startDate,$Range,20);
 			   //取得選擇
                global $selectype;
                $type1="data2";
@@ -125,7 +125,7 @@
 		         global $startY;
 				 global $Tasks;
 		         for($i=0;$i<count($Tasks);$i++){
-				 $title= findTaskTitle($Tasks[$i][3])."[".$Tasks[$i][3]."]".$Tasks[$i][10];
+				     $title= findTaskTitle($Tasks[$i][3])."[".$Tasks[$i][3]."]".$Tasks[$i][10];
 				     DrawRect($title,"10","#ffffff","20", $startY,"500","18","#000000");
 					  ListTypeButtom($Tasks[$i][3], $startY);
 					  $startY+=20;

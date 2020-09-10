@@ -38,7 +38,6 @@
 	         	  $Base=array("line");
 				  $up=$upd;
            	   }
-	        
 			   $stmt= MakeUpdateStmt(  $data_library,$SC_tableName_now,$Base,$up,$WHEREtable,$WHEREData);
 			  // 	echo  $stmt;
 		       SendCommand($stmt,$data_library);		
@@ -75,7 +74,7 @@
 
 <?php //資源索引
       //取得行事曆內容
-      function getSCRange($Tasks, $startDate,$Range){// $startDate= "y-m-d"  range= array(-1,1);前一個月 後一個月
+      function getSCRange($Tasks, $startDate,$Range,$MaxNum){// $startDate= "y-m-d"  range= array(-1,1);前一個月 後一個月
 	            $a=array();
 	           for($i=0;$i<count($Tasks);$i++){
 			       $checkDay=strtr( $Tasks[$i][2],"_","-");
@@ -83,6 +82,7 @@
 				   if($n>$Range[0]*30 && $n<$Range[1]*30){
 					   $Tasks[$i]["sort"]=$n;
 					  array_push($a, $Tasks[$i]);
+					  if(count($a)>$MaxNum)return $a;
 				   }
 			   }
 			   $a= SortArrayByKey($a ,"sort");
