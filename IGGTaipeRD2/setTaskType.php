@@ -58,7 +58,7 @@
 			   $s2= filterArray($s1,$n[1],$typeVal[1][1]);   
 		       $Range=array(0,1);
 		       global $Tasks;
-		       $Tasks =  getSCRange($s2, $startDate,$Range,20);
+		       $Tasks =  getSCRange($s2, $startDate,$Range,10);
 			   //取得選擇
                global $selectype;
                $type1="data2";
