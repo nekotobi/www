@@ -27,10 +27,9 @@
 				   return getMysqlDataArray($SC_tableName_merge);
 			 }
 	  }
-	   function saveUpdateTime($type,$upd){ //更新排程表最後更新日期
+	   function saveUpdateTime($type,$upd){//更新排程表最後更新日期
 	           global $data_library,$SC_tableName_now;
 		    	 DefineVTTableName();
-			   //echo "xxx";
 			   $WHEREtable=array( "data_type", "code" );
 		       $WHEREData=array( "Update","Update" );
 			   $Base=array("plan");
@@ -75,7 +74,41 @@
 ?>
 
 <?php //資源索引
-     function getResDetail( $RequireHeros){
+      //取得行事曆內容
+      function getSCRange($Tasks, $startDate,$Range){// $startDate= "y-m-d"  range= array(-1,1);前一個月 後一個月
+	            $a=array();
+	           for($i=0;$i<count($Tasks);$i++){
+			       $checkDay=strtr( $Tasks[$i][2],"_","-");
+				   $n= (strtotime( $checkDay)-strtotime($startDate))/86400;
+				   if($n>$Range[0]*30 && $n<$Range[1]*30){
+					   $Tasks[$i]["sort"]=$n;
+					  array_push($a, $Tasks[$i]);
+				   }
+			   }
+			   $a= SortArrayByKey($a ,"sort");
+			   return $a;
+	  }
+	  function findTaskTitle($Code){
+		       global $TaskTitle;
+			   if(count($TaskTitle)==0){
+			      $T=getVTSCData("now");
+				  $TaskTitle=filterArray($T,5,"工項");   
+			   }
+			   for($i=0;$i<count($TaskTitle);$i++){
+			       if($TaskTitle[$i][1]==$Code)return $TaskTitle[$i][3];
+			   }
+			   
+	  }
+      function getSCTypes($type){ //返回排程類別
+	         $types=  getMysqlDataArray("scheduletype");
+			 $s= filterArray(  $types,0 ,$type);
+			 $a=array();
+			 for($i=0;$i<count($s);$i++){
+			     array_push($a,$s[$i][2]);
+			 }
+			 return $a;
+	 }
+      function getResDetail( $RequireHeros){
 		   
 	    
 	 
@@ -83,7 +116,7 @@
 ?>
 
 <?php //版本排程
-     function getLaterEventData(){//取得接下來的活動排程
+       function getLaterEventData(){//取得接下來的活動排程
 	             global $data_library;
 				 $Vte= getMysqlDataArray("vtevent");
 				 $ev=array();

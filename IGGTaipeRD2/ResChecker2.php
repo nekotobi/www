@@ -35,10 +35,17 @@
 ?>
 
 <?php //List
+     function getFocusRes(){
+	          getEventData
+	 }
+
+
      function ListRes($type){
 	          global $Res_Array;
+ 
 			  $List_Array=filterArray($Res_Array,0,$type);
 			  for($i=0;$i<count($List_Array);$i++){
+				
 			      echo "</br>".$List_Array[$i][2];
 			  }
 			 

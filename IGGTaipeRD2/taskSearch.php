@@ -10,6 +10,7 @@
     require_once('mysqlApi.php');
 	require_once('CalendarApi.php');
     require_once('VTApi.php');
+	 
 	 DefineDatas();
 	 checkSubmit();
 	if($_POST["submit"]==""){
@@ -42,18 +43,19 @@
 			  global $RangeScData;
 			  global $TaskTitle;
               global $fpschedule;
- 
 		 	  $fpschedule=getVTSCData("mix");
-	          
 			  $TaskTitle= filterArray($fpschedule,5,"工項");
-			   $filterData=CollectRangeSchedule($fpschedule,2,$getDateRanges,$weekArray);
-			   $RangeScData=$filterData;
-			 // $RangeScData= CollectRangeSchedule($fpschedule,2, $typeVal[0][1], $typeVal[1][1], $typeVal[2][1]);
+			  $filterData=CollectRangeSchedule($fpschedule,2,$getDateRanges,$weekArray);
+			  $RangeScData=$filterData;
+			  //取得工做分類
+			  global $WorkSort;
+			  $WorkSort= getSCTypes("data");
+			      echo count( $WorkSort);
 	 }
      
 ?> 
 <?php //search
-  function fastTask(){
+     function fastTask(){
 	          $x=20;
 			  $y=10;
 			  global $URL;
@@ -108,7 +110,6 @@
 			  	 // echo "</br>";
 			  }
 	 }
-	 
      function ListSearchTasks($arrays,$x,$j ){
 		      global $gy;
 	          for($i=0;$i<count($arrays);$i++){
@@ -165,13 +166,12 @@
 			   }
 			 
 	}
-	function DrawWeeks($data,$BgColor,$n ){
+	function DrawWeeks_b($data,$BgColor,$n ){
 		     global $listY;
 		     $x=20;
 			 $w=800;
 			 $h=14;
 		     for($i=1;$i<count($data);$i++){
-				//   $listY+=16;
 				   //$msg=$n.">".$data[$i][0][0];
 				  // DrawRect($msg,10,$fontColor,$x,$listY,$w,$h,$BgColor);
 				   if(count($data[$i])>1){
@@ -179,8 +179,22 @@
 				 }
 			 }
 	}
-	function ListTasks($task,$x){
-		   
+   function DrawWeeks($data,$BgColor,$n ){
+		     global $listY;
+		     $x=20;
+			 $w=800;
+			 $h=14;
+			 $tasks=array();
+		     for($i=1;$i<count($data);$i++){
+				   if(count($data[$i])>1){
+					  if( count($tasks)==0) $tasks=$data[$i];
+					  if( count($tasks)>0)  addArray($tasks,$data[$i]);
+				 }
+			 }
+		     $sortTask= SortWorks($tasks);
+			 ListTasks( $sortTask,$x);
+	}
+	function ListTasks_B($task,$x){
 	         global $listY;
 		     $x=20;
 			 $w=500;
@@ -189,18 +203,50 @@
 		         $listY+=16;
 				 $BgColor="#cccccc";
 				 if($task[$i][7]!="已完成")$BgColor="#ffcccc";
-				 $msg="{".$task[$i][5]."}".$task[$i][21];
-			
+				 $msg= "{".$task[$i][5]."}".$task[$i][21];
 				 DrawRect($msg,10,$fontColor,$x,$listY,$w,$h,$BgColor);
 				 $jila=$task[$i][12];
 				 if($jila=="")$jila=$task[$i][22];
 		         $Link="http://bzbfzjira.iggcn.com/browse/FP-".$jila;
 				 DrawLinkRect($jila,10,"#ffffff",$x, $listY,50,12,"#ffaaaa",$Link,$border);
+			     DrawRect( $task[$i][2]."[".$task[$i][6]."]",10,$fontColor,$x+500,$listY,60,$h,"#aaaaaa");
 	           }
 	}
+	 function ListTasks( $sortTask,$x){
+	         global $listY;
+		     $x=20;
+			 $w=500;
+			 $h=14;
+		   
+			 for($i=0;$i<count($sortTask);$i++){
+				 $listY+=16;
+				 $BgColor="#cccccc";
+				 $msg=$i.$sortTask[$i][0];
+				 if(count($sortTask[$i])>2){
+				    $msg= "{".$sortTask[$i][5]."}".$sortTask[$i][21];
+				 }
+				 DrawRect($msg,10,$fontColor,$x,$listY,$w,$h,$BgColor);
+			 }
+	     
+	}
 ?>
-
 <?php //function
+     function SortWorks($task){
+		      global $WorkSort;
+			  $SArray=array(array("st",""));
+			  for($i=0;$i<count($WorkSort);$i++){
+				  array_push( $SArray,array($WorkSort[$i],"t"));
+			      $SArray=  JoinTaskWorks($SArray ,$task,$WorkSort[$i]);
+			     }
+				 return $SArray;
+	 }
+	 function JoinTaskWorks($Base, $task,$type){
+			  for($i=0;$i<count($task);$i++){
+			      if($task[$i][10]==$type)
+				  array_push($Base,$task[$i]);
+			  }
+			  return $Base;
+	 }
      function SortFinTask(){
 	          global $typeVal;
 			  global $getDateRanges,$weekArray;

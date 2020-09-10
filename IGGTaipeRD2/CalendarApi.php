@@ -1,4 +1,10 @@
 <?php
+       function returnPassDate($date, $passday){
+			    $ps=$date.$passday." day";
+	            $PassDate= date("Y-m-d",strtotime($ps ));   
+	            return $PassDate ;
+			
+	   }
        function getPassDaysDay($dateData,$Workday){//給予開始日 工作天,取得結束日 陣列
 	          $y=$dateData[0];
 			  $m=$dateData[1];

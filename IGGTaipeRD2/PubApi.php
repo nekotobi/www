@@ -45,6 +45,16 @@
 
 
 <?php //Array功能
+       function SortArrayByKey($array ,$key){
+	   	       if(count($array)==0)return;
+			   foreach ($array as $k => $v) {
+                        $edition[] = $v[$key];
+                      }
+               array_multisort($edition, SORT_ASC,$array);
+			   return $array;
+	   
+	   }
+
        function getTypesArray($data,$num){//取得不重複的陣列
 		        $ar=array();
 				for($i=0;$i<count($data);$i++){
@@ -53,8 +63,7 @@
 				}
 				}
 				return $ar;
-	   }
-	  
+	   } 
        function sortStringArray($array){ //排列 含有英文的數字陣列
 	          $sorts=array();
 			  $lastSn=0;
@@ -208,9 +217,7 @@
 				}
 				return $arr;
 	   }
-	
-	   
-	   
+ 
 	   function addArray($Base,$Add){
 	         $a=$Base;
 			 for($i=0;$i<count($Add);$i++){
