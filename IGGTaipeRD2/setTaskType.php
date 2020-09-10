@@ -49,8 +49,9 @@
 			   }
 			  // AutoSwitch();
 	           $scDataB=getVTSCData("now");
-               $s1= filterArray($scDataB,0,"data");
+               $s1T= filterArray($scDataB,0,"data");
 			   $TaskNames= filterArray($scDataB,5,"工項");
+			   $s1=  RemoveArray( $s1T,5,"工項");
 			   //時間範圍
 		       $Date2= date("Y-m-d");
 		       $startDate=   returnPassDate( date("Y-m-d") ,$typeVal[2][1]);
