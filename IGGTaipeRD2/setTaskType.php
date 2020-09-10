@@ -107,7 +107,6 @@
 			   $Base=array( $n[0]);
 			   $up=array($_POST["selectype"]);
 	           $stmt= MakeUpdateStmtv2(  $tableName,$Base,$up,$WHEREtable,$WHEREData);	
-			   echo $stmt;
 			   SendCommand($stmt,$data_library);
 			   saveUpdateTime("","");
 			   ReLoad();
