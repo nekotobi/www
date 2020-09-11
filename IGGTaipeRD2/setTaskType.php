@@ -115,7 +115,6 @@
 	    	    global  $URL;
 			    global $typeVal;
 				JavaPostArray($typeVal,$URL); 
-				
 	}
 ?>
 

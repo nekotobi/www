@@ -995,9 +995,10 @@
 					    array_push($WHEREData,$_POST[$tables[$i]]);
 		              }
 					$stmt=   MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
-				//	echo $stmt;
-				    SendCommand($stmt,$data_library);
-			       echo " <script language='JavaScript'>window.location.replace('".$_POST[$BaseURL]."')</script>";
+			      echo $stmt;
+				  saveUpdateTime("","");
+				   SendCommand($stmt,$data_library);
+			     //  echo " <script language='JavaScript'>window.location.replace('".$_POST[$BaseURL]."')</script>";
 				//  ReLoad();
 		      	  
  	 }

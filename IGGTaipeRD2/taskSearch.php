@@ -85,8 +85,8 @@
 			  global $searchScs;
 			  $searchScs=filterArrayContain($fpschedule,$s,$_POST["search"]);
 			  echo "</br>";
-			  echo count($searchScs);
-			  echo $_POST["search"];
+			//  echo count($searchScs);
+			//  echo $_POST["search"];
 			  ListSCs();
 	 }
 	 function ListSCs(){
@@ -149,7 +149,6 @@
 			   global $weekArray;
 			   $y=100;
 			   $fontColor="#ffffff";
-			 
 			   $w=800;
 			   $h=18;
 		   	   $BgColor="#aaaaaa";
@@ -159,7 +158,6 @@
 			   for($i=0;$i<count($RangeScData);$i++){
 				    $c=$i%2;
 				    $listY+=20;
-					//$msg=  $RangeScData[$i][0][0];
 					$msg=$i."[".$weekArray[$i][0].">".$weekArray[$i][6];
 				    DrawRect($msg,10,$fontColor,$x,$listY,$w,$h,"#000000"); 
 			        DrawWeeks($RangeScData[$i],$color[$c],$i);
