@@ -156,11 +156,12 @@
 			   $listY=100;
 			   $color=array("#aaaaaa","#bbbbbb","#aaaaaa");
 			   for($i=0;$i<count($RangeScData);$i++){
+		 
 				    $c=$i%2;
 				    $listY+=20;
 					$msg=$i."[".$weekArray[$i][0].">".$weekArray[$i][6];
 				    DrawRect($msg,10,$fontColor,$x,$listY,$w,$h,"#000000"); 
-			        DrawWeeks($RangeScData[$i],$color[$c],$i);
+			        DrawWeeks_b($RangeScData[$i],$color[$c],$i);
 			   }
 			 
 	}
@@ -183,6 +184,7 @@
 			 $w=800;
 			 $h=14;
 			 $tasks=array();
+			 echo ">".count($data);
 		     for($i=1;$i<count($data);$i++){
 				   if(count($data[$i])>1){
 					  if( count($tasks)==0) $tasks=$data[$i];
@@ -191,7 +193,11 @@
 			 }
 		     $sortTask= SortWorks($tasks);
 			 ListTasks( $sortTask,$x);
+			// ListTasks_B($task,$x);
 	}
+	
+	
+	
 	function ListTasks_B($task,$x){
 	         global $listY;
 		     $x=20;
