@@ -156,7 +156,6 @@
 			   $listY=100;
 			   $color=array("#aaaaaa","#bbbbbb","#aaaaaa");
 			   for($i=0;$i<count($RangeScData);$i++){
-		 
 				    $c=$i%2;
 				    $listY+=20;
 					$msg=$i."[".$weekArray[$i][0].">".$weekArray[$i][6];

@@ -6,11 +6,11 @@
 </head>
  <body bgcolor="#b5c4b1"> 
 <?php //主控台
-    include('PubApi.php');
-    include('mysqlApi.php');
-	include('CalendarApi.php');
-	include('TaskDataFormJavaApi.php');
-	 require_once('VTApi.php');
+    require_once('PubApi.php');
+    require_once('mysqlApi.php');
+	require_once('CalendarApi.php');
+	require_once('TaskDataFormJavaApi.php');
+	require_once('VTApi.php');
 	DefineDatas();
     DrawButtons();
     TypeLink();
@@ -253,7 +253,7 @@
 	  }
 ?>
 <?php //內容
-	 function  findtaskChild($code){
+	 function   findtaskChild($code){
 	           global $tasks;
 			   $arr=array();
 			   for ($i=0;$i<count($tasks);$i++){

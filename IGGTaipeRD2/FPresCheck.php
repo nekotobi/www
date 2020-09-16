@@ -79,16 +79,15 @@
 									      array("VFX","7"),
 						  );
 			  }
-			
-		 	  global $CookieArray;
+
+		 	  global $CookieArray;			
 			  global $ScheduleData, $ScheduleDataPlan  ;
 			  //基本行事曆
 			  global $fpSCBase, $fpBaseName;
 			  $fpBaseName= "fpschedule_now";
 		   	  $fpSCBase=getVTSCData("mix");
-		       echo count(  $fpSCBase);
-	          $ScheduleDataPlan  =filterArray($fpSCBase,5,"工項");
-			  
+		      echo count(  $fpSCBase);
+	          $ScheduleDataPlan  =filterArray($fpSCBase,5,"工項"); 
               global $OutsData, $memberData;
 			  $OutsDatat1=getMysqlDataArray("outsourcing");	
 			  $OutsDatat=filterArray($OutsDatat1,0,"data");	
@@ -308,11 +307,12 @@
 			       if( $type1=="hero"){
                      // $s= str_replace( "G" , "" ,$type2 );
 					  $s=explode("_",$type2);
+					  echo $s[1];
 					  if(count($s)==1) $data =filterArray($ResData,12,$type2);
 					  if($s[0]=="G") $data =filterArray($ResData,14,$s[1]);
-		              if($s[0]=="S")   $data =filterArray($ResData,9,$s[1]);
-		        	  if($s[0]=="C")   $data =filterArray($ResData,11,$s[1]);
-					  if($s[0]=="T")   $data =filterArray($ResData,10,$s[1]);
+		              if($s[0]=="S")   $data =filterArray($ResData,16,$s[1]); //9
+		        	  if($s[0]=="C")   $data =filterArray($ResData,18,$s[1]);//11
+					  if($s[0]=="T")   $data =filterArray($ResData,27,$s[1]);//10
 				      return $data;
 				   }
  
