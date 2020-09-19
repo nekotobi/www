@@ -739,10 +739,7 @@
 			   }
 			   echo "</br>";
 	 }
-    
-
 ?>
-
 
 <?php //日曆
      function DrawCallendarRange(){

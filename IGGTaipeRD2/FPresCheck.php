@@ -1002,7 +1002,7 @@
 				//  ReLoad();
 		      	  
  	 }
-      function ReLoad(){
+     function ReLoad(){
 	            /*
 			   global $BaseURL;
 		       global  $CookieArray,$MysQlArray;

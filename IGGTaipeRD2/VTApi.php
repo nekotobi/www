@@ -71,8 +71,53 @@
 			  // print_r(  $LostArray) ;
 	  } 
 ?>
-
+<?php  //日歷
+       function DrawBaseCalendar($StartY,$StartM,$MRange,$LocX,$LocY,$wid,$h){
+		        $BgColor="#222222";
+			    $fontColor="#ffffff";
+			    $fontSize=10;
+				$y=$StartY;
+				$m=$StartM;
+	            for($i=0;$i<$MRange;$i++){
+                   $days = cal_days_in_month(CAL_GREGORIAN, $m,$y); // 30
+				   DrawRect($m,$fontSize,$fontColor,$LocX,$LocY,$wid*$days-2,18,$BgColor);
+				   $ym=$y."_".$m;
+				   DrawVTDays($LocX,$LocY,$wid,$days, $h,$ym);
+			       $m+=1;
+				   if($m>12){$m=1;$y+=1;}
+				   $LocX+=$wid* $days;
+				}
+	   }
+        function DrawVTDays($LocX,$LocY,$wid,$days, $h,$ym){
+		     	  $BgColor="#aaaaaa";
+			      $fontColor="#ffffff";
+			      $fontSize=10;
+				  $date=date("Y_n_d");
+			      for($i=1;$i<=$days;$i++){
+					 $id="startDay=".$ym."_".$i;
+					 
+					 $BgColor="#aaaaaa";
+					 if($date==$ym."_".$i)$BgColor="#aa7777";
+			         VTDrawJavaDragArea("",$LocX+$i*$wid ,$LocY+20,$wid-1,$h,$BgColor,$fontColor,$id,$fontSize );
+				  }
+		}
+?>
 <?php //資源索引
+     function getResSorType($Res_Array,$Restype ){//動作特效xx
+				$types=filterArray($Res_Array,0,$Restype."_type");
+				$a=array();
+				for($i=5;$i<11;$i++){
+				    array_push($a,$types[0][$i]);
+				}
+				return $a;
+	 }
+	 function returnTaskMainCode($ScheduleData,$Code){
+	          for($i=0;$i<count($ScheduleData);$i++){
+			      if(strpos($ScheduleData[$i][3],$Code) !== false &&  $ScheduleData[$i][6]==""  ){
+					  return $ScheduleData[$i][1];				  
+			  }
+			  }
+	 }
       function returnPic($dir,$code){
 	    $pic="ResourceData/".$dir."/viewPic/".$code.".png";
 		return $pic;
@@ -153,3 +198,60 @@
 ?>
 
 
+<?php //java
+        function VTDrawJavaDragPic($pic,$x,$y,$w,$h,$id){
+		     	 echo "<div id=".$id  ;
+				 echo " draggable='true' ondragstart='Drag(event)' ";
+				 echo "' style='position:absolute; 
+				       top:".$x."px;Left:".$y."px; width:".$w."px;height:".$h."px;
+				      '><img src=".$pic." width=".$w." height=".$h."></div>";
+	   }
+	    function VTDrawJavaDragbox($msg,$x,$y,$w,$h,$fontSize,$BgColor,$fontColor,$id){
+	          echo "<div  id=".$id." ";
+			  	//    echo " ondragover='alert(xxx)' ";
+ 
+			  echo " draggable='true' ondragstart='Drag(event)' ";// ondragend='leave(event)' ";
+              echo " style=' " ; //align=left
+			  echo "position:absolute; top:".$y."px; left:".$x."px;  width:".$w."px;height:".$h."px; 
+			        font-size:".$fontSize."px; color:".$fontColor."; background-color:".$BgColor."; '>".$msg;
+	          echo "</div>";
+	    }
+	    function VTDrawJavaDragArea($msg,$x,$y,$w,$h,$BgColor,$fontColor,$id,$fontSize=10){
+	          echo "<div  id=".$id." ";
+			 // echo " ondragenter='enter(event)' ";
+			  echo " ondrop='Drop2Area(event)'  ondragover='AllowDrop(event)' ";//  ondragleave = 'leave(event)' ";
+              echo  " style='   " ;
+			  echo "position:absolute;  top:".$y."px; left:".$x."px;  width:".$w."px;height:".$h."px; background-color:".$BgColor."; ";
+	          echo  " font-size:".$fontSize."px ; color:".$fontColor."; ";
+              echo	 "'  >";
+			  echo $msg;
+	          echo "</div>";
+	    }
+
+?>
+<?php //javaform
+     function VTCreatJavaForm( $URL,$tableName){
+		      $x=20;
+			  $y=10;
+			  global  $typeArray;
+			 // global $tableName;
+		      $upFormVal=array("Show","Show",$URL);
+			  $UpHidenVal=array(array("tablename",$tableName),
+			                    array("data_type","data"),
+								array( "Send","sendjava" ),
+	                            );
+		      $UpHidenVal=	addArray( $UpHidenVal,$typeArray);	
+		      $inputVal=array(array("text","DragID","DragID",10,420,$y,300,20,$BgColor,$fontColor,"" ,15),
+			                   array("text","target","target",10,570,$y,200,20,$BgColor,$fontColor,"" ,20),
+						       array("text","workingDays","workingDays",10,820,$y,200,20,$BgColor,$fontColor,"" ,6),
+							   array("text","state","state",10,920,$y,200,20,$BgColor,$fontColor,"" ,6),
+							   array("text","principal","principal",10,1020,$y,200,20,$BgColor,$fontColor,"" ,6),
+							   array("text","outsourcing","outsourcing",10,1120,$y,200,20,$BgColor,$fontColor,"" ,6),
+							   array("text","type","type",10,1220,$y,200,20,$BgColor,$fontColor,"" ,6),
+							   array("text","selecttype","selecttype",10,1420,$y,200,20,$BgColor,$fontColor,"" ,6),
+							   array("text","startDay","startDay",10,1320,$y,200,20,$BgColor,$fontColor,"" ,6),
+	                          );			 
+		      upSubmitform($upFormVal,$UpHidenVal, $inputVal);
+	 }
+
+?>

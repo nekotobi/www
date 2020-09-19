@@ -7,6 +7,12 @@
 	include('javaApi.php');
 	global $data_type;
   //  testNewAdd();
+    $hexStr="#aaaaaa";
+   $h= ColorDarker($hexStr,1.2);
+	echo    $h;
+  //  $rgb=array( 244, 222, 222);
+	// echo rgb_to_Hex($rgb );
+	//print_r( hex2RGB($hexStr )) ;
 ?>
 <?php
     function testNewAdd(){

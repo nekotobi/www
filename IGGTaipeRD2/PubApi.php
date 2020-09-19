@@ -43,6 +43,51 @@
  
 ?>
 
+<?php //顏色
+      /*
+      function rgb_to_color($rgb, $symbols=' '){
+               $color = '';
+               $arr = explode($symbols, $rgb);
+               $count = count($arr);
+               for($i=0; $i<$count; $i++){
+                   $color .= dechex($arr[$i]);
+               }
+               return '#'.$color;
+              }  
+		 */
+	   function rgb_to_Hex($rgb ){
+                $color = '';
+                for($i=0; $i<count($rgb); $i++){
+                   $color .= dechex($rgb[$i]);
+                }
+               return '#'.$color;
+              }		  
+      function hex2RGB($hexStr ) {
+               $hexStr = preg_replace("/[^0-9A-Fa-f]/", '', $hexStr); // Gets a proper hex string
+               $rgbArray = array();
+               $colorVal = hexdec($hexStr);
+               $rgbArray[0] = 0xFF & ($colorVal >> 0x10);
+               $rgbArray[1] = 0xFF & ($colorVal >> 0x8);
+               $rgbArray[2] = 0xFF & $colorVal;
+               return $rgbArray;
+			   }
+	  function ColorDarker($hexStr,$pow){
+		       $rgbArray=hex2RGB($hexStr ) ;
+		     
+			   $rgb=array();
+			   for($i=0;$i<count($rgbArray);$i++){
+			       $c=ceil($rgbArray[$i]+$pow);
+				   if($c>255)$c=254;
+				   if($c<0)$c=1;
+				   $rgb[$i]= $c;
+ 
+			   }
+			   $hex=rgb_to_Hex($rgb );
+			   return $hex;
+	  }
+	   function ColorGrayscale($hexStr,$pow){
+	   }
+?>
 
 <?php //Array功能
        function SortArrayByKey($array ,$key){
