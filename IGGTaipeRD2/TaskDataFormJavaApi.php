@@ -77,7 +77,7 @@
 			    break;
 		 }
  
-     //   Show.submit();
+    Show.submit();
 	}
     
 	function Drag(event) {
