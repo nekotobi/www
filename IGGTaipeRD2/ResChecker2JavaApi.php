@@ -74,6 +74,15 @@
 			  document.Show.principal.value="黃謙信";
 			  document.Show.outsourcing.value="";
 		}
+	    switch(tmp2[0]){
+			    case  "state":
+					 document.Show.selecttype.value="";
+				     document.Show.startDay.value="";
+			         document.Show.state.value=tmp2[1];
+					 document.Show.code.value=tmp2[1];
+				
+			    break;
+			 }
 		 	/*
 
 
@@ -100,7 +109,7 @@
 			    break;
 		 }
   */
-   Show.submit();
+    Show.submit();
 	  
 	}
  
@@ -176,7 +185,7 @@
 				   }
 			   }
                ChangePlan($Ecode,$Base,$up);
-		       ReLoad();
+		    ReLoad();
 	    }
 		function newTask(){
 		      	 echo  $_POST["type"];

@@ -14,8 +14,10 @@
 	 require_once('ResChecker2JavaApi.php');
      DefineBaseData();
 	 DrawCalendar();
+	 DrawDragArea2();
 	 ListRes( );
      CheckDrag();
+	
 	// saveUpdateTime("",);
    //  ListRes("hero");
 	// gettaskName( );
@@ -51,6 +53,22 @@
 			  $ResTypes= getResSorType($Res_Array,$Restype); 
 			  VTCreatJavaForm( $URL,$tableName);
 	 }
+	 function  DrawDragArea2(){
+		        global $startY;
+				$x=20;
+				$y=$startY-20;
+			    $BgColor="#224444";
+			    $fontColor="#ffffff";
+			    $Typestmp=getMysqlDataArray("scheduletype"); 
+	            $arrT=filterArray( $Typestmp,0,"data3");//  array("進行中","已排程","驗證中","已完成");
+			    $arr=returnArraybySort($arrT,2);
+				array_Push( $arr,"刪除");
+			    for($i=0;$i<count($arr);$i++){
+				    $id="state=".$arr[$i];
+				    VTDrawJavaDragArea($arr[$i],$x,$y,34,18,$BgColor,$fontColor,$id,9);
+					$x+=35;
+				}
+	  }	 
 ?>
 
 <?php //List
@@ -89,27 +107,35 @@
 			  $fontColor="#ffffff";
 			  $fontSize=9;
 			  $x=60;
-	      
 		      $startDate=date("Y-m-1");
 			  $yadd=0;
 			  for($i=0;$i<count($tasks);$i++){
 				  $type=$tasks[$i][5];
+				  $WorkDays= $tasks[$i][6];
+				  if($WorkDays<=0)$WorkDays=2;
+				  $show=  substr($type,0, $WorkDays);
 				  $BgColor=$colorCodes[11][$i];
-				   $c=ColorDarker( $BgColor,122);
+				  $c=ColorDarker( $BgColor,122);
 			       if(count($tasks[$i])<2  ){ //未登錄
 				  	 $id= "N=".$tasks[$i][0]."=".$ResCode[2] ;
 					 VTDrawJavaDragbox($tasks[$i][0] ,$startRX+$i*30,$startY+20,28,18,9, $BgColor, $fontColor,$id);
 			         }else{
 				  if(count($tasks[$i])>2  ){
-			        if($tasks[$i][7]=="已完成"){
-					  $c="#aaaaaa";
-				      } 
+			         if($tasks[$i][7]=="已完成") { 
+					 $c="#aaaaaa";
 					 DrawRect($type,$fontSize,$fontColor,$startRX+$i*30,$startY+20,28,18,$c);
+					 }else{
 					 $date=$tasks[$i][2];
-				     $ds=$startX+ returnLocX($date,$startDate)*$wid ;
+					 $xAdd=returnLocX($date,$startDate);
+					 if($xAdd<0){
+						// $xAdd=1;
+						  $BgColor="#ccaaaa";
+						// $WorkDays=4;
+					 }
+				     $ds=$startX+ 	 $xAdd*$wid ;
 					 $id= "S=".$tasks[$i][1]."=".$tasks[$i][6]."=".$wid."=".$tasks[$i][7];
 					 $yy=$startY+  $yadd;
-					 VTDrawJavaDragbox( $type  ,$ds,$yy,$wid*$tasks[$i][6],15,10,  $BgColor, $fontColor,$id);
+					 VTDrawJavaDragbox( $show ,$ds,$yy,$wid*$WorkDays,15,10,  $BgColor, $fontColor,$id);
 					 $id= "E=".$tasks[$i][1]."=".$tasks[$i][6]."=".$wid."=".$tasks[$i][7];
 				     $BgColor3="#888888";
 					 $x=$ds+$wid*($tasks[$i][6] );
@@ -120,7 +146,7 @@
 					 }else{
 					  $yadd=0;
 					 }
-					 
+					 }
 				  }
 				  }
 				  $x+=30;
