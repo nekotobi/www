@@ -72,7 +72,7 @@
 				  $pic= returnPic($Restype,$FocusRes[$i][0]);
 				  DrawRect($msg,$fontSize,$fontColor,60,$startY,230,18,$BgColor);
 				  DrawLinkPic($pic,$startY,20,38,38,$pic);
-			      DrawTasks($FocusRes[$i][2],$FocusRes[$i][0]);
+			      DrawTasks($FocusRes[$i][2],$FocusRes[$i] );
                   $startY+=40; 
 				  
 			  }
@@ -91,12 +91,13 @@
 			  $x=60;
 	      
 		      $startDate=date("Y-m-1");
+			  $yadd=0;
 			  for($i=0;$i<count($tasks);$i++){
 				  $type=$tasks[$i][5];
 				  $BgColor=$colorCodes[11][$i];
 				   $c=ColorDarker( $BgColor,122);
 			       if(count($tasks[$i])<2  ){ //未登錄
-				  	 $id= "N=".$tasks[$i]."=".$ResCode;
+				  	 $id= "N=".$tasks[$i][0]."=".$ResCode[2] ;
 					 VTDrawJavaDragbox($tasks[$i][0] ,$startRX+$i*30,$startY+20,28,18,9, $BgColor, $fontColor,$id);
 			         }else{
 				  if(count($tasks[$i])>2  ){
@@ -107,19 +108,25 @@
 					 $date=$tasks[$i][2];
 				     $ds=$startX+ returnLocX($date,$startDate)*$wid ;
 					 $id= "S=".$tasks[$i][1]."=".$tasks[$i][6]."=".$wid."=".$tasks[$i][7];
-					 VTDrawJavaDragbox( $type  ,$ds,$startY,$wid*$tasks[$i][6],15,10,  $BgColor, $fontColor,$id);
+					 $yy=$startY+  $yadd;
+					 VTDrawJavaDragbox( $type  ,$ds,$yy,$wid*$tasks[$i][6],15,10,  $BgColor, $fontColor,$id);
 					 $id= "E=".$tasks[$i][1]."=".$tasks[$i][6]."=".$wid."=".$tasks[$i][7];
 				     $BgColor3="#888888";
 					 $x=$ds+$wid*($tasks[$i][6] );
-				     VTDrawJavaDragbox( "" ,$x,$startY,5,15,5, $BgColor3, $fontColor,$id);
+				     VTDrawJavaDragbox( "" ,$x,$yy,5,15,5, $BgColor3, $fontColor,$id);
 					 $f=2;
+					 if(  $yadd==0){
+						 $yadd=20;
+					 }else{
+					  $yadd=0;
+					 }
+					 
 				  }
 				  }
 				  $x+=30;
 			  }
 			  $id="DateInfo";
- 
-			   VTDrawJavaDragbox( "info"  ,2,2,100,12,9,"#333333", $fontColor,$id);
+			  VTDrawJavaDragbox( "info"  ,2,2,100,12,9,"#333333", $fontColor,$id);
 	 }
 ?>
 <?php //資源排序
@@ -143,7 +150,6 @@
 			   $n= (strtotime( $checkDay)-strtotime($startDate))/86400;
 			   return $n; 
 	 }
-
      function getResSCData($FocusRes){
 	          $a=array();
 			  for ($i=0;$i<count($FocusRes);$i++){
@@ -157,7 +163,6 @@
 	           echo  "</br>".$taskCode.">".$code;
 	 
 	 }
-	 
      function getFocusRes(){
 	          $Ev=  getLaterEventData();
 			  global $Restype;
@@ -166,9 +171,9 @@
 				   $e= returnRequestRes($Ev[$i][6],$Ev[$i][10],$Restype);
 				   $res=addArray($res,$e);
 	          }
+			 // print_r ($res);
 			  return $res;
-	 }
-    
+	 }   
 	 function returnRequestRes($ResStr,$days,$Type){
 		      global $SC_nowArray;
 		      $filterStr="h";

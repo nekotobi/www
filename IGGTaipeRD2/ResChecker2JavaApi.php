@@ -50,7 +50,7 @@
 			 document.getElementById(DragID).style.left=tx;
 			// document.getElementById(E).style.left=x3 ;
 		 }
-	     if( tmp[0]=="E"){
+	    if( tmp[0]=="E"){
 			  document.getElementById( DragID).style.left=tx;
 			  var SID= new String( "S="+tmp[1]+"="+tmp[2]+"="+tmp[3]+"="+tmp[4]);
               document.Show.DragID.value= tmp[1];
@@ -59,8 +59,21 @@
 		      var x3=(parseInt(x[0])-parseInt(sidwx[0]));
 		      document.getElementById(SID).style.width = x3+"px";
 	          document.Show.workingDays.value=x3/tmp[3];
-			   document.Show.startDay.value="";
+			  document.Show.startDay.value="";
 		 }
+		if( tmp[0]=="N"){
+			  document.getElementById( DragID).style.left=tx;
+			  var SID= new String( "S="+tmp[1]+"="+tmp[2]+"="+tmp[3]+"="+tmp[4]);
+			  document.Show.target.value=targetID;
+              document.Show.DragID.value=DragID;
+			  document.Show.type.value=tmp[1];
+			  document.Show.startDay.value=tmp2[1];
+			  document.Show.workingDays.value=5;
+			  document.Show.plan.value=tmp[2];
+			  document.Show.state.value="預排程";
+			  document.Show.principal.value="黃謙信";
+			  document.Show.outsourcing.value="";
+		}
 		 	/*
 
 
@@ -147,6 +160,10 @@
         }
 	    function  CheckDrag(){
 			   if($_POST["DragID"]=="")return;
+			   if($_POST["type"]!=""){
+				   newTask();
+				   return;
+			   }
 	           $Ecode=$_POST["DragID"];
 			   $target=$_POST["target"]	;
 	           $CheckArr= array("startDay","workingDays" ,"principal","outsourcing","type","state","selecttype");
@@ -160,8 +177,25 @@
 			   }
                ChangePlan($Ecode,$Base,$up);
 		       ReLoad();
-			
 	    }
+		function newTask(){
+		      	 echo  $_POST["type"];
+			     global $SC_tableName_now,$SC_tableName_old,$SC_tableName_merge;
+				 DefineVTTableName();
+			     $tables=returnTables($data_library,$SC_tableName_now);
+				 $WHEREtable=array();
+				 $WHEREData=array();
+		         for($i=0;$i<count( $tables);$i++){
+				      array_push($WHEREtable, $tables[$i] );
+					  $data=$_POST[$tables[$i]];
+					  array_push($WHEREData,$data);
+				 }
+				  $stmt=  MakeNewStmtv2($SC_tableName_now,$WHEREtable,$WHEREData);
+				 // echo "</br>".$stmt;
+			    saveUpdateTime("",array(""));
+		        SendCommand($stmt,$data_library);	
+				ReLoad();
+		}
 	    function ChangePlan($Ecode,$Base,$up){
 	           global $URL;
 			   global $data_library,$tableName,$SC_tableName_now ;
@@ -171,9 +205,10 @@
 		       $WHEREData=array( "data",$Ecode );
 			   $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
 			   echo "</br>";
-		       echo $stmt;
+		      // echo $stmt;
 		       saveUpdateTime("",array(""));
-		       SendCommand($stmt,$data_library);		
+		       SendCommand($stmt,$data_library);	
+               ReLoad();			   
 	    }
 	    function ReLoad(){
 	    	   global $PostArray,$URL;

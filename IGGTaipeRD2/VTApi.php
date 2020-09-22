@@ -88,7 +88,7 @@
 				   $LocX+=$wid* $days;
 				}
 	   }
-        function DrawVTDays($LocX,$LocY,$wid,$days, $h,$ym){
+       function DrawVTDays($LocX,$LocY,$wid,$days, $h,$ym){
 		     	  $BgColor="#aaaaaa";
 			      $fontColor="#ffffff";
 			      $fontSize=10;
@@ -103,7 +103,7 @@
 		}
 ?>
 <?php //資源索引
-     function getResSorType($Res_Array,$Restype ){//動作特效xx
+      function getResSorType($Res_Array,$Restype ){//動作特效xx
 				$types=filterArray($Res_Array,0,$Restype."_type");
 				$a=array();
 				for($i=5;$i<11;$i++){
@@ -111,7 +111,7 @@
 				}
 				return $a;
 	 }
-	 function returnTaskMainCode($ScheduleData,$Code){
+	  function returnTaskMainCode($ScheduleData,$Code){
 	          for($i=0;$i<count($ScheduleData);$i++){
 			      if(strpos($ScheduleData[$i][3],$Code) !== false &&  $ScheduleData[$i][6]==""  ){
 					  return $ScheduleData[$i][1];				  
@@ -193,8 +193,7 @@
 					}
 				}
 				return    $heros;
-	   }
-	   
+	   } 
 ?>
 
 
@@ -231,10 +230,16 @@
 ?>
 <?php //javaform
      function VTCreatJavaForm( $URL,$tableName){
+		      global $Restype;
+			  $st="角色";
+			  if($Restype=="hero")  $st="角色";;
+ 
 		      $x=20;
 			  $y=10;
 			  global  $typeArray;
 			 // global $tableName;
+			  $code=returnDataCode( );
+			  $lastUpdate=date("Y_j_n_H_i_s");
 		      $upFormVal=array("Show","Show",$URL);
 			  $UpHidenVal=array(array("tablename",$tableName),
 			                    array("data_type","data"),
@@ -243,13 +248,16 @@
 		      $UpHidenVal=	addArray( $UpHidenVal,$typeArray);	
 		      $inputVal=array(array("text","DragID","DragID",10,420,$y,300,20,$BgColor,$fontColor,"" ,15),
 			                   array("text","target","target",10,570,$y,200,20,$BgColor,$fontColor,"" ,20),
-						       array("text","workingDays","workingDays",10,820,$y,200,20,$BgColor,$fontColor,"" ,6),
+						       array("text","workingDays","workingDays",10,720,$y,200,20,$BgColor,$fontColor,"" ,6),
 							   array("text","state","state",10,920,$y,200,20,$BgColor,$fontColor,"" ,6),
 							   array("text","principal","principal",10,1020,$y,200,20,$BgColor,$fontColor,"" ,6),
 							   array("text","outsourcing","outsourcing",10,1120,$y,200,20,$BgColor,$fontColor,"" ,6),
 							   array("text","type","type",10,1220,$y,200,20,$BgColor,$fontColor,"" ,6),
-							   array("text","selecttype","selecttype",10,1420,$y,200,20,$BgColor,$fontColor,"" ,6),
+							   array("text","selecttype","selecttype",10,1420,$y,200,20,$BgColor,$fontColor, $st ,6),
 							   array("text","startDay","startDay",10,1320,$y,200,20,$BgColor,$fontColor,"" ,6),
+							   array("text","code","code",10,1520,$y,200,20,$BgColor,$fontColor,$code,6),
+							   array("text","plan","plan",10,1520,$y+20,200,20,$BgColor,$fontColor,"" ,6),
+                               array("text","lastUpdate","lastUpdate",10,1320,$y+20,200,20,$BgColor,$fontColor,$lastUpdate ,6),
 	                          );			 
 		      upSubmitform($upFormVal,$UpHidenVal, $inputVal);
 	 }
