@@ -400,7 +400,7 @@
 				//工單名
 				$fin=$taskArray[$i][7];
 			    $RootTask=getRootTask($code);
-		        $name =$RootTask[3];
+		        $name ="[".$taskArray[$i][10]."]"."[".$taskArray[$i][5]."]".$RootTask[3];
 				if($name=="ss")$name=$taskArray[$i][1];
 	            if($taskArray[$i][14]!="")$name=$taskArray[$i][14];
 				$BgColor=getProgressColor($fin);
