@@ -310,21 +310,15 @@
 			$y=$LocY+4; 
 			for($i=0;$i<count($mats);$i++){
 				if($mats[$i]!=""){
-					 if($SelectType=="Event"){
+			 
 				        $datas= returnRes($mats[$i]);
 						if($datas!=null){
 						   $matData=filterArray( $datas,2, $mats[$i]);
 				           Drawmat($x,$y,$heroH,$heroH, $matData[0]);
 						}
 				      $y+=$heroH+8;
-					 }
-				   	 if($SelectType=="Awake"){
-					       $datas= returnRes($mats[$i]);
-						   	if($datas!=null){
-						   $matData=filterArray( $datas,2, $mats[$i]);
-				           Drawmat($x,$y,$heroH,$heroH, $matData[0]);
-						}
-					 }
+ 
+ 
 				   }
 				}
     }   
