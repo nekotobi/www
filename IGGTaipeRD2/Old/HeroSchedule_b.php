@@ -20,13 +20,9 @@
 
 <?php //主要資料
    function  defineData(){
-	   	     global $SelectType;
-			 $SelectType=$_POST["type"];
-			 if($SelectType=="")$SelectType="Event";
              defineData_Base();
 			 defineData_schedule();
 			 defineData_mats();
-
    }
    function  defineData_Base(){
 	         global $data_library,$tableName;
@@ -39,7 +35,8 @@
 			 $startY=40;
 			 //日期
 			 global $DateRange;
-		 	 $DateRange=  gethDateRange();// array(2020,4,2021,2);
+ 
+		 	$DateRange=  gethDateRange();// array(2020,4,2021,2);
 		     global $StartCalendarDay;
 		     $StartCalendarDay=array( $DateRange[0],$DateRange[1],1);
 			 global $DateWid;
@@ -47,25 +44,26 @@
 			 //post陣列
 			 global $typeArray;
 			 global $WebPostRecData;
+			// $WebPostRecData=array();
 			 $typeArray=array(array());
 			 //mats
 		     global  $matX,$matY;
 			 $matX=20;
 			 $matY=80;
    }
-   function  gethDateRange(){
-	         $sy=date("Y");
-             $sm=date("n");
-			 $sm-=1;
-			 if($sm<1){
+   function gethDateRange(){
+	        $sy=date("Y");
+            $sm=date("n");
+			$sm-=1;
+			if($sm<1){
 				$sm=12;
 			   $sy-=1;
 			}
-			 if($sm==1){
+			if($sm==1){
 				$sy =$sy-1;
 			    $sm=12;
 			}
-			 return array($sy,$sm,$sy+1,$sm);
+			return array($sy,$sm,$sy+1,$sm);
    }
    function  defineData_schedule(){
              //行程表
@@ -90,14 +88,11 @@
    function  defineData_mats(){
 			 //活動表
 	   		 global $EventDatas;
-			 global $SelectType;
 			 $EventDatasT=getMysqlDataArray("vtevent");
 			 $EventDatas=filterArray($EventDatasT,0,"ver");
 			 //所有素材字串
 			 global $InEventMats;
-			 $num=6;
-			 if( $SelectType=="Awake")$num=7;
-			 $InEventMats=returnInEventMats($EventDatas,$num);
+			 $InEventMats=returnInEventMats($EventDatas);
 			 
 			 //高度
 			 global  $maxHeight;
@@ -105,9 +100,9 @@
 			 $ResData=getMysqlDataArray("fpresdata");
 			 //英雄素材=========================================
 		   
-             global $HeroRes_All, $HeroRes; 
-			 $HeroRes_All=filterArray($ResData,0,"hero");
-			 $HeroResT2=filterArray(  $HeroRes_All,13,"");
+             global $HeroRes; 
+			 $HeroResT=filterArray($ResData,0,"hero");
+			 $HeroResT2=filterArray( $HeroResT,13,"");
 			 $HeroRes= sortGDCodeArrays($HeroResT2 ,2 ,"true");
 			 //怪物素材=========================================
 			 global $MobRes;
@@ -143,23 +138,32 @@
 			 //去掉已排入event
 			 global $QueuedEventData;
 			 $QueuedEventData= filterQueuedMat($EventRes);
-			  //覺醒英雄
-			 global $QueuedAwakeData;
-			 $QueuedAwakeData= filterQueuedMat($HeroRes_All);
-			 
 			 //排定進度英雄
 	         global $OnProgressMats;
 			 $OnProgressMats=collectUnFinMats( $AllMatRes);
- 
+
    }
 
 ?>
 <?php //submitCont
      function typeCont(){
-	           global $SelectType;
-			   DrawEvents();
-               CreatJavaForm();
-		 
+	          $type=$_POST["type"];
+			  if($type=="")$type="Event";
+			  if($type=="Event"   ){
+			     DrawEvents();
+                 CreatJavaForm();
+                 ListProgressHeros();
+			  }
+			  if($type=="Hero"){
+				 global $QueuedHerosData;
+			     global $OnProgressMats;
+				 $OnProgressMats=array();
+				 for($i=0;$i<count( $QueuedHerosData);$i++){
+				   if(strpos(  $QueuedHerosData[$i][8],'已完成') ==false)
+					   array_push($OnProgressMats,$QueuedHerosData[$i]);
+				 }
+				 ListProgressHeros();
+			  }
 	 }
      function submitCont(){
 		      global $data_library,$tableName;
@@ -194,7 +198,7 @@
 			  $type=$_POST["type"];
 			  if($type=="")$type="Event";
 			  $typeArray=array(array("Event","活動排程"),
-			                   array("Awake","覺醒排程"));
+			                   array("Hero","英雄排程"));
 							   //array("mob","scene");
 			  for($i=0;$i<count($typeArray);$i++){
 			  	  $BgColor="#aaaaaa";
@@ -215,7 +219,6 @@
 <?php //隱藏/取得進度
     function filterQueuedMat($matData){ //去掉已排入素材
 			 global $InEventMats; 
-
 			 $Arr=array();
 			 for($i=0;$i<count($matData) ;$i++){   
 			      if(!in_array( $matData[$i][2],  $InEventMats)){
@@ -237,10 +240,10 @@
 			 return   $OnProgressMats;
 	}
  
-	function returnInEventMats($EventDatas,$num){
+	function returnInEventMats($EventDatas){
 	         $str="";
 			 for($i=0;$i<count($EventDatas);$i++){
-				 $str= $str.$EventDatas[$i][$num]."_";
+				 $str= $str.$EventDatas[$i][6]."_";
 			 }
 			 return explode("_",$str) ;
 	}
@@ -276,13 +279,19 @@
 		    $BgColor="#333333";
 			$fontColor="#ffffff";
 			$LocY=$startY;
+			//$inRange=returnLocX($EventData[5])
+			
 	        if(returnLocX($EventData[5])==0)return;
    		    $LocX= (returnLocX($EventData[4])*$DateWid)+$CalendarX;
+		
 			$passDay= getPassDays( explode("_",$EventData[4]) ,explode("_",$EventData[5]));
 			$w= $passDay*$DateWid;
+			// echo $EventData[5].">".$w."=".$LocX.",".$LocY.",".$w."]";
+		   // DrawRect(  ">".returnLocX($EventData[4]) ,10,$fontColor,$LocX,22,$w,20,"#555555");
 			//標題
 			$sendarr=addArray($typeArray,array(array("code",$EventData[9]) ));
 			sendVal($URL,$sendarr,"submitUp",$EventData[3],array($LocX,$LocY,$w,20),10,$BgColor, $fontColor);
+		    // DrawRect($EventData[3],10,$fontColor,$LocX,$LocY,$w,20,$BgColor);
 			//日期
 			$LocY+=20;
 			$currentYear= date("y")."_";
@@ -291,58 +300,42 @@
 		    DrawRect( $start."-".$end,10,$fontColor,$LocX,$LocY,$w,20,"#555555");
 			$LocY+=20;
 		    //拖曳區
-            DrawMatDatas($EventData,$i,$LocX,$LocY,$w,$h );
+           	DrawMatDatas($EventData,$i,$LocX,$LocY,$w,$h );
    }
    function DrawMatDatas($EventData,$i,$LocX,$LocY,$w,$h ){
-            global $SelectType;
+            global $HeroRes;
+			global $MobRes;
+		    global $BossRes;
+			global $EventRes;
 			global $LargeY;//記錄高度
 			$heroH=60;
 			$mats=explode("_",$EventData[6]) ;
-		    if( $SelectType=="Awake"){
-		      $mats=explode("_",$EventData[7]) ;
-			}
-		    $id="E_".$EventData[2];
-            $h=(count($mats))*$heroH +40;
+			$id="E_".$EventData[2];
+			$h=(count($mats))*$heroH +40;
 	        if($h>$LargeY)$LargeY=$h;
 		    DrawJavaDragArea("",$LocX,$LocY,$w,$h,"#999999",$fontColor,$id);
 			//英雄區
 			$x=$LocX+8;
-			$y=$LocY+4; 
+			$y=$LocY+4;
 			for($i=0;$i<count($mats);$i++){
 				if($mats[$i]!=""){
-					 if($SelectType=="Event"){
-				        $datas= returnRes($mats[$i]);
-						if($datas!=null){
-						   $matData=filterArray( $datas,2, $mats[$i]);
-				           Drawmat($x,$y,$heroH,$heroH, $matData[0]);
-						}
-				      $y+=$heroH+8;
-					 }
-				   	 if($SelectType=="Awake"){
-					       $datas= returnRes($mats[$i]);
-						   	if($datas!=null){
-						   $matData=filterArray( $datas,2, $mats[$i]);
-				           Drawmat($x,$y,$heroH,$heroH, $matData[0]);
-						}
-					 }
+				   $t=substr($mats[$i],0,1);
+				   $datas=$HeroRes;
+				   if($t=="m"){
+					   $datas=$MobRes;
 				   }
+				   if($t=="b"){
+					   $datas=$BossRes;
+				   }
+				   if($t=="e"){
+					   $datas=$EventRes;
+				   }
+				   $matData=filterArray( $datas,2, $mats[$i]);
+				   Drawmat($x,$y,$heroH,$heroH, $matData[0]);
+				   $y+=$heroH+8;
 				}
-    }   
-   function returnRes($str){
-	   		global $HeroRes;
-			global $MobRes;
-		    global $BossRes;
-			global $EventRes;
-			global  $HeroRes_All;
-			global $SelectType;
-	               $t=substr($str,0,1);
-				      if($t=="h" && $SelectType=="Awake")return  $HeroRes_All;
-			      	 if($t=="h")return  $HeroRes;
-				     if($t=="m")return  $MobRes;
-				     if($t=="b")return  $BossRes;
-				     if($t=="e")return  $EventRes;
-				
-				   return null;
+			}
+ 
    }
    function Drawmat($x,$y,$w,$h,$matData){
             $pic=getPicLink($matData[2]);
@@ -361,22 +354,14 @@
 		 
    }
    function DrawAllDragMats(){
-	        global $SelectType;
-			if($SelectType=="" || $SelectType=="Event"){
-	           global $QueuedHerosData;
-	           DrawDragMat($QueuedHerosData,"Hero");
-			   global $QueuedMobData;
-	           DrawDragMat($QueuedMobData,"Mob");
-		       global $QueuedBossData;
-	           DrawDragMat($QueuedBossData,"boss");
-			   global $QueuedEventData;
-	           DrawDragMat($QueuedEventData,"event");
-			}
-		 	if($SelectType=="Awake" ){
-			    global $QueuedAwakeData;
-	           DrawDragMat($QueuedAwakeData,"AwHero");
-			}
-
+	        global $QueuedHerosData;
+	        DrawDragMat($QueuedHerosData,"Hero");
+			global $QueuedMobData;
+	        DrawDragMat($QueuedMobData,"Mob");
+		    global $QueuedBossData;
+	        DrawDragMat($QueuedBossData,"boss");
+			global $QueuedEventData;
+	        DrawDragMat($QueuedEventData,"event");
 			global  $matX,$matY;
 		    global  $CalendarX, $startY;
 	        $startY=$matY+55;
@@ -386,7 +371,7 @@
 			global  $matX,$matY;
 			global  $DateY;
 			$w=40;
-			$h=55;
+			$h=40;
 		    $BgColor="#222222";
             if($MatType=="Mob"){
 			    $matX=20;
@@ -405,7 +390,7 @@
 				}
 			}
 			$matX+=20;
-            $DateY=$matY+$h+25;
+            $DateY=$matY+$h+35;
    }
    function DragSingleMat($data,$x,$y,$w,$h,$MatType){
 	        $BgColor="#222222";
@@ -419,27 +404,22 @@
    function DrawMatProgress($HeroData,$x,$y,$w,$h,$MatType){
 		     $BgColor="#222222";
 			 $y+=$w;
-			 $add=0;
-			 if($_POST["type"]=="Awake") {
-				 $add=14;
- 
-			 }
 			 //$w=1;
 			 DrawRect("",10,"#ffffff",$x,$y,$w,10,$BgColor);
-		  //  if($MatType=="event"){
+			 if($MatType=="event"){
 				 $s=0;
 				for($i=0;$i<4;$i++){
 					if($i!=2){
 					  $BgColor="#117711";
-			          if($HeroData[$i+5+$add]!="" && $HeroData[$i+5+$add]!=">"){
-				 	     if(strpos($HeroData[$i+5+$add],'已完成') !== false) $BgColor="#99ff99";
+			          if($HeroData[$i+5]!="" && $HeroData[$i+5]!=">"){
+				 	     if(strpos($HeroData[$i+5],'已完成') !== false) $BgColor="#99ff99";
 				          DrawRect("",10,"#ffffff",($x+1+$s*14),$y+1,11,8,$BgColor);
 					    }
 						$s+=1;
 				     }
 			    }
 				return;
-			// }
+			 }
 			 for($i=0;$i<4;$i++){
 				  $BgColor="#117711";
 			      if($HeroData[$i+5]!="" && $HeroData[$i+5]!=">"){
@@ -652,21 +632,17 @@
 			  global $URL;
 			  $CE=explode("_",$_POST["target"]);
 			  $CurrentE=filterArray($EventDatas,2,$CE[1]);
-            //  $Hstr= ReturnHeros( $CurrentE[0][6],$_POST["DragID"]);
+              $Hstr= ReturnHeros( $CurrentE[0][6],$_POST["DragID"]);
 		      global $data_library,$tableName;
               $WHEREtable=array( "data_type", "EventSerialNum" );
 		      $WHEREData=array( "ver",$CE[1] );
 			  $Base=array("EventCharacter");
-			  $up=array( ReturnHeros( $CurrentE[0][6],$_POST["DragID"]) );
-			  if($_POST["type"]=="Awake") {
-			     $Base=array("EventScene");
-				  $up=array( ReturnHeros( $CurrentE[0][7],$_POST["DragID"]) );
-			  }
+			  $up=array( $Hstr);
 			  $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
-			 // echo $stmt;
+			  // echo $stmt;
 			  SendCommand($stmt,$data_library);		
-			  $PostArray=array("type");
 			  JavaPost($PostArray,$URL);
+			//  echo " <script language='JavaScript'>".$URL."</script>"; 
 	 }
 	 function ReturnHeros($BaseStr,$AddHero){
 	          $strs= explode("_",$BaseStr);
@@ -692,17 +668,16 @@
 		      $x=1920;
 			  $y=10;
 		      global $URL;
-			  global $SelectType;
 		      $upFormVal=array("Show","Show",$URL);
 			  $UpHidenVal=array(array("tablename","vtevent"),
 			                    array("data_type","ver"),
 								array( "Send","sendjava" ),
-								array( "type",$SelectType),
 	                            );
 		      $UpHidenVal=	addArray( $UpHidenVal,$typeArray);	
 		      $inputVal=array(array("text","DragID","DragID",10,$x,$y,200,20,$BgColor,$fontColor,"DragIDs" ,10),
 			                   array("text","target","target",10,$x+100,$y,200,20,$BgColor,$fontColor,"target" ,10),
-						       
+						      
+
 	                          );			 
 		      upSubmitform($upFormVal,$UpHidenVal, $inputVal);
 	 }

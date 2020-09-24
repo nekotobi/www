@@ -21,11 +21,11 @@
 	
  
 	function Drop2Area(event) {
-		event.preventDefault();
-		var DragID  = event.dataTransfer.getData("text");
-		var targetID =  event.currentTarget.id;
-		document.Show.target.value =targetID ;
-		  Show.submit();
+		     event.preventDefault();
+		     var DragID  = event.dataTransfer.getData("text");
+		     var targetID =  event.currentTarget.id;
+		     document.Show.target.value =targetID ;
+	         Show.submit();
 		/*
 	    var tx= document.getElementById( targetID).style.left;
 	    var x=tx.split("px");
@@ -134,14 +134,12 @@
 				      '><img src=".$pic." width=".$w." height=".$h."></div>";
 	   }
 	    function DrawJavaDragbox($msg,$x,$y,$w,$h,$fontSize,$BgColor,$fontColor,$id){
-	          echo "<div  id=".$id." ";
-			  	//    echo " ondragover='alert(xxx)' ";
- 
-			  echo " draggable='true' ondragstart='Drag(event)' ";// ondragend='leave(event)' ";
-              echo " style=' " ; //align=left
-			  echo "position:absolute; top:".$y."px; left:".$x."px;  width:".$w."px;height:".$h."px; 
-			        font-size:".$fontSize."px; color:".$fontColor."; background-color:".$BgColor."; '>".$msg;
-	          echo "</div>";
+	             echo "<div  id=".$id." ";
+			     echo " draggable='true' ondragstart='Drag(event)' ";// ondragend='leave(event)' ";
+                 echo " style=' " ; //align=left
+			     echo "position:absolute; top:".$y."px; left:".$x."px;  width:".$w."px;height:".$h."px; 
+			           font-size:".$fontSize."px; color:".$fontColor."; background-color:".$BgColor."; '>".$msg;
+	             echo "</div>";
 	    }
 	    function DrawJavaDragArea($msg,$x,$y,$w,$h,$BgColor,$fontColor,$id,$fontSize=10){
 	          echo "<div  id=".$id." ";
