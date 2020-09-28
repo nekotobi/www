@@ -87,8 +87,7 @@
 			  }				   
 			  upSubmitform($upFormVal,$UpHidenVal, $inputVal);
 	 }
- 
-     function CreatJavaForm(){
+    function CreatJavaForm(){
 		      $x=20;
 			  $y=10;
 		      global $URL;

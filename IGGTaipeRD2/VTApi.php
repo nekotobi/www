@@ -104,10 +104,16 @@
 ?>
 <?php //資源索引
       function getResSorType($Res_Array,$Restype ){//動作特效xx
-				$types=filterArray($Res_Array,0,$Restype."_type");
+	            $ty=$Restype."_type";
+				$n=0;
+				if($Restype =="awake"){
+					$ty="hero_type";
+					$n=14;
+				}
+				$types=filterArray($Res_Array,0,$ty);
 				$a=array();
 				for($i=5;$i<11;$i++){
-				    array_push($a,$types[0][$i]);
+				    array_push($a,$types[0][$i+$n]);
 				}
 				return $a;
 	 }
@@ -115,6 +121,13 @@
 	          for($i=0;$i<count($ScheduleData);$i++){
 			      if(strpos($ScheduleData[$i][3],$Code) !== false &&  $ScheduleData[$i][6]==""  ){
 					  return $ScheduleData[$i][1];				  
+			  }
+			  }
+	 }
+      function returnMainTask($ScheduleData,$Code){
+	          for($i=0;$i<count($ScheduleData);$i++){
+			      if(strpos($ScheduleData[$i][3],$Code) !== false &&  $ScheduleData[$i][6]==""  ){
+					  return $ScheduleData[$i] ;				  
 			  }
 			  }
 	 }
@@ -163,7 +176,6 @@
 	 
 	 }
 ?>
-
 <?php //版本排程
        function getLaterEventData(){//取得接下來的活動排程
 	             global $data_library;
@@ -195,8 +207,6 @@
 				return    $heros;
 	   } 
 ?>
-
-
 <?php //java
         function VTDrawJavaDragPic($pic,$x,$y,$w,$h,$id){
 		     	 echo "<div id=".$id  ;

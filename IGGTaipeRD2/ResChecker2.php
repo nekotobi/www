@@ -17,17 +17,26 @@
 	 DrawDragArea2();
 	 ListRes( );
      CheckDrag();
-	
-	// saveUpdateTime("",);
-   //  ListRes("hero");
-	// gettaskName( );
+ 
 ?>
 
 <?php
      function DefineBaseData(){
 			  DefineVTTableName();
 	          DefineArrayDatas();
+	 
      }
+	 function DrawButtoms($typeArray,$typeVal){
+			  global $URL;
+			  $x=20;
+			  $y=40;
+			  for($i=0;$i<count( $typeArray);$i++){
+				 $BgColor="#111111";
+				 if($typeVal==$typeArray[$i][1])$BgColor="#aa1111";
+			       $sendarr =array( array("Restype",$typeArray[$i][1]))  ;
+				   sendVal_v2($URL, $sendarr,"check",$typeArray[$i][0],array($x+$i*50,$y,46,18),10, $BgColor );
+			  }
+	 }
 	 function DefineArrayDatas(){
 	          global $data_library;
 	          global $SC_tableName;
@@ -37,8 +46,11 @@
 			  global $SC_tableName_now,$SC_tableName_old,$SC_tableName_Merge;
 			  global $SC_nowArray;
 			  global $Restype;
-			  
-			  $Restype="hero";
+			  $Restype=$_POST["Restype"];
+			  if($Restype=="")$restype="hero";
+			  $typeArray=array(array("英雄","hero"),array("覺醒","awake"),array("怪物","mob"),array("Boss","boss"));
+			
+              $Restype=$_POST["Restype"];
 			  $SC_nowArray= getVTSCData("mix");
 			  global $Res_Array;
 			  $Res_Array=getMysqlDataArray($Res_tableName);
@@ -52,6 +64,7 @@
 			  global $ResTypes;
 			  $ResTypes= getResSorType($Res_Array,$Restype); 
 			  VTCreatJavaForm( $URL,$tableName);
+			  DrawButtoms( $typeArray, $Restype);
 	 }
 	 function  DrawDragArea2(){
 		        global $startY;
@@ -76,7 +89,6 @@
 			        global $startX ,$startY,$wid;
 			        global $FocusRes;
 			        DrawBaseCalendar(date('Y'),date('n'),6, $startX,$startY-20,$wid,count($FocusRes)*40);
-				
             }
      function ListRes(){
 	          global $FocusRes;
@@ -85,14 +97,14 @@
 			  $BgColor="#222222";
 			  $fontColor="#ffffff";
 			  $fontSize=10;
+			  $dir=$Restype;
 			  for($i=0;$i<count($FocusRes);$i++){
-			      $msg=$FocusRes[$i][0]."[".$FocusRes[$i][1] ;
+			      $msg= $FocusRes[$i][3] ;
 				  $pic= returnPic($Restype,$FocusRes[$i][0]);
 				  DrawRect($msg,$fontSize,$fontColor,60,$startY,230,18,$BgColor);
 				  DrawLinkPic($pic,$startY,20,38,38,$pic);
 			      DrawTasks($FocusRes[$i][2],$FocusRes[$i] );
                   $startY+=40; 
-				  
 			  }
 	 }
 	 function DrawTasks($TaskCode ,$ResCode){
@@ -118,7 +130,7 @@
 				  $c=ColorDarker( $BgColor,122);
 			       if(count($tasks[$i])<2  ){ //未登錄
 				  	 $id= "N=".$tasks[$i][0]."=".$ResCode[2] ;
-					 VTDrawJavaDragbox($tasks[$i][0] ,$startRX+$i*30,$startY+20,28,18,9, $BgColor, $fontColor,$id);
+					 VTDrawJavaDragbox( $tasks[$i][0] ,$startRX+$i*30,$startY+20,28,18,9, $BgColor, $fontColor,$id);
 			         }else{
 				  if(count($tasks[$i])>2  ){
 			         if($tasks[$i][7]=="已完成") { 
@@ -157,10 +169,14 @@
 ?>
 <?php //資源排序
      function sortTask($taskArray){
-		      global $ResTypes;
+		      global $ResTypes;  
 			  $a=array();
+			  if($ResTypes=="")
 			  for($i=0;$i<count($ResTypes);$i++){
 				  $ty=$ResTypes[$i];
+				  //15工項
+				  //用13來判斷awake
+				
 			      $t=filterArraycontain($taskArray,5,$ty);
 				  if(count($t)>0){
 				     array_push( $a,$t[0]);
@@ -176,6 +192,7 @@
 			   $n= (strtotime( $checkDay)-strtotime($startDate))/86400;
 			   return $n; 
 	 }
+	 /*
      function getResSCData($FocusRes){
 	          $a=array();
 			  for ($i=0;$i<count($FocusRes);$i++){
@@ -189,15 +206,21 @@
 	           echo  "</br>".$taskCode.">".$code;
 	 
 	 }
+	 */
      function getFocusRes(){
 	          $Ev=  getLaterEventData();
 			  global $Restype;
+		 	  $type=$Restype;
+			  $dataNum=6;
+			  if($Restype=="awake"){
+			      $dataNum=7;
+				   $type="hero";
+			  }
 			  $res=array();
 	          for ($i=0;$i<count($Ev);$i++){
-				   $e= returnRequestRes($Ev[$i][6],$Ev[$i][10],$Restype);
+				   $e= returnRequestRes($Ev[$i][$dataNum],$Ev[$i][10],$type);
 				   $res=addArray($res,$e);
 	          }
-			 // print_r ($res);
 			  return $res;
 	 }   
 	 function returnRequestRes($ResStr,$days,$Type){
@@ -209,8 +232,9 @@
 			  $ResArray=array();
 			  for ($i=0;$i<count($str);$i++){
 				  if( strpos($str[$i], $filterStr) !== false){
-					 $taskCode= returnTaskMainCode($SC_nowArray,$str[$i]);
-				     Array_Push($ResArray,array($str[$i],$days,$taskCode));
+					 $Maintask=returnMainTask($SC_nowArray,$str[$i]);
+					// $taskCode= returnTaskMainCode($SC_nowArray,$str[$i]);
+				     Array_Push($ResArray,array($str[$i],$days, $Maintask[1],$Maintask[3]));
 				  }
 	          }
 			  

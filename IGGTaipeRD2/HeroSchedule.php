@@ -665,19 +665,20 @@
 	 function ReturnHeros($BaseStr,$AddHero){
 	          $strs= explode("_",$BaseStr);
 			  $Rs="";
-			  $bool=false;
+			  $del=false;
 			  for($i=0;$i<count($strs);$i++){
-				  if($AddHero==$strs[$i])$bool=true;
+				  if($AddHero==$strs[$i])$del=true; //有相同的英雄 刪除
 			      if($AddHero!=$strs[$i]){
 					 if( $strs[$i]!="")
 				        if($i!=0) $Rs=$Rs."_";
 				     $Rs=$Rs.$strs[$i];
+					// echo $Rs."]";
 				  }
 			  }
-			  if(!$bool){
-				   if(count($strs)!=0)
-					     if( $strs[0]!="")
-					           $Rs=$Rs."_"; 
+			  if(!$del){
+				 //  if(count($strs)!=0)
+					   //  if( $strs[0]!="")
+				   $Rs=$Rs."_"; 
 				   $Rs=$Rs.$AddHero ;
 			  }
 			  return $Rs;
@@ -701,29 +702,5 @@
 		      upSubmitform($upFormVal,$UpHidenVal, $inputVal);
 	 }
 ?>
-<?php //不用
-/*
-    function filterQueuedMatOld($matData){ //去掉已排入素材
-			 global $InEventMats; 
-			 for($i=0;$i<count($matData) ;$i++){   
-			      if(in_array( $matData[$i][2],  $InEventMats)){
-					  unset( $matData[$i]);
-				  }
-			 }
-			 return  array_values($matData);
-	}
-   function ListHero() {
-	        global $HeroRes;
-			$x=20;
-			$y=100;
-			$w=64;
-			$h=64;
-			$Layer=1;
-            for($i=0;$i<count($HeroRes);$i++){
-			    DrawHero($x,$y,$w,$h,$HeroRes[$i]);
-			    $y+=70;
-			}
-   }
-   */
-?>
+ 
 <body bgcolor="#b5c4b1">
