@@ -55,7 +55,7 @@
 			  global $Res_Array;
 			  $Res_Array=getMysqlDataArray($Res_tableName);
 			  global $FocusRes;
-			  $FocusRes= getFocusRes();
+			  $FocusRes= getFocusRes();  //0GDcode 1剩幾天 2主工項code,3主工項名
 			  global $startX,$startRX ,$startY,$wid;
 			  $startX=300;
 			  $startY=100;
@@ -63,10 +63,11 @@
 			  $wid=6;
 			  global $ResTypes;
 			  $ResTypes= getResSorType($Res_Array,$Restype); 
+			  echo count( $ResTypes);
 			  VTCreatJavaForm( $URL,$tableName);
 			  DrawButtoms( $typeArray, $Restype);
 	 }
-	 function  DrawDragArea2(){
+	 function DrawDragArea2(){
 		        global $startY;
 				$x=20;
 				$y=$startY-20;
@@ -99,7 +100,7 @@
 			  $fontSize=10;
 			  $dir=$Restype;
 			  for($i=0;$i<count($FocusRes);$i++){
-			      $msg= $FocusRes[$i][3] ;
+			      $msg= $FocusRes[$i][3].">".$FocusRes[$i][1] ;
 				  $pic= returnPic($Restype,$FocusRes[$i][0]);
 				  DrawRect($msg,$fontSize,$fontColor,60,$startY,230,18,$BgColor);
 				  DrawLinkPic($pic,$startY,20,38,38,$pic);
@@ -109,10 +110,12 @@
 	 }
 	 function DrawTasks($TaskCode ,$ResCode){
 	          global $SC_nowArray;
-			  global  $startX ,$startRX, $startY;
+			  global $startX ,$startRX, $startY;
 			  global $wid;
 			  global $colorCodes;
 	 	      $tasksT=filterArray($SC_nowArray,3,$TaskCode);
+		      global  $Restype;	
+			  if($Restype=="awake") $tasksT=filterArray($tasksT,13,"awake");
 			  $tasks=sortTask($tasksT);
 			  $BgColor="#88aa88";
 			  $BgColor2="#995555";
@@ -169,14 +172,10 @@
 ?>
 <?php //資源排序
      function sortTask($taskArray){
-		      global $ResTypes;  
+		      global $ResTypes; 
 			  $a=array();
-			  if($ResTypes=="")
-			  for($i=0;$i<count($ResTypes);$i++){
+			  for($i=0;$i<count($ResTypes);$i++){  // 5工項  //用13來判斷awake
 				  $ty=$ResTypes[$i];
-				  //15工項
-				  //用13來判斷awake
-				
 			      $t=filterArraycontain($taskArray,5,$ty);
 				  if(count($t)>0){
 				     array_push( $a,$t[0]);
@@ -235,6 +234,7 @@
 					 $Maintask=returnMainTask($SC_nowArray,$str[$i]);
 					// $taskCode= returnTaskMainCode($SC_nowArray,$str[$i]);
 				     Array_Push($ResArray,array($str[$i],$days, $Maintask[1],$Maintask[3]));
+					 //0GDcode 1剩幾天 2主工項code,3主工項名
 				  }
 	          }
 			  
