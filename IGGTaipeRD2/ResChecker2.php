@@ -156,7 +156,7 @@
 				  	 $id= "N=".$tasks[$i][0]."=".$ResCode[2]  ;
 					 VTDrawJavaDragbox( $tasks[$i][0] ,$startRX+$i*30,$startY+20,28,18,9, $BgColor, $fontColor,$id);
 					 if($upf==1){//前項目已完成
-					  DrawPosPic($pic,$startY+20,$startRX+$i*30,12,12,"fixed" );
+					  DrawPosPic($pic,$startY+20,$startRX+$i*30-10,12,12,"fixed" );
 					  $upf=0;
 					 }
 			         }else{
