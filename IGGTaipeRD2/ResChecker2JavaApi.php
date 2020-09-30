@@ -74,7 +74,7 @@
 			  document.Show.workingDays.value=5;
 			  document.Show.plan.value=tmp[2];
 			  document.Show.state.value="預排程";
-			  document.Show.principal.value="黃謙信";
+			  document.Show.principal.value="";
 			  document.Show.outsourcing.value="";
 			  document.Show.type.value= tmp[1];
 		}
