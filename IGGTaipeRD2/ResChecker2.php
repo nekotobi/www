@@ -143,6 +143,8 @@
 			  $x=60;
 		      $startDate=date("Y-m-1");
 			  $yadd=0;
+			  $upf=0;
+			  $pic="pics/warring.gif";
 			  for($i=0;$i<count($tasks);$i++){
 				  $type=$tasks[$i][5];
 				  $WorkDays= $tasks[$i][6];
@@ -153,12 +155,18 @@
 			       if(count($tasks[$i])<2  ){ //未登錄
 				  	 $id= "N=".$tasks[$i][0]."=".$ResCode[2]  ;
 					 VTDrawJavaDragbox( $tasks[$i][0] ,$startRX+$i*30,$startY+20,28,18,9, $BgColor, $fontColor,$id);
+					 if($upf==1){//前項目已完成
+					  DrawPosPic($pic,$startY+20,$startRX+$i*30,12,12,"fixed" );
+					  $upf=0;
+					 }
 			         }else{
 				  if(count($tasks[$i])>2  ){
 			         if($tasks[$i][7]=="已完成") { 
 					 $c="#aaaaaa";
 					 DrawRect($tasks[$i][5],$fontSize,$fontColor,$startRX+$i*30,$startY+20,28,18,$c);
+					 $upf=1;
 					 }else{
+						   $upf=0;
 					 $date=$tasks[$i][2];
 					 $xAdd=returnLocX($date,$startDate);
 					 if($xAdd<0){
