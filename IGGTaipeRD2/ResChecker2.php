@@ -11,16 +11,23 @@
 	 require_once('scheduleApi.php');
      require_once('VTApi.php');
 	 require_once('ResChecker2JavaApi.php');
+	  checkSubmit();
      DefineBaseData();
 	 DrawCalendar();
 	 DrawDragUpAreas();
 	 ListRes();
-     CheckDrag();
+ 
  
 ?>
 
 <?php
+     function checkSubmit(){
+	   if ($_POST["Restype2"]){
+		    CheckDrag();
+	   }
+	 }
      function DefineBaseData(){
+ 
 			  DefineVTTableName();
 	          DefineArrayDatas();
 	 

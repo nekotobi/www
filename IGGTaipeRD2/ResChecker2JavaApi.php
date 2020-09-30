@@ -150,7 +150,7 @@
 			$params=$params."}";
 		    $javaCom=  "post_to_url('".$URL."', ".$params.");";
  
-             echo " <script language='JavaScript'>".$javaCom."</script>"; 
+            echo " <script language='JavaScript'>".$javaCom."</script>"; 
         }
 		function ReLoadArray(){
 			    return array(array("Restype",$_POST["Restype2"]));		
@@ -203,7 +203,7 @@
 			      saveUpdateTime("",array(""));
 		          SendCommand($stmt,$data_library);	
 				  $PostArray=array(array("Restype",$Restype));
-			 	  ReLoad();
+			      ReLoad();
 		}
 	    function ChangePlan($Ecode,$Base,$up,$type){
 	           global $URL;

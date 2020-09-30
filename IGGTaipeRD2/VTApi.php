@@ -265,7 +265,7 @@
 			                    array("data_type","data"),
 								array( "Send","sendjava" ),
 								array( "Restype2",$Restype ),
-									array( "Restype",$Restype ),
+								array( "Restype",$Restype ),
 	                            );
 		      $UpHidenVal=	addArray( $UpHidenVal,$typeArray);	
 		      $inputVal=array(array("text","DragID","DragID",10,420,$y,300,20,$BgColor,$fontColor,"" ,15),

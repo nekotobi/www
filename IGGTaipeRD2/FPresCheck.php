@@ -405,7 +405,6 @@
 					     if($str[1]!="") $Bgc=$str[1];
 			             //DrawRect($arr[$i][$j],11,$fontColor,$x+$i*120,$y+$j*22,100,20,$Bgc);
 						  DrawRect($str[0],11,$fontColor,$x+$i*120,$y+$j*22,100,20,$Bgc);
-				
 						  $fontColor="#000000";
 					}
 			 }
