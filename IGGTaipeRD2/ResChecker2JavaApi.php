@@ -41,19 +41,23 @@
 	    var x=tx.split("px");
 	    var tmp= DragID.split("=");
 	    var tmp2= targetID.split("="); 
+		   var SID;
+		if(tmp.length>0){
+		   document.Show.type.value= tmp[5];
+		   document.Show.DragID.value=tmp[1];
+		   var SID= new String( "S="+tmp[1]+"="+tmp[2]+"="+tmp[3]+"="+tmp[4]+"="+tmp[5]);
+		  }
 	    if( tmp[0]=="S"){
-			 var E= new String( "E="+tmp[1]+"="+tmp[2]+"="+tmp[3]+"="+tmp[4]);
+	
 			 document.Show.target.value=targetID;
-			 document.Show.DragID.value=tmp[1];
 		     document.Show.startDay.value=tmp2[1];
 			 var x3=(parseInt(x[0])+  parseInt(tmp[2])*parseInt(tmp[3]))+"px";
 			 document.getElementById(DragID).style.left=tx;
-			// document.getElementById(E).style.left=x3 ;
+
 		 }
 	    if( tmp[0]=="E"){
 			  document.getElementById( DragID).style.left=tx;
-			  var SID= new String( "S="+tmp[1]+"="+tmp[2]+"="+tmp[3]+"="+tmp[4]);
-              document.Show.DragID.value= tmp[1];
+			//  var SID= new String( "S="+tmp[1]+"="+tmp[2]+"="+tmp[3]+"="+tmp[4]+"="+tmp[5]);
 			  var sidx= document.getElementById(SID).style.left ;
 		      var sidwx=sidx.split("px");
 		      var x3=(parseInt(x[0])-parseInt(sidwx[0]));
@@ -63,16 +67,16 @@
 		 }
 		if( tmp[0]=="N"){
 			  document.getElementById( DragID).style.left=tx;
-			  var SID= new String( "S="+tmp[1]+"="+tmp[2]+"="+tmp[3]+"="+tmp[4]);
+			 // var SID= new String( "S="+tmp[1]+"="+tmp[2]+"="+tmp[3]+"="+tmp[4]);
 			  document.Show.target.value=targetID;
               document.Show.DragID.value=DragID;
-			  document.Show.type.value=tmp[1];
 			  document.Show.startDay.value=tmp2[1];
 			  document.Show.workingDays.value=5;
 			  document.Show.plan.value=tmp[2];
 			  document.Show.state.value="預排程";
 			  document.Show.principal.value="黃謙信";
 			  document.Show.outsourcing.value="";
+			  document.Show.type.value= tmp[1];
 		}
 	    switch(tmp2[0]){
 			    case  "state":
@@ -89,32 +93,7 @@
 					// document.Show.code.value=tmp2[1];
 			    break;
 			 }
-		 	/*
-
-
-		 switch(tmp2[0]){
-		        case  "state":
-				 document.Show.startDay.value="";
-			    document.Show.state.value=tmp2[1];
-			    break;
-				 case  "principal":
-				 document.Show.startDay.value="";
-			    document.Show.principal.value=tmp2[1];
-			    break;
-				 case  "outsourcing":
-			   document.Show.startDay.value="";
-			    document.Show.outsourcing.value=tmp2[1];
-			    break;
-				 case  "type":
-				  document.Show.startDay.value="";
-			    document.Show.type.value=tmp2[1];
-			    break;
-		        case  "selecttype":
-				  document.Show.startDay.value="";
-			    document.Show.selecttype.value=tmp2[1];
-			    break;
-		 }
-  */
+ 
     Show.submit();
 	  
 	}
@@ -178,7 +157,7 @@
 		}
 	    function CheckDrag(){
 			   if($_POST["DragID"]=="")return;
-			   if($_POST["type"]!=""){
+			   if($_POST["plan"]!=""){
 				   newTask();
 				   return;
 			   }
@@ -197,13 +176,13 @@
 					   array_push( $up,$_POST[$CheckArr[$i]] );
 				   }
 			   }
-               ChangePlan($Ecode,$Base,$up);
-		       ReLoad();
+               ChangePlan($Ecode,$Base,$up,$_POST["type"]);
+		      // ReLoad();
 	    }
 		function changetableVal(){
 		        $Base=array($_POST["tableName"]);
 			    $up=array($_POST["tableVal"]);
-				ChangePlan($_POST["DragID"],$Base,$up);
+				ChangePlan($_POST["DragID"],$Base,$up,$_POST["type"]);
 			    
 		}
 		function newTask(){
@@ -220,25 +199,25 @@
 					  array_push($WHEREData,$data);
 				 }
 				 $stmt=  MakeNewStmtv2($SC_tableName_now,$WHEREtable,$WHEREData);
-				 echo "</br>".$stmt;
-			     saveUpdateTime("",array(""));
-		         SendCommand($stmt,$data_library);	
-				 $PostArray=array(array("Restype",$Restype));
-				 ReLoad();
+				// echo "</br>".$stmt;
+			      saveUpdateTime("",array(""));
+		          SendCommand($stmt,$data_library);	
+				  $PostArray=array(array("Restype",$Restype));
+			 	  ReLoad();
 		}
-	    function ChangePlan($Ecode,$Base,$up){
+	    function ChangePlan($Ecode,$Base,$up,$type){
 	           global $URL;
 			   global $data_library,$tableName,$SC_tableName_now ;
 		       DefineVTTableName();
 			   $tableName=$SC_tableName_now;
-			   $WHEREtable=array( "data_type", "code" );
-		       $WHEREData=array( "data",$Ecode );
+			   $WHEREtable=array( "data_type", "code","type" );
+		       $WHEREData=array( "data",$Ecode ,$type);
 			   $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
-			  // echo "</br>";
-		       //echo $stmt;
-		        saveUpdateTime("",array(""));
-		       SendCommand($stmt,$data_library);
-               ReLoad();			   
+			 //   echo "</br>";
+		      // echo $stmt;
+		       saveUpdateTime("",array(""));
+		      SendCommand($stmt,$data_library);
+              ReLoad();			   
 	    }
 	 
 	    function ReLoad(){

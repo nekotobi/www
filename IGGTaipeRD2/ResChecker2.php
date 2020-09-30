@@ -137,7 +137,7 @@
 				  $BgColor=$colorCodes[11][$i];
 				  $c=ColorDarker( $BgColor,122);
 			       if(count($tasks[$i])<2  ){ //未登錄
-				  	 $id= "N=".$tasks[$i][0]."=".$ResCode[2] ;
+				  	 $id= "N=".$tasks[$i][0]."=".$ResCode[2]  ;
 					 VTDrawJavaDragbox( $tasks[$i][0] ,$startRX+$i*30,$startY+20,28,18,9, $BgColor, $fontColor,$id);
 			         }else{
 				  if(count($tasks[$i])>2  ){
@@ -153,10 +153,10 @@
 						// $WorkDays=4;
 					 }
 				     $ds=$startX+ 	 $xAdd*$wid ;
-					 $id= "S=".$tasks[$i][1]."=".$tasks[$i][6]."=".$wid."=".$tasks[$i][7];
+					 $id= "S=".$tasks[$i][1]."=".$tasks[$i][6]."=".$wid."=".$tasks[$i][7]."=".$tasks[$i][5];//1工單code.1人天.2寬.3狀態.5類別
 					 $yy=$startY+  $yadd;
 					 VTDrawJavaDragbox( $show ,$ds,$yy,$wid*$WorkDays,15,10,  $BgColor, $fontColor,$id);
-					 $id= "E=".$tasks[$i][1]."=".$tasks[$i][6]."=".$wid."=".$tasks[$i][7];
+					 $id= "E=".$tasks[$i][1]."=".$tasks[$i][6]."=".$wid."=".$tasks[$i][7]."=".$tasks[$i][5]; 
 				     $BgColor3="#888888";
 			
 					 $x=$ds+$wid*($tasks[$i][6] );
