@@ -80,7 +80,13 @@
 				     document.Show.startDay.value="";
 			         document.Show.state.value=tmp2[1];
 					 document.Show.code.value=tmp2[1];
-				
+			    break;
+				case  "tableName":
+					 document.Show.selecttype.value="";
+				     document.Show.startDay.value="";
+			         document.Show.tableName.value=tmp2[1];
+					 document.Show.tableVal.value=tmp2[2];
+					// document.Show.code.value=tmp2[1];
 			    break;
 			 }
 		 	/*
@@ -176,6 +182,10 @@
 				   newTask();
 				   return;
 			   }
+			   if($_POST["tableName"]!=""){
+				   changetableVal();
+				   return;
+			   }
 	           $Ecode=$_POST["DragID"];
 			   $target=$_POST["target"]	;
 	           $CheckArr= array("startDay","workingDays" ,"principal","outsourcing","type","state","selecttype");
@@ -190,6 +200,12 @@
                ChangePlan($Ecode,$Base,$up);
 		       ReLoad();
 	    }
+		function changetableVal(){
+		        $Base=array($_POST["tableName"]);
+			    $up=array($_POST["tableVal"]);
+				ChangePlan($_POST["DragID"],$Base,$up);
+			    
+		}
 		function newTask(){
 		     	 $Restype=$_POST["Restype2"];
 			     global $SC_tableName_now,$SC_tableName_old,$SC_tableName_merge;
@@ -218,14 +234,13 @@
 			   $WHEREtable=array( "data_type", "code" );
 		       $WHEREData=array( "data",$Ecode );
 			   $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
-			   echo "</br>";
-		      // echo $stmt;
-		       saveUpdateTime("",array(""));
+			  // echo "</br>";
+		       //echo $stmt;
+		        saveUpdateTime("",array(""));
 		       SendCommand($stmt,$data_library);
- 	
-          	   
                ReLoad();			   
 	    }
+	 
 	    function ReLoad(){
 	    	   global  $URL;
 			   $PostArray=ReLoadArray();

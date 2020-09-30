@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
- 
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
    <title>VT資源索引</title>
 </head>
 <body bgcolor="#b5c4b1"> 
@@ -14,8 +13,8 @@
 	 require_once('ResChecker2JavaApi.php');
      DefineBaseData();
 	 DrawCalendar();
-	 DrawDragArea2();
-	 ListRes( );
+	 DrawDragUpAreas();
+	 ListRes();
      CheckDrag();
  
 ?>
@@ -29,7 +28,7 @@
 	 function DrawButtoms($typeArray,$typeVal){
 			  global $URL;
 			  $x=20;
-			  $y=40;
+			  $y=0;
 			  for($i=0;$i<count( $typeArray);$i++){
 				 $BgColor="#111111";
 				 if($typeVal==$typeArray[$i][1])$BgColor="#aa1111";
@@ -61,26 +60,34 @@
 			  $wid=6;
 			  global $ResTypes;
 			  $ResTypes= getResSorType($Res_Array,$Restype); 
-			  echo count( $ResTypes);
 			  VTCreatJavaForm( $URL,$tableName);
 			  DrawButtoms( $typeArray, $Restype);
 	 }
-	 function DrawDragArea2(){
-		        global $startY;
-				$x=20;
-				$y=$startY-20;
-			    $BgColor="#224444";
-			    $fontColor="#ffffff";
-			    $Typestmp=getMysqlDataArray("scheduletype"); 
-	            $arrT=filterArray( $Typestmp,0,"data3");//  array("進行中","已排程","驗證中","已完成");
-			    $arr=returnArraybySort($arrT,2);
-				array_Push( $arr,"刪除");
-			    for($i=0;$i<count($arr);$i++){
-				    $id="state=".$arr[$i];
-				    VTDrawJavaDragArea($arr[$i],$x,$y,34,18,$BgColor,$fontColor,$id,9);
-					$x+=35;
-				}
-	  }	 
+     function DrawDragUpAreas(){ //
+	          global $startY;
+			  $startX=20;
+			  $wid=35;
+			  //  array("進行中","已排程","驗證中","已完成");
+           	  $Typestmp=getMysqlDataArray("scheduletype"); 
+		      $arrT=filterArray( $Typestmp,0,"data3");
+			  $arr=returnArraybySort($arrT,2);
+			  DrawDragUpArea($arr,$startX,$startY-20,$wid,"state");
+			  // 內部
+			  $membersT=getMysqlDataArray("members"); 
+			  $membersT2=filterArray($membersT,3,"Art");
+			  $members=returnArraybySort( $membersT2,1);
+			  array_Push($members,"--");
+			  DrawDragUpArea($members,$startX,$startY-60,$wid,"principal");
+			  //外部
+			  $OutsT=getMysqlDataArray("outsourcing"); 
+			  $OutsT2=filterArray($OutsT,35,"true");
+			  $Outs=returnArraybySort( $OutsT2,2);
+			  array_Push( $Outs,"--");
+		      DrawDragUpArea($Outs,$startX,$startY-40,$wid,"outsourcing");
+	 }
+	 
+
+
 ?>
 
 <?php //List
@@ -126,7 +133,7 @@
 				  $type=$tasks[$i][5];
 				  $WorkDays= $tasks[$i][6];
 				  if($WorkDays<=0)$WorkDays=2;
-				  $show=  substr($type,0, $WorkDays);
+				  $show=  substr($type,0, $WorkDays+2);
 				  $BgColor=$colorCodes[11][$i];
 				  $c=ColorDarker( $BgColor,122);
 			       if(count($tasks[$i])<2  ){ //未登錄
@@ -151,8 +158,10 @@
 					 VTDrawJavaDragbox( $show ,$ds,$yy,$wid*$WorkDays,15,10,  $BgColor, $fontColor,$id);
 					 $id= "E=".$tasks[$i][1]."=".$tasks[$i][6]."=".$wid."=".$tasks[$i][7];
 				     $BgColor3="#888888";
+			
 					 $x=$ds+$wid*($tasks[$i][6] );
 				     VTDrawJavaDragbox( "" ,$x,$yy,5,15,5, $BgColor3, $fontColor,$id);
+						  DrawTaskDetial($tasks[$i],$x ,$yy);
 					 $f=2;
 					 if(  $yadd==0){
 						 $yadd=20;
@@ -165,7 +174,13 @@
 				  $x+=30;
 			  }
 			  $id="DateInfo";
-			  VTDrawJavaDragbox( "info"  ,2,2,100,12,9,"#333333", $fontColor,$id);
+			  VTDrawJavaDragbox( "info"  ,1024,0,100,12,9,"#333333", $fontColor,$id);
+	 }
+	 function DrawTaskDetial($task,$x,$y){
+		      $msg=$task[5]."-".$task[8]."-".$task[9];
+			  $l=strlen(  $msg );
+			  DrawRect( "",10,"#ffffff",$x ,$y+8,100,2,"#999999");
+		      DrawRect( $msg,8,"#ffffff",$x+100,$y,$l*8,15,"#999999");
 	 }
 ?>
 <?php //資源排序

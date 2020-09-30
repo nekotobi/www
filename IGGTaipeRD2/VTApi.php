@@ -239,6 +239,15 @@
 
 ?>
 <?php //javaform
+	 function DrawDragUpArea($arr,$x,$y,$wid,$uptableName){ //
+	          $BgColor="#224444";
+			  $fontColor="#ffffff";
+	          for($i=0;$i<count($arr);$i++){
+				  $id="tableName=".$uptableName."=".$arr[$i];
+				  VTDrawJavaDragArea($arr[$i],$x,$y,$wid-1,18,$BgColor,$fontColor,$id,9);
+				  $x+=$wid;
+			   }
+	 }
      function VTCreatJavaForm( $URL,$tableName){
 		      global $Restype;
 			  $st="角色";
@@ -270,8 +279,10 @@
 							   array("text","code","code",10,1520,$y,200,20,$BgColor,$fontColor,$code,6),
 							   array("text","plan","plan",10,1520,$y+20,200,20,$BgColor,$fontColor,"" ,6),
                                array("text","lastUpdate","lastUpdate",10,1320,$y+20,200,20,$BgColor,$fontColor,$lastUpdate ,6),
+							   array("text","tableName","tableName",10,1120,$y+20,200,20,$BgColor,$fontColor,$tableName ,6),
+							   array("text","tableVal","tableVal",10,1220,$y+20,200,20,$BgColor,$fontColor,$tableVal ,6), 
 	                          );			 
 		      upSubmitform($upFormVal,$UpHidenVal, $inputVal);
 	 }
-
+     
 ?>
