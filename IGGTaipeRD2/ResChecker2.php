@@ -47,10 +47,8 @@
 			  global $SC_nowArray;
 			  global $Restype;
 			  $Restype=$_POST["Restype"];
-			  if($Restype=="")$restype="hero";
+			  if($Restype=="")$Restype="hero";
 			  $typeArray=array(array("英雄","hero"),array("覺醒","awake"),array("怪物","mob"),array("Boss","boss"));
-			
-              $Restype=$_POST["Restype"];
 			  $SC_nowArray= getVTSCData("mix");
 			  global $Res_Array;
 			  $Res_Array=getMysqlDataArray($Res_tableName);
@@ -191,21 +189,7 @@
 			   $n= (strtotime( $checkDay)-strtotime($startDate))/86400;
 			   return $n; 
 	 }
-	 /*
-     function getResSCData($FocusRes){
-	          $a=array();
-			  for ($i=0;$i<count($FocusRes);$i++){
-			       $a= getResSCDataArray($FocusRes[$i][0]);
-			  }
-	 }
-     function getResSCDataArray($code){
-	          global $SC_nowArray;
-			 
-			  $taskCode= returnTaskMainCode($SC_nowArray,$code);
-	           echo  "</br>".$taskCode.">".$code;
-	 
-	 }
-	 */
+ 
      function getFocusRes(){
 	          $Ev=  getLaterEventData();
 			  global $Restype;
@@ -224,8 +208,10 @@
 	 }   
 	 function returnRequestRes($ResStr,$days,$Type){
 		      global $SC_nowArray;
+			  global $Restype;
 		      $filterStr="h";
 			  if($Restype=="mob")$filterStr="m";
+			  if($Restype=="boss")$filterStr="b";
 			  if($Restype=="Escene")$filterStr="e";
 		      $str=explode("_",$ResStr);
 			  $ResArray=array();

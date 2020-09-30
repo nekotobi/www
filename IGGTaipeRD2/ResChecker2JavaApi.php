@@ -159,15 +159,18 @@
         function JavaPost($PostArray,$URL){
 			$params="{";
 			for($i=0;$i<count($PostArray);$i++){
-				$n=$PostArray[$i];
-			    $params=$params."'".$PostArray[$i]."':'".$_POST[$PostArray[$i]]."'";
+			    $params=$params."'".$PostArray[$i][0]."':'".$PostArray[$i][1]."'";
 				if(count($PostArray)>1) $params=$params.",";
 			}
 			$params=$params."}";
 		    $javaCom=  "post_to_url('".$URL."', ".$params.");";
-            echo " <script language='JavaScript'>".$javaCom."</script>"; 
+ 
+             echo " <script language='JavaScript'>".$javaCom."</script>"; 
         }
-	    function  CheckDrag(){
+		function ReLoadArray(){
+			    return array(array("Restype",$_POST["Restype2"]));		
+		}
+	    function CheckDrag(){
 			   if($_POST["DragID"]=="")return;
 			   if($_POST["type"]!=""){
 				   newTask();
@@ -185,10 +188,10 @@
 				   }
 			   }
                ChangePlan($Ecode,$Base,$up);
-		    ReLoad();
+		       ReLoad();
 	    }
 		function newTask(){
-		      	 echo  $_POST["type"];
+		     	 $Restype=$_POST["Restype2"];
 			     global $SC_tableName_now,$SC_tableName_old,$SC_tableName_merge;
 				 DefineVTTableName();
 			     $tables=returnTables($data_library,$SC_tableName_now);
@@ -197,13 +200,15 @@
 		         for($i=0;$i<count( $tables);$i++){
 				      array_push($WHEREtable, $tables[$i] );
 					  $data=$_POST[$tables[$i]];
+					  if($tables[$i]=="log") $data=$Restype;
 					  array_push($WHEREData,$data);
 				 }
-				  $stmt=  MakeNewStmtv2($SC_tableName_now,$WHEREtable,$WHEREData);
-				 // echo "</br>".$stmt;
-			    saveUpdateTime("",array(""));
-		        SendCommand($stmt,$data_library);	
-				ReLoad();
+				 $stmt=  MakeNewStmtv2($SC_tableName_now,$WHEREtable,$WHEREData);
+				 echo "</br>".$stmt;
+			     saveUpdateTime("",array(""));
+		         SendCommand($stmt,$data_library);	
+				 $PostArray=array(array("Restype",$Restype));
+				 ReLoad();
 		}
 	    function ChangePlan($Ecode,$Base,$up){
 	           global $URL;
@@ -216,11 +221,14 @@
 			   echo "</br>";
 		      // echo $stmt;
 		       saveUpdateTime("",array(""));
-		       SendCommand($stmt,$data_library);	
+		       SendCommand($stmt,$data_library);
+ 	
+          	   
                ReLoad();			   
 	    }
 	    function ReLoad(){
-	    	   global $PostArray,$URL;
+	    	   global  $URL;
+			   $PostArray=ReLoadArray();
 			   JavaPost($PostArray,$URL); 
 	    }
 ?>
