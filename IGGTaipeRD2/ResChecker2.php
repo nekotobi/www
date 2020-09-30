@@ -144,54 +144,50 @@
 		      $startDate=date("Y-m-1");
 			  $yadd=0;
 			  $upf=0;
+			  
 			  $pic="pics/warring.gif";
 			  for($i=0;$i<count($tasks);$i++){
-				  $type=$tasks[$i][5];
 				  $WorkDays= $tasks[$i][6];
 				  if($WorkDays<=0)$WorkDays=2;
-				  $show=  substr($type,0, $WorkDays+2);
+				  $show=  substr($tasks[$i][5],0, $WorkDays+2);
 				  $BgColor=$colorCodes[11][$i];
 				  $c=ColorDarker( $BgColor,122);
-			       if(count($tasks[$i])<2  ){ //未登錄
+			      if(count($tasks[$i])<2  ){ //未登錄
 				  	 $id= "N=".$tasks[$i][0]."=".$ResCode[2]  ;
 					 VTDrawJavaDragbox( $tasks[$i][0] ,$startRX+$i*30,$startY+20,28,18,9, $BgColor, $fontColor,$id);
-					 if($upf==1){//前項目已完成
-					  DrawPosPic($pic,$startY+20,$startRX+$i*30-10,12,12,"fixed" );
-					  $upf=0;
-					 }
-			         }else{
+					 if($upf==1){//前項目已完成\
+					    $xx=$startRX+$i*30-10;
+						$yy= $startY+20;
+						DrawPic_Layer($pic,$xx,$yy,12,12,1);
+					    $upf=0;
+					    }
+			      } 
 				  if(count($tasks[$i])>2  ){
 			         if($tasks[$i][7]=="已完成") { 
-					 $c="#aaaaaa";
-					 DrawRect($tasks[$i][5],$fontSize,$fontColor,$startRX+$i*30,$startY+20,28,18,$c);
-					 $upf=1;
+				   	    $c="#aaaaaa";
+					    DrawRect($tasks[$i][5],$fontSize,$fontColor,$startRX+$i*30,$startY+20,28,18,$c);
+					    $upf=1;
 					 }else{
-						   $upf=0;
-					 $date=$tasks[$i][2];
-					 $xAdd=returnLocX($date,$startDate);
-					 if($xAdd<0){
-						// $xAdd=1;
-						  $BgColor="#ccaaaa";
-						// $WorkDays=4;
-					 }
-				     $ds=$startX+ 	 $xAdd*$wid ;
-					 $id= "S=".$tasks[$i][1]."=".$tasks[$i][6]."=".$wid."=".$tasks[$i][7]."=".$tasks[$i][5];//1工單code.1人天.2寬.3狀態.5類別
-					 $yy=$startY+  $yadd;
-					 VTDrawJavaDragbox( $show ,$ds,$yy+4,$wid*$WorkDays,14,10,  $BgColor, $fontColor,$id);
-					 $id= "E=".$tasks[$i][1]."=".$tasks[$i][6]."=".$wid."=".$tasks[$i][7]."=".$tasks[$i][5]; 
-				     $BgColor3="#888888";
-			
-					 $x=$ds+$wid*($tasks[$i][6] );
-				     VTDrawJavaDragbox( "" ,$x,$yy+4,5,15,5, $BgColor3, $fontColor,$id);
-					  DrawTaskDetial($tasks[$i],$x ,$yy+4);
-					 $f=2;
-					 if(  $yadd==0){
+						$upf=0;
+					    $date=$tasks[$i][2];
+					    $xAdd=returnLocX($date,$startDate);
+				  	    if($xAdd<0)	  $BgColor="#ccaaaa";
+				        $ds=$startX+ 	 $xAdd*$wid ;
+					    $id= "S=".$tasks[$i][1]."=".$tasks[$i][6]."=".$wid."=".$tasks[$i][7]."=".$tasks[$i][5];//1工單code.1人天.2寬.3狀態.5類別
+					    $yy=$startY+  $yadd;
+					    VTDrawJavaDragbox( $show ,$ds,$yy+4,$wid*$WorkDays,14,10,  $BgColor, $fontColor,$id);
+					    $id= "E=".$tasks[$i][1]."=".$tasks[$i][6]."=".$wid."=".$tasks[$i][7]."=".$tasks[$i][5]; 
+				        $BgColor3="#888888";
+					    $x=$ds+$wid*($tasks[$i][6] );
+				        VTDrawJavaDragbox( "" ,$x,$yy+4,5,15,5, $BgColor3, $fontColor,$id);
+					    DrawTaskDetial($tasks[$i],$x ,$yy+4);
+					    $f=2;
+					    if(  $yadd==0){
 						 $yadd=18;
-					 }else{
-					  $yadd=0;
+					     }else{
+					     $yadd=0;
+					     }
 					 }
-					 }
-				  }
 				  }
 				  $x+=30;
 			  }
