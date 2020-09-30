@@ -95,19 +95,25 @@
 			        global $startX ,$startY,$wid;
 			        global $FocusRes;
 			        DrawBaseCalendar(date('Y'),date('n'),6, $startX,$startY-20,$wid,count($FocusRes)*40);
+					 
             }
+			 
      function ListRes(){
 	          global $FocusRes;
-			  global $startY;
+		      global $startX,$startRX ,$startY,$wid;
 			  global $Restype;
 			  $BgColor="#222222";
 			  $fontColor="#ffffff";
 			  $fontSize=10;
 			  $dir=$Restype;
+ 
 			  for($i=0;$i<count($FocusRes);$i++){
 			      $msg= $FocusRes[$i][3]."[".$FocusRes[$i][1]."]" ;
 				  $pic= returnPic($Restype,$FocusRes[$i][0] );
-				  DrawRect( "",10,"#ffffff",122 ,$startY,1200,1,"#777777");//分隔線
+				  
+				  DrawRect( "",10,"#ffffff",$startX ,$startY,$wid*($FocusRes[$i][1]+date("j")),6,"#aa8888");//死線
+				  DrawRect( "",10,"#ffffff",$startX ,$startY,1200,1,"#777777");//分隔線
+				  
 				  DrawRect($msg,$fontSize,$fontColor,60,$startY,230,18,$BgColor);
 				  DrawLinkPic($pic,$startY,20,38,38,$pic);
 			      DrawTasks($FocusRes[$i][2],$FocusRes[$i] );

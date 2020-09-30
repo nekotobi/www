@@ -78,6 +78,7 @@
 			    $fontSize=10;
 				$y=$StartY;
 				$m=$StartM;
+				$LocX-=$wid;
 	            for($i=0;$i<$MRange;$i++){
                    $days = cal_days_in_month(CAL_GREGORIAN, $m,$y); // 30
 				   DrawRect($m,$fontSize,$fontColor,$LocX,$LocY,$wid*$days-2,18,$BgColor);
