@@ -105,12 +105,13 @@
 			  $fontSize=10;
 			  $dir=$Restype;
 			  for($i=0;$i<count($FocusRes);$i++){
-			      $msg= $FocusRes[$i][3].">".$FocusRes[$i][1] ;
-				  $pic= returnPic($Restype,$FocusRes[$i][0]);
+			      $msg= $FocusRes[$i][3]."[".$FocusRes[$i][1]."]" ;
+				  $pic= returnPic($Restype,$FocusRes[$i][0] );
+				  DrawRect( "",10,"#ffffff",122 ,$startY,1200,1,"#777777");//分隔線
 				  DrawRect($msg,$fontSize,$fontColor,60,$startY,230,18,$BgColor);
 				  DrawLinkPic($pic,$startY,20,38,38,$pic);
 			      DrawTasks($FocusRes[$i][2],$FocusRes[$i] );
-                  $startY+=40; 
+				  $startY+=40; 
 			  }
 	 }
 	 function DrawTasks($TaskCode ,$ResCode){
@@ -143,7 +144,7 @@
 				  if(count($tasks[$i])>2  ){
 			         if($tasks[$i][7]=="已完成") { 
 					 $c="#aaaaaa";
-					 DrawRect($type,$fontSize,$fontColor,$startRX+$i*30,$startY+20,28,18,$c);
+					 DrawRect($tasks[$i][5],$fontSize,$fontColor,$startRX+$i*30,$startY+20,28,18,$c);
 					 }else{
 					 $date=$tasks[$i][2];
 					 $xAdd=returnLocX($date,$startDate);
@@ -155,16 +156,16 @@
 				     $ds=$startX+ 	 $xAdd*$wid ;
 					 $id= "S=".$tasks[$i][1]."=".$tasks[$i][6]."=".$wid."=".$tasks[$i][7]."=".$tasks[$i][5];//1工單code.1人天.2寬.3狀態.5類別
 					 $yy=$startY+  $yadd;
-					 VTDrawJavaDragbox( $show ,$ds,$yy,$wid*$WorkDays,15,10,  $BgColor, $fontColor,$id);
+					 VTDrawJavaDragbox( $show ,$ds,$yy+4,$wid*$WorkDays,14,10,  $BgColor, $fontColor,$id);
 					 $id= "E=".$tasks[$i][1]."=".$tasks[$i][6]."=".$wid."=".$tasks[$i][7]."=".$tasks[$i][5]; 
 				     $BgColor3="#888888";
 			
 					 $x=$ds+$wid*($tasks[$i][6] );
-				     VTDrawJavaDragbox( "" ,$x,$yy,5,15,5, $BgColor3, $fontColor,$id);
-						  DrawTaskDetial($tasks[$i],$x ,$yy);
+				     VTDrawJavaDragbox( "" ,$x,$yy+4,5,15,5, $BgColor3, $fontColor,$id);
+					  DrawTaskDetial($tasks[$i],$x ,$yy+4);
 					 $f=2;
 					 if(  $yadd==0){
-						 $yadd=20;
+						 $yadd=18;
 					 }else{
 					  $yadd=0;
 					 }
@@ -177,7 +178,7 @@
 			  VTDrawJavaDragbox( "info"  ,1024,0,100,12,9,"#333333", $fontColor,$id);
 	 }
 	 function DrawTaskDetial($task,$x,$y){
-		      $msg=$task[5]."-".$task[8]."-".$task[9];
+		      $msg=$task[2]."+".$task[6]."[".$task[5]."]".$task[8]."-".$task[9];
 			  $l=strlen(  $msg );
 			  DrawRect( "",10,"#ffffff",$x ,$y+8,100,2,"#999999");
 		      DrawRect( $msg,8,"#ffffff",$x+100,$y,$l*8,15,"#999999");
