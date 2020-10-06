@@ -92,16 +92,14 @@
 			  array_Push( $Outs,"--");
 		      DrawDragUpArea($Outs,$startX,$startY-40,$wid,"outsourcing");
 	 }
-	 
-
-
+ 
 ?>
 
 <?php //List
      function DrawCalendar(){
 			        global $startX ,$startY,$wid;
 			        global $FocusRes;
-			        DrawBaseCalendar(date('Y'),date('n'),6, $startX,$startY-20,$wid,count($FocusRes)*40);
+			        DrawBaseCalendar(date('Y'),date('n'),6, $startX,$startY-20,$wid,count($FocusRes)*40);//vtapi
 					 
             }
 			 

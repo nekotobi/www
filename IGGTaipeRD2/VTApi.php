@@ -82,24 +82,26 @@
 	            for($i=0;$i<$MRange;$i++){
                    $days = cal_days_in_month(CAL_GREGORIAN, $m,$y); // 30
 				   DrawRect($m,$fontSize,$fontColor,$LocX,$LocY,$wid*$days-2,18,$BgColor);
-				   $ym=$y."_".$m;
-				   DrawVTDays($LocX,$LocY,$wid,$days, $h,$ym);
+				   
+				   DrawVTDays($LocX,$LocY,$wid,$days, $h,$y,$m);
 			       $m+=1;
 				   if($m>12){$m=1;$y+=1;}
 				   $LocX+=$wid* $days;
 				}
 	   }
-       function DrawVTDays($LocX,$LocY,$wid,$days, $h,$ym){
+       function DrawVTDays($LocX,$LocY,$wid,$days, $h,$y,$m){
 		     	  $BgColor="#aaaaaa";
 			      $fontColor="#ffffff";
 			      $fontSize=10;
-				  $date=date("Y_n_d");
+				  $date=date("Y_n_j");
 			      for($i=1;$i<=$days;$i++){
-					 $id="startDay=".$ym."_".$i;
-					 
-					 $BgColor="#aaaaaa";
-					 if($date==$ym."_".$i)$BgColor="#aa7777";
-			         VTDrawJavaDragArea("",$LocX+$i*$wid ,$LocY+20,$wid-1,$h,$BgColor,$fontColor,$id,$fontSize );
+					  $cd=$y."_".$m."_".$i;
+					  $n=   date("w",strtotime($y."-".$m."-".$i) );
+					  $id="startDay=".$cd;
+					  $BgColor="#aaaaaa";
+					  if($n==0 or $n==6)$BgColor="#bbaaaa";
+					  if($date== $cd)$BgColor="#aa7777";
+			          VTDrawJavaDragArea("",$LocX+$i*$wid ,$LocY+20,$wid-1,$h,$BgColor,$fontColor,$id,$fontSize );
 				  }
 		}
 ?>
