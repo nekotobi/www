@@ -67,7 +67,7 @@
 			  $wid=6;
 			  global $ResTypes;
 			  $ResTypes= getResSorType($Res_Array,$Restype); 
-			  VTCreatJavaForm( $URL,$tableName);
+			   CreatJavaForm( $URL,$tableName);
 			  DrawButtoms( $typeArray, $Restype);
 	 }
      function DrawDragUpAreas(){ //

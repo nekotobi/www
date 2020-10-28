@@ -32,14 +32,20 @@
 			 $sc=addArray($ScheduleData,$old);
 			 return $sc;
 	}
-
+    function getCookie(){
+		global $id;
+		global $rank;
+		global $colorCodes;
+	    $id=$_COOKIE['IGG_id'];
+	    $rank=$_COOKIE['IGG_Rank'];
+	    if($id=="")$id="guest";
+		$colorCodes= GetColorCode();
+	}
 ?>
 
 <?php //主功能
-	   $id=$_COOKIE['IGG_id'];
-	   $rank=$_COOKIE['IGG_Rank'];
-	   if($id=="")$id="guest";
-	   $colorCodes= GetColorCode();
+	    getCookie();
+	 
  
 ?>
 

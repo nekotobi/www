@@ -82,12 +82,18 @@
 	            for($i=0;$i<$MRange;$i++){
                    $days = cal_days_in_month(CAL_GREGORIAN, $m,$y); // 30
 				   DrawRect($m,$fontSize,$fontColor,$LocX,$LocY,$wid*$days-2,18,$BgColor);
-				   
 				   DrawVTDays($LocX,$LocY,$wid,$days, $h,$y,$m);
 			       $m+=1;
 				   if($m>12){$m=1;$y+=1;}
 				   $LocX+=$wid* $days;
 				}
+			    $id="DateInfo";
+			    VTDrawJavaDragbox( "info"  ,1024,0,100,12,9,"#333333", $fontColor,$id);
+	   }
+       function VTreturnLocX($date,$startDate ){
+		       $checkDay=strtr($date,"_","-");
+			   $n= (strtotime( $checkDay)-strtotime($startDate))/86400;
+			   return $n; 
 	   }
        function DrawVTDays($LocX,$LocY,$wid,$days, $h,$y,$m){
 		     	  $BgColor="#aaaaaa";
@@ -101,7 +107,7 @@
 					  $BgColor="#aaaaaa";
 					  if($n==0 or $n==6)$BgColor="#bbaaaa";
 					  if($date== $cd)$BgColor="#aa7777";
-			          VTDrawJavaDragArea("",$LocX+$i*$wid ,$LocY+20,$wid-1,$h,$BgColor,$fontColor,$id,$fontSize );
+			          VTDrawJavaDragArea("",$LocX+($i-1)*$wid ,$LocY+20,$wid-1,$h,$BgColor,$fontColor,$id,$fontSize );
 				  }
 		}
 ?>
@@ -251,16 +257,9 @@
 				  $x+=$wid;
 			   }
 	 }
-     function VTCreatJavaForm( $URL,$tableName){
-		      global $Restype;
-			  $st="角色";
-			  if($Restype=="hero")  $st="角色";;
- 
+     function VTCreatJavaForm( $URL,$tableName,$inputsTextNames){
 		      $x=20;
 			  $y=10;
-			  global  $typeArray;
-			 // global $tableName;
-			  $code=returnDataCode( );
 			  $lastUpdate=date("Y_j_n_H_i_s");
 		      $upFormVal=array("Show","Show",$URL);
 			  $UpHidenVal=array(array("tablename",$tableName),
@@ -268,24 +267,29 @@
 								array( "Send","sendjava" ),
 								array( "Restype2",$Restype ),
 								array( "Restype",$Restype ),
-	                            );
-		      $UpHidenVal=	addArray( $UpHidenVal,$typeArray);	
-		      $inputVal=array(array("text","DragID","DragID",10,420,$y,300,20,$BgColor,$fontColor,"" ,15),
-			                   array("text","target","target",10,570,$y,200,20,$BgColor,$fontColor,"" ,20),
-						       array("text","workingDays","workingDays",10,720,$y,200,20,$BgColor,$fontColor,"" ,6),
-							   array("text","state","state",10,920,$y,200,20,$BgColor,$fontColor,"" ,6),
-							   array("text","principal","principal",10,1020,$y,200,20,$BgColor,$fontColor,"" ,6),
-							   array("text","outsourcing","outsourcing",10,1120,$y,200,20,$BgColor,$fontColor,"" ,6),
-							   array("text","type","type",10,1220,$y,200,20,$BgColor,$fontColor,"" ,6),
-							   array("text","selecttype","selecttype",10,1420,$y,200,20,$BgColor,$fontColor, $st ,6),
-							   array("text","startDay","startDay",10,1320,$y,200,20,$BgColor,$fontColor,"" ,6),
-							   array("text","code","code",10,1520,$y,200,20,$BgColor,$fontColor,$code,6),
-							   array("text","plan","plan",10,1520,$y+20,200,20,$BgColor,$fontColor,"" ,6),
-                               array("text","lastUpdate","lastUpdate",10,1320,$y+20,200,20,$BgColor,$fontColor,$lastUpdate ,6),
-							   array("text","tableName","tableName",10,1120,$y+20,200,20,$BgColor,$fontColor,$tableName ,6),
-							   array("text","tableVal","tableVal",10,1220,$y+20,200,20,$BgColor,$fontColor,$tableVal ,6), 
-	                          );			 
+	                            );	
+			 
+			  $inputVal=array();     
+              $sx=1000;		
+              $w=100;	 			  
+			  for($i=0;$i<count( $inputsTextNames);$i++){
+			        $a=array("text",$inputsTextNames[$i],$inputsTextNames[$i],10,$sx ,$y, $w,20,$BgColor,$fontColor,"" ,10);
+					$sx+= $w;
+					 array_push( $inputVal,$a);
+			  }
+						  
 		      upSubmitform($upFormVal,$UpHidenVal, $inputVal);
 	 }
-     
+     function VTJavaPost($PostArray,$URL){
+		  	$params="{";
+			for($i=0;$i<count($PostArray);$i++){
+			    $params=$params."'".$PostArray[$i][0]."':'".$PostArray[$i][1]."'";
+				if(count($PostArray)>1) $params=$params.",";
+			}
+			$params=$params."}";
+		    $javaCom=  "post_to_url('".$URL."', ".$params.");";
+            echo " <script language='JavaScript'>".$javaCom."</script>"; 
+        }
+		
+
 ?>

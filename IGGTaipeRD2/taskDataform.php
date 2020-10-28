@@ -129,7 +129,7 @@
 			   DrawButton($Type,$Rect,$URL,5,$typeArray);
 			   } 
 		       if($typeArray[4][1]== "顯示甘特"){   
-			     $Type=array("日期","內部","外部","內未定義","外未定義","type1未分類");
+			     $Type=array("日期","內部","外部","內未定義","外未定義","type1未分類","顯示歷史");
 				 DrawButton($Type,$Rect,$URL,5,$typeArray);
 			     DrawDragArea();
 			     }

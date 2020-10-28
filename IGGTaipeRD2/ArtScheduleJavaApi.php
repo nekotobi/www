@@ -28,7 +28,7 @@
 			 var ya= (parseInt(y[0])-12)+"px";
 		     document.getElementById('DateInfo').style.left=tx;
 			 document.getElementById('DateInfo').style.top=ya;
-			   var tmp= targetID.split("=");
+			 var tmp= targetID.split("=");
 			 document.getElementById("DateInfo").innerHTML=tmp[1];
 			 document.Show.startDay.value=tx;
 			// document.Show.startDay.style.left=x;
@@ -41,61 +41,46 @@
 	    var x=tx.split("px");
 	    var tmp= DragID.split("=");
 	    var tmp2= targetID.split("="); 
-		   var SID;
+		var SID;
+	    document.Show.DragID.value=  DragID;
+	    document.Show.target.value=  targetID;
+
 		if(tmp.length>0){
-		   document.Show.type.value= tmp[5];
-		   document.Show.DragID.value=tmp[1];
-		   var SID= new String( "S="+tmp[1]+"="+tmp[2]+"="+tmp[3]+"="+tmp[4]+"="+tmp[5]);
+		//   document.Show.type.value= tmp[5];
+		//   document.Show.DragID.value=tmp[1];
+		   var SID= new String( "S="+tmp[1] +"="+tmp[2]+"="+tmp[3] );
 		  }
+	    if( tmp[0]=="code"){
+		    document.Show.startDay.value=  tmp2[1];
+		    document.Show.type.value= "toSc";
+			document.Show.Ecode.value= tmp[1];
+		   }	
 	    if( tmp[0]=="S"){
-	
 			 document.Show.target.value=targetID;
 		     document.Show.startDay.value=tmp2[1];
-			 var x3=(parseInt(x[0])+  parseInt(tmp[2])*parseInt(tmp[3]))+"px";
+			 document.Show.Ecode.value= tmp[1];
 			 document.getElementById(DragID).style.left=tx;
-
-		 }
-	    if( tmp[0]=="E"){
+			 document.Show.type.value= "changeDate";
+		 }   
+	   if( tmp[0]=="E"){
 			  document.getElementById( DragID).style.left=tx;
-			//  var SID= new String( "S="+tmp[1]+"="+tmp[2]+"="+tmp[3]+"="+tmp[4]+"="+tmp[5]);
+			  document.Show.Ecode.value= tmp[1];
+			  document.Show.type.value= "changeDay";
 			  var sidx= document.getElementById(SID).style.left ;
 		      var sidwx=sidx.split("px");
 		      var x3=(parseInt(x[0])-parseInt(sidwx[0]));
+			  document.Show.workingDays.value=x3;
 		      document.getElementById(SID).style.width = x3+"px";
-	          document.Show.workingDays.value=x3/tmp[3];
-			  document.Show.startDay.value="";
+	          document.Show.workingDays.value=parseInt(x3/tmp[3]);
+			
 		 }
-		if( tmp[0]=="N"){
-			  document.getElementById( DragID).style.left=tx;
-			 // var SID= new String( "S="+tmp[1]+"="+tmp[2]+"="+tmp[3]+"="+tmp[4]);
-			  document.Show.target.value=targetID;
-              document.Show.DragID.value=DragID;
-			  document.Show.startDay.value=tmp2[1];
-			  document.Show.workingDays.value=5;
-			  document.Show.plan.value=tmp[2];
-			  document.Show.state.value="預排程";
-			  document.Show.principal.value="";
-			  document.Show.outsourcing.value="";
-			  document.Show.type.value= tmp[1];
+		if(tmp2[0]=="tableName"){
+			 document.Show.type.value= "tableName";
+		     document.Show.name.value= tmp2[1];
+		     document.Show.val.value= tmp2[2];
+			 document.Show.Ecode.value= tmp[1];
 		}
-	    switch(tmp2[0]){
-			    case  "state":
-					 document.Show.selecttype.value="";
-				     document.Show.startDay.value="";
-			         document.Show.state.value=tmp2[1];
-					 document.Show.code.value=tmp2[1];
-			    break;
-				case  "tableName":
-					 document.Show.selecttype.value="";
-				     document.Show.startDay.value="";
-			         document.Show.tableName.value=tmp2[1];
-					 document.Show.tableVal.value=tmp2[2];
-					// document.Show.code.value=tmp2[1];
-			    break;
-			 }
- 
-    Show.submit();
-	  
+        Show.submit();		   
 	}
  
 	function Drag(event) {
@@ -140,21 +125,51 @@
     form.submit();
 }
 </script>
+
 <?php  //post
-        function JavaPost($PostArray,$URL){
-			$params="{";
-			for($i=0;$i<count($PostArray);$i++){
-			    $params=$params."'".$PostArray[$i][0]."':'".$PostArray[$i][1]."'";
-				if(count($PostArray)>1) $params=$params.",";
-			}
-			$params=$params."}";
-		    $javaCom=  "post_to_url('".$URL."', ".$params.");";
- 
-            echo " <script language='JavaScript'>".$javaCom."</script>"; 
-        }
-		function ReLoadArray(){
-			    return array(array("Restype",$_POST["Restype2"]));		
+        function CheckDrag(){
+			     echo $_POST["type"];
+		         if($_POST["DragID"]=="")return;
+				 if($_POST["type"]=="toSc"){
+				  	  $Base=array("startDay","days");
+					  $up=array($_POST["startDay"],5);
+					  EditPlan( $_POST["Ecode"],$Base,$up );
+				 }
+			     if($_POST["type"]=="changeDate"){
+				  	  $Base=array("startDay");
+					  $up=array($_POST["startDay"]);
+					  EditPlan( $_POST["Ecode"],$Base,$up );
+				 }
+				 if($_POST["type"]=="changeDay"){
+				  	  $Base=array("days");
+					  $up=array($_POST["workingDays"]);
+					  EditPlan( $_POST["Ecode"],$Base,$up );
+				 }
+				 if($_POST["type"]=="tableName"){
+				  	  $Base=array($_POST["name"]);
+					  $up=array($_POST["val"]);
+					  EditPlan( $_POST["Ecode"],$Base,$up );
+				 }
+		} 
+	    function EditPlan($Ecode,$Base,$up ){
+			     global $data_library,$tableName;
+		         $WHEREtable=array( "data_type", "code"  );
+		         $WHEREData=array( "plan",$Ecode  );
+				 $stmt=  MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData); 
+                 SendCommand($stmt,$data_library);		
+                  ReLoad();				 
+				//  echo "</br>".$stmt;
 		}
+	    function ReLoad(){
+	    	     global  $URL;
+			     $PostArray=ReLoadArray();
+			     VTJavaPost($PostArray,$URL); 
+	    }
+		function ReLoadArray(){
+			     return array(array("EditType",$_POST["EditType"]));		
+		}
+             /*
+	
 	    function CheckDrag(){
 			   if($_POST["DragID"]=="")return;
 			   if($_POST["plan"]!=""){
@@ -213,52 +228,14 @@
 			   $WHEREtable=array( "data_type", "code","type" );
 		       $WHEREData=array( "data",$Ecode ,$type);
 			   $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
-			 //   echo "</br>";
-		      // echo $stmt;
 		       saveUpdateTime("",array(""));
 		      SendCommand($stmt,$data_library);
               ReLoad();			   
 	    }
 	 
-	    function ReLoad(){
-	    	   global  $URL;
-			   $PostArray=ReLoadArray();
-			   JavaPost($PostArray,$URL); 
-	    }
-	   function  CreatJavaForm( $URL,$tableName){
-		      global $Restype;
-			  $st="角色";
-			  if($Restype=="hero")  $st="角色";;
- 
-		      $x=20;
-			  $y=10;
-			  global  $typeArray;
-			 // global $tableName;
-			  $code=returnDataCode( );
-			  $lastUpdate=date("Y_j_n_H_i_s");
-		      $upFormVal=array("Show","Show",$URL);
-			  $UpHidenVal=array(array("tablename",$tableName),
-			                    array("data_type","data"),
-								array( "Send","sendjava" ),
-								array( "Restype2",$Restype ),
-								array( "Restype",$Restype ),
-	                            );
-		      $UpHidenVal=	addArray( $UpHidenVal,$typeArray);	
-		      $inputVal=array(array("text","DragID","DragID",10,420,$y,300,20,$BgColor,$fontColor,"" ,15),
-			                   array("text","target","target",10,570,$y,200,20,$BgColor,$fontColor,"" ,20),
-						       array("text","workingDays","workingDays",10,720,$y,200,20,$BgColor,$fontColor,"" ,6),
-							   array("text","state","state",10,920,$y,200,20,$BgColor,$fontColor,"" ,6),
-							   array("text","principal","principal",10,1020,$y,200,20,$BgColor,$fontColor,"" ,6),
-							   array("text","outsourcing","outsourcing",10,1120,$y,200,20,$BgColor,$fontColor,"" ,6),
-							   array("text","type","type",10,1220,$y,200,20,$BgColor,$fontColor,"" ,6),
-							   array("text","selecttype","selecttype",10,1420,$y,200,20,$BgColor,$fontColor, $st ,6),
-							   array("text","startDay","startDay",10,1320,$y,200,20,$BgColor,$fontColor,"" ,6),
-							   array("text","code","code",10,1520,$y,200,20,$BgColor,$fontColor,$code,6),
-							   array("text","plan","plan",10,1520,$y+20,200,20,$BgColor,$fontColor,"" ,6),
-                               array("text","lastUpdate","lastUpdate",10,1320,$y+20,200,20,$BgColor,$fontColor,$lastUpdate ,6),
-							   array("text","tableName","tableName",10,1120,$y+20,200,20,$BgColor,$fontColor,$tableName ,6),
-							   array("text","tableVal","tableVal",10,1220,$y+20,200,20,$BgColor,$fontColor,$tableVal ,6), 
-	                          );			 
-		      upSubmitform($upFormVal,$UpHidenVal, $inputVal);
-	 }
+
+	   */
 ?>
+ 
+
+

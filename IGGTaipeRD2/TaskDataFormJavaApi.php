@@ -123,6 +123,7 @@
 }
 </script>
 <?php  //post
+ 
         function JavaPost($PostArray,$URL){ 
 			$params="{";
 			for($i=0;$i<count($PostArray);$i++){
@@ -134,7 +135,7 @@
 		    $javaCom=  "post_to_url('".$URL."', ".$params.");";
             echo " <script language='JavaScript'>".$javaCom."</script>"; 
         }
-
+ 
 ?>
 <?php  //Drag  
         function DrawJavaDragPic($pic,$x,$y,$w,$h,$id){
