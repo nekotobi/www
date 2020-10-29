@@ -11,13 +11,11 @@
 	 require_once('scheduleApi.php');
      require_once('VTApi.php');
 	 require_once('ResChecker2JavaApi.php');
-	  checkSubmit();
+	 checkSubmit();
      DefineBaseData();
 	 DrawCalendar();
 	 DrawDragUpAreas();
 	 ListRes();
- 
- 
 ?>
 
 <?php
@@ -92,7 +90,6 @@
 			  array_Push( $Outs,"--");
 		      DrawDragUpArea($Outs,$startX,$startY-40,$wid,"outsourcing");
 	 }
- 
 ?>
 
 <?php //List
@@ -102,7 +99,6 @@
 			        DrawBaseCalendar(date('Y'),date('n'),6, $startX,$startY-20,$wid,count($FocusRes)*40);//vtapi
 					 
             }
-			 
      function ListRes(){
 	          global $FocusRes;
 		      global $startX,$startRX ,$startY,$wid;

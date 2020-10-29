@@ -43,6 +43,8 @@
 	}
 ?>
 
+ 
+
 <?php //主功能
 	    getCookie();
 	 
@@ -436,7 +438,9 @@
 					}
 			   return $returnData;
 	  }
-
+	    if($_POST["submit"]=="修改表格") {
+				echo "x";
+		 };
 ?>
 
 <?php  //會員相關資料

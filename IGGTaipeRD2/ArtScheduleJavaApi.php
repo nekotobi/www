@@ -54,13 +54,17 @@
 		    document.Show.startDay.value=  tmp2[1];
 		    document.Show.type.value= "toSc";
 			document.Show.Ecode.value= tmp[1];
+		    document.Show.line.value= tmp2[2];
+			 document.Show.project.value= tmp2[3];
 		   }	
 	    if( tmp[0]=="S"){
 			 document.Show.target.value=targetID;
 		     document.Show.startDay.value=tmp2[1];
 			 document.Show.Ecode.value= tmp[1];
 			 document.getElementById(DragID).style.left=tx;
+		     document.Show.line.value= tmp2[2];
 			 document.Show.type.value= "changeDate";
+		     document.Show.project.value= tmp2[3];
 		 }   
 	   if( tmp[0]=="E"){
 			  document.getElementById( DragID).style.left=tx;
@@ -80,7 +84,7 @@
 		     document.Show.val.value= tmp2[2];
 			 document.Show.Ecode.value= tmp[1];
 		}
-        Show.submit();		   
+         Show.submit();		   
 	}
  
 	function Drag(event) {
@@ -128,16 +132,16 @@
 
 <?php  //post
         function CheckDrag(){
-			     echo $_POST["type"];
+			     global $data_library,$tableName;
 		         if($_POST["DragID"]=="")return;
 				 if($_POST["type"]=="toSc"){
-				  	  $Base=array("startDay","days");
-					  $up=array($_POST["startDay"],5);
+				  	  $Base=array("startDay","days","line","project");
+					  $up=array($_POST["startDay"],5,$_POST["line"],$_POST["project"]);
 					  EditPlan( $_POST["Ecode"],$Base,$up );
 				 }
 			     if($_POST["type"]=="changeDate"){
-				  	  $Base=array("startDay");
-					  $up=array($_POST["startDay"]);
+				  	  $Base=array("startDay","line","project");
+					  $up=array($_POST["startDay"],$_POST["line"],$_POST["project"]);
 					  EditPlan( $_POST["Ecode"],$Base,$up );
 				 }
 				 if($_POST["type"]=="changeDay"){
@@ -146,18 +150,21 @@
 					  EditPlan( $_POST["Ecode"],$Base,$up );
 				 }
 				 if($_POST["type"]=="tableName"){
-				  	  $Base=array($_POST["name"]);
-					  $up=array($_POST["val"]);
-					  EditPlan( $_POST["Ecode"],$Base,$up );
+					//  if($_POST["name"]=="ver"){
+				  	     $Base=array($_POST["name"]);
+					     $up=array($_POST["val"]);
+					     EditPlan( $_POST["Ecode"],$Base,$up );
+					 // }
+				
 				 }
 		} 
 	    function EditPlan($Ecode,$Base,$up ){
 			     global $data_library,$tableName;
 		         $WHEREtable=array( "data_type", "code"  );
-		         $WHEREData=array( "plan",$Ecode  );
+		         $WHEREData=array( "data",$Ecode  );
 				 $stmt=  MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData); 
                  SendCommand($stmt,$data_library);		
-                  ReLoad();				 
+                 ReLoad();				 
 				//  echo "</br>".$stmt;
 		}
 	    function ReLoad(){

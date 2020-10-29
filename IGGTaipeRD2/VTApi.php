@@ -1,5 +1,15 @@
 
 <?php  //vt
+       function VTDeletPlan($Ecode){
+		      global $data_library,$tableName;
+	          global $PostArray;
+			  global $URL;
+			  //RootTask
+		      $WHEREtable=array( "data_type", "code" );
+		      $WHEREData=array( "data",$Ecode );
+			  $stmt=   MakeDeleteStmt($tableName,$WHEREtable,$WHEREData);
+			  SendCommand($stmt,$data_library);
+	   }
        function DefineVTTableName(){
                 global $data_library;
 	            global $SC_tableName;
@@ -72,6 +82,42 @@
 	  } 
 ?>
 <?php  //日歷
+       function VTDrawMuiltCalendarLines($StartY,$StartM,$MRange,$LocX,$LocY,$wid,$h,$LineNum,$type=""){
+	    	    $BgColor="#222222";
+			    $fontColor="#ffffff";
+			    $fontSize=10;
+				$y=$StartY;
+				$m=$StartM;
+				$LocX-=$wid;
+	            for($i=0;$i<$MRange;$i++){
+                   $days = cal_days_in_month(CAL_GREGORIAN, $m,$y); // 30
+				   DrawRect($m,$fontSize,$fontColor,$LocX,$LocY-20,$wid*$days-2,18,$BgColor);
+				   VTDrawMuiltDays($LocX,$LocY ,$wid,$days, $h,$y,$m,$LineNum,$type);
+			       $m+=1;
+				   if($m>12){$m=1;$y+=1;}
+				   $LocX+=$wid* $days;
+				}
+				   DrawDateInfo();
+	   }
+       function VTDrawMuiltDays($LocX,$LocY,$wid,$days, $h,$y,$m,$LineNum,$type=""){
+		     	  $BgColor="#aaaaaa";
+			      $fontColor="#ffffff";
+			      $fontSize=10;
+				  $date=date("Y_n_j");
+			      for($i=1;$i<=$days;$i++){
+					  $cd=$y."_".$m."_".$i;
+					  $n=   date("w",strtotime($y."-".$m."-".$i) );
+					  $BgColor="#aaaaaa";
+					  if($n==0 or $n==6)$BgColor="#bbaaaa";
+					  if($date== $cd)$BgColor="#aa7777";
+					  for($j=0;$j<=$LineNum;$j++){
+					     $id="startDay=".$cd."=".$j."=".$type;
+			             VTDrawJavaDragArea("",$LocX+($i-1)*$wid ,$LocY+$h*$j,$wid-1,$h-1,$BgColor,$fontColor,$id,$fontSize );
+					  }
+					
+				  }
+		}
+ 
        function DrawBaseCalendar($StartY,$StartM,$MRange,$LocX,$LocY,$wid,$h){
 		        $BgColor="#222222";
 			    $fontColor="#ffffff";
@@ -87,8 +133,11 @@
 				   if($m>12){$m=1;$y+=1;}
 				   $LocX+=$wid* $days;
 				}
-			    $id="DateInfo";
-			    VTDrawJavaDragbox( "info"  ,1024,0,100,12,9,"#333333", $fontColor,$id);
+			    DrawDateInfo();
+	   }
+	   function DrawDateInfo(){
+	            $id="DateInfo";
+			    VTDrawJavaDragbox( "info"  ,1024,0,100,12,9,"#333333", "#ffffff",$id);
 	   }
        function VTreturnLocX($date,$startDate ){
 		       $checkDay=strtr($date,"_","-");

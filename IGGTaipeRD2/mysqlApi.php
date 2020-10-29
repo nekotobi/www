@@ -152,10 +152,10 @@
 			     array_push( $up,$_POST[$tables[$i]]);
 			  }
 			  $stmt= MakeUpdateStmt(  $data_library,$tableName,$Base,$up,$WHEREtable,$WHEREData);
-			  //echo $stmt;
+			  // echo $stmt;
 			   SendCommand($stmt,$data_library);	
 	 }
-     function DrawMysQLEdit($data_library,$tableName,$code,$URL,$PostArray,$title,$filterNum=1){
+     function DrawMysQLEdit($data_library,$tableName,$code,$URL,$PostArray,$title,$filterNum=1,$subStr="修改表單"){
 		      require_once ('PubApi.php');
 	          $tables=returnTables($data_library ,$tableName); 
 			  $base=getMysqlArray($data_library,$tableName);
@@ -181,12 +181,18 @@
 				  array_push($inputVal,$tarr);
 				  $y+=22;
 			  }
-			  
-			 $tarr=array("submit", "submit", "submit",8,$x,$y,200,20,$BgColor,$fontColor,"修改表單",20);
+			 $tarr=array("submit", "submit", "submit",8,$x,$y,200,20,$BgColor,$fontColor,$subStr,20);
 			   	  array_push($inputVal,$tarr);
 			  upSubmitform($upFormVal,$UpHidenVal, $inputVal);
 			  
 	 }
+	 function pubUpform(){
+     	      if($_POST["submit"]!="修改表單") return;
+			  global $data_library,$tableName,$URL,$PostArray ;
+			  $code=$_POST["code"];
+			  upMysQLEdit($data_library,$tableName,$code,$URL,$PostArray );
+		     ReLoad();
+		 };
      function FastAddMysQLData($data_library,$tableName,$code,$URL,$sendVal){
 	          require_once ('PubApi.php');
 	          $tables=returnTables($data_library ,$tableName); 

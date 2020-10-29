@@ -12,12 +12,7 @@
 	  require_once('ArtScheduleJavaApi.php');
 	  require_once('VTApi.php');
       DefineBaseData();
-	  DrawBase();
-	  DrawDragUpAreas();
-	  ListOnScPlan();
-	  // CreatUpForm();
-	 // 
-	
+ 
 ?>
 <?php //define
      function DefineBaseData(){
@@ -28,13 +23,26 @@
 			  $data_library="iggtaiperd2";
 	          global $id;
 			  global $rank;
+			  //計畫表
 			  global $planDatas, $notSetPlan ,$OnScPlan,$ver;
+			  global $LastLines;
 			  $planDatas_T=getMysqlDataArray($tableName);
-			  $planDatas= filterArray( $planDatas_T,0,"plan");
-			  $notSetPlan=filterArray( $planDatas_T,2,"");
-			  $ver=RemoveArray($planDatas_T,6,"");
-			  $OnScPlan_T=RemoveArray($planDatas_T,2,"");
+			  $planDatas= filterArray( $planDatas_T,0,"data");
+			  $notSetPlan=filterArray($planDatas,2,"");
+			  // $ver=RemoveArray($planDatas,6,"");
+			  $OnScPlan_T=RemoveArray($planDatas,2,"");
 			  $OnScPlan=filterArray($OnScPlan_T,6,"");
+			  //projects;
+			  global $projects,$projects_t;
+			  $projects_t=filterArray( $planDatas_T,0,"project");;
+			  $projects=returnArraybySort( $projects_t,5);
+		      global $DefuseProject;
+			  $DefuseProject_t=filterArray( $projects_t,9,"defuse");
+			  $DefuseProject= $DefuseProject_t[0][5];
+			  global    $projectPlans;//,$projectPlansVer;
+			  $projectPlans=CollectProjectPlan($OnScPlan,$projects); 
+			//  $projectPlansVer=CollectProjectPlan($ver,$projects); 
+			  
 			  //layout
 			  global $startLoxY,$startLoX,$wid;
 			  $wid=8;
@@ -44,12 +52,20 @@
 			  $startDate=date("Y-m-1");
 			  global  $typeArray,$typeVal;
 			  $typeVal=$_POST["EditType"];
-			  $typeArray=array(array("--","--"),array("新增","new") );
+			  $typeArray=array(array("--","--"),array("新增","new")  );
 			  if($typeVal=="")$typeVal="--";
 			  DrawButtoms(20,40,$typeArray,$typeVal);
 			  global    $inputsTextNames;
-			  $inputsTextNames=array("DragID","target","plan","workingDays","name","type","Ecode","startDay","val");
+			  $inputsTextNames=array("DragID","target","plan","workingDays","name","type","Ecode","startDay","val","line","project");
 			  SwitchEditType($typeVal);
+	 }
+	 function CollectProjectPlan($OnScPlan,$projects){
+	          $projectPlans=array();
+			  for($i=0;$i<count($projects);$i++){
+			      $p=filterArray($OnScPlan,8,$projects[$i]);
+				  $projectPlans[$i]=$p;
+			  }
+			  return   $projectPlans;
 	 }
 	 function DrawButtoms($x,$y,$typeArray,$typeVal){
 			  global $URL;
@@ -63,23 +79,41 @@
 	 function SwitchEditType($typeVal){
 		      global $tableName,$data_library;
 			  global $URL;
-			  CheckSubmit();
+			  if($_POST["submit"]=="新增計畫") UpNewPlan();
+	          pubUpform();//檢查共用表格上傳
+			  if($_POST["line"]=="編輯"){ 
+                 $code=$_POST["Ecode"];
+			     DrawMysQLEdit($data_library,$tableName,$code,$URL,$typeArray,"修改".$code."表格內容");
+				 return;
+				 }
+		      if($_POST["line"]=="刪除"){ 
+				 VTDeletPlan($_POST["Ecode"]);
+			     ReLoad();
+			  }
 		      if($typeVal=="--"){
 				  global    $inputsTextNames;
 			 	  VTCreatJavaForm( $URL,$tableName,$inputsTextNames);
 				  CheckDrag();
+				  DrawBase();
+	              DrawDragUpAreas();
+	            
 			  }
 			  if($typeVal=="new"){
 				  CreatUpForm();
 			  }
+		
 	 }
      function DrawDragUpAreas(){ //
 	          global  $startLoxY;
 			  $startX=20;
-			  $wid=35;
+			  $wid=40;
 			  //  array("進行中","已排程","驗證中","已完成");
-           	  $arr=array("ver","mileston");
-			  DrawDragUpArea($arr,$startX,$startLoxY-40,$wid,"ver");
+			  //global $projects;
+			//  DrawDragUpArea($projects,$startX  ,$startLoxY-40,$wid,"project");
+           	//  $arr=array("ver");
+			  //DrawDragUpArea($arr,$startX+120,$startLoxY-40,$wid,"ver");
+			  $arr=array("編輯","刪除");
+			  DrawDragUpArea($arr,$startX+800,$startLoxY-20,$wid,"edit");
 	 }
 ?>
 <?php 
@@ -90,56 +124,72 @@
 			  $StartM=date("n");
 			  $MRange=6;
 			  $LocX=$startLoX;
-			  $LocY=$startLoxY ;
-			  $h=100;
-		      DrawRect("TaipeiRD2美術進度規畫表" ,"12","#ffffff",18,78,900,20, "#000000");
-	          DrawBaseCalendar($StartY,$StartM,$MRange,$LocX,$LocY,$wid,$h);  
-			  $LocY+=100;
-              ListPlan($LocY);			  
+			  $LocY=$startLoxY+20 ;
+			  $h=15;
+		      DrawRect("TaipeiRD2美術進度規畫表" ,"12","#ffffff",10,78,1000,20, "#000000");
+			  //列印專案
+		      global  $projects, $projectPlans;
+			  global $colorCodes;
+			  $y=$LocY ;
+			  for($i=0;$i<count($projectPlans);$i++){
+			      $LineNum= getLastSN2($projectPlans[$i] ,9 )+1 ; 
+				  DrawRect( $projects[$i] ,"10","#ffffff" ,10, $y-20 ,1000, 15, $colorCodes[12][$i]);
+				  VTDrawMuiltCalendarLines($StartY,$StartM,$MRange,$LocX,$y+$h,$wid,$h, $LineNum,$projects[$i]);  
+				 // DrawRect( $i ,"10","#ffffff" ,0, $y ,10, ($LineNum+1)*$h, $colorCodes[0][$i]);
+				  ListOnScPlan($projectPlans[$i],20,$y+$h);
+				  $y+=( $LineNum+4)*$h;
+			  }
+			 
+	          
+			  $LocY+=300;
+			  //列印未計畫
+              ListnoPlan( $y);			  
 	 }
-	  function ListOnScPlan(){
-	           global $notSetPlan ,$OnScPlan,$ver;
+	 
+	  function ListOnScPlan($projectPlan,$startLoX,$y){
+	         //  global $notSetPlan ,$OnScPlan,$ver;
 			   global $startLoxY,$startLoX,$wid;
 			   global $startDate;
-			   $y=$startLoxY+40;
+			    
 			   $h=15;
 			   $fontSize=12;
-			   $BgColor="#ffaaaa";
+			   $BgColor="#bb9999";
 			   $fontColor="#ffffff";
-			   //ver 
-			   for($i=0;$i<count($ver);$i++){
-				   DrawSingleDragPlan($ver[$i],$startDate,$startLoX,$y-20,$wid, "#ee5555", $fontColor);
+			   for($i=0;$i<count($projectPlan);$i++){
+				   DrawSingleDragPlan($projectPlan[$i],$startDate,$startLoX,$y,$wid, $BgColor,$fontColor,$i,$h);
 			   }
-			   	  
-			   //一般
-			   for($i=0;$i<count($OnScPlan);$i++){
-				   DrawSingleDragPlan($OnScPlan[$i],$startDate,$startLoX,$y,$wid,  $BgColor, $fontColor);
-				   $y+=20;
-			   }
+ 
+			
 	  }
  
-	  function DrawSingleDragPlan($data,$startDate,$startLoX,$y,$wid,$BgColor, $fontColor){
+	  function DrawSingleDragPlan($data,$startDate,$startLoX,$sy,$wid,$BgColor, $fontColor,$i,$h){
 		          $backstr=$data[1]."=".$data[3]."=".$wid ;//0工單code.1人天 2寬度
 				  $id= "S=".$backstr;
 				  $show=$data[5];
 				  $date=$data[2];
 				  $WorkDays=$data[3];
 				  $xAdd=VTreturnLocX($date,$startDate);
-			   	  $sx=$startLoX+ $xAdd*$wid ;
-			      VTDrawJavaDragbox( $show,$sx, $y,$wid*$WorkDays, $h,10,  $BgColor, $fontColor,$id);
+			   	  $sx=$startLoX+ ($xAdd-1)*$wid ;
+				  $y=$sy+$i*$h;
+				  if($data[9]!="")$y=$sy+$h*$data[9];
+				  if($data[9]==0){
+					  $BgColor="#ff7777";
+				      DrawRect("","10","#ffffff" ,$sx, $y,2,$h*2,  $BgColor);
+				  }
+			      VTDrawJavaDragbox( $show,$sx, $y,$wid*$WorkDays , $h,10,  $BgColor, $fontColor,$id);
 				  $id= "E=".$backstr ; 
 				  $BgColor3="#888888";
 				  $x= $sx+$wid*($data[3] );
 				  VTDrawJavaDragbox( "" ,$x,$y+2,5,10,5, $BgColor3, $fontColor,$id);
 	  }
-	  function ListPlan($startY){
-		      global $planDatas, $notSetPlan;
+	  function ListnoPlan($startY){
+		      global   $notSetPlan;
 			  $x=20;
 			  $y=$startY;
 			  $w=300;
 			  $h=18;
 			  $fontSize=12;
-			  $BgColor="#aaaaaa";
+			  $BgColor="#555555";
 			  $fontColor="#ffffff";
 		      for($i=0;$i<count( $notSetPlan);$i++){
 			      $id="code=".$notSetPlan[$i][1];
@@ -150,10 +200,7 @@
 ?>
 
 <?php //up
-     function CheckSubmit(){
-                if($_POST["submit"]=="新增計畫") UpNewPlan();
-				
-     }
+   
      function UpNewPlan(){
 		      global $data_library,$tableName;
 			       $tables=returnTables($data_library,$tableName);
@@ -168,17 +215,21 @@
 				   $stmt=  MakeNewStmtv2($tableName,$WHEREtable,$WHEREData);
 				   echo $stmt;
 				   SendCommand($stmt,$data_library);
+				   ReLoad();
      }
+     
      function CreatUpForm(){
 		      $x=20;
 			  $y=10;
 		      global $URL;
 			  global $typeName,$typeArray;
 			  global $tableName;
+			  global $DefuseProject;
 		      $upFormVal=array("art","art",$URL);
 			  $UpHidenVal=array(array("tablename",$tableName),
 			                     array("code",returnDataCode( )),
-								 array("data_type","plan"),
+								 array("data_type","data"),
+								  array("project",$DefuseProject),
 	                            );
 		      $UpHidenVal=	addArray( $UpHidenVal,$typeArray);	
 		      $inputVal=array(array("text","plan","plan",10,20,$y,400,20,$BgColor,$fontColor,"" ,30),
