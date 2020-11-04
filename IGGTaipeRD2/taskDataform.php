@@ -76,11 +76,17 @@
 			  // print_r($DateRange);
 			   global    $colorCodes;
 			   $colorCodes= GetColorCode();
-			 
-			   global $target;
+			   
+			   global $target; //版本計畫
+			   $target_T=getMysqlDataArray("artplan"); 
+			   $target_T2=filterArray(  $target_T,9, "0");
+			   $target=filterArray(  $target_T2,8, "VT");
+			   
+			   /*
 			   $targetT=filterArray($Base_Task,5, "目標");
 			   $startDate=date("Y_n_1");
 			   $target= filterDate( $targetT,2,$startDate,$dateRange);
+			   */
       } 
       function DrawButtons(){
 		       global $URL;
@@ -462,7 +468,6 @@
 			    if($fin=="已完成")$BgColor="#000000";
 				return $BgColor;
 	 }
- 
 	 function   returnNameColor($Task,$SortType ){
 		 	    global $principals,$Outs; 
 			    global $colorCodes;
@@ -505,8 +510,8 @@
 		        return array($name,$c);
 	 }
  	 function   DrawChildTask($x,$y,$Tasks){
-              global $user;	      
-		      for($i=0;$i<count($Tasks);$i++){
+                global $user;	      
+		       for($i=0;$i<count($Tasks);$i++){
 			 	$t=$Tasks[$i][5];
 				$n=$Tasks[$i][8];
 				if($n=="未定義")$n=$Tasks[$i][9];
@@ -524,8 +529,7 @@
 		        global $DateWid;
 				global $DateRange;
 				global $CalendarX;
-	            $fontColor="#ffffff";
-                
+	            $fontColor="#ffffff"; 
 				if($undefine!="undefined"){
 		           $nd= explode("_",$taskArray[$i][2]);//= returnposX($taskArray[$i][2]);
 				 }else{
@@ -775,7 +779,7 @@
 			  }
 			  DrawTarget();
 	 }
-     function DrawTarget(){
+     function DrawTarget(){ //繪製計畫
 	          global $target,$DateRange;
 			  global  $CalendarX,$DateWid;
 			  $y=190;
@@ -787,8 +791,8 @@
 				  $nd= explode("_",$target[$i][2]);
 			      $passDay= getPassDays(array($DateRange[0],$DateRange[1],1), $nd);
 				  $LocX= $CalendarX+$passDay*$DateWid;
-				   $LocXup= $CalendarX+($passDay-7)*$DateWid;
-				  $m=$target[$i][3];
+				  $LocXup= $CalendarX+($passDay-7)*$DateWid;
+				  $m=$target[$i][5];
 				  //前推
 				  DrawRect("",10,$fontColor,$LocXup,$y+12,$DateWid*7,1,$Bg2);
 				  DrawRect("",10,$fontColor,$LocXup,$y+12,2,80,$Bg2);

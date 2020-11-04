@@ -11,8 +11,10 @@
       require_once('CalendarApi.php');
 	  require_once('ArtScheduleJavaApi.php');
 	  require_once('VTApi.php');
+	  DrawUserData(800,10);
       DefineBaseData();
- 
+	  SwitchEditType();
+  
 ?>
 <?php //define
      function DefineBaseData(){
@@ -56,8 +58,8 @@
 			  if($typeVal=="")$typeVal="--";
 			  DrawButtoms(20,40,$typeArray,$typeVal);
 			  global    $inputsTextNames;
-			  $inputsTextNames=array("DragID","target","plan","workingDays","name","type","Ecode","startDay","val","line","project");
-			  SwitchEditType($typeVal);
+			  $inputsTextNames=array("DragID","target","plan","workingDays","name","type","Ecode","startDay","val","line","project","pm");
+			 
 	 }
 	 function CollectProjectPlan($OnScPlan,$projects){
 	          $projectPlans=array();
@@ -76,11 +78,12 @@
 				   sendVal_v2($URL, $sendarr,"check",$typeArray[$i][0],array($x+$i*50,$y,46,18),10, $BgColor );
 			  }
 	 }
-	 function SwitchEditType($typeVal){
+	 function SwitchEditType( ){
+		      global  $typeArray,$typeVal;
 		      global $tableName,$data_library;
 			  global $URL;
 			  if($_POST["submit"]=="新增計畫") UpNewPlan();
-	          pubUpform();//檢查共用表格上傳
+              pubUpform();//檢查共用表格上傳
 			  if($_POST["line"]=="編輯"){ 
                  $code=$_POST["Ecode"];
 			     DrawMysQLEdit($data_library,$tableName,$code,$URL,$typeArray,"修改".$code."表格內容");
@@ -96,12 +99,10 @@
 				  CheckDrag();
 				  DrawBase();
 	              DrawDragUpAreas();
-	            
 			  }
 			  if($typeVal=="new"){
 				  CreatUpForm();
 			  }
-		
 	 }
      function DrawDragUpAreas(){ //
 	          global  $startLoxY;
@@ -139,8 +140,6 @@
 				  ListOnScPlan($projectPlans[$i],20,$y+$h);
 				  $y+=( $LineNum+4)*$h;
 			  }
-			 
-	          
 			  $LocY+=300;
 			  //列印未計畫
               ListnoPlan( $y);			  
@@ -150,7 +149,6 @@
 	         //  global $notSetPlan ,$OnScPlan,$ver;
 			   global $startLoxY,$startLoX,$wid;
 			   global $startDate;
-			    
 			   $h=15;
 			   $fontSize=12;
 			   $BgColor="#bb9999";
@@ -163,7 +161,7 @@
 	  }
  
 	  function DrawSingleDragPlan($data,$startDate,$startLoX,$sy,$wid,$BgColor, $fontColor,$i,$h){
-		          $backstr=$data[1]."=".$data[3]."=".$wid ;//0工單code.1人天 2寬度
+		          $backstr=$data[1]."=".$data[3]."=".$wid."=".$data[7] ;//0工單code.1人天 2寬度 3pm
 				  $id= "S=".$backstr;
 				  $show=$data[5];
 				  $date=$data[2];
@@ -181,20 +179,27 @@
 				  $BgColor3="#888888";
 				  $x= $sx+$wid*($data[3] );
 				  VTDrawJavaDragbox( "" ,$x,$y+2,5,10,5, $BgColor3, $fontColor,$id);
+				  if( $data[10]!="" && $data[10]!= $data[7]  ){ //pm不同
+				     DrawRect($data[10],"8","#ffffff" ,$sx+$wid*$WorkDays-2, $y+2,40,10, "#55aabb");
+				  }
 	  }
 	  function ListnoPlan($startY){
-		      global   $notSetPlan;
-			  $x=20;
-			  $y=$startY;
-			  $w=300;
-			  $h=18;
-			  $fontSize=12;
-			  $BgColor="#555555";
-			  $fontColor="#ffffff";
-		      for($i=0;$i<count( $notSetPlan);$i++){
-			      $id="code=".$notSetPlan[$i][1];
-				  VTDrawJavaDragbox($notSetPlan[$i][5],$x,$y,$w,$h,$fontSize,$BgColor,$fontColor,$id);
-				  $y+=20;
+		       global $notSetPlan;
+			   global $id;
+			   $x=20;
+			   $y=$startY;
+			   $w=300;
+			   $h=18;
+			   $fontSize=10;
+			   $BgColor="#555555";
+			   $fontColor="#ffffff";
+		       for($i=0;$i<count( $notSetPlan);$i++){
+			       $id2="code=".$notSetPlan[$i][1];
+				   VTDrawJavaDragbox($notSetPlan[$i][5],$x,$y,$w,$h,$fontSize,$BgColor,$fontColor,$id2);
+				   if($notSetPlan[$i][7]!="Kou" & $notSetPlan[$i][7]!=$id ){
+				      DrawRect($notSetPlan[$i][7] ,"10","#ffffff"  ,$x+$w-20,$y+2,60,$h-4,"#333333");
+				   }
+				   $y+=20;
 			  }
 	  }
 ?>
@@ -225,11 +230,13 @@
 			  global $typeName,$typeArray;
 			  global $tableName;
 			  global $DefuseProject;
+			  global $id;
 		      $upFormVal=array("art","art",$URL);
 			  $UpHidenVal=array(array("tablename",$tableName),
 			                     array("code",returnDataCode( )),
 								 array("data_type","data"),
-								  array("project",$DefuseProject),
+								 array("project",$DefuseProject),
+								 array("pm",$id),
 	                            );
 		      $UpHidenVal=	addArray( $UpHidenVal,$typeArray);	
 		      $inputVal=array(array("text","plan","plan",10,20,$y,400,20,$BgColor,$fontColor,"" ,30),

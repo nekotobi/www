@@ -227,7 +227,7 @@
 ?>
 
 <?php //Stmt
-     function   ClearAllData($data_library,$tableName){
+     function ClearAllData($data_library,$tableName){
 		        $stmt= 'TRUNCATE TABLE '.$tableName.';';
 				SendCommand($stmt,$data_library);
 	 }
@@ -238,7 +238,7 @@
 			      JoinTableData($data_library,$mergeTable,$joinTables[$i]);
 			     }
      }
-     function   JoinTableData($data_library,$mergeTable,$joinTable){
+     function JoinTableData($data_library,$mergeTable,$joinTable){
 	            $stmt= "INSERT INTO `".$data_library."`.`".$mergeTable."` SELECT * FROM `".$data_library."`.`".$joinTable."`;";
 				// echo $stmt;
 				SendCommand($stmt,$data_library);

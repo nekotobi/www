@@ -44,18 +44,17 @@
 		var SID;
 	    document.Show.DragID.value=  DragID;
 	    document.Show.target.value=  targetID;
-
 		if(tmp.length>0){
-		//   document.Show.type.value= tmp[5];
-		//   document.Show.DragID.value=tmp[1];
-		   var SID= new String( "S="+tmp[1] +"="+tmp[2]+"="+tmp[3] );
+		   var SID= new String( "S="+tmp[1] +"="+tmp[2]+"="+tmp[3]+"="+tmp[4] );
+ 
 		  }
 	    if( tmp[0]=="code"){
 		    document.Show.startDay.value=  tmp2[1];
 		    document.Show.type.value= "toSc";
 			document.Show.Ecode.value= tmp[1];
 		    document.Show.line.value= tmp2[2];
-			 document.Show.project.value= tmp2[3];
+			document.Show.project.value= tmp2[3];
+			document.Show.pm.value= tmp[4];
 		   }	
 	    if( tmp[0]=="S"){
 			 document.Show.target.value=targetID;
@@ -65,8 +64,9 @@
 		     document.Show.line.value= tmp2[2];
 			 document.Show.type.value= "changeDate";
 		     document.Show.project.value= tmp2[3];
+			 document.Show.pm.value= tmp[4];
 		 }   
-	   if( tmp[0]=="E"){
+	    if( tmp[0]=="E"){
 			  document.getElementById( DragID).style.left=tx;
 			  document.Show.Ecode.value= tmp[1];
 			  document.Show.type.value= "changeDay";
@@ -76,7 +76,7 @@
 			  document.Show.workingDays.value=x3;
 		      document.getElementById(SID).style.width = x3+"px";
 	          document.Show.workingDays.value=parseInt(x3/tmp[3]);
-			
+			  document.Show.pm.value= tmp[4];
 		 }
 		if(tmp2[0]=="tableName"){
 			 document.Show.type.value= "tableName";
@@ -133,13 +133,43 @@
 <?php  //post
         function CheckDrag(){
 			     global $data_library,$tableName;
+				 global $id;
 		         if($_POST["DragID"]=="")return;
 				 if($_POST["type"]=="toSc"){
 				  	  $Base=array("startDay","days","line","project");
 					  $up=array($_POST["startDay"],5,$_POST["line"],$_POST["project"]);
 					  EditPlan( $_POST["Ecode"],$Base,$up );
+					  return;
 				 }
+				 $Base=array();
+				 $up=array();
+				 if(  $id!=$_POST["pm"]){
+				     array_push($Base,"pm","upPm");
+					 array_push($up,$id,$_POST["pm"]);
+				 }
+				 if(  $id==$_POST["pm"]){
+				     array_push($Base,"pm","upPm");
+					 array_push($up,$id,"");
+				 }
+				 if($_POST["type"]=="changeDate"){
+					 array_push($Base,"startDay","line","project");
+					 array_push($up,$_POST["startDay"],$_POST["line"],$_POST["project"]);
+					 EditPlan( $_POST["Ecode"],$Base,$up );
+				 }
+				 if($_POST["type"]=="changeDay"){
+					 array_push($Base,"days");
+					 array_push($up,$_POST["workingDays"]);
+					 EditPlan( $_POST["Ecode"],$Base,$up );
+				 }
+				 if($_POST["type"]=="tableName"){
+				 	 array_push($Base,$_POST["name"]);
+					 array_push($up,$_POST["val"]);
+					 EditPlan( $_POST["Ecode"],$Base,$up );
+				 }
+				
+				 /*
 			     if($_POST["type"]=="changeDate"){
+ 
 				  	  $Base=array("startDay","line","project");
 					  $up=array($_POST["startDay"],$_POST["line"],$_POST["project"]);
 					  EditPlan( $_POST["Ecode"],$Base,$up );
@@ -150,14 +180,13 @@
 					  EditPlan( $_POST["Ecode"],$Base,$up );
 				 }
 				 if($_POST["type"]=="tableName"){
-					//  if($_POST["name"]=="ver"){
 				  	     $Base=array($_POST["name"]);
 					     $up=array($_POST["val"]);
 					     EditPlan( $_POST["Ecode"],$Base,$up );
-					 // }
-				
 				 }
+				 */ 
 		} 
+ 
 	    function EditPlan($Ecode,$Base,$up ){
 			     global $data_library,$tableName;
 		         $WHEREtable=array( "data_type", "code"  );
