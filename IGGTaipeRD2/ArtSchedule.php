@@ -149,7 +149,7 @@
 	         //  global $notSetPlan ,$OnScPlan,$ver;
 			   global $startLoxY,$startLoX,$wid;
 			   global $startDate;
-			   $h=15;
+			   $h=12;
 			   $fontSize=12;
 			   $BgColor="#bb9999";
 			   $fontColor="#ffffff";
