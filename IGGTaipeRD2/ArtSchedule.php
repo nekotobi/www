@@ -118,8 +118,7 @@
 	 }
 ?>
 <?php 
-
-     function DrawBase(){
+      function DrawBase(){
 		      global $startLoxY,$startLoX,$wid;  
 		      $StartY=date("Y");
 			  $StartM=date("n");
@@ -136,22 +135,21 @@
 			      $LineNum= getLastSN2($projectPlans[$i] ,9 )+1 ; 
 				  DrawRect( $projects[$i] ,"10","#ffffff" ,10, $y-20 ,1000, 15, $colorCodes[12][$i]);
 				  VTDrawMuiltCalendarLines($StartY,$StartM,$MRange,$LocX,$y+$h,$wid,$h, $LineNum,$projects[$i]);  
-				 // DrawRect( $i ,"10","#ffffff" ,0, $y ,10, ($LineNum+1)*$h, $colorCodes[0][$i]);
+				 //DrawRect( $i ,"10","#ffffff" ,0, $y ,10, ($LineNum+1)*$h, $colorCodes[0][$i]);
 				  ListOnScPlan($projectPlans[$i],20,$y+$h);
 				  $y+=( $LineNum+4)*$h;
 			  }
 			  $LocY+=300;
 			  //列印未計畫
               ListnoPlan( $y);			  
-	 }
-	 
+	 } 
 	  function ListOnScPlan($projectPlan,$startLoX,$y){
 	         //  global $notSetPlan ,$OnScPlan,$ver;
 			   global $startLoxY,$startLoX,$wid;
 			   global $startDate;
 			   $h=12;
 			   $fontSize=12;
-			   $BgColor="#bb9999";
+			   $BgColor="#553333";
 			   $fontColor="#ffffff";
 			   for($i=0;$i<count($projectPlan);$i++){
 				   DrawSingleDragPlan($projectPlan[$i],$startDate,$startLoX,$y,$wid, $BgColor,$fontColor,$i,$h);
