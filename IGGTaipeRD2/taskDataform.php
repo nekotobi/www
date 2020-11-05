@@ -795,12 +795,10 @@
 				  $m=$target[$i][5];
 				  //前推
 				  DrawRect("",10,$fontColor,$LocXup,$y+12,$DateWid*7,1,$Bg2);
-				  DrawRect("",10,$fontColor,$LocXup,$y+12,2,80,$Bg2);
+				  DrawRect("",10,$fontColor,$LocXup,$y+12,2,40,$Bg2);
 				  DrawRect($m,10,$fontColor,$LocX,$y,$w,12,$BgColor);
 				  DrawRect("",10,$fontColor,$LocX,$y+12,2,20,$BgColor);
-				 
 			  }
-	 
 	 }
 	 function DrawDays($days,$LocX,$LocY,$w,$h,$arr,$ym){
 		      global $URL;
