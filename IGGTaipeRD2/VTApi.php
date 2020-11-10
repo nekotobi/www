@@ -137,7 +137,7 @@
 	   }
 	   function DrawDateInfo(){
 	            $id="DateInfo";
-			    VTDrawJavaDragbox( "info"  ,1024,0,100,12,9,"#333333", "#ffffff",$id);
+			    VTDrawJavaDragbox( "info"  ,1024,0,100,8,6,"#333333", "#ffffff",$id);
 	   }
        function VTreturnLocX($date,$startDate ){
 		       $checkDay=strtr($date,"_","-");

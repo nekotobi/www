@@ -25,9 +25,9 @@
 			 var tx= document.getElementById( targetID).style.left;
 		     var uptx= document.getElementById(DragID ).style.top;
              var y=uptx.split("px");
-			 var ya= (parseInt(y[0])-12)+"px";
+			 var ya= (parseInt(y[0])-16)+"px";
 		     document.getElementById('DateInfo').style.left=tx;
-			 document.getElementById('DateInfo').style.top=ya;
+			 document.getElementById('DateInfo').style.top=ya ;
 			 var tmp= targetID.split("=");
 			 document.getElementById("DateInfo").innerHTML=tmp[1];
 			 document.Show.startDay.value=tx;
