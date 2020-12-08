@@ -344,7 +344,7 @@
 					  // $pic="pics/folder.png";
 					    $bgc="#ffaaaa";
 					    $Rect=array( $nextx+102,$y,420,$h);
-					    $rootLink="\\\\10.4.1.249\AppServ\www\IGGTaipeRD2\Outsourcing\AcceptanceData\\".$ListSn[$i];
+					    $rootLink="\\\\10.4.0.190\AppServ\www\IGGTaipeRD2\Outsourcing\AcceptanceData\\".$ListSn[$i];
 				       //DrawLinkRect_Layer($rootLink,10,$fontColor,$Rect,"#ffeeee", "",$border,0);
 					    DrawRect( $rootLink,10,$fontColor,$nextx+102,$y,420,$h,"#ffeeee");
 					 }
