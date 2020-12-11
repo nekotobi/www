@@ -57,8 +57,7 @@ function Drop2Area(event) {
 	  getCookie();
 	  DefineBaseData();
 	  PubApi_DrawUserData(800,0);
-     // CheckCookies();
-
+       echo ">".$_POST["viewGroup"];
       DrawAllButtons();
 	  SwitchType();
 ?>
@@ -71,31 +70,29 @@ function Drop2Area(event) {
 			   global $CookieArray;
 			   //選擇專案
 		       global $ProjectTypes,$selectProject ;
-			   $ProjectTypes=array("vt","zombie","All"); 
+			   $ProjectTypes=array("vt","zombie");//,"All"); 
 			   $selectProject=$_COOKIE['selectProject'];
-			   if( $selectProject=="")$selectProject=$ProjectTypes[0];
+			   if( $selectProject=="")$selectProject=$ProjectTypes[1];
 			   $tableName=  $selectProject."_tasks";
-		       if( $selectProject=="All")  $tableName=$ProjectTypes[0]."_tasks";
+		     //  if( $selectProject=="All")  $tableName=$ProjectTypes[0]."_tasks";
 			   //基本配置
 			   global $URL;
 			   //網頁選項資料
 		       DefinetypeData();  
 			   //日期資訊
 			   global $StartY,$StartM,$MRange;
-		       global $LocX,$LocY,$wid,$h;
+		       global $LocX,$LocY,$wid,$taskHeight;
                $StartY=date("Y");
 			   $StartM=date("n");
 			   $MRange=2;
                $LocX=380;
                $LocY=160;
                $wid=10;
-               $h=14;
-               //java傳遞欄位
+               $taskHeight=16;
+			   //java傳遞欄位
 			   global  $inputsTextNames ;
                $inputsTextNames=array("DragID","target","Etype","ECode","DataName","Val","remark");
-			   echo $tableName;
 			   DefineDate_Task();
-			                         // "principal","outsourcing","state","startDay","workingDays");	
  
 	  } 
 	  function DefineDate_Task(){
@@ -106,26 +103,39 @@ function Drop2Area(event) {
 			   $taskDataBaseName= $selectProject."_tasks";
 			   $taskDataBase = getMysqlDataArray( $taskDataBaseName);
 			   $taskDataBase_T= filterArray( $taskDataBase,0,"data");
-			   $taskDataBase_T2=  RemoveArray ( $taskDataBase_T,8,"未定義");
+			   $taskDataBase_T2 = RemoveArray (   $taskDataBase_T,8,"已完成");    //移除完成
+			   //總規劃
+			   global $plan;
+			   $plan=filterArray(  $taskDataBase_T2,15,"ver");	
+			   //定義工單
 			   global $typeArray,  $typeName;
 			   global $typeTask;
-			   $typeTask=  $taskDataBase_T2;
-			   for($i=0;$i<4;$i++){
+			   $typeTask_T=  $taskDataBase_T2;
+			   for($i=0;$i<4;$i++){ 
 			     if($typeArray[$i][1]!="--"){
 				    $ColumnName=$typeName[$i][1];
 					$num= MAPI_returnTableColumnSort($data_library,$tableName,$ColumnName);
-				    $typeTask=filterArray( $typeTask,$num,$typeArray[$i][1]);
+				    $typeTask_T=filterArray(    $typeTask_T,$num,$typeArray[$i][1]);
 				  }
 			   }
-			   $newTask= filterArray( $taskDataBase_T,8,"未定義");
+			   $typeTask= RemoveArray ($typeTask_T,8,"未定義");
+			   $newTask= filterArray( $typeTask_T,8,"未定義");
+			   //如果是觀看相關任務
+			    if( $typeArray[5][1]!="--"){  
+			     $RootTaskCode=filterArray( $typeTask_T,2,$typeArray[5][1]);
+				 echo   $RootTaskCode[0][1];
+			     $typeTask=  filterArray(   $taskDataBase_T,3,$RootTaskCode[0][1]);
+				 //$typeTask=addArray($RootTaskCode,);
+				}
+		
 	  }
       function DefinetypeData(){//網頁選項資料
 		       global $typeName,$typeArray,$PostArray;
 			   $subNameForWard="Type";
 			   $typeName=array(array("負責人","principal"),array("外包","outsourcing"),
   			                   array("大類別","RootType"),array("子類別","ChildType")
-							  ,array("編輯",-1));
-							  //,array("群組","Group"));
+							  ,array("編輯",-1) 
+							  ,array("群組","Group"));
 			   $typeArray=array(); 
 			   $nc=0;
 			   for($i=0;$i<count($typeName);$i++){
@@ -140,7 +150,7 @@ function Drop2Area(event) {
 			   }
 			   if( $nc>4){
 			        $typeArray[4][1]="顯示甘特";
-					//$typeArray[5][1]="內部";
+					$typeArray[5][1]="內部";
 			   }
 	  }
  
@@ -149,7 +159,6 @@ function Drop2Area(event) {
 			   global $inputsTextNames;
 		       global $typeName,$typeArray,$PostArray;
 			   //判斷新增工單
-			   
 			   if($typeArray[4][1]=="新增工單" ){
 				  CreatUpForm();
 			   }
@@ -159,14 +168,16 @@ function Drop2Area(event) {
 			   }
 	 
 			   if($_POST["submit"]=="新增工單" ){
-			      APi_UpNewTask($data_library,$tableName);
+			      MAPi_UpNewTask($data_library,$tableName);
 			   }
 		       if($typeArray[4][1]=="顯示甘特" ){
 				  JAPI_CreatJavaForm( $URL,$tableName,$inputsTextNames,$typeArray);
 			      DrawCalendar( );
-				  $LocY=300;
+				  global $LocY,$taskHeight;
+				  global $typeTask;
+				  $LocYs=$LocY+count($typeTask)*$taskHeight+60;
 				  ListTasks();
-				  ListnewTasks($LocY);
+				  ListnewTasks($LocYs);
 			   }
 			   //java拖曳
 			   if($_POST["DragID"]=="")return;
@@ -174,9 +185,22 @@ function Drop2Area(event) {
 				  DeletPlan( $_POST["ECode"]  );
 				  return;
 			   }	
+			   //設定子任務
+			   if($_POST["DataName"]=="setChild"){ 
+			      $Base=array("RootTaskCode");
+			      $up=array($_POST["Val"]);
+				  EditPlan( $_POST["ECode"],$Base,$up );
+				  return;
+			   }
 			   if($_POST["Val"]=="主任務"){
 			      $Base=array("remark");
 			      $up=array("root");
+				  EditPlan( $_POST["ECode"],$Base,$up );
+				  return;
+			   }
+			   if($_POST["Val"]=="版本"){
+			      $Base=array("remark");
+			      $up=array("ver");
 				  EditPlan( $_POST["ECode"],$Base,$up );
 				  return;
 			   }
@@ -270,14 +294,12 @@ function Drop2Area(event) {
 			   $Rect[1]+=20;
 			   $Type=array("新增工單","顯示甘特");//, "編輯隱藏","整理隱藏");
 			   DrawButton($Type,$Rect,$URL,4,$typeArray);
-			   /*
-			   //快速群組
+			   //顯示群組
 			   global $typeTask;
 			   $Rect[1]+=20;
 			   $RootsTasks=filterArray($typeTask,15,"root");
 			   $Type= returnArraybySort($RootsTasks,2);
 		       DrawButton($Type,$Rect,$URL,5,$typeArray,"Group"); 
-		       */
 	  }
 	  function DrawButton($array,$Rect,$URL,$valArrayNum,$ValArray,$Type="",$ColorN=-1){
 		       global    $colorCodes;
@@ -294,7 +316,6 @@ function Drop2Area(event) {
 					   $ValArray[$valArrayNum]=array($SubmitName,$array[$i]);
 				       sendVal($URL,$ValArray,$SubmitName,$array[$i],$Rect,10,$BgColor);
 				       $Rect[0]+=$Rect[2]+5;
-					 
 					   if(  $valArrayNum!=4)  
 					   DrawTypeDragArea($Type,$array[$i] ,$Rect );
 	           }
@@ -331,6 +352,7 @@ function Drop2Area(event) {
 			   array_Push( $arr,"刪除");
 			   array_Push( $arr,"編輯");
 			   array_Push( $arr,"主任務");
+			   array_Push( $arr,"版本");
 			   for($i=0;$i<count($arr);$i++){
 				   $id="state=".$arr[$i];
 				   JAPI_DrawJavaDragArea($arr[$i],$x,$y,34,18,$BgColor,$fontColor,$id,9);
@@ -342,17 +364,36 @@ function Drop2Area(event) {
 <?php //List
       function DrawCalendar( ){
 		       global $StartY,$StartM,$MRange;
-		       global $LocX,$LocY,$wid,$h;
+		       global $LocX,$LocY,$wid,$taskHeight;
 			   global $typeTask;
 			   $range=  CAPI_getDateRange( $typeTask,12,13);
 			   $StartY=$range[0];
 			   $StartM=$range[1];
-	           CAPI_DrawBaseCalendar($StartY,$StartM,$MRange,$LocX,$LocY,$wid,(count($typeTask))*$h+2);
+	           CAPI_DrawBaseCalendar($StartY,$StartM,$MRange,$LocX,$LocY,$wid,(count($typeTask)+1)*$taskHeight+2);
+			   DrawVer();
+	  }
+	  function DrawVer(){
+		  	   global $StartY,$StartM,$MRange;
+	           global $plan;
+			   global $LocX,$LocY,$wid,$taskHeight;
+			   $startDate=$StartY."-".$StartM."-1";
+			   for($i=0;$i<count($plan);$i++){
+				  $date= $plan[$i][12];
+				  $xAdd=CAPI_returnLocX($date, $startDate )-1;
+				  $w=$plan[$i][13]*$wid;
+				  $sx=$LocX+$xAdd*$wid;
+				  $ex=$LocX+$xAdd*$wid+$w;
+				  DrawRect("",8,"#8899ff",array(  $sx, $LocY+12 ,2,70),"#8899ff");
+			      DrawRect("",8,"#8899ff",array(   $sx, $LocY+12 ,$w,2),"#8899ff");
+				  DrawRect("",8,"#8899ff",array( $ex, $LocY+12,2,70),"#ee5555");
+				  DrawRect($plan[$i][2],8,"#ffffff",array( $ex, $LocY+1 ,40,12),"#ee5555");
+			   }
+			   
 	  }
 	  function ListTasks(){
 	           global $typeTask;
 			   global $StartY,$StartM,$MRange;
-			   global $LocX,$LocY,$wid,$h;
+			   global $LocX,$LocY,$wid,$taskHeight;;
 			   $startDate=$StartY."-".$StartM."-1";
 			   $fontSize=12;
 			   $BgColor="#553333";
@@ -360,9 +401,8 @@ function Drop2Area(event) {
 	           DrawRect("工單",12,$fontColor,array( 20, $LocY+18 ,280,16),"#000000");
 			   DrawRect("負責人",12,$fontColor,array( 290, $LocY+18 ,80,16),"#222222");
 			   for($i=0;$i<count($typeTask);$i++){    
-			      $y=$LocY+35+$i*$h;
-			
-				  DrawSingleDragPlan($typeTask[$i],$startDate,$LocX,$y,$wid, $BgColor,$fontColor,$i,$h);
+			      $y=$LocY+35+$i*$taskHeight;;
+				  DrawSingleDragPlan($typeTask[$i],$startDate,$LocX,$y,$wid, $BgColor,$fontColor,$i,$taskHeight);
 			   }
 	  }
 	  function DrawTaskTitle($data, $y ,$h){
@@ -397,9 +437,15 @@ function Drop2Area(event) {
 			   }
 			   //主任務
 			   if( $data[15]=="root"){
+				   global  $typeArray;
+				   $AddArrays=array(array("viewGroup",$data[1]));
+			       $valArray=   addArray( $AddArrays,$typeArray);
+				   $SubmitName="CheckRoot";
+				   $Rect=array(5,$y-4 ,15,$h);
+			       sendVal($URL,   $valArray,$SubmitName,"C",$Rect,10,"#bb4444");
 				   $Type="setChild";
-				   $name= $data[15];
-				   $Rect=array($x,$y-4 ,10,$h-4);
+				   $name=$data[1];
+				   $Rect=array(20,$y-4 ,10,$h-4);
 			       DrawTypeDragArea($Type,$name,$Rect );
 			   }				   
 	  }
@@ -450,22 +496,35 @@ function Drop2Area(event) {
 	  }
 	  function ListnewTasks($startY){
 		       global $newTask;
+			   if(count($newTask)==0)return;
 			   global $id;
 			   $x=20;
 			   $y=$startY;
-			   $w=300;
-			   $h=18;
+			   $w=355;
+			   $h=12;
 			   $fontSize=10;
-			   $BgColor="#555555";
+			   $BgColor="#665555";
 			   $fontColor="#ffffff";
+			   DrawRect( "未排定工單",12,$fontColor,array( $x,$y- 14 , $w,$h+2),"#000000");
 		       for($i=0;$i<count($newTask);$i++){
 			       $id2="code=".$newTask[$i][1]."=new";
-				   JAPI_DrawJavaDragbox($newTask[$i][2],$x,$y,$w,$h,$fontSize,$BgColor,$fontColor,$id2);
+				   $name=returnNewTaskName($newTask[$i]);
+				   JAPI_DrawJavaDragbox(   $name,$x,$y,$w,$h,$fontSize,$BgColor,$fontColor,$id2);
 				 //  if($newTask[$i][7]!="Kou" & $newTask[$i][7]!=$id ){
 				    //  DrawRect($notSetPlan[$i][7] ,"10","#ffffff"  ,$x+$w-20,$y+2,60,$h-4,"#333333");
 				 //  }
-				   $y+=20;
+				   $y+= $h+1;
 			  }
+	  }
+	  function returnNewTaskName($data){
+		       $arr=array(5,2,6,7,10,11);
+			   $str="";
+			   for($i=0;$i<count($arr);$i++){
+			    $str=$str."[".$data[$arr[$i]]."]";
+			   }
+			   return $str;
+	
+	          
 	  }
 ?>
 <?php //function
@@ -492,7 +551,9 @@ function Drop2Area(event) {
 								 array("pm",$id),
 	                            );
 			  for($i=0;$i<count($typeArray);$i++){
-			       array_Push( $UpHidenVal,array($typeName[$i][2], $typeArray[$i][1] ));
+				//  echo $typeName[$i][2].">".$typeArray[$i][1]."]";
+ 
+			       array_Push( $UpHidenVal,array($typeName[$i][1], $typeArray[$i][1] ));
 			  }
 		      $UpHidenVal=	addArray( $UpHidenVal,$typeArray);	
 		      $inputVal=array(array("text","taskName","taskName",10,20,$y,400,20,$BgColor,$fontColor,"" ,30),

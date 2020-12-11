@@ -168,7 +168,7 @@
 		        $stmt=$stmt." LIMIT 1 ;";
 	           return $stmt;
 	  }
-     function APi_UpNewTask($data_library,$tableName){
+       function MAPi_UpNewTask($data_library,$tableName){
               $tables=returnTables($data_library,$tableName);
 		      $WHEREtable=array();
 			  $WHEREData=array();
@@ -179,6 +179,7 @@
 			      //echo  "</br>".$tables[$i].">".$_POST[$tables[$i]]."]";
 		         }
 			  $stmt=  MakeNewStmt($tableName,$WHEREtable,$WHEREData);
+			 // echo $stmt;
 			  SendCommand($stmt,$data_library);
 			  // ReLoad();
      }
