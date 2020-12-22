@@ -57,7 +57,7 @@ function Drop2Area(event) {
 	  getCookie();
 	  DefineBaseData();
 	  PubApi_DrawUserData(800,0);
-       echo ">".$_POST["viewGroup"];
+     //  echo ">".$_POST["viewGroup"];
       DrawAllButtons();
 	  SwitchType();
 ?>
@@ -118,8 +118,8 @@ function Drop2Area(event) {
 				    $typeTask_T=filterArray(    $typeTask_T,$num,$typeArray[$i][1]);
 				  }
 			   }
-			   $typeTask= RemoveArray ($typeTask_T,8,"未定義");
-			   $newTask= filterArray( $typeTask_T,8,"未定義");
+			   $typeTask= RemoveArray ($typeTask_T,12,"");
+			   $newTask= filterArray( $typeTask_T,12,"");
 			   //如果是觀看相關任務
 			    if( $typeArray[5][1]!="--"){  
 			     $RootTaskCode=filterArray( $typeTask_T,2,$typeArray[5][1]);
@@ -150,7 +150,7 @@ function Drop2Area(event) {
 			   }
 			   if( $nc>4){
 			        $typeArray[4][1]="顯示甘特";
-					$typeArray[5][1]="內部";
+					//$typeArray[5][1]="內部";
 			   }
 	  }
  
@@ -437,12 +437,12 @@ function Drop2Area(event) {
 			   }
 			   //主任務
 			   if( $data[15]=="root"){
-				   global  $typeArray;
-				   $AddArrays=array(array("viewGroup",$data[1]));
-			       $valArray=   addArray( $AddArrays,$typeArray);
-				   $SubmitName="CheckRoot";
-				   $Rect=array(5,$y-4 ,15,$h);
-			       sendVal($URL,   $valArray,$SubmitName,"C",$Rect,10,"#bb4444");
+				  // global  $typeArray;
+				 //  $AddArrays=array(array("viewGroup",$data[1]));
+			       //$valArray=   addArray( $AddArrays,$typeArray);
+				  // $SubmitName="CheckRoot";
+				 //  $Rect=array(5,$y-4 ,15,$h);
+			       //sendVal($URL,   $valArray,$SubmitName,"C",$Rect,10,"#bb4444");
 				   $Type="setChild";
 				   $name=$data[1];
 				   $Rect=array(20,$y-4 ,10,$h-4);
@@ -547,7 +547,7 @@ function Drop2Area(event) {
 			  $UpHidenVal=array( array("ECode",returnDataCode()),
 								 array("EData","data"),
 								 array("project",$DefuseProject),
-								 array("state","未定義"),
+								 array("state","新工單"),
 								 array("pm",$id),
 	                            );
 			  for($i=0;$i<count($typeArray);$i++){

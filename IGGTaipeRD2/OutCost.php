@@ -855,6 +855,8 @@
 			   global $exchangeRate;
 			   global $BaseURL,$BackURL;
 			   global $backURLval;
+			   $outsn=$_POST["outsn"];
+			   echo ">".$outsn;
 	           $WHEREtable=array( "data_type", "OutsSn"   );
 		       $WHEREData=array( "outs",$outsn  );
 			   $Base=array("exchangeRate");
@@ -867,11 +869,11 @@
 				   $path="Outsourcing/exchangeRate/".$outsn.".".$temp[1];
 			       move_uploaded_file($_FILES['exchangeRatepic']["tmp_name"], $path);  
 				   $Npath="Outsourcing/exchangeRate/".$outsn.".png";
-				  $cmd="convert   $path       $Npath ";
-				  exec($cmd);
+				   $cmd="convert   $path       $Npath ";
+				   exec($cmd);
 			   }
-			   
-			   echo " <script language='JavaScript'>window.location.replace('".$backURLval."&sn=".$outsn."')</script>";
+			  //  echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+			 //  echo " <script language='JavaScript'>window.location.replace('".$backURLval."&sn=".$outsn."')</script>";
 	 }
 	 
 ?>
@@ -1020,6 +1022,7 @@
                 global $FormRect;
 			    global $Outstotal;
 			    global $exchangeRate;
+				//echo ">".$sn;
 			    $currentOutT=filterArray( $outs,1,$code);
 				$currentOut=$currentOutT[0];
 				$country=trim($currentOut[4]);
