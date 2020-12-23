@@ -188,13 +188,14 @@
 ?>
 <?php //function_exist
        function PAPI_returnSplitStr($str,$num){
-	           $l= strlen(  $str);
+	           $l=strlen(  $str);
 			   $s=$str;
 			   if($l>$num){
-				  $p=str_split($str,3);
+				  $p=str_split($str,$num);
 			      $s=$p[0];
 			   }	
-               return $s;			   
+			   if($s=="--")$s="";
+               return  $s;			   
 	   }
 	   function GetArraySn($BaseArray, $ArrayNum ,$sn ){
 			    $newArray=array();

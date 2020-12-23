@@ -175,7 +175,7 @@ function Drop2Area(event) {
 			      DrawCalendar( );
 				  global $LocY,$taskHeight;
 				  global $typeTask;
-				  $LocYs=$LocY+count($typeTask)*$taskHeight+60;
+				  $LocYs=$LocY+count($typeTask)*$taskHeight+35;//+60;
 				  ListTasks();
 				  ListnewTasks($LocYs);
 			   }
@@ -427,22 +427,18 @@ function Drop2Area(event) {
 			   }
 			   //大分類rootType
 			   if( $data[6]!="" or $data[6]!="--"){ 
-                  $str= PAPI_returnSplitStr($data[6],4);		   
-			      DrawRect( $str,7,$fontColor,array($x+252,$y ,10,$h-3),"#444444");
+                  $str= PAPI_returnSplitStr($data[6],3);
+                  if($str!="")				  
+			         DrawRect( $str,7,$fontColor,array($x+252,$y ,10,$h-3),"#444444");
 			   }
 			    //大分類childType
 			   if( $data[7]!="" or $data[7]!="--"){ 
-                  $str= PAPI_returnSplitStr($data[7],3);			   
-			      DrawRect( $str ,7,$fontColor,array($x+263,$y ,10,$h-3),"#444444");
+                  $str= PAPI_returnSplitStr($data[7],3);	
+                  if($str!="")					  
+			         DrawRect( $str ,7,$fontColor,array($x+263,$y ,10,$h-3),"#444444");
 			   }
 			   //主任務
 			   if( $data[15]=="root"){
-				  // global  $typeArray;
-				 //  $AddArrays=array(array("viewGroup",$data[1]));
-			       //$valArray=   addArray( $AddArrays,$typeArray);
-				  // $SubmitName="CheckRoot";
-				 //  $Rect=array(5,$y-4 ,15,$h);
-			       //sendVal($URL,   $valArray,$SubmitName,"C",$Rect,10,"#bb4444");
 				   $Type="setChild";
 				   $name=$data[1];
 				   $Rect=array(20,$y-4 ,10,$h-4);
@@ -450,8 +446,8 @@ function Drop2Area(event) {
 			   }				   
 	  }
 	  function returnPrincipal_Out($data){
-			   $p=$data[10];//PAPI_returnSplitStr( $data[10],12);
-			   $o=$data[11];//PAPI_returnSplitStr( $data[11],12);
+			   $p= PAPI_returnSplitStr( $data[10],9);
+			   $o= PAPI_returnSplitStr( $data[11],9);
 			   $str="[未排定]";
 			   if($p!="" &&  $o!="" )   $str=$o."[".$p."]";
 			   if($p!="" &&  $o=="" )   $str=$p ;
@@ -494,25 +490,21 @@ function Drop2Area(event) {
 				  }
 				  */
 	  }
-	  function ListnewTasks($startY){
+	  function ListnewTasks($startY){   
 		       global $newTask;
 			   if(count($newTask)==0)return;
 			   global $id;
 			   $x=20;
 			   $y=$startY;
-			   $w=355;
+			   $w=350;
 			   $h=12;
 			   $fontSize=10;
-			   $BgColor="#665555";
+			   $BgColor="#999999";
 			   $fontColor="#ffffff";
-			   DrawRect( "未排定工單",12,$fontColor,array( $x,$y- 14 , $w,$h+2),"#000000");
 		       for($i=0;$i<count($newTask);$i++){
 			       $id2="code=".$newTask[$i][1]."=new";
-				   $name=returnNewTaskName($newTask[$i]);
+				   $name="[未排定工單]".returnNewTaskName($newTask[$i]);
 				   JAPI_DrawJavaDragbox(   $name,$x,$y,$w,$h,$fontSize,$BgColor,$fontColor,$id2);
-				 //  if($newTask[$i][7]!="Kou" & $newTask[$i][7]!=$id ){
-				    //  DrawRect($notSetPlan[$i][7] ,"10","#ffffff"  ,$x+$w-20,$y+2,60,$h-4,"#333333");
-				 //  }
 				   $y+= $h+1;
 			  }
 	  }
@@ -520,7 +512,9 @@ function Drop2Area(event) {
 		       $arr=array(5,2,6,7,10,11);
 			   $str="";
 			   for($i=0;$i<count($arr);$i++){
-			    $str=$str."[".$data[$arr[$i]]."]";
+				   $s=$data[$arr[$i]];
+				   if($s!="--" and $s!=""  )   $str=$str."[".$data[$arr[$i]]."]";
+			
 			   }
 			   return $str;
 	
