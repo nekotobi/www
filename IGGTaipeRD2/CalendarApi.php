@@ -34,22 +34,28 @@
 			  $nm= $nowDayArray[1];
 			  $nd= $nowDayArray[2];
 			  $td=0;//總日
+			    
 			  if($y==$ny && $nm==$m)return  $nd-$d;
-			  if($y>$ny)return 0;
+			  if($y>$ny){
+				  return 0;
+			  }
 			  if($y==$ny && $nm<$m )return 0;
 			  $td=getMonthDay($m,$y)-$d;//第一月已過天數
 			  $m+=1;
+			  $isJumpY=false;
 			  while ($y<$ny){
 				     if($m>=12){
 						$y+=1;
 					    $m=1;
+						break;
 					 }
 					 if($m<12){
-				       $td+=getMonthDay($m,$y);
-					   $m+=1;
+						$td+=getMonthDay($m,$y);
+					    $m+=1;
 					 }
 			  }
-			  if($startDayArray[0]!=$ny && $nm!=1)$nm+=1;
+		      echo "[".$m.">".$td;
+		 	 // if($startDayArray[0]!=$ny && $nm!=1)$nm+=1;
 			  while ($m<$nm){
 				     $td+=getMonthDay($m,$y);
 					 $m+=1;
