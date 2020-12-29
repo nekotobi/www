@@ -537,7 +537,7 @@
 				   $BgColor="#999999";
 				 }
 			    $s=array($DateRange[0],$DateRange[1],1);
-			    $passDay= getPassDays(array($DateRange[0],$DateRange[1],1), $nd);
+			    $passDay=getPassDays_array($DateRange,$nd);// getPassDays(array($DateRange[0],$DateRange[1],1), $nd);
 					if($undefine=="undefined")$passDay+=7;
 				$xx= $CalendarX+$passDay*$DateWid;
 				$ww= $taskArray[$i][6]*$DateWid;

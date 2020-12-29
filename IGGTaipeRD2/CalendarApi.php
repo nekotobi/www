@@ -5,6 +5,13 @@
 	            return $PassDate ;
 			
 	   }
+	   function getPassDays_array($startDate,$TargetDate){// $time1="2015-11-18";
+			    $sd=$startDate[0]."-".$startDate[1]."-1";
+				$ed=$TargetDate[0]."-".$TargetDate[1]."-".$TargetDate[2];
+		        $d= (strtotime($ed) - strtotime($sd))/ (60*60*24);
+			    return $d;
+	   }
+
        function getPassDaysDay($dateData,$Workday){//給予開始日 工作天,取得結束日 陣列
 	          $y=$dateData[0];
 			  $m=$dateData[1];
@@ -55,7 +62,7 @@
 					 }
 			  }
 		      echo "[".$m.">".$td;
-		 	 // if($startDayArray[0]!=$ny && $nm!=1)$nm+=1;
+		 	  if($startDayArray[0]!=$ny && $nm!=1)$nm+=1;
 			  while ($m<$nm){
 				     $td+=getMonthDay($m,$y);
 					 $m+=1;

@@ -215,7 +215,6 @@
 <?php //隱藏/取得進度
     function filterQueuedMat($matData){ //去掉已排入素材
 			 global $InEventMats; 
-
 			 $Arr=array();
 			 for($i=0;$i<count($matData) ;$i++){   
 			      if(!in_array( $matData[$i][2],  $InEventMats)){
@@ -224,7 +223,6 @@
 			 }
 			 return $Arr;
 	}
-
     function collectUnFinMats($matData){
              global $InEventMats;
 			 $OnProgressMats=array();
@@ -236,7 +234,6 @@
 			 }
 			 return   $OnProgressMats;
 	}
- 
 	function returnInEventMats($EventDatas,$num){
 	         $str="";
 			 for($i=0;$i<count($EventDatas);$i++){
@@ -278,8 +275,8 @@
 			$LocY=$startY;
 	        if(returnLocX($EventData[5])==0)return;
    		    $LocX= (returnLocX($EventData[4])*$DateWid)+$CalendarX;
-			$passDay= getPassDays( explode("_",$EventData[4]) ,explode("_",$EventData[5]));
-			$w= $passDay*$DateWid;
+			$passDay= getPassDays_array( explode("_",$EventData[4]) ,explode("_",$EventData[5]));
+			$w=90;// $passDay*3;//*$DateWid;
 			//標題
 			$sendarr=addArray($typeArray,array(array("code",$EventData[9]) ));
 			sendVal($URL,$sendarr,"submitUp",$EventData[3],array($LocX,$LocY,$w,20),10,$BgColor, $fontColor);
@@ -581,7 +578,7 @@
 		    global $DateRange;
 			global $StartCalendarDay;
 	        $day = explode("_",$date);
-		    $passDay= getPassDays( $StartCalendarDay,$day);
+		    $passDay= getPassDays_array( $StartCalendarDay,$day);
 		    
 			return $passDay;
 		         

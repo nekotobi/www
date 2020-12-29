@@ -121,13 +121,38 @@ function Drop2Area(event) {
 			   $typeTask= RemoveArray ($typeTask_T,12,"");
 			   $newTask= filterArray( $typeTask_T,12,"");
 			   //如果是觀看相關任務
-			    if( $typeArray[5][1]!="--"){  
+			   if( $typeArray[5][1]!="--"){  
 			     $RootTaskCode=filterArray( $typeTask_T,2,$typeArray[5][1]);
-				 echo   $RootTaskCode[0][1];
+				 echo $RootTaskCode[0][1];
 			     $typeTask=  filterArray(   $taskDataBase_T,3,$RootTaskCode[0][1]);
 				 //$typeTask=addArray($RootTaskCode,);
-				}
-		
+			    }
+				echo $typeArray[2][1];
+				if($typeArray[2][1]=="休假")CollectLeave($typeTask);
+	  }
+	  //收集請假資料
+	  function CollectLeave($tasks){
+		       $users=array();
+			   $dates=array(array());
+	           for($i=0;$i<count($tasks);$i++){
+				  /// echo $tasks[$i][10];
+			      if( !in_array($tasks[$i][10], $users)){
+				      array_Push($users,$tasks[$i][10]);
+				  }
+			   }
+			   for($i=0;$i<count($users);$i++){
+			       $arr= returnUsersArr($tasks,$users[$i]);
+				   
+			   }
+	  }
+	  function returnUsersArr($tasks,$userID){
+		       $arr=array();
+			   for($i=0;$i<count($tasks);$i++){
+				   if($tasks[$i][10]==$userID){
+				      array_Push($arr,array($tasks[$i][12],$tasks[$i][13]));
+				   }
+			   }
+			   return $arr;
 	  }
       function DefinetypeData(){//網頁選項資料
 		       global $typeName,$typeArray,$PostArray;
@@ -401,8 +426,8 @@ function Drop2Area(event) {
 	           DrawRect("工單",12,$fontColor,array( 20, $LocY+18 ,280,16),"#000000");
 			   DrawRect("負責人",12,$fontColor,array( 290, $LocY+18 ,80,16),"#222222");
 			   for($i=0;$i<count($typeTask);$i++){    
-			      $y=$LocY+35+$i*$taskHeight;;
-				  DrawSingleDragPlan($typeTask[$i],$startDate,$LocX,$y,$wid, $BgColor,$fontColor,$i,$taskHeight);
+			       $y=$LocY+35+$i*$taskHeight;;
+				   DrawSingleDragPlan($typeTask[$i],$startDate,$LocX,$y,$wid, $BgColor,$fontColor,$i,$taskHeight);
 			   }
 	  }
 	  function DrawTaskTitle($data, $y ,$h){
@@ -413,6 +438,7 @@ function Drop2Area(event) {
 			   $BgColor="#666666";
 			   //工單名稱
 			   if($data[8]=="進行中")  $BgColor="#55aa55";
+			   if($data[8]=="未定義")  $BgColor="#999999";
 	           DrawRect($name,10,$fontColor,array($x,$y ,$w,$h-1),$BgColor);
 			   //工單負責人
 			   $Principal_Out=returnPrincipal_Out($data);
@@ -431,10 +457,10 @@ function Drop2Area(event) {
                   if($str!="")				  
 			         DrawRect( $str,7,$fontColor,array($x+252,$y ,10,$h-3),"#444444");
 			   }
-			    //大分類childType
+			   //大分類childType
 			   if( $data[7]!="" or $data[7]!="--"){ 
                   $str= PAPI_returnSplitStr($data[7],3);	
-                  if($str!="")					  
+                  if($str!="") 	  
 			         DrawRect( $str ,7,$fontColor,array($x+263,$y ,10,$h-3),"#444444");
 			   }
 			   //主任務
@@ -452,9 +478,7 @@ function Drop2Area(event) {
 			   if($p!="" &&  $o!="" )   $str=$o."[".$p."]";
 			   if($p!="" &&  $o=="" )   $str=$p ;
 			   if($p=="" &&  $o!="" )   $str=$o ;
-			  
-			   return $str;
-			   
+			   return $str;  
 	  }
  	  function DrawSingleDragPlan($data,$startDay,$startLoX,$sy,$wid,$BgColor, $fontColor,$i,$h){
 		       global $wid;
@@ -514,11 +538,8 @@ function Drop2Area(event) {
 			   for($i=0;$i<count($arr);$i++){
 				   $s=$data[$arr[$i]];
 				   if($s!="--" and $s!=""  )   $str=$str."[".$data[$arr[$i]]."]";
-			
 			   }
-			   return $str;
-	
-	          
+			   return $str; 
 	  }
 ?>
 <?php //function
