@@ -123,12 +123,9 @@ function Drop2Area(event) {
 			   //如果是觀看相關任務
 			   if( $typeArray[5][1]!="--"){  
 			     $RootTaskCode=filterArray( $typeTask_T,2,$typeArray[5][1]);
-				 echo $RootTaskCode[0][1];
+				// echo $RootTaskCode[0][1];
 			     $typeTask=  filterArray(   $taskDataBase_T,3,$RootTaskCode[0][1]);
-				 //$typeTask=addArray($RootTaskCode,);
 			    }
-				echo $typeArray[2][1];
-			
 	  }
 	  //收集請假資料
 	  function CollectLeave($tasks){
