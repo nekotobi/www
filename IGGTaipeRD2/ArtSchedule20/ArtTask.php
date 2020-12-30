@@ -128,28 +128,30 @@ function Drop2Area(event) {
 				 //$typeTask=addArray($RootTaskCode,);
 			    }
 				echo $typeArray[2][1];
-				if($typeArray[2][1]=="休假")CollectLeave($typeTask);
+			
 	  }
 	  //收集請假資料
 	  function CollectLeave($tasks){
 		       $users=array();
-			   $dates=array(array());
+			   $dates=array( );//array(array());
 	           for($i=0;$i<count($tasks);$i++){
-				  /// echo $tasks[$i][10];
 			      if( !in_array($tasks[$i][10], $users)){
 				      array_Push($users,$tasks[$i][10]);
 				  }
 			   }
 			   for($i=0;$i<count($users);$i++){
 			       $arr= returnUsersArr($tasks,$users[$i]);
-				   
+				    array_Push($dates, $arr); //addArray($dates,$arr);
 			   }
+			   return( $dates);
+			   //print_r($dates);
 	  }
 	  function returnUsersArr($tasks,$userID){
-		       $arr=array();
+		       $arr= array( );
 			   for($i=0;$i<count($tasks);$i++){
 				   if($tasks[$i][10]==$userID){
-				      array_Push($arr,array($tasks[$i][12],$tasks[$i][13]));
+				       //array_Push($arr, $userID."_".$tasks[$i][1]."_".$tasks[$i][12]."_".$tasks[$i][13]);
+				      array_Push($arr,array($userID,$tasks[$i][1],$tasks[$i][12],$tasks[$i][13]));
 				   }
 			   }
 			   return $arr;
@@ -419,16 +421,62 @@ function Drop2Area(event) {
 	           global $typeTask;
 			   global $StartY,$StartM,$MRange;
 			   global $LocX,$LocY,$wid,$taskHeight;;
+			   global $typeArray;
 			   $startDate=$StartY."-".$StartM."-1";
 			   $fontSize=12;
 			   $BgColor="#553333";
 			   $fontColor="#ffffff";
-	           DrawRect("工單",12,$fontColor,array( 20, $LocY+18 ,280,16),"#000000");
+	           
+		       if($typeArray[2][1]=="休假"){
+				  DrawRect("休假",12,$fontColor,array( 20, $LocY+18 ,350,16),"#000000");
+				  $UserTask=CollectLeave($typeTask);
+				  for($i=0;$i<count( $UserTask);$i++){    
+			          $y=$LocY+35+$i*$taskHeight;
+					  DrawSingleUserDragPlan($UserTask[$i],$startDate,$LocX,$y,$wid, $BgColor,$fontColor,$i,$taskHeight);
+			      }
+				  return;
+			   }
+			   DrawRect("工單",12,$fontColor,array( 20, $LocY+18 ,280,16),"#000000");
 			   DrawRect("負責人",12,$fontColor,array( 290, $LocY+18 ,80,16),"#222222");
 			   for($i=0;$i<count($typeTask);$i++){    
 			       $y=$LocY+35+$i*$taskHeight;;
 				   DrawSingleDragPlan($typeTask[$i],$startDate,$LocX,$y,$wid, $BgColor,$fontColor,$i,$taskHeight);
 			   }
+	  }
+	  //列印用戶表
+	  function DrawSingleUserDragPlan($data,$startDay,$startLoX,$sy,$wid,$BgColor, $fontColor,$i,$h){
+		       global $wid;
+			   DrawRect($data[0][0],10,$fontColor,array( 20,$sy ,350,14),"#555555");
+			   for($i=0;$i<count($data);$i++){
+				      $date= $data[$i][2];
+				   $workingDays= $data[$i][3];
+				   $xAdd=CAPI_returnLocX($date,$startDay );
+				   $sx=$startLoX+ ($xAdd-1)*$wid ;
+				   $id="code=".$data[$i][1]."=startTime=".$wid;
+				   JAPI_DrawJavaDragbox( $workingDays ,$sx, $sy,$wid*$workingDays , $h-3,10,  $BgColor, "#cc8888",$id);
+				   $id="code=".$data[$i][1]."=workingDays=".$wid;
+				   $x= $sx+$wid*($workingDays );
+				   $BgColor3="#888888";
+				   JAPI_DrawJavaDragbox( "" ,$x,$sy,5,$h-3,5, $BgColor3, $fontColor,$id);
+			   }
+			  /*
+			   $workingDays= $data[13];
+			   if($workingDays=="")$workingDays=1;
+			   $date= $data[12];
+			   $xAdd=CAPI_returnLocX($date,$startDay );
+			   $sx=$startLoX+ ($xAdd-1)*$wid ;
+			   $y=$sy; 
+			   DrawTaskTitle($data[0][0],  $y  ,$h);
+			   for($i=0;$i<count($data);$i++){
+				   $id="code=".$data[$i][1]."=startTime=".$wid;
+			       JAPI_DrawJavaDragbox( $workingDays ,$sx, $y,$wid*$workingDays , $h-3,10,  $BgColor, "#cc8888",$id);
+				   //end:
+	               $id="code=".$data[$i][1]."=workingDays=".$wid;
+			       $BgColor3="#888888";
+			       $x= $sx+$wid*($workingDays );
+			       JAPI_DrawJavaDragbox( "" ,$x,$y,5,$h-3,5, $BgColor3, $fontColor,$id);
+			   }
+			   */
 	  }
 	  function DrawTaskTitle($data, $y ,$h){
 		       $name=$data[2];
@@ -497,22 +545,6 @@ function Drop2Area(event) {
 			    $BgColor3="#888888";
 			    $x= $sx+$wid*($workingDays );
 			    JAPI_DrawJavaDragbox( "" ,$x,$y,5,$h-3,5, $BgColor3, $fontColor,$id);
-		  /*
- 
-				  if($data[9]!="")$y=$sy+$h*$data[9];
-				  if($data[9]==0){
-					  $BgColor="#ff7777";
-				      DrawRect("","10","#ffffff" ,$sx, $y,2,$h*2,  $BgColor);
-				  }
-			      VTDrawJavaDragbox( $show,$sx, $y,$wid*$WorkDays , $h,10,  $BgColor, $fontColor,$id);
-				  $id= "E=".$backstr ; 
-				  $BgColor3="#888888";
-				  $x= $sx+$wid*($data[3] );
-				  VTDrawJavaDragbox( "" ,$x,$y+2,5,10,5, $BgColor3, $fontColor,$id);
-				  if( $data[10]!="" && $data[10]!= $data[7]  ){ //pm不同
-				     DrawRect($data[10],"8","#ffffff" ,$sx+$wid*$WorkDays-2, $y+2,40,10, "#55aabb");
-				  }
-				  */
 	  }
 	  function ListnewTasks($startY){   
 		       global $newTask;
