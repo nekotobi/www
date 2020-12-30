@@ -133,15 +133,19 @@ function Drop2Area(event) {
 	  //收集請假資料
 	  function CollectLeave($tasks){
 		       $users=array();
-			   $dates=array( );//array(array());
+			   $dates=array();//array(array());
 	           for($i=0;$i<count($tasks);$i++){
-			      if( !in_array($tasks[$i][10], $users)){
-				      array_Push($users,$tasks[$i][10]);
-				  }
+				   $user=$tasks[$i][10];
+				   if($user=="" or $user=="--" ) $user=$tasks[$i][11];
+				   if($user!="--"){
+			          if( !in_array($user, $users) ){
+				          array_Push($users,$user);
+				         }
+				   }
 			   }
 			   for($i=0;$i<count($users);$i++){
 			       $arr= returnUsersArr($tasks,$users[$i]);
-				    array_Push($dates, $arr); //addArray($dates,$arr);
+				   array_Push($dates, $arr); //addArray($dates,$arr);
 			   }
 			   return( $dates);
 			   //print_r($dates);
@@ -149,9 +153,8 @@ function Drop2Area(event) {
 	  function returnUsersArr($tasks,$userID){
 		       $arr= array( );
 			   for($i=0;$i<count($tasks);$i++){
-				   if($tasks[$i][10]==$userID){
-				       //array_Push($arr, $userID."_".$tasks[$i][1]."_".$tasks[$i][12]."_".$tasks[$i][13]);
-				      array_Push($arr,array($userID,$tasks[$i][1],$tasks[$i][12],$tasks[$i][13]));
+				   if($tasks[$i][10]==$userID or $tasks[$i][11]==$userID ){
+				     array_Push($arr,array($userID,$tasks[$i][1],$tasks[$i][12],$tasks[$i][13]));
 				   }
 			   }
 			   return $arr;
@@ -448,7 +451,7 @@ function Drop2Area(event) {
 		       global $wid;
 			   DrawRect($data[0][0],10,$fontColor,array( 20,$sy ,350,14),"#555555");
 			   for($i=0;$i<count($data);$i++){
-				      $date= $data[$i][2];
+				   $date= $data[$i][2];
 				   $workingDays= $data[$i][3];
 				   $xAdd=CAPI_returnLocX($date,$startDay );
 				   $sx=$startLoX+ ($xAdd-1)*$wid ;
