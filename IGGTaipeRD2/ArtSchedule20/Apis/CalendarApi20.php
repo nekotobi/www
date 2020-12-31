@@ -1,20 +1,23 @@
 <?php
-      function  CAPI_DrawBaseCalendar($StartY,$StartM,$MRange,$LocX,$LocY,$wid,$h){
-		        $BgColor="#222222";
-			    $fontColor="#ffffff";
-			    $fontSize=10;
-				$y=$StartY;
-				$m=$StartM;
-				$LocX-=$wid;
-	            for($i=0;$i<$MRange;$i++){
-                   $days = cal_days_in_month(CAL_GREGORIAN, $m,$y); // 30
-				   echo 
-				   DrawRect($m,$fontSize,$fontColor,array($LocX,$LocY,$wid*$days-2,18),$BgColor);
-				   CAPI_DrawCalDays($LocX,$LocY,$wid,$days, $h,$y,$m);
-			       $m+=1;
-				   if($m>12){$m=1;$y+=1;}
-				   $LocX+=$wid* $days;
-				}
+     // function  CAPI_DrawBaseCalendar($StartY,$StartM,$MRange,$LocX,$LocY,$wid,$h){
+	    function  CAPI_DrawBaseCalendar($startDate,$DateRange,$LocX,$LocY,$wid,$h){
+			      
+			      if($DateRange=="")$DateRange=2;  
+		          $BgColor="#222222";
+			      $fontColor="#ffffff";
+			      $fontSize=10;
+				  $str=  explode("-",$startDate);
+				  $y=$str[0];//$StartY;
+				  $m=$str[1];//$StartM;
+				  $LocX-=$wid;
+	              for($i=0;$i<$DateRange;$i++){
+                     $days = cal_days_in_month(CAL_GREGORIAN, $m,$y); // 30
+				     DrawRect($m,$fontSize,$fontColor,array($LocX,$LocY,$wid*$days-2,18),$BgColor);
+				     CAPI_DrawCalDays($LocX,$LocY,$wid,$days, $h,$y,$m);
+			         $m+=1;
+				     if($m>12){$m=1;$y+=1;}
+				     $LocX+=$wid* $days;
+				  }
 	   }
       function  CAPI_DrawCalDays($LocX,$LocY,$wid,$days, $h,$y,$m){
 		     	  $BgColor="#aaaaaa";
@@ -134,5 +137,30 @@
 				}
 				return array($sy,$sm,$ey,$em);
 	  }
-
+      function  CAPI_setDateRange($URL,$LocX,$LocY,$startDate,$DateRange){
+	            $BgColor="#442222";
+			    $SubmitName="submit";
+				if($startDate=="--")$startDate=date("Y-m-1");
+				//前一月
+			    $Rect=array($LocX,$LocY,19,12);
+				$targetDate=date("Y-m-d", strtotime("-1 month", strtotime($startDate)));
+			    $ArrayVal=array(array("startDate",$targetDate));
+			    sendVal($URL,$ArrayVal,$SubmitName,"<",$Rect,10, $BgColor , "#ffffff","true");
+				//預設
+				$LocX+=20;
+			    $Rect=array($LocX,$LocY,59,12);
+				$ArrayVal=array(array("startDate","--"));
+			    sendVal($URL,$ArrayVal,$SubmitName,$startDate,$Rect,8, $BgColor , "#ffffff","true");
+				//後一月
+				 $LocX+=60;
+				$Rect=array($LocX,$LocY,19,12);
+				$targetDate=date("Y-m-d", strtotime("+1 month", strtotime($startDate)));
+			    $ArrayVal=array(array("startDate",$targetDate));
+			    sendVal($URL,$ArrayVal,$SubmitName,"'>'",$Rect,10, $BgColor , "#ffffff","true");
+				
+				//加一月
+				//減一月
+				//預設
+	          
+	  }
 ?>

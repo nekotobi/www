@@ -1,5 +1,5 @@
 <?php //cookies 
-      function getCookie(){
+      function PubApi_getCookie(){
 		         global $id;
 		         global $rank;
 	          	 global $colorCodes;
@@ -8,6 +8,15 @@
 				 $Defuse_sets=$_COOKIE['IGG_sets'];
 	             if($id=="")$id="guest";
 	         	 $colorCodes= GetColorCode();
+	   }
+	   function PubApi_GetArrayCookie($arr){
+		        for($i=0;$i<count($arr);$i++){
+				    if($_COOKIE[$arr[$i]]!=""){
+				    	global $$arr[$i];
+						$$arr[$i]=$_COOKIE[$arr[$i]];
+					 // echo $arr[$i]."=".$_COOKIE[$arr[$i]];
+					}
+				}
 	   }
 	  function GetColorCode(){
 	          $all_num= getAll_num( "colorcodes");
@@ -41,12 +50,14 @@
 	  function PubApi_setcookies($CookieArray,$BackURL){
 	           if($_POST['setCookie']!="true") return;
 			    for($i=0;$i<count($CookieArray);$i++){
+					
 					$n= $CookieArray[$i];
 				     if($_POST[$n]!=""){
+						// echo ">".$_POST[$n];
 						 setcookie($n , $_POST[$n], time()+78000); 
 					 }
 				}
-			  echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+		   echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
         }
 ?>
 <?php //php繪製表格 

@@ -4,9 +4,9 @@
 		       global $URL;
 			   $URL="ArtTask.php";
 			   global $CookieArray;
-			   $CookieArray=array("selectProject","tmp");
+			   $CookieArray=array("selectProject","startDate","DateRange","tmp");
 	           PubApi_setcookies($CookieArray, $URL);
-			   
+		  	   PubApi_GetArrayCookie($CookieArray);
 	  }
 	  CheckCookies();
 ?>
@@ -54,15 +54,15 @@ function Drop2Area(event) {
 	  require_once('/Apis/mysqlApi20.php');
 	  require_once('/Apis/PubJavaApi.php');
 	  require_once('/Apis/CalendarApi20.php');
-	  getCookie();
+	  PubApi_getCookie();
 	  DefineBaseData();
 	  PubApi_DrawUserData(800,0);
-     //  echo ">".$_POST["viewGroup"];
       DrawAllButtons();
 	  SwitchType();
 ?>
 
 <?php //Base
+    
       function DefineBaseData(){
 		       global $data_library,$MaintableName,$tableName;
 			   $MaintableName="maintask";
@@ -80,11 +80,8 @@ function Drop2Area(event) {
 			   //網頁選項資料
 		       DefinetypeData();  
 			   //日期資訊
-			   global $StartY,$StartM,$MRange;
 		       global $LocX,$LocY,$wid,$taskHeight;
-               $StartY=date("Y");
-			   $StartM=date("n");
-			   $MRange=2;
+
                $LocX=380;
                $LocY=160;
                $wid=10;
@@ -93,23 +90,25 @@ function Drop2Area(event) {
 			   global  $inputsTextNames ;
                $inputsTextNames=array("DragID","target","Etype","ECode","DataName","Val","remark");
 			   DefineDate_Task();
- 
 	  } 
 	  function DefineDate_Task(){
 		       //進度資訊
 			   global $data_library,$tableName;
 			   global $ProjectTypes,$selectProject ;
 			   global $newTask,$type_newTask,$OnScTask;
+			   global $typeArray,  $typeName;
+			   global $typeTask;
 			   $taskDataBaseName= $selectProject."_tasks";
 			   $taskDataBase = getMysqlDataArray( $taskDataBaseName);
 			   $taskDataBase_T= filterArray( $taskDataBase,0,"data");
-			   $taskDataBase_T2 = RemoveArray (   $taskDataBase_T,8,"已完成");    //移除完成
+			   $taskDataBase_T2 =$taskDataBase_T;
+			   if ($typeArray[4][1]!="顯示歷史")
+			       $taskDataBase_T2 = RemoveArray (   $taskDataBase_T,8,"已完成");    //移除完成
 			   //總規劃
 			   global $plan;
 			   $plan=filterArray(  $taskDataBase_T2,15,"ver");	
 			   //定義工單
-			   global $typeArray,  $typeName;
-			   global $typeTask;
+	
 			   $typeTask_T=  $taskDataBase_T2;
 			   for($i=0;$i<4;$i++){ 
 			     if($typeArray[$i][1]!="--"){
@@ -123,7 +122,6 @@ function Drop2Area(event) {
 			   //如果是觀看相關任務
 			   if( $typeArray[5][1]!="--"){  
 			     $RootTaskCode=filterArray( $typeTask_T,2,$typeArray[5][1]);
-				// echo $RootTaskCode[0][1];
 			     $typeTask=  filterArray(   $taskDataBase_T,3,$RootTaskCode[0][1]);
 			    }
 	  }
@@ -180,7 +178,6 @@ function Drop2Area(event) {
 					//$typeArray[5][1]="內部";
 			   }
 	  }
- 
 	  function SwitchType(){
 		       global $URL,$data_library,$tableName;
 			   global $inputsTextNames;
@@ -197,7 +194,7 @@ function Drop2Area(event) {
 			   if($_POST["submit"]=="新增工單" ){
 			      MAPi_UpNewTask($data_library,$tableName);
 			   }
-		       if($typeArray[4][1]=="顯示甘特" ){
+		       if($typeArray[4][1]=="顯示甘特" or $typeArray[4][1]=="顯示歷史"){
 				  JAPI_CreatJavaForm( $URL,$tableName,$inputsTextNames,$typeArray);
 			      DrawCalendar( );
 				  global $LocY,$taskHeight;
@@ -248,7 +245,6 @@ function Drop2Area(event) {
 				  EditPlan( $_POST["ECode"],$Base,$up );
 			   }
 	  }
- 
 	  function DeletPlan($ECode  ){
 	           global $data_library,$tableName;
 			   $WHEREtable=array( "EData", "ECode");
@@ -284,6 +280,14 @@ function Drop2Area(event) {
 	           DrawProjectButtoms();
 			   DrawButtons();
 			   DrawProcessDragArea();
+               DrawDateRangeButtom();
+	  }
+	  function DrawDateRangeButtom(){
+	            //控制日期
+			   global $URL,$startDate,$DateRange;
+			   $LocX=500;
+			   $LocY=140;
+			   CAPI_setDateRange($URL,$LocX,$LocY,$startDate,$DateRange);
 	  }
       function DrawButtons(){
 		       global $URL;
@@ -319,7 +323,7 @@ function Drop2Area(event) {
 			   DrawButton($Type,$Rect,$URL,3,$typeArray,"ChildType");
 			    //編輯類別
 			   $Rect[1]+=20;
-			   $Type=array("新增工單","顯示甘特");//, "編輯隱藏","整理隱藏");
+			   $Type=array("新增工單","顯示甘特","顯示歷史");//, "編輯隱藏","整理隱藏");
 			   DrawButton($Type,$Rect,$URL,4,$typeArray);
 			   //顯示群組
 			   global $typeTask;
@@ -390,20 +394,20 @@ function Drop2Area(event) {
 
 <?php //List
       function DrawCalendar( ){
-		       global $StartY,$StartM,$MRange;
 		       global $LocX,$LocY,$wid,$taskHeight;
+			   global $startDate,$DateRange;
 			   global $typeTask;
 			   $range=  CAPI_getDateRange( $typeTask,12,13);
-			   $StartY=$range[0];
-			   $StartM=$range[1];
-	           CAPI_DrawBaseCalendar($StartY,$StartM,$MRange,$LocX,$LocY,$wid,(count($typeTask)+1)*$taskHeight+2);
+			   if($startDate=="--")$startDate=$range[0]."-".$range[1]."-1";
+	           CAPI_DrawBaseCalendar($startDate,$DateRange,$LocX,$LocY,$wid,(count($typeTask)+1)*$taskHeight+2);
 			   DrawVer();
 	  }
 	  function DrawVer(){
-		  	   global $StartY,$StartM,$MRange;
+		  	  // global $StartY,$StartM,$MRange;
+			   global $startDate,$DateRange;
 	           global $plan;
 			   global $LocX,$LocY,$wid,$taskHeight;
-			   $startDate=$StartY."-".$StartM."-1";
+			  // $startDate=$StartY."-".$StartM."-1";
 			   for($i=0;$i<count($plan);$i++){
 				  $date= $plan[$i][12];
 				  $xAdd=CAPI_returnLocX($date, $startDate )-1;
@@ -419,10 +423,11 @@ function Drop2Area(event) {
 	  }
 	  function ListTasks(){
 	           global $typeTask;
-			   global $StartY,$StartM,$MRange;
+			  // global $StartY,$StartM,$MRange;
+			   global $startDate,$DateRange;
 			   global $LocX,$LocY,$wid,$taskHeight;;
 			   global $typeArray;
-			   $startDate=$StartY."-".$StartM."-1";
+			 //  $startDate=$StartY."-".$StartM."-1";
 			   $fontSize=12;
 			   $BgColor="#553333";
 			   $fontColor="#ffffff";
@@ -459,24 +464,6 @@ function Drop2Area(event) {
 				   $BgColor3="#888888";
 				   JAPI_DrawJavaDragbox( "" ,$x,$sy,5,$h-3,5, $BgColor3, $fontColor,$id);
 			   }
-			  /*
-			   $workingDays= $data[13];
-			   if($workingDays=="")$workingDays=1;
-			   $date= $data[12];
-			   $xAdd=CAPI_returnLocX($date,$startDay );
-			   $sx=$startLoX+ ($xAdd-1)*$wid ;
-			   $y=$sy; 
-			   DrawTaskTitle($data[0][0],  $y  ,$h);
-			   for($i=0;$i<count($data);$i++){
-				   $id="code=".$data[$i][1]."=startTime=".$wid;
-			       JAPI_DrawJavaDragbox( $workingDays ,$sx, $y,$wid*$workingDays , $h-3,10,  $BgColor, "#cc8888",$id);
-				   //end:
-	               $id="code=".$data[$i][1]."=workingDays=".$wid;
-			       $BgColor3="#888888";
-			       $x= $sx+$wid*($workingDays );
-			       JAPI_DrawJavaDragbox( "" ,$x,$y,5,$h-3,5, $BgColor3, $fontColor,$id);
-			   }
-			   */
 	  }
 	  function DrawTaskTitle($data, $y ,$h){
 		       $name=$data[2];
