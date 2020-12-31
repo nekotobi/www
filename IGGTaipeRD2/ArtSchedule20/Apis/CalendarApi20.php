@@ -1,7 +1,7 @@
 <?php
      // function  CAPI_DrawBaseCalendar($StartY,$StartM,$MRange,$LocX,$LocY,$wid,$h){
 	    function  CAPI_DrawBaseCalendar($startDate,$DateRange,$LocX,$LocY,$wid,$h){
-			      
+			         if($$startDate=="")$startDate=date("Y-m-1");  
 			      if($DateRange=="")$DateRange=2;  
 		          $BgColor="#222222";
 			      $fontColor="#ffffff";

@@ -22,7 +22,7 @@
 			   $URL="index.php";
 			   global  $startY,$colorCodes;
 			   $startY=50;
-	           getCookie();
+	           PubApi_getCookie();
 			   global $selectype ;
 		       $selectype=$_POST["selectype"];
 			   $selectypeSort=$_POST["selectypeSort"];
