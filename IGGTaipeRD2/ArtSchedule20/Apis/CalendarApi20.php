@@ -1,7 +1,8 @@
 <?php
      // function  CAPI_DrawBaseCalendar($StartY,$StartM,$MRange,$LocX,$LocY,$wid,$h){
 	    function  CAPI_DrawBaseCalendar($startDate,$DateRange,$LocX,$LocY,$wid,$h){
-			         if($$startDate=="")$startDate=date("Y-m-1");  
+			      if( $startDate=="")$startDate=date("Y-n-1");  
+				  echo  $startDate;
 			      if($DateRange=="")$DateRange=2;  
 		          $BgColor="#222222";
 			      $fontColor="#ffffff";
@@ -25,12 +26,14 @@
 			      $fontSize=6;
 				  $date=date("Y_n_j");
 			      for($i=1;$i<=$days;$i++){
-					  $cd=$y."_".$m."_".$i;
+					  $cd=$y."_".((int)$m)."_".$i;
 					  $n=   date("w",strtotime($y."-".$m."-".$i) );
 					  $id="startDay=".$cd;
 					  $BgColor="#aaaaaa";
 					  if($n==0 or $n==6)$BgColor="#bbaaaa";
-					  if($date== $cd)$BgColor="#aa7777";
+					  if($date== $cd){
+						  $BgColor="#aa7777";
+					  }
 					  DrawRect($i,$fontSize,"#eeeeee",array($LocX+($i-1)*$wid ,$LocY+20,$wid-1,10),"#777777");
 			          JAPI_DrawJavaDragArea("",$LocX+($i-1)*$wid ,$LocY+30,$wid-1,$h,$BgColor,$fontColor,$id,$fontSize );
 				  }
@@ -143,18 +146,18 @@
 				if($startDate=="--")$startDate=date("Y-m-1");
 				//前一月
 			    $Rect=array($LocX,$LocY,19,12);
-				$targetDate=date("Y-m-d", strtotime("-1 month", strtotime($startDate)));
+				$targetDate=date("Y-n-1", strtotime("-1 month", strtotime($startDate)));
 			    $ArrayVal=array(array("startDate",$targetDate));
 			    sendVal($URL,$ArrayVal,$SubmitName,"<",$Rect,10, $BgColor , "#ffffff","true");
 				//預設
 				$LocX+=20;
 			    $Rect=array($LocX,$LocY,59,12);
-				$ArrayVal=array(array("startDate","--"));
+				$ArrayVal=array(array("startDate",date("Y-n-1")));
 			    sendVal($URL,$ArrayVal,$SubmitName,$startDate,$Rect,8, $BgColor , "#ffffff","true");
 				//後一月
 				 $LocX+=60;
 				$Rect=array($LocX,$LocY,19,12);
-				$targetDate=date("Y-m-d", strtotime("+1 month", strtotime($startDate)));
+				$targetDate=date("Y-n-1", strtotime("+1 month", strtotime($startDate)));
 			    $ArrayVal=array(array("startDate",$targetDate));
 			    sendVal($URL,$ArrayVal,$SubmitName,"'>'",$Rect,10, $BgColor , "#ffffff","true");
 				
