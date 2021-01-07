@@ -177,9 +177,7 @@
 					//結束時間
 					if($inTime=="out"){
 					  $d1=CAPI_GetPassDays($checkTime,$startDate);  //離開始1號過幾天
-					  
 					  $d= $taskArr[$i][$WorkDaysNum]+  $d1;
-                      echo ">".$d;	
                       if($d>0){
 					     $taskfix=$taskArr[$i];
 						 $taskfix[$WorkDaysNum]=$d;
