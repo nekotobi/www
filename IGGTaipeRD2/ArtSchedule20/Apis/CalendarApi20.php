@@ -1,8 +1,7 @@
 <?php
      // function  CAPI_DrawBaseCalendar($StartY,$StartM,$MRange,$LocX,$LocY,$wid,$h){
-	    function  CAPI_DrawBaseCalendar($startDate,$DateRange,$LocX,$LocY,$wid,$h){
+	  function  CAPI_DrawBaseCalendar($startDate,$DateRange,$LocX,$LocY,$wid,$h){
 			      if( $startDate=="")$startDate=date("Y-n-1");  
-				  echo  $startDate;
 			      if($DateRange=="")$DateRange=2;  
 		          $BgColor="#222222";
 			      $fontColor="#ffffff";
@@ -160,10 +159,69 @@
 				$targetDate=date("Y-n-1", strtotime("+1 month", strtotime($startDate)));
 			    $ArrayVal=array(array("startDate",$targetDate));
 			    sendVal($URL,$ArrayVal,$SubmitName,"'>'",$Rect,10, $BgColor , "#ffffff","true");
-				
 				//加一月
 				//減一月
-				//預設
-	          
+				//預設   
 	  }
+	  function  CAPI_fillterDateRange($taskArr,$startDate,$DateRange,$dateNum,$WorkDaysNum){ 
+				$d="+ ".$DateRange." month" ;
+				$end=date("Y-n-1", strtotime(	$d, strtotime($startDate)));
+				$NewTasks=array();
+				for($i=0;$i<count($taskArr);$i++){
+					//開始時間
+					$checkTime= CAPI_ChangeTimeFormat($taskArr[$i][$dateNum]);
+					$inTime=CAPI_checkIsBetweenTime($startDate,$end,$checkTime);
+				    if($inTime=="in"){
+					   array_push( $NewTasks,$taskArr[$i]);
+					}
+					//結束時間
+					if($inTime=="out"){
+					  $d1=CAPI_GetPassDays($checkTime,$startDate);  //離開始1號過幾天
+					  
+					  $d= $taskArr[$i][$WorkDaysNum]+  $d1;
+                      echo ">".$d;	
+                      if($d>0){
+					     $taskfix=$taskArr[$i];
+						 $taskfix[$WorkDaysNum]=$d;
+					     $taskfix[2]=$taskfix[2]."[".$checkTime."][".$taskArr[$i][$WorkDaysNum]."]";
+						 $taskfix[$dateNum]= CAPI_ChangeTimeFormat2Base( $startDate);
+					     array_push( $NewTasks,$taskfix);
+					  }						  
+					}
+					
+				}
+	           return $NewTasks;
+	  }
+	  //取得s>e過幾天
+	   function CAPI_GetPassDays($s,$e){
+		        $st= strtotime($s);
+				$et=strtotime($e);
+			    $ds=  $st-$et ;
+				return $ds/3600/24;
+	   }
+	  //取得幾天後
+	  function CAPI_GetAfterDate($date,$days){
+		       $d="+".$days." day";
+	           return   date("Y-n-1", strtotime($d, strtotime($date))) ;
+	  }
+	  function CAPI_ChangeTimeFormat($baseStr){ //轉換日期格式 "_" > "-"
+		       $str=str_replace("_","-",$baseStr);
+			   return $str;
+	  }
+      function CAPI_ChangeTimeFormat2Base($baseStr){ //轉換日期格式 "_" > "-"
+		       $str=str_replace("-","_",$baseStr);
+			   return $str;
+	  }
+	  function CAPI_checkIsBetweenTime($start,$end,$checkTime){ //$start
+               $curTime = strtotime($checkTime);//当前时分
+               $assignTime1 = strtotime($start);//获得指定分钟时间戳，00:00
+               $assignTime2 = strtotime($end);//获得指定分钟时间戳，01:00
+               $result = "out";
+			   if( $curTime >$assignTime2 )$result = "out2";
+               if($curTime>$assignTime1&&$curTime<$assignTime2){
+                  $result = "in";
+                  }
+		 
+			   return $result;
+      }
 ?>

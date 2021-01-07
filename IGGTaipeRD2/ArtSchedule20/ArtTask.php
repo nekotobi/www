@@ -59,6 +59,7 @@ function Drop2Area(event) {
 	  PubApi_DrawUserData(800,0);
       DrawAllButtons();
 	  SwitchType();
+	 
 ?>
 
 <?php //Base
@@ -81,7 +82,9 @@ function Drop2Area(event) {
 		       DefinetypeData();  
 			   //日期資訊
 		       global $LocX,$LocY,$wid,$taskHeight;
-
+			     global $startDate,$DateRange;
+			   if($DateRange=="")$DateRange=2;
+               if($startDate=="--")$startDate=$range[0]."-".$range[1]."-1";
                $LocX=380;
                $LocY=160;
                $wid=10;
@@ -124,6 +127,10 @@ function Drop2Area(event) {
 			     $RootTaskCode=filterArray( $typeTask_T,2,$typeArray[5][1]);
 			     $typeTask=  filterArray(   $taskDataBase_T,3,$RootTaskCode[0][1]);
 			    }
+			   //過濾時間
+			   global $startDate,$DateRange;
+			   $typeTask=  CAPI_fillterDateRange(  $typeTask,$startDate,$DateRange,12,13);
+			   
 	  }
 	  //收集請假資料
 	  function CollectLeave($tasks){
@@ -398,7 +405,7 @@ function Drop2Area(event) {
 			   global $startDate,$DateRange;
 			   global $typeTask;
 			   $range=  CAPI_getDateRange( $typeTask,12,13);
-			   if($startDate=="--")$startDate=$range[0]."-".$range[1]."-1";
+			
 	           CAPI_DrawBaseCalendar($startDate,$DateRange,$LocX,$LocY,$wid,(count($typeTask)+1)*$taskHeight+2);
 			   DrawVer();
 	  }
