@@ -159,11 +159,11 @@
 <?php //Data
     function UpData(){
 		$Edit=$_POST['Edit'];
-	 
 		$Add=$_POST['Add'];
         $submit=$_POST['submit'];
+	
 		global  $BackURL;
-	    global $submit;
+	   // global $submit;
 		if( $Add=="yes")   AddData();
 		if($Edit!=""){
 			if($Edit=="form") EditData();
@@ -171,6 +171,7 @@
 			if($Edit=="Active") Changebool("Active",$_POST["bool"],$_POST["code"]);
 		}
 		if($submit=="修改"){
+		 	echo $submit;
 		 UpEdit();
 		}
 	}
@@ -189,6 +190,7 @@
 			  echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
 	}		
 	function UpEdit(){
+		      echo "xxxxxxxxxxxxxxxxxxxx";
 		      global $tableName,$data_library;
 			  global $BaseURL, $BackURL;
 			  global $BaseData;
@@ -197,16 +199,20 @@
 			  $Base=array();
 			  $t= count( $tables);
 		      for($i=0;$i<$t;$i++){
+				 // echo $tables[$i].">".$_POST[$tables[$i]];
 	       	      global $$tables[$i];
-				  $tmp=$tables[$i];
-				  array_push($Base, $tmp);
+				  
+				  $tmp=$_POST[$tables[$i]];
+				//  $tmp=$tables[$i];
+				  
+				  array_push($Base,$tables[$i]);
 		         }
 			  $code=$$tables[1];
 		      $up=array();
 			  $file="works";
 			  $data= returnDataArray($BaseData,1,$Code)   ;
 	          for($i=0;$i<$t;$i++){
-				    $d=$$tables[$i];
+				    $d =$_POST[$tables[$i]]; //$$tables[$i];
 				    if($d=="")$d=$data[$i];
 					if($_FILES[$tables[$i]]["name"]!=""){
 						$d=$_FILES[$tables[$i]]["name"];
@@ -218,21 +224,23 @@
 					}
 				    array_push($up,$d);
 		          }
-		     $WHEREtable=array("data_type", "Code");					 
-             $WHEREData=array($$tables[0],$$tables[1]);	
+		     $WHEREtable=array("data_type", "Code");
+			 $WHEREData=array($_POST[$tables[0]],$_POST[$tables[1]]);	
+             //$WHEREData=array($$tables[0],$$tables[1]);	
+			 
 	         $stmt= MakeUpdateStmtv2(  $tableName,$Base,$up,$WHEREtable,$WHEREData);	
+			 echo $stmt;
 			 SendCommand($stmt,$data_library);
 		     echo " <script language='JavaScript'>window.location.replace('".$BaseURL."')</script>";
 	}
 	function EditData(){
-	      global $tableName,$data_library;
+	       global $tableName,$data_library;
            $code=$_POST["code"];	
 		  global $BaseURL;
 		  global $colorCodes;
 		  global $BaseData;
 	      global $width,$TableType,$Names;
 		  global $radio_1,$radio_2;
-		  
 		  $x=300;
 		  $y=100;
 		  $w=800;
