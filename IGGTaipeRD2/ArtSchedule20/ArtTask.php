@@ -54,6 +54,7 @@ function Drop2Area(event) {
 	  require_once('/Apis/mysqlApi20.php');
 	  require_once('/Apis/PubJavaApi.php');
 	  require_once('/Apis/CalendarApi20.php');
+	  require_once('/Apis/ProjectApi.php');
 	  PubApi_getCookie();
 	  DefineBaseData();
 	  PubApi_DrawUserData(800,0);
@@ -284,7 +285,8 @@ function Drop2Area(event) {
 
 <?php //Buttons
       function DrawAllButtons(){
-	           DrawProjectButtoms();
+		       global $ProjectTypes,$selectProject,$startY,$URL;
+	           ProAPI_DrawProjectButtoms($ProjectTypes,$selectProject,$startY,$URL);
 			   DrawButtons();
 			   DrawProcessDragArea();
                DrawDateRangeButtom();
@@ -364,21 +366,7 @@ function Drop2Area(event) {
 			   $y=$Rect[1]+4;
 			   JAPI_DrawJavaDragArea($i,$x,$y,8,12,"#155555","#555555",$id,5);	
 	  }
-	  function DrawProjectButtoms(){
-		       global $ProjectTypes,$selectProject;
-			   global $startY;
-			   global $URL;
-			   $BgColor="#111111";
-			   $SubmitName="submit";
-			   for($i=0;$i<count( $ProjectTypes);$i++){
-				   $ArrayVal=array(array("selectProject",$ProjectTypes[$i]));
-				   $BgColor="#111111";
-				   if($selectProject==$ProjectTypes[$i]){ $BgColor="#aa1111";}
-				   $Rect=array(400+$i*60,10,58,12);
-				   $SubmitVal=$ProjectTypes[$i];
-			       sendVal($URL,$ArrayVal,$SubmitName,$SubmitVal,$Rect,10, $BgColor , "#ffffff","true");
-			   } 
-	  }
+
  	  function DrawProcessDragArea(){
 			   $x=20;
 			   $y= 160;

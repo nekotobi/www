@@ -9,7 +9,7 @@
 	             if($id=="")$id="guest";
 	         	 $colorCodes= GetColorCode();
 	   }
-	   function PubApi_GetArrayCookie($arr){
+	  function PubApi_GetArrayCookie($arr){
 		        for($i=0;$i<count($arr);$i++){
 				    if($_COOKIE[$arr[$i]]!=""){
 				    	global $$arr[$i];
@@ -50,10 +50,8 @@
 	  function PubApi_setcookies($CookieArray,$BackURL){
 	           if($_POST['setCookie']!="true") return;
 			    for($i=0;$i<count($CookieArray);$i++){
-					
 					$n= $CookieArray[$i];
 				     if($_POST[$n]!=""){
-						// echo ">".$_POST[$n];
 						 setcookie($n , $_POST[$n], time()+78000); 
 					 }
 				}
@@ -61,6 +59,27 @@
         }
 ?>
 <?php //php繪製表格 
+	   function PubApi_MakeSelection($items,$selectItem,$selectName,$size){
+		    $selectItemf=trim(  $selectItem);
+			  $seletProject= "<select  class=form-control  style=font-size:".$size."px; color: red;  id=".$selectName."  name=".$selectName."  >";
+			$seletProject=$seletProject."<option value=未定義 >未定義</option>";
+			for($i=0;$i<count($items);$i++){
+				//echo $items[$i];
+				 $itemf=trim( $items[$i]);
+			     $seletProject=$seletProject."<option value='".$items[$i];
+				 if($itemf== $selectItemf){
+					 $seletProject=$seletProject."' selected=true ";
+				 }
+				 $seletProject=$seletProject."'>".$items[$i]."</option>";
+			}
+			$seletProject="'".$seletProject."'</select>";
+	        return $seletProject;
+	   }
+	  function PubApi_DrawPosPic($pic,$x,$y,$w,$h,$posType ){
+	    	echo "<div style='position:".$posType; 
+			echo ";  top:".$x."px;Left:".$y."px; width:".$w."px;height:".$h."px;
+				   '><img src=".$pic." width=".$w." height=".$h."></div>";
+	   }
 	  function DrawLinkRect_newtab($msg,$fontSize,$fontColor,$x,$y,$w,$h,$BgColor,$Link,$border){
 	          echo "<div   style=' cursor:pointer ; color:".$fontColor."; " ;
 			  echo $border;

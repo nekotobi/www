@@ -1184,8 +1184,7 @@
 			  $data=getTxtArray();
 			  $data_library=$data[0][1];
 			  $tableName=$data[0][0];
-			  
-			  
+ 
 			  if($tableName!="outsdetail"){
 			  echo "上傳格式有錯!";
 			  return;
