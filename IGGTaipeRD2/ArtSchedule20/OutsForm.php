@@ -42,10 +42,8 @@
 		 return;
 	  }
 	  defineData();
-
       DrawButtoms();
-	  DrawTitle();
-	  	  SwitchType();
+	  SwitchType();
       
 ?>
 <?php //初始資料
@@ -70,6 +68,9 @@
 			 $ListSize=filterArray($MainPlanDataT,0,"size");
 			 $OutCostst=filterArray($MainPlanDataT,0,"cost");
 			 $OutsLastSort= getLastSN2($OutCostst,1);
+			 //進度
+			 global $Pregress;
+		     $Pregress= explode("_", $ListNames[0][17]); 
 			 //排序
 			 $forward="true";
 			 if($_POST["SortType"]=="▼") $forward="false";
@@ -87,6 +88,9 @@
 			 $FormListsize=$FormListsizeT[0];
 			 $FormList=array(2,3,4,5,6,7,8,9,10 );
 			 $FormRect=array(100,140,120,20);
+			 
+ 
+ 
 	}
 	function sortcontact(){  //整理聯絡人
          	 global $OutCosts;
@@ -134,20 +138,31 @@
 ?>
 <?php //判斷狀況
       function SwitchType(){
+		      
 	           global $WebSendVal,$WebSendValDetials;
-	           if($_POST["ListType"]=="+"){//新增表單
+	            if($_POST["ListType"]=="處理中表單"){
+					 DrawTitle();
+				}
+			    if($_POST["ListType"]=="請款進程"){
+                    DrawTitle();
+				}
+			   if($_POST["ListType"]=="+"){//新增表單
 			     CreatNewOuts();
 			   }
 			   if($_POST["ListType"]=="EditOutsForm"){ //編輯表單
 			      EditOutsForm();
 			   }
+ 
 			   if($_POST["submit"]=="新增外包表單"){ 
 			     AddNewMysqlData();
 			   }
-			  if($_POST["submit"]=="上傳表單") UpformCheck(); //上傳詳細內容
-			  if($_POST["submit"]=="確定上傳表單"){ //上傳詳細資料
+			   if($_POST["submit"]=="上傳表單") UpformCheck(); //上傳詳細內容
+			   if($_POST["submit"]=="確定上傳表單"){ //上傳詳細資料
 		        Upform();
 			  }
+			   if($_POST["pregressSN"]!=""){
+			     UpPregress();
+			   }
 	  }
 
 ?>
@@ -188,19 +203,58 @@
       function DrawTitle(){
 		      global $ListNames,$ListSize,$OutCosts;
 			  $Rect=array(20,60,40,20);
-			  for($i=1;$i<count($ListNames[0]) ;$i++){
-			  	 $Rect[2]= $ListSize[0][$i];
-				  if(  $Rect[2]!=""){
-			         DrawRect( $ListNames[0][$i],10,"#FFFFFF",$Rect,"#000000");
-					 $Rect[0]= $Rect[0]+ $Rect[2]+2;
-				  }
+			  global   $Pregress ; 
+		
+			   //抬頭	
+             if($_POST["ListType"]=="請款進程")	{		   
+			    $arr=array( "序號","外包商(公司/個人)");
+			    $Size=array( 44,200);
+				 for($i=0;$i<count( $Pregress);$i++){
+				     array_push($arr, $Pregress[$i]);
+					 array_push( $Size,50);
+				 } 
+			     for($i=0;$i<count($arr) ;$i++){
+				     $Rect[2]= $Size[$i];
+					 DrawRect( $arr[$i],10,"#FFFFFF",$Rect,"#000000");
+				     $Rect[0]= $Rect[0]+ $Rect[2]+2;
+				 }
 			  }
+			 if($_POST["ListType"]=="處理中表單")	{		
+ 	            $arr=$ListNames[0];
+			     for($i=1;$i<count($arr) ;$i++){
+			      	 $Rect[2]= $ListSize[0][$i];
+			  	    if( $Rect[2]!=""){
+			           DrawRect( $arr[$i],10,"#FFFFFF",$Rect,"#000000");
+					   $Rect[0]= $Rect[0]+ $Rect[2]+2;
+				      }
+			       }
+			    }
 			  for($i=0;$i<count($OutCosts);$i++){
-				 DrawLines($OutCosts[$i],($i+4)*22 );
+				 DrawLines($OutCosts[$i],($i+4)*22, $Pregress );
+				
 			  }
 			//  DrawTotal($OutCosts);   
 	 }
-	  function DrawLines($Data,$y ){
+      function Drawoutpregress($Pregressdata,$sn,$Rect, $Pregress){
+		       $c= explode("_", $Pregressdata);  
+			   global $WebSendVal;
+			   global $URL;
+			   $SendVal=$WebSendVal;
+			   $Rect[2]=50;
+			   array_push($SendVal,array("pregressSN",$sn));
+	           for($i=0;$i<count($Pregress);$i++){
+				   $BGColor="#999999";
+				    array_push($SendVal,array("pregressSort",$i));
+				   	  $msg="_";
+			       if($c[$i]!="" and $c[$i]!="X" ) {
+					   $BGColor="#99cc99";
+					   	  $msg=$c[$i];
+				   }
+			      sendVal($URL,  $SendVal,"submit", $msg,$Rect,7,$BGColor,"#ffffff"  );
+				  $Rect[0]+=52;
+			   }
+	  }
+	  function DrawLines($Data,$y, $Pregress ){
 		      global  $ListSize,$PreList;
 			  global  $URL,$selectProject;
 			  global $WebSendVal;
@@ -212,10 +266,12 @@
 			  $SendVal=array(array( "ListType","EditOutsForm"),array("EditSn", $Data[1]));
 		      sendVal($URL,  $SendVal,$SubmitName,$Data[1] ,$Rect,10,$BGColor,"#000000"  );
 			  $Rect[0]= $Rect[0]+$w+2;
-		      for($i=2;$i<(count($Data)-3);$i++){
-				  $Rect[2]= $ListSize[0][$i];
-			      $msg=  $Data[$i];
-				  if(  $Rect[2]!=""){
+			  $t=count($Data)-3;
+		      if($_POST["ListType"]=="請款進程")$t=6;
+		         for($i=2;$i<$t;$i++){
+				    $Rect[2]= $ListSize[0][$i];
+			        $msg=  $Data[$i];
+				    if($Rect[2]!=""){
 			          DrawRect($msg,10,"#000000",$Rect,"#DDDDDD");
 					  $Rect[0]= $Rect[0]+ $Rect[2]+2;
 				     }
@@ -226,14 +282,20 @@
               if($msg=="付款日")  {
 				  $BGcolor="#DDFFDD";
 			      $msg="完成付款";
-			  }
+			  } 
+			  //列印進程
+		      if($_POST["ListType"]=="請款進程")	{
+				 Drawoutpregress($Data[17],$Data[1], $Rect, $Pregress);
+			   }
 			  //第幾包
 			  if($Data[13]!=""){ 
 			  $Rect=array(70,$y,35,18);
 			      DrawRect("第".$Data[13]."包",9,$fontColor,  $Rect,"#eeffcc");
-			  }			  
+			  }		
+      			  
 	 }
 ?>
+ 
 <?php //列印編輯表單
       function  CreatNewOuts(){
 				        global $URL;
@@ -417,17 +479,56 @@
 				    $w=$FormListsize[$List[$i]];
 			        DrawRect($data[$List[$i]],9,$fontColor,array($rect[0],$rect[1],$w,$rect[3]),$BGcolor);
 				    $rect[0]+=$w+2;
-			    }
-			  //  $pic="Outsourcing/SortPic/".$sn."/spic".$data[2].".jpg" ;
-	          //  DrawPosPic($pic,$rect[1],$rect[0],20,20,"absolute" );
-			    $rect[0]+=22;
-             //   $input= "<input type=file name=pic".$data[2]." style= font-size:10px;>";
-			   // DrawInputRect_size("效果图例",10,"#ffffff",$rect[0] ,$rect[1],300,$rect[3],$BGcolor,$WorldAlign,$input);
-				 
+			    }		 
 	  }
 ?>
 <?php //上傳表單
-	  function  InputForms($sn){  //輸入資料
+     function UpPregress(){
+	          $pregressSN= $_POST["pregressSN"];
+			  $pregressSort= $_POST["pregressSort"];
+			  global $data_library,$tableName;
+			  global  $OutCosts;
+			  $thisCost=filterArray( $OutCosts,1,$pregressSN );
+			  $Base= $thisCost[0][17];
+			  $str=makeRecodTxt($Base, $pregressSort);
+		      $WHEREtable=array( "data_type", "sn");
+		      $WHEREData=array( "cost", $pregressSN  );
+			  $Base=array( "pregress");
+			  $up=array($str);
+			  $stmt=MAPI_MakeUpdateStmt($tableName,$Base,$up,$WHEREtable,$WHEREData);
+		      
+              SendCommand($stmt,$data_library);		
+			  global $WebSendVal,$URL;
+		 	  $ar=return_WebPostArray( $WebSendVal );
+			    JAPI_ReLoad($ar,$URL);
+ 
+	 }
+     function return_WebPostArray($arr ){
+	           $ar=array();
+			   for($i=0;$i<count($arr);$i++){
+			       array_Push($ar,array($arr[$i][0],$_POST[$arr[$i][0]]));
+			   }
+			   return $ar;
+	  }
+	 function makeRecodTxt($Base,$sort){
+		      global $Pregress;
+	          $str= explode("_", $Base);  
+			  $returnStr="";
+			  for($i=0;$i<count( $Pregress);$i++){
+			     $s= $str[$i];
+				 if($s=="")$s="X";
+				 if($i==$sort){
+				    if($s=="X"){
+						$s=date("Y-n-j");
+					}else{
+						$s="X";
+					}
+				 }
+                 $returnStr=  $returnStr.$s."_";				 
+			  }
+			  return $returnStr;
+	 }
+	 function  InputForms($sn){  //輸入資料
 		        echo "InputForms";
 		  	    global $URL;
 			     $sn=$_POST["EditSn"];
@@ -490,8 +591,6 @@
 	          global  $URL;
 			  //外包基礎資料
 			  global  $outsBaseData,$outsBaseSelects,$outs;
-				
-					
 		              $selectOut=$_POST['selectOut'];
 				      $code=  getOutCode($selectOut);
 					  $OutData=filterArray($outs,1, $code); 

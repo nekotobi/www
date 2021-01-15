@@ -605,10 +605,8 @@
 		   echo " <script language='JavaScript'>window.location.replace('".$Link."')</script>";
 	 }
      function PregressUpdate(){
-	 
 		     $sn=$_POST['sn'];
 		  	 $Column=$_POST['Column'];
-	 
 			 $info=$_POST['info'];
 	        // global $sn,$Column,$info;
 			 global $data_library, $pregressData;
@@ -748,15 +746,12 @@
 		      global  $sn,$datas;
 			  global  $data_library,$tableName,$OutCosts,$DetailFormName;
 			  global  $BaseURL;
-			  //echo "UpForm";
 		      require_once 'uty/xls2mysqlApi.php';
 		      $baseT=getMysqlDataArray("outsdetail"); 
 			  $baseT2=filterArray($baseT,0,"outs");
 			  $base=filterArray($baseT2,1,$sn);
 			  $tableName=$DetailFormName;
 			  $tables=returnTables($data_library,$tableName);
-			
-			  
 	          //清除
 			  for($i=0;$i<count($base);$i++){
 				 $WHEREtable=array("OutsSn","sn");
