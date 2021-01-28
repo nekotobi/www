@@ -1,4 +1,5 @@
 <script type="text/javascript"> //common
+ 
     var upId="xx";
 	var BaseColor="";
 	var BGColor="";
@@ -17,14 +18,16 @@
 				BGColor=  document.getElementById(OverID).style.backgroundColor ;
 	         } 
 		     document.getElementById( OverID).style.backgroundColor="#ffaaaa";
+	 
 	}
  
 	function Drag(event) {
-	         event.dataTransfer.setData("text", event.currentTarget.id);
-	         var DragID  = event.dataTransfer.getData("text");
-	         if(BaseColor=="") BaseColor= document.getElementById(DragID).style.backgroundColor;
-		     if(startX==0)startX= document.getElementById(DragID).style.left;
-	         y=document.getElementById(event.currentTarget.id).style.top;
+             event.dataTransfer.setData("text",event.currentTarget.id);
+	  
+	        // var DragID  = event.dataTransfer.getData("text");
+	     //    if(BaseColor=="") BaseColor= document.getElementById(DragID).style.backgroundColor;
+		 //   if(startX==0)startX= document.getElementById(DragID).style.left;
+	     //   y=document.getElementById(event.currentTarget.id).style.top;
 	}
  
 	function Drop(event) {
@@ -33,6 +36,7 @@
 		     var tagetID = 	event.currentTarget.id
 		     var x= document.getElementById( tagetID).style.left;
 		     document.getElementById( DragID).style.left=x;
+		
 	}
  
     function getMouseXY(e) {
@@ -40,6 +44,7 @@
          document.Show.MouseY.value = e.pageY
          return true
      }
+
 	 
 </script>
 <script type="text/javascript"> //傳遞變數
@@ -83,6 +88,7 @@
 			     $y=10;
 			     $lastUpdate=date("Y_j_n_H_i_s");
 		         $upFormVal=array("Show","Show",$URL);
+				 echo $URL;
 			     $UpHidenVal=array(array("tablename",$tableName),
 			                    array("data_type","data"),
 								array("Send","sendjava" ),

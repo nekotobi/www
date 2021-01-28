@@ -1,4 +1,29 @@
 <?php
+       function MAPI_AutoCreateNewMsQLData($data_library,$tableName ){
+		        $tables=returnTables($data_library ,$tableName);
+				$WHEREtable=array();
+				$WHEREData=array();
+	            for($i=0;$i<count($tables);$i++){
+					array_push($WHEREtable,$tables[$i]);
+					array_push(	$WHEREData,$_POST[$tables[$i]]);
+	            }
+				$stmt= MakeNewStmt($tableName,$WHEREtable,$WHEREData);
+				 SendCommand($stmt,$data_library);		
+		             
+	   }
+	   function MAPI_AutoEditMsQLData($data_library,$tableName,$WHEREtable,$WHEREData ){
+		        $tables=returnTables($data_library ,$tableName); 
+				$Base=array();
+			    $up=array();
+			    for($i=0;$i<count($tables);$i++){
+					if($_POST[$tables[$i]]!=""){
+			        array_push( $Base,$tables[$i]);
+			        array_push( $up,$_POST[$tables[$i]]);
+					}
+			     }
+				$stmt= MAPI_MakeUpdateStmt(  $tableName,$Base,$up,$WHEREtable,$WHEREData);
+			   SendCommand($stmt,$data_library);		
+	   }
        function MakeDeleteStmt($table,$WHEREtable,$WHEREData){
 		     $stmt= "DELETE FROM ".$table;
 	         $stmt=$stmt." WHERE ";
@@ -150,7 +175,11 @@
 			   // echo $tableName."xx>".$stmt;
 			    SendCommand($stmt,$data_library);	
 	 }
-
+       function MAPI_returnTableSort($tableNames,$tableName){
+		        for($i=0;$i<count($tableNames);$i++){
+				    if($tableNames[$i]==$tableName)return $i;
+				}
+	   }
 ?>
 
 <?php

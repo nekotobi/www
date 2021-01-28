@@ -635,8 +635,8 @@
 			  $pic="Pics/Ani.png";
 			  if ($file!=""){
 				  $Rect[0]+=22;
-			       DrawLinkPic($pic,$Rect[1] ,$Rect[0] ,20,20,$file);
-				   $state="特效";
+			      DrawLinkPic($pic,$Rect[1] ,$Rect[0] ,20,20,$file);
+				  $state="特效";
 				  $p=1;
 			  } 
 			  if( strpos($Base[7],"完成") !== false    )$p=1;

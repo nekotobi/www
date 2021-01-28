@@ -170,10 +170,9 @@
      function DrawButtoms(){
 		      global $URL;
               global $CookieArray;
-			  global $ProjectTypes,$selectProject,$startY,$URL;
+			  global $selectProject,$startY,$URL;
 			  $startY=20;
-			  $ProjectTypes=array("vt","zombie");
-	          ProAPI_DrawProjectButtoms($ProjectTypes,$selectProject,$startY,$URL);
+	          ProAPI_DrawProjectButtoms( $selectProject,$startY,$URL);
 		      DrawValButton();
 	 }
 	 function DrawValButton(){

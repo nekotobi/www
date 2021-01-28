@@ -192,11 +192,16 @@
 	  }
 	  //取得s>e過幾天
 	   function CAPI_GetPassDays($s,$e){
+		   echo $s.">";
+		        $s= str_replace("_","-",$s);
+		 
+			    $e= str_replace("_","-",$e);
 		        $st= strtotime($s);
 				$et=strtotime($e);
 			    $ds=  $st-$et ;
 				return $ds/3600/24;
 	   }
+	 
 	  //取得幾天後
 	  function CAPI_GetAfterDate($date,$days){
 		       $d="+".$days." day";

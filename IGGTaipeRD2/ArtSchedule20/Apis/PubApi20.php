@@ -59,7 +59,7 @@
         }
 ?>
 <?php //php繪製表格 
-	   function PubApi_MakeSelection($items,$selectItem,$selectName,$size){
+	  function PubApi_MakeSelection($items,$selectItem,$selectName,$size){
 		    $selectItemf=trim(  $selectItem);
 			  $seletProject= "<select  class=form-control  style=font-size:".$size."px; color: red;  id=".$selectName."  name=".$selectName."  >";
 			$seletProject=$seletProject."<option value=未定義 >未定義</option>";
@@ -189,6 +189,23 @@
 		  }
 	      return  $newArray;
 	  }
+	  function PAPI_sortGDCodeArrays($BaseArray ,$ArrayNum ,$forwardBool="true"){ //排序GDCode案某表格中的數字 tt 0  aa 1
+  		  $newArray=array();
+		  $lastSn=  getLastSN2($BaseArray,$ArrayNum); 
+		 if($forwardBool=="true"){//正向
+		  	  for($i=0;$i<= $lastSn;$i++){
+                 $tmpArray= GetArraySn($BaseArray, $ArrayNum ,$i);
+				 if(count($tmpArray)>0)$newArray=  array_merge( $newArray,$tmpArray); 
+			  } 
+		  }
+		  if($forwardBool=="false"){//逆向
+		  	  for( $i=$lastSn;$i>0;$i--){
+                 $tmpArray= GetArraySn($BaseArray, $ArrayNum ,$i );
+				 if(count($tmpArray)>0)$newArray=  array_merge( $newArray,$tmpArray); 
+			  }
+		  }
+	      return  $newArray;
+	  }
        function returnArraybySort($BaseArray,$num){//回傳二維陣列中第幾個陣列的陣列
 	            $Ar=array();
 			    for($i=0;$i<count($BaseArray);$i++){
@@ -243,6 +260,14 @@
 		           }
 		        return $lastSN;
 	   }
+	   function PAPI_getGDCODELastSN($SQLData,$SnNum){
+	            $lastSN=0;
+		        for($i=0;$i<count($SQLData);$i++){
+					$sn=(int)(substr($SQLData[$i][$SnNum], -4));
+					 if($sn>$lastSN)$lastSN=$sn;
+		           }
+		        return $lastSN;
+	   }
 ?>
 <?php //form
        function DrawInputRect($msg,$fontSize,$fontColor,$Rect,$BgColor,$WorldAlign,$input){ 
@@ -255,12 +280,15 @@
        function returnDataCode( ){
 	            return  date("Y-m-d-His",(time()+8*3600));
 	   }
+       function PAPI_returnECode( ){
+	            return  date("Y-m-d-His",(time()+8*3600));
+	   }
 	   function upSubmitform($upFormVal,$UpHidenVal, $inputVal){
 		        //=========
 	            //$upFormVal ==>0/id 1/name 2/URL 
 			    //$UpHidenVal=array 0/name,1/val
 			    //$inputVal=0/type 1/name 2/showname 3/fontsize 4/5/6/7rect  8/bgcolor 9/fontColor 10/val 11/size
-			    echo  "<form id=".$upFormVal[0]."  name=".$upFormVal[1]." action=".$upFormVal[2]." method='post'>";
+			    echo  "<form id=".$upFormVal[0]."  name=".$upFormVal[1]." action=".$upFormVal[2]." method='post' enctype='multipart/form-data'>";
 			    for($i=0;$i<count($UpHidenVal);$i++){
 			        echo   "<input  type=hidden id=".$UpHidenVal[$i][0]."  name=".$UpHidenVal[$i][0]." value=".$UpHidenVal[$i][1].">"; 
 			    }
@@ -292,7 +320,43 @@
 	   }
 ?>
 
+<?php //color
+       function PAPI_changeColor($hex, $colorAddArr){
+                $RGB=PAPI_hex2rgb(  $hex  );
+				$nrgb=$RGB;
+				for( $i=0;$i<count($RGB);$i++){
+				    $nrgb[$i]=(int)( $RGB[$i]* $colorAddArr[$i]);
+					if(  $nrgb[$i]>255)$nrgb[$i]=255;
+				}
+			    $hex= PAPI_rgb2hex($nrgb) ;
+				return  $hex;
+	   }
+       function PAPI_rgb2hex( $RGB ) { 
+	            $hex= sprintf("#%02x%02x%02x", $RGB[0], $RGB[1], $RGB[2]);
+			    return $hex;
+	   }	
+	   function PAPI_hex2rgb(  $hex  ){
+                list($r, $g, $b) = sscanf($hex, "#%02x%02x%02x");
+                return array($r ,$g ,$b);
+	   }
 
+	/*
+    function PAPI_hex2rgb( $colour ) { 
+         if ( $colour[0] == '#' ) $colour = substr( $colour, 1 ); 
+         if ( strlen( $colour ) == 6 ) { 
+            list( $r, $g, $b ) = array( $colour[0] . $colour[1], $colour[2] . $colour[3], $colour[4] . $colour[5] ); 
+            } elseif ( strlen( $colour ) == 3 ) { 
+            list( $r, $g, $b ) = array( $colour[0] . $colour[0], $colour[1] . $colour[1], $colour[2] . $colour[2] ); 
+            } else { 
+            return false; 
+           } 
+          $r = hexdec( $r ); 
+          $g = hexdec( $g ); 
+          $b = hexdec( $b ); 
+          return array( $r,  $g, $b ); 
+    }
+	*/
+?>
 <?php //Links
      function RefreshURL($URL){
 		      echo " <script language='JavaScript'>window.location.replace('".$URL."')</script>";

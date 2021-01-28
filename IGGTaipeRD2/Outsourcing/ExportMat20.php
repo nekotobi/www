@@ -3,7 +3,6 @@ require_once dirname(dirname(dirname(__FILE__))) .'/phpexcel/Classes/PHPExcel.ph
 require_once 'xlsApiv2.php';
 DefineData();
 function DefineData(){
-     
          global $Exporttype;
 		 $Exporttype=$_POST['Exporttype'];
 		 $selectProject=$_POST["selectProject"];
@@ -15,7 +14,6 @@ function DefineData(){
 		 $outsDetialT=getMysqlDataArray($DetailFormName);
 		 $outsDetialT2= filterArray( $outsDetialT,1,$sn);
          $outsDetial=sortArrays($outsDetialT2 ,2,"true");
-		 
 		 //外包單
 		 $OutsCostT=getMysqlDataArray($OutsFormName);
 		 $OutsCost= filterArray(  $OutsCostT,1,$sn);
