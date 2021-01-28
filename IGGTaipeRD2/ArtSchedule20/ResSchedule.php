@@ -44,7 +44,7 @@ function Drop2Area(event) {
 	  defineData();
 	  checkSubmit();
       DrawButtoms();
-      setJavaForm();
+      setJavaForm();java//表單一定要最後
 ?>
 <?php //定義資料
     function defineData(){
@@ -69,9 +69,7 @@ function Drop2Area(event) {
 							   array("ListType",$_POST["ListType"] )  ,
 							   array("SortType",$_POST["SortType"] )  ,
 							   );
-             //排序
-			 global $SortType;
-		     $SortType=array("▲","▼");
+       
 			 //網頁變數
 			 global $ResTypes,$ResTypeSingleData;
 			 global $typeDatabase,$Resdatas, $ResLastGDSN;
@@ -91,7 +89,10 @@ function Drop2Area(event) {
 		     $ResdatasT= getMysqlDataArray($ResdataBase);
 		     $Resdatas =  filterArray(  $ResdatasT,2, $type);
 			 $ResLastGDSN=PAPI_getGDCODELastSN( $Resdatas,3);//最後的gd編碼
-			 
+			 //排序
+			 global $SortType;
+		     $SortType=array("▲","▼");
+			 AddResSort();
  	         //資源進程
 			 global $ResPregresList;
 			 $ResPregresList= explode("_",  $currentType[0][3]) ;
@@ -99,7 +100,7 @@ function Drop2Area(event) {
 			 //java傳遞欄位
 		     global  $inputsTextNames ;
              $inputsTextNames=array("DragID","target","Etype","ECode","DataName","Val","remark");
-		     SwitchListType();
+		  
 		
 		     //分類資料
 			 global $ListType;
@@ -109,7 +110,20 @@ function Drop2Area(event) {
 	         for($i=0;$i<count($className);$i++){
 				 array_push( $ListType,$className[$i]."[".$i);
 	         }
-			 
+			 SortResData();
+			    SwitchListType();
+	}//重新排序
+	function AddResSort(){
+	     	 global $SortType;  
+	}
+	function SortResData(){
+		     global $Resdatas;
+	         if($_POST["SortType"]=="" and $_POST["SortType"]=="▲"){
+		        $Resdatas=	PAPI_sortCodeWithGDCode( $Resdatas ,3);
+			 }
+			 if($_POST["SortType"]=="▼"  ){
+			    $Resdatas= PAPI_sortCodeWithGDCode( $Resdatas ,3,"false");
+			 }
 	}
 ?>
 <?php //判斷submit
@@ -150,22 +164,25 @@ function Drop2Area(event) {
 			  global $ListType;
 			  DrawSingle($ListType,2,$Rect);
 			  //排序
-			  
+			   $Rect =array(20,86,20,20);
+			   global $SortType;
+			   DrawSingle($SortType,3,$Rect);
 			  //新增工單
 			  if($_POST["ListType"]=="清單") {
-				   AddResButtom();
+			       $Rect =array(70,86,80,20);
+				   AddResButtom( $Rect);
 			  }
 	 }
-	 function AddResButtom( ){
+	 function AddResButtom( $Rect ){
 	          global $WebSendVal;
 			  global $URL;
 			  global $ResLastGDSN;
 		      $valArray=$WebSendVal; 
 			  $SubmitName="submit";
 			  $BgColor="#aa5555";
-			  $Rect =array(20,86,80,20);
+			
 			  DrawRect($_POST["ResType"]."X".$ResLastGDSN,"10","#ffffff",$Rect,"#222222" );
-			  $Rect =array(100,86,30,20);
+			  $Rect =array(150,86,20,20);
 			  array_push($valArray,array("AddRes" , $ResLastGDSN));
 		      array_push($valArray,array("Type", $_POST["ResType"]));
 			  array_push($valArray,array("ECode",  PAPI_returnECode( )));
@@ -199,12 +216,12 @@ function Drop2Area(event) {
               $h=20*count($ResPregresList);
 			  $Rect=array("20","110","80","80");
 			  if(strpos($_POST["ListType"],"[") != false){ 
-			  //  if($_POST["ListType"]=="分類1") {
 			     DrawType();
 				 return;
 			  }
 			  if($_POST["ListType"]=="排程表")   ListCalendar();
 			  for($i=0;$i<count($Resdatas);$i++){
+				  
 	              ListSingle($Resdatas[$i],$Rect);
 			      $Rect[1]+=$Rect[3]+2;
 			  }
@@ -245,7 +262,6 @@ function Drop2Area(event) {
 				  $x+=$w+1;
 			  }
 	 }
-
 	 //列印底部
 	 function DrawTypeDragBase($types,$x,$y,$w,$h){
 		      global $ColorCode;
@@ -276,7 +292,6 @@ function Drop2Area(event) {
 			  }
 			  return $arr;
 	 }
-
 	 function ListSingle($data,$Rect){
 		 		  global $URL;
 	              global $WebSendVal  ;
@@ -311,7 +326,7 @@ function Drop2Area(event) {
 				  //如果是編輯
 				
 	 } 
-	 function  returnPicPath($GdCode ){
+	 function returnPicPath($GdCode ){
 		       global $WebSendVal ;
 			   global $noPic;
 	           global  $webPath,$ResPath;
@@ -323,7 +338,7 @@ function Drop2Area(event) {
 			   return $noPic;
 			   
 	 }
-	 function  SchedlueList($data ,$Rect){ //拖曳區
+	 function SchedlueList($data ,$Rect){ //拖曳區
 	           global $CalendarRect;
    		       global $ResPregresList;
 			   global $startDate;
@@ -381,7 +396,7 @@ function Drop2Area(event) {
 			   }
 			 
 	 }
-	 function  UpSingle($data,$Rect){
+	 function UpSingle($data,$Rect){
 		 echo "up";
 	          //$upFormVal ==>0/id 1/name 2/URL 
 			  //$UpHidenVal=array 0/name,1/val
@@ -410,7 +425,6 @@ function Drop2Area(event) {
 	 }
  
 ?>
-
 <?php //ListCalendar
       function ListCalendar(){
 		       global $ResPregresList;

@@ -191,13 +191,32 @@
 		  	  for( $i=$lastSn;$i>0;$i--){
                  $tmpArray= GetArraySn($BaseArray, $ArrayNum ,$i );
 				 if(count($tmpArray)>0)$newArray=  array_merge( $newArray,$tmpArray); 
+			  } 
+		  }
+	      return  $newArray;
+	  }
+	  function PAPI_sortCodeWithGDCode($BaseArray ,$ArrayNum ,$forwardBool="true"){ //排序GDCode案某表格中的數字 tt 0  aa 1
+  		  $newArray=array();
+		  $lastSn= PAPI_getGDCODELastSN($BaseArray,$ArrayNum ); 
+ 
+		 if($forwardBool=="true"){//正向
+		  	  for($i=0;$i<= $lastSn;$i++){
+                  $arr=  PAPI_returnGDSnArray($BaseArray, $ArrayNum ,$i );
+				  array_push($newArray,$arr);
+			  } 
+		  }
+		  if($forwardBool=="false"){//逆向
+		  	  for( $i=$lastSn;$i>0;$i--){
+			      $arr=  PAPI_returnGDSnArray($BaseArray, $ArrayNum ,$i );
+				  array_push($newArray,$arr);
 			  }
 		  }
 	      return  $newArray;
 	  }
-	  function PAPI_sortGDCodeArrays($BaseArray ,$ArrayNum ,$forwardBool="true"){ //排序GDCode案某表格中的數字 tt 0  aa 1
+	   function PAPI_sortGDCodeArrays($BaseArray ,$ArrayNum ,$forwardBool="true"){ //排序GDCode案某表格中的數字 tt 0  aa 1
   		  $newArray=array();
 		  $lastSn=  getLastSN2($BaseArray,$ArrayNum); 
+ 
 		 if($forwardBool=="true"){//正向
 		  	  for($i=0;$i<= $lastSn;$i++){
                  $tmpArray= GetArraySn($BaseArray, $ArrayNum ,$i);
@@ -207,6 +226,7 @@
 		  if($forwardBool=="false"){//逆向
 		  	  for( $i=$lastSn;$i>0;$i--){
                  $tmpArray= GetArraySn($BaseArray, $ArrayNum ,$i );
+				 
 				 if(count($tmpArray)>0)$newArray=  array_merge( $newArray,$tmpArray); 
 			  }
 		  }
@@ -250,6 +270,13 @@
 			   if($s=="--")$s="";
                return  $s;			   
 	   }
+	    function PAPI_returnGDSnArray($BaseArray, $ArrayNum ,$sn ){ 
+		        for($i=0;$i<count($BaseArray);$i++){
+					 $s=PAPI_GDCODE2Sort($BaseArray[$i][ $ArrayNum]);
+			         if( $s==$sn) return $BaseArray[$i];
+			     }
+			  
+	   }
 	   function GetArraySn($BaseArray, $ArrayNum ,$sn ){
 			    $newArray=array();
 		        for($i=0;$i<count($BaseArray);$i++){
@@ -265,6 +292,10 @@
 		           if($SQLData[$i][$SnNum]>$lastSN)$lastSN=$SQLData[$i][$SnNum];
 		           }
 		        return $lastSN;
+	   }
+	   function PAPI_GDCODE2Sort($code){
+		       $sn=(int)(substr($code, -4));
+			   return $sn;
 	   }
 	   function PAPI_getGDCODELastSN($SQLData,$SnNum){
 	            $lastSN=0;
