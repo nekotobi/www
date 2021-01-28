@@ -114,16 +114,34 @@ function Drop2Area(event) {
 			    SwitchListType();
 	}//重新排序
 	function AddResSort(){
-	     	 global $SortType;  
+	     	 global $SortType; 
+			 global $ResLastGDSN;
+			 $s=0;
+			 for($i=1;$i< $ResLastGDSN;$i+=5){
+				  $s+=1;
+				  array_push( $SortType,$s);
+			 }
 	}
 	function SortResData(){
 		     global $Resdatas;
 	         if($_POST["SortType"]=="" and $_POST["SortType"]=="▲"){
 		        $Resdatas=	PAPI_sortCodeWithGDCode( $Resdatas ,3);
+				return;
 			 }
 			 if($_POST["SortType"]=="▼"  ){
 			    $Resdatas= PAPI_sortCodeWithGDCode( $Resdatas ,3,"false");
+			    return;
 			 }
+			 //分頁
+			 $so=$_POST["SortType"];
+			 $arr=array();
+			 for ($i=0;$i<count($Resdatas);$i++){
+			      $s=PAPI_GDCODE2Sort($Resdatas[$i][3]);
+				  if($s>($so-1)*5 and $s<=($so)*5){
+				   array_push($arr,$Resdatas[$i]);
+				  }
+			 }
+			 $Resdatas= $arr;
 	}
 ?>
 <?php //判斷submit
@@ -169,7 +187,8 @@ function Drop2Area(event) {
 			   DrawSingle($SortType,3,$Rect);
 			  //新增工單
 			  if($_POST["ListType"]=="清單") {
-			       $Rect =array(70,86,80,20);
+				   $x=count($SortType)-2;
+			       $Rect =array(70+$x*20,86,40,20);
 				   AddResButtom( $Rect);
 			  }
 	 }
@@ -180,9 +199,8 @@ function Drop2Area(event) {
 		      $valArray=$WebSendVal; 
 			  $SubmitName="submit";
 			  $BgColor="#aa5555";
-			
-			  DrawRect($_POST["ResType"]."X".$ResLastGDSN,"10","#ffffff",$Rect,"#222222" );
-			  $Rect =array(150,86,20,20);
+			  DrawRect( "X".$ResLastGDSN,"10","#ffffff",$Rect,"#222222" );
+			  $Rect =array( $Rect[0]+$Rect[2],86,20,20);
 			  array_push($valArray,array("AddRes" , $ResLastGDSN));
 		      array_push($valArray,array("Type", $_POST["ResType"]));
 			  array_push($valArray,array("ECode",  PAPI_returnECode( )));
