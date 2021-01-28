@@ -357,7 +357,7 @@ function Drop2Area(event) {
 			   for($i=0;$i<count($ResPregresList);$i++){
 				   $BgColor=ColorCode[11][$i];
 				   $id= "gdcode=".$data[3]."=".$data[2]."=".$i;
-				   $Eid= "Egdcode=".$data[3]."=".$data[2]."=".$i;
+				   $Eid= "Egdcode=".$data[3]."=".$data[2]."=".$i."=".$startDay[$i];
 				   $msg=$ResPregresList[$i];
 				   
 				   $x=$Rect[0];
@@ -440,7 +440,6 @@ function Drop2Area(event) {
 			   ProAPI_DrawWorkersAreas($Rect);
 	  }
 ?>
-
 <?php //判斷submit;
       function setJavaForm(){
 		       global $URL;
@@ -480,7 +479,6 @@ function Drop2Area(event) {
 			 
 	  }
 ?>
-
 <?php //上傳
       function  Addform(){
 	            global $data_library,$ResdataBase;
@@ -508,9 +506,7 @@ function Drop2Area(event) {
 				$gdcode=$datas[1];
 				$Type=$datas[2];
 				$ResSort=$datas[3];
-				//如果是類別
-				$ResSort=explode("[",$_POST["ListType"])[1];
-				echo $ResSort;
+		
 				$tableNames=returnTables($data_library ,$ResdataBase);
 		        $WHEREtable=array( "gdcode", "Type");
 		        $WHEREData=array( $gdcode,$Type  );
@@ -524,6 +520,10 @@ function Drop2Area(event) {
 					   $up=array($str);
 					}
 			     	if($data2[0]=="tableName"){
+					   //如果是類別
+					   if($data2[1]=="classification")  $ResSort=explode("[",$_POST["ListType"])[1];
+			     	 
+				      // echo $ResSort;
 					   $tableName=$data2[1];
 					   $Base=array($tableName);
 					   $val=$data2[2];
@@ -539,17 +539,22 @@ function Drop2Area(event) {
 				if($datas[0]=="Egdcode"){
 				    $Base=array("workingDays");
 			        $arr=explode("=",$curentData[0][7]);
-				    $e= $arr[$ResSort] ;   // returnState($curentData[0][7],$data2[1],$ResSort,count($ResPregresList));
-					$s=$data2[1];
+					//echo $_POST["DragID"];
+					//echo $ResSort.";";
+				    $e=$datas[4];
+					//$s= $arr[$ResSort] ;   // returnState($curentData[0][7],$data2[1],$ResSort,count($ResPregresList));
+					$s= $data2[1];
 					$days=CAPI_GetPassDays($s,$e);
+					//echo $s.">".$e.">".$days;
+					$ResSort=$datas[3];
 				    $str=returnState($curentData[0][8],$days,$ResSort,count($ResPregresList));
 				    $up=array($str);
 		 
 				}
 			   $stmt=MAPI_MakeUpdateStmt($ResdataBase,$Base,$up,$WHEREtable,$WHEREData);
-			    echo $stmt;
+			   // echo $stmt;
 			   SendCommand($stmt,$data_library);		
-			    JAPI_ReLoad($WebSendVal,$URL);
+			   JAPI_ReLoad($WebSendVal,$URL);
 	  }
 	
 ?>
