@@ -110,6 +110,12 @@
 			   echo "  top:".$Rect[1]."px;Left:".$Rect[0]."px; width:".$Rect[2]."px;height:".$Rect[3]."px; '>";
 			   echo "  <img src=".$pic." width=".$Rect[2]." height=".$Rect[3]."></div>";
 	  }
+	  function DrawIDPic($pic,$Rect,$ID,$Layer=0){
+		       echo "<div  style='position:absolute;  ";
+			   echo " z-index:".$Layer ."; ";
+			   echo "  top:".$Rect[1]."px;Left:".$Rect[0]."px; width:".$Rect[2]."px;height:".$Rect[3]."px; '>";
+			   echo "  <img id=".$ID."  src=".$pic." width=".$Rect[2]." height=".$Rect[3]."   ></div>";
+	  }
 	  function DrawText($text,$Rect,$Size,$Color,$Layer=0){
 	           echo"<div   style=' text-align:left  ;color:".$Color."; ";
 			   echo " z-index:".$Layer ."; ";
@@ -307,6 +313,7 @@
 				    DrawInputRect_size($msg,$fontSize,$fontColor,$x,$y,$w,$h,$BgColor,$WorldAlign,$input);
 			  }
 	 		    echo "<form>";
+			 
 	   }
 	   function DrawPopBG($x,$y,$w,$h,$title,$fontSize,$BackURL,$PostArray=array()){
 	            DrawPicBG("Pics/Black50Bg.png",$y-40,$x-40,$w+80,$h+80);

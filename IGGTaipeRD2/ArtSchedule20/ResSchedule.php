@@ -1,9 +1,11 @@
  <?PHP
+ 
+ 	  require_once('/Apis/PubJavaApi.php');
  	  require_once('/Apis/mysqlApi20.php');
 	  require_once('/Apis/CalendarApi20.php');
    	  require_once('/Apis/ProjectApi.php');
       require_once('/Apis/PubApi20.php');
-	  require_once('/Apis/PubJavaApi.php');
+
 	  function CheckCookies(){
 		       global $URL;
 			   $URL="ResSchedule.php";
@@ -32,9 +34,6 @@ function Drop2Area(event) {
 		var targetID =  event.currentTarget.id;
 	    var tx= document.getElementById( targetID).style.left;
 	    var x=tx.split("px");
-	    var DragID_tmp= DragID.split("=");
-	    var targetID_tmp= targetID.split("="); 
-		var SID;
 	    document.Show.DragID.value=  DragID;
 	    document.Show.target.value=  targetID;
 	    Show.submit();
@@ -45,7 +44,7 @@ function Drop2Area(event) {
 	  defineData();
 	  checkSubmit();
       DrawButtoms();
-
+      setJavaForm();
 ?>
 <?php //定義資料
     function defineData(){
@@ -74,7 +73,7 @@ function Drop2Area(event) {
 			 global $SortType;
 		     $SortType=array("▲","▼");
 			 //網頁變數
-			 global $ResType,$ResTypeSingleData;
+			 global $ResTypes,$ResTypeSingleData;
 			 global $typeDatabase,$Resdatas, $ResLastGDSN;
              global  $ResdataBase,$typeDatabase;
 			 $typeDatabase="restype_".$selectProject;
@@ -84,7 +83,7 @@ function Drop2Area(event) {
 		     $ResTypeT2=  filterArray( $ResTypeT,0,"data");
 			 $ResTypeSingleDataT=filterArray( $ResTypeT2,2,$_POST["ResType"] );
 			 $ResTypeSingleData=$ResTypeSingleDataT[0];
-	         $ResType = returnArraybySort( $ResTypeT2,2);
+	         $ResTypes = returnArraybySort( $ResTypeT2,2);
 			 //細項
 			 $type= $WebSendVal[0][1];
 			 if( $type=="")return;
@@ -108,7 +107,7 @@ function Drop2Area(event) {
 			 $className= explode("=", $ResTypeSingleData[7]) ;
 			 $ListType=array("清單","排程表");
 	         for($i=0;$i<count($className);$i++){
-				 array_push( $ListType,$className[$i]."  [".$i);
+				 array_push( $ListType,$className[$i]."[".$i);
 	         }
 			 
 	}
@@ -117,12 +116,13 @@ function Drop2Area(event) {
       function checkSubmit(){
 		       global $data_library, $ResdataBase ;
 			   global $WebSendVal,$URL;
-			   if($_POST["ListType"]!="清單"){   
-			      setJavaForm();
-			   }
+			 //  if($_POST["ListType"]!="清單"   and $_POST["ListType"]!=""){   
+			   
+			  // }
 
 	           if($_POST["submit"]=="變更"){
-				    upform();
+				   echo $_POST["ResType"];
+				   upform();
 					return;
 			   }
 			   if($_POST["submit"]=="+"){ //新增工單
@@ -130,6 +130,7 @@ function Drop2Area(event) {
 				  JAPI_ReLoad($WebSendVal,$URL);
 			   } 
 			   if($_POST["DragID"]!=""){ //拖曳物件
+			      
 				    upScedule();
 			   }
 	  }
@@ -141,9 +142,9 @@ function Drop2Area(event) {
 			  global $ProjectTypes,$selectProject,$startY,$URL;
 			  $startY=20;
 		      //資源分類
-			  global $ResType; 
+			  global $ResTypes; 
 			  $Rect=array("20","40","50","20");
-		      DrawSingle(  $ResType,0,$Rect);
+		      DrawSingle(  $ResTypes,0,$Rect);
 		      $Rect[1]+=21;
 			  //顯示
 			  global $ListType;
@@ -216,12 +217,19 @@ function Drop2Area(event) {
 			  $ClasstypeSort=$ClasstypeSortArr[1];
 			  $classArr=explode("=", $ResTypeSingleData[$sort]);
 			  $class=explode("_", $classArr[  $ClasstypeSort]);
+			  array_push( $class,"未分類");
 			  //拖曳底部
 		      DrawTypeDragBase(  $class,20,120,1000,80);
 	 }
      function DrawTypeDragObj($typeName,$x,$y,$Typesort){
 		      global  $Resdatas;
+			 
 	          $sortArr= returnSortTypes( $Resdatas,$typeName,$Typesort);
+			   if($typeName=="未分類"){
+				   $sortArr1=returnSortTypes( $Resdatas,"未分類",$Typesort);
+				   $sortArr2=returnSortTypes( $Resdatas,"",$Typesort);
+				  $sortArr=addArray( $sortArr1, $sortArr2);
+			   }
 			  $BgColor="#333333";
 			  $fontColor="#ffffff";
 		      $w=50;
@@ -231,7 +239,7 @@ function Drop2Area(event) {
 			  for($i=0;$i<count($sortArr);$i++){
 			      $id= "gdcode=".$sortArr[$i][3]."=".$sortArr[$i][2]."=".$i;//1.gdcode. 2.
 				  DrawRect("","12","#ffffff",array($x-1,$y-1,$w+2,$w+2+$h),"#000000" );
-				  DrawPic(returnPicPath($sortArr[$i][3]),array($x,$y+$h,$w,$w));
+				  DrawIDPic(returnPicPath($sortArr[$i][3]),array($x,$y+$h,$w,$w),$id);
 				  JAPI_DrawJavaDragbox(  $sortArr[$i][3] ,$x,$y,$w,$h,8, $BgColor,$fontColor,$id);
 				  DrawRect($sortArr[$i][4] ,"8","#ffffff",array($x,$y+$h-10,$w,10),"#222222" );
 				  $x+=$w+1;
@@ -244,10 +252,11 @@ function Drop2Area(event) {
 			  global $ClasstypeSort;//分類編號
 			  $fontColor="#ffffff";
 			  $By=$y;
-			  $Typesort=0;
+			  $Typesort=$ClasstypeSort;
 	          for($i=0;$i<count($types);$i++){
 				  $id="tableName=classification=".$types[$i]."=".$ClasstypeSort;
 				  $BgColor=$ColorCode[12][$i];
+				    if($types[$i]=="未分類") $BgColor="#888888";
 				  JAPI_DrawJavaDragArea($types[$i],$x,$y,$w,$h,$BgColor,$fontColor,$id,"12" );
 				  $y+=$h+2;
 			  }
@@ -256,7 +265,7 @@ function Drop2Area(event) {
 			      DrawTypeDragObj($types[$i],$x,$By,$Typesort);
 				  $By+=$h+2;
 			   }
-		       DrawTypeDragObj("",$x,$By,$Typesort);
+		       //DrawTypeDragObj("",$x,$By,$Typesort);
 	 }
 	 //取得該type的resdata
 	 function returnSortTypes( $Resdatas,$typeName,$Typesort){
@@ -278,10 +287,12 @@ function Drop2Area(event) {
 				  $name= $data[3];
 			      $SubmitName="submit";
 				  $ValArray=$WebSendVal;
-				  $type=$WebSendVal[0][1];
+				 
+				 // $type=$WebSendVal[0][1];
 				  if($_POST["ListType"]=="清單"){
-			        if( $WebSendVal[1][1]== $name)$BgColor="#ff2222";
-		               $ValArray[1][1]=  $name;
+			      //  if( $WebSendVal[1][1]== $name)$BgColor="#ff2222";
+				      array_push(  $ValArray,array("EditRes",$name));
+		              // $ValArray[1][1]=  $name;
 			           sendVal($URL,  $ValArray ,$SubmitName,$name,$Rect,10,$BgColor); 
 				  }else{
 				        DrawRect($data[3],10,"#ffffff",$Rect,"#222222" );
@@ -293,7 +304,7 @@ function Drop2Area(event) {
 				  $Rect[0]+=$Rect[2]+2;
 				  $Rect[2]=$Rect[3];
 				  DrawPic( returnPicPath($name ),$Rect );// $noPic
-				  if( $WebSendVal[1][1]== $name) UpSingle($data,$ERect);
+				  if( $_POST["EditRes"]== $name and $_POST["EditRes"]!="") UpSingle($data,$ERect);
 				  if($_POST["ListType"]!="排程表")return;
 				  //可拖曳工作分類
                   SchedlueList($data ,$Rect);
@@ -370,7 +381,8 @@ function Drop2Area(event) {
 			   }
 			 
 	 }
-	 function UpSingle($data,$Rect){
+	 function  UpSingle($data,$Rect){
+		 echo "up";
 	          //$upFormVal ==>0/id 1/name 2/URL 
 			  //$UpHidenVal=array 0/name,1/val
 			  //$inputVal=0/type 1/name 2/showname 3/fontsize 4/5/6/7rect  8/bgcolor 9/fontColor 10/val 11/size
@@ -378,7 +390,9 @@ function Drop2Area(event) {
 			  global $WebSendVal;
 			  $upFormVal=array("EditResForm","EditResForm",$URL);
 			  $UpHidenVal=array();
-			  array_push($UpHidenVal,array("ResType",$WebSendVal[0][1]));
+			//  array_push($UpHidenVal,array("ResType",$_POST["ResType"]));
+			  		  array_push($UpHidenVal,array("EResType",$_POST["ResType"]));
+			  echo ">".$_POST["ResType"].$WebSendVal[0][1];
 			  array_push($UpHidenVal,array("gdcode",$data[3]));
 			  $BGRect=$Rect;
 			  $BGRect[2]=$Rect[2]*3;
@@ -394,15 +408,7 @@ function Drop2Area(event) {
 			  array_push($inputVal,$submit);
 			  upSubmitform($upFormVal,$UpHidenVal, $inputVal);
 	 }
-	  function UpSingle_b($data,$Rect){
-		  global $URL;
-		  echo  "<form id='EditResForm'  name='EditResForm'  action=".$URL." method='post' enctype='multipart/form-data'>";
-		  echo   "<input  type=text  id=text   name=text 
-  				           style='font-size:".$Rect[0]."px'; value='".$Rect[1]."' size=10 >";
-	      echo   "<input  type=submit  id=submit   name=submit 
-  				           style='font-size:".$Rect[0]."px'; value='送出' size=10 >";			   
-		  echo  "</form>";
-	  }
+ 
 ?>
 
 <?php //ListCalendar
@@ -436,10 +442,12 @@ function Drop2Area(event) {
 			   global $URL;
 			   global $WebSendVal;
 			   global $data_library,  $ResdataBase ;
-			  
+			 //  echo  $_POST["ResType"].">=".$_POST["EResType"];;
 			   //上傳圖檔
-			   $upPath="..\\..\\".$selectProject."Res\\".$_POST["Type"];
+			   $upPath="..\\..\\".$selectProject."Res\\".$_POST["ResType"];
+			   if (!is_dir($upPath) ) mkdir($upPath, 0700);
                $sPicPath=$upPath."\\spic";
+			   if (!is_dir($sPicPath) ) mkdir($sPicPath, 0700);
 			   if($_FILES["pic"]["name"]!=""){
 				  $filePath= $upPath."\\".$_POST["gdcode"].".png";
 	              $filePaths= $sPicPath."\\".$_POST["gdcode"].".png";
@@ -452,8 +460,8 @@ function Drop2Area(event) {
 			     $WHEREtable=array("EData","gdcode");
 				 $WHEREData=array("data",$_POST["gdcode"]);
 			     MAPI_AutoEditMsQLData($data_library, $ResdataBase,$WHEREtable,$WHEREData );
-			    $arr=array(array("ResType",$_POST["ResType"] ),array("ListType",$_POST["ListType"] ));
-                JAPI_ReLoad(  $arr,$URL);
+			     $arr=array(array("ResType",$_POST["ResType"] ),array("ListType",$_POST["ListType"] ));
+               JAPI_ReLoad(  $arr,$URL);
 			 
 	  }
 ?>
@@ -485,6 +493,9 @@ function Drop2Area(event) {
 				$gdcode=$datas[1];
 				$Type=$datas[2];
 				$ResSort=$datas[3];
+				//如果是類別
+				$ResSort=explode("[",$_POST["ListType"])[1];
+				echo $ResSort;
 				$tableNames=returnTables($data_library ,$ResdataBase);
 		        $WHEREtable=array( "gdcode", "Type");
 		        $WHEREData=array( $gdcode,$Type  );
@@ -521,9 +532,9 @@ function Drop2Area(event) {
 		 
 				}
 			   $stmt=MAPI_MakeUpdateStmt($ResdataBase,$Base,$up,$WHEREtable,$WHEREData);
-			   //echo $stmt;
+			    echo $stmt;
 			   SendCommand($stmt,$data_library);		
-			   JAPI_ReLoad($WebSendVal,$URL);
+			    JAPI_ReLoad($WebSendVal,$URL);
 	  }
 	
 ?>
