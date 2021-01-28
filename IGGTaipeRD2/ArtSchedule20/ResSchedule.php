@@ -135,7 +135,7 @@ function Drop2Area(event) {
 			  // }
 
 	           if($_POST["submit"]=="變更"){
-				   echo $_POST["ResType"];
+				   //echo $_POST["ResType"];
 				   upform();
 					return;
 			   }
@@ -407,7 +407,8 @@ function Drop2Area(event) {
 			  $UpHidenVal=array();
 			//  array_push($UpHidenVal,array("ResType",$_POST["ResType"]));
 			  		  array_push($UpHidenVal,array("EResType",$_POST["ResType"]));
-			  echo ">".$_POST["ResType"].$WebSendVal[0][1];
+					  array_push($UpHidenVal,array("SortType",$_POST["SortType"]));
+			 // echo ">".$_POST["SortType"].$WebSendVal[0][1];
 			  array_push($UpHidenVal,array("gdcode",$data[3]));
 			  $BGRect=$Rect;
 			  $BGRect[2]=$Rect[2]*3;
@@ -474,8 +475,8 @@ function Drop2Area(event) {
 			     $WHEREtable=array("EData","gdcode");
 				 $WHEREData=array("data",$_POST["gdcode"]);
 			     MAPI_AutoEditMsQLData($data_library, $ResdataBase,$WHEREtable,$WHEREData );
-			     $arr=array(array("ResType",$_POST["ResType"] ),array("ListType",$_POST["ListType"] ));
-               JAPI_ReLoad(  $arr,$URL);
+			     $arr=array(array("ResType",$_POST["ResType"] ),array("ListType",$_POST["ListType"] ),array("SortType",$_POST["SortType"] ));
+                  JAPI_ReLoad(  $arr,$URL);
 			 
 	  }
 ?>
