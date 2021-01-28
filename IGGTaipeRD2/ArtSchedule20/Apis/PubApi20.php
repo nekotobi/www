@@ -200,7 +200,7 @@
 		  $lastSn= PAPI_getGDCODELastSN($BaseArray,$ArrayNum ); 
  
 		 if($forwardBool=="true"){//正向
-		  	  for($i=0;$i<= $lastSn;$i++){
+		  	  for($i=1;$i<= $lastSn;$i++){
                   $arr=  PAPI_returnGDSnArray($BaseArray, $ArrayNum ,$i );
 				  array_push($newArray,$arr);
 			  } 

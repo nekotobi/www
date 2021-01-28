@@ -111,7 +111,7 @@ function Drop2Area(event) {
 				 array_push( $ListType,$className[$i]."[".$i);
 	         }
 			 SortResData();
-			    SwitchListType();
+			  SwitchListType();
 	}//重新排序
 	function AddResSort(){
 	     	 global $SortType; 
@@ -124,7 +124,7 @@ function Drop2Area(event) {
 	}
 	function SortResData(){
 		     global $Resdatas;
-	         if($_POST["SortType"]=="" and $_POST["SortType"]=="▲"){
+	         if($_POST["SortType"]=="" or $_POST["SortType"]=="▲"){
 		        $Resdatas=	PAPI_sortCodeWithGDCode( $Resdatas ,3);
 				return;
 			 }
@@ -182,35 +182,37 @@ function Drop2Area(event) {
 			  global $ListType;
 			  DrawSingle($ListType,2,$Rect);
 			  //排序
-			   $Rect =array(20,86,20,20);
+			   $Rect =array(20,82,20,12);
 			   global $SortType;
-			   DrawSingle($SortType,3,$Rect);
+			   DrawSingle($SortType,3,$Rect,8);
 			  //新增工單
 			  if($_POST["ListType"]=="清單") {
 				   $x=count($SortType)-2;
-			       $Rect =array(70+$x*20,86,40,20);
-				   AddResButtom( $Rect);
+			      
+				   AddResButtom( );
 			  }
 	 }
-	 function AddResButtom( $Rect ){
+	 function AddResButtom(   ){
 	          global $WebSendVal;
 			  global $URL;
 			  global $ResLastGDSN;
 		      $valArray=$WebSendVal; 
 			  $SubmitName="submit";
 			  $BgColor="#aa5555";
-			  DrawRect( "X".$ResLastGDSN,"10","#ffffff",$Rect,"#222222" );
-			  $Rect =array( $Rect[0]+$Rect[2],86,20,20);
+			 
+			  $Rect =array(20,95,40,12);
+			   DrawRect( "X".$ResLastGDSN,"10","#ffffff",$Rect,"#222222" );
 			  array_push($valArray,array("AddRes" , $ResLastGDSN));
 		      array_push($valArray,array("Type", $_POST["ResType"]));
 			  array_push($valArray,array("ECode",  PAPI_returnECode( )));
 		      array_push($valArray,array("EData",  "data"));
 			  $GdCode=ProAPI_ReturnGDCode( $_POST["ResType"],$ResLastGDSN+1);
 			  array_push($valArray,array("gdcode", $GdCode));
- 
+              $Rect[0]+= $Rect[2]+2;
+			     $Rect[2]= 20;
 			  sendVal($URL,  $valArray ,$SubmitName,  "+",$Rect,10,$BgColor); 
 	 }
-	 function DrawSingle($data,$Wsort ,$Rect){
+	 function DrawSingle($data,$Wsort ,$Rect,$fontSize=10){
 		      global $URL;
 		      global $WebSendVal  ;
 			  $SubmitName="submit";
@@ -221,7 +223,7 @@ function Drop2Area(event) {
 				   $name= $data[$i] ;
 				   if( $WebSendVal[$Wsort][1]== $name)$BgColor="#ff2222";
 				   $valArray[$Wsort][1]=  $name;
-			       sendVal($URL,  $valArray ,$SubmitName,$name,$Rect,10,$BgColor); 
+			       sendVal($URL,  $valArray ,$SubmitName,$name,$Rect,$fontSize,$BgColor); 
 				   $Rect[0]+=$Rect[2]+2;
 			  }
 	 }
