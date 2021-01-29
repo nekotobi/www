@@ -398,34 +398,51 @@ function Drop2Area(event) {
 				   $BgColor=ColorCode[11][$i];
 				   $id= "gdcode=".$data[3]."=".$data[2]."=".$i;
 				   $Eid= "Egdcode=".$data[3]."=".$data[2]."=".$i."=".$startDay[$i];
-				   $msg=$ResPregresList[$i];
+				 
 				   $x=$Rect[0];
                    $y=$Rect[1]+$i*($Rect[3]+1);
 				   $w=120;
 				   $h=$Rect[3];
-				   //未排定
+				   //分類標題
+
+				   $msg=$ResPregresList[$i];
+				   if(  $principal[$i]!="")$msg=$msg."[".$principal[$i]."]";
+				   if(  $outsourcing[$i]!="")$msg=$msg."[".$outsourcing[$i]."]";
 				   $BgColor=$ColorCode[12][$i];
-				   if( $startDay[$i]==""    )
-				       JAPI_DrawJavaDragbox(   $msg ,$x,$y,$w,$h,10,"#222222", "#aaaaaa",$id);
+				   if($startDay[$i]==""    ) $BgColor="#222222";
+				   if($state[$i]=="已完成")  $BgColor="#999999";
+                   JAPI_DrawJavaDragbox(   $msg ,$x,$y,$w,$h,10, $BgColor, "#ffffff",$id);
 				   //已排定
 				   if( $startDay[$i]!=""  ){
 					   //判斷時間範圍
 					  if(CAPI_boolInDataRange($startDay[$i],$wd, $startDate,$DateRange)  ){
-					     if(  $principal[$i]!="")$msg=$msg."[".$principal[$i]."]";
-					     if(  $outsourcing[$i]!="")$msg=$msg."[".$outsourcing[$i]."]";
+					    $workWid=$CalendarRect[2]*$wd;
+					    $fontColor="#eeeeee";
+						$x2= $CalendarRect[0]+ (CAPI_returnLocX($startDay[$i],$startDate )-1)*$CalendarRect[2];
+						//補助線
+						if($state[$i]!="已完成")  DrawRect("",1,$fontColor,array($x+$w,$y+5,$x2-$x-$w,2),$BgColor);
+						//主拖曳
+					    JAPI_DrawJavaDragbox( "[".$wd."]",$x2,$y+1,$workWid,$h-4,10, $BgColor,$fontColor,$id);
+						//拖曳天數
+						  $BgColorE=PAPI_changeColor( $BgColor,array(0.8,0.8,0.8));
+						if($state[$i]!="已完成") JAPI_DrawJavaDragbox( "",$x2+$workWid,$y+1,$CalendarRect[2] ,$h-4,10, $BgColorE,$fontColor, $Eid);
+						/*
+					   
 						if($state[$i]=="已完成")  $BgColor="#888888";
 					    $BgColor2= PAPI_changeColor( $BgColor,array(1.2,1.2,1.2));
-					    $workWid=$CalendarRect[2]*$wd;
-						$fontColor="#eeeeee";
-					    $x2= $CalendarRect[0]+ (CAPI_returnLocX($startDay[$i],$startDate )-1)*$CalendarRect[2];
-						if($state[$i]!="已完成")  DrawRect("",1,$fontColor,array($x,$y+5,$x2-$x,2),$BgColor);
+					
+					
+					  
+						
 					    DrawRect($msg,10,$fontColor,array($x,$y,$w,$h),$BgColor );
+						
 						//主
                         $BgColorm=  ProAPI_ReturnStateColor(  $BgColor2,$state[$i]);
 				        JAPI_DrawJavaDragbox( "[".$wd."]",$x2,$y+1,$workWid,$h-2,10, $BgColorm,$fontColor,$id);
 						//時間控制
 					    $BgColorE= "#777777";// PAPI_changeColor( $BgColorm,array(0.8,0.8,0.8));
 						if($state[$i]!="已完成") JAPI_DrawJavaDragbox( "",$x2+$workWid,$y+1,$CalendarRect[2] ,$h-2,10, $BgColorE,$fontColor, $Eid);
+					  */
 					  }
 				   }
 			   }
