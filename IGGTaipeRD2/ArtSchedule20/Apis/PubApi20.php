@@ -14,7 +14,7 @@
 				    if($_COOKIE[$arr[$i]]!=""){
 				    	global $$arr[$i];
 						$$arr[$i]=$_COOKIE[$arr[$i]];
-					 // echo $arr[$i]."=".$_COOKIE[$arr[$i]];
+					  //echo $arr[$i]."=".$_COOKIE[$arr[$i]];
 					}
 				}
 	   }

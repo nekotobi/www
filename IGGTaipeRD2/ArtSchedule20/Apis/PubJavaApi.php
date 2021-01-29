@@ -122,5 +122,14 @@
 				  //echo $javaCom;
                   echo " <script language='JavaScript'>".$javaCom."</script>"; 
         }
- 
+       function  JAPI_setcookiesAndReload($CookieArray,$WebSendArray, $URL){
+	            if($_POST['setCookie']!="true") return;
+			       for($i=0;$i<count($CookieArray);$i++){
+				    	$n= $CookieArray[$i];
+				        if($_POST[$n]!=""){
+						   setcookie($n , $_POST[$n], time()+78000); 
+					      }
+				}
+		      JAPI_ReLoad($WebSendArray,$URL);
+        }
 ?>

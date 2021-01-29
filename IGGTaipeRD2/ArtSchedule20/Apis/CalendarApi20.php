@@ -142,7 +142,7 @@
       function  CAPI_setDateRange($URL,$LocX,$LocY,$startDate,$DateRange){
 	            $BgColor="#442222";
 			    $SubmitName="submit";
-				if($startDate=="--")$startDate=date("Y-m-1");
+				if($startDate=="--" or $startDate=="" )$startDate=date("Y-m-1");
 				//前一月
 			    $Rect=array($LocX,$LocY,19,12);
 				$targetDate=date("Y-n-1", strtotime("-1 month", strtotime($startDate)));
@@ -158,6 +158,33 @@
 				$Rect=array($LocX,$LocY,19,12);
 				$targetDate=date("Y-n-1", strtotime("+1 month", strtotime($startDate)));
 			    $ArrayVal=array(array("startDate",$targetDate));
+			    sendVal($URL,$ArrayVal,$SubmitName,"'>'",$Rect,10, $BgColor , "#ffffff","true");
+				//加一月
+				//減一月
+				//預設   
+	  }
+	   function CAPI_setDateRangeButtom($URL,$LocX,$LocY,$startDate,$DateRange,$WebSendVal,$CookieName){
+	            $BgColor="#442222";
+			    $SubmitName="submit";
+				if($startDate=="--" or $startDate=="" )$startDate=date("Y-m-1");
+				//前一月
+			    $Rect=array($LocX,$LocY,19,12);
+				$targetDate=date("Y-n-1", strtotime("-1 month", strtotime($startDate)));
+				$ArrayVal=$WebSendVal;
+			    array_push( $ArrayVal, array("startDate_".$CookieName,$targetDate));
+			    sendVal($URL,$ArrayVal,$SubmitName,"<",$Rect,10, $BgColor , "#ffffff","true");
+				//預設
+				$LocX+=20;
+			    $Rect=array($LocX,$LocY,59,12);
+			    $ArrayVal=$WebSendVal;
+				 array_push( $ArrayVal, array("startDate_".$CookieName,date("Y-n-1")));
+			    sendVal($URL,$ArrayVal,$SubmitName,$startDate,$Rect,8, $BgColor , "#ffffff","true");
+				//後一月
+				 $LocX+=60;
+				$Rect=array($LocX,$LocY,19,12);
+				$targetDate=date("Y-n-1", strtotime("+1 month", strtotime($startDate)));
+				  $ArrayVal=$WebSendVal;
+				 array_push( $ArrayVal, array("startDate_".$CookieName,$targetDate));
 			    sendVal($URL,$ArrayVal,$SubmitName,"'>'",$Rect,10, $BgColor , "#ffffff","true");
 				//加一月
 				//減一月

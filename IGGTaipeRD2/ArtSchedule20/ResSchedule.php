@@ -10,9 +10,11 @@
 		       global $URL;
 			   $URL="ResSchedule.php";
 			   global $CookieArray;
-			   $CookieArray=array("selectProject");
-	           PubApi_setcookies($CookieArray, $URL);
-		  	   PubApi_GetArrayCookie($CookieArray); 
+			   $CookieArray=array("selectProject","startDate_Res","DateRange_Res");
+			   $WebSendArray=array("ResType","ListType","SortType");
+	           //PubApi_setcookies($CookieArray, $URL);
+		  	   JAPI_setcookiesAndReload($CookieArray, $WebSendArray, $URL);
+			   PubApi_GetArrayCookie($CookieArray); 
                for($i=0;$i<count($CookieArray);$i++) {
 				   global $$CookieArray[0][0];
 				   $$CookieArray[0][1]=$$CookieArray[0][1];
@@ -44,7 +46,8 @@ function Drop2Area(event) {
 	  defineData();
 	  checkSubmit();
       DrawButtoms();
-      setJavaForm();java//表單一定要最後
+	  DrawDateRangeButtom();
+      setJavaForm();//java表單一定要最後
 ?>
 <?php //定義資料
     function defineData(){
@@ -54,8 +57,10 @@ function Drop2Area(event) {
 			 //進度座標
 		     global $CalendarRect;
 		     global $startDate;
+			 global $startDate_Res ,$DateRange_Res;
 			 global $ColorCode;
-		     $startDate="2021-1-1";
+		     $startDate=$startDate_Res;//"2021-1-1";
+			 if($startDate=="")  $startDate=  "2021-1-1";
 		     $CalendarRect=array(315,80,10,0);
 			 $ColorCode= GetColorCode();
 			 //資源位置
@@ -168,6 +173,16 @@ function Drop2Area(event) {
 	  }
 ?>
 <?php //buttoms;
+	 function DrawDateRangeButtom(){
+		       if($_POST["ListType"]!=="排程表")return;
+	            //控制日期
+			   global $URL,$startDate,$DateRange;
+			   global $WebSendVal;
+			   $LocX=305;
+			   $LocY=68;
+			   
+			   CAPI_setDateRangeButtom($URL,$LocX,$LocY,$startDate,$DateRange,$WebSendVal,"Res");
+	  }
      function DrawButtoms(){
 		      global $URL;
               global $CookieArray;
