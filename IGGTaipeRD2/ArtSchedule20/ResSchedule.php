@@ -393,7 +393,7 @@ function Drop2Area(event) {
 			   $jila=explode("=",$data[12]);
 			   //7-s w-8 p-9 out-10 state=11
 			   for($i=0;$i<count($ResPregresList);$i++){
-				   $wd= $workingDays[0];
+				   $wd= $workingDays[$i];
 	               if($wd=="")$wd=1;
 				   $BgColor=ColorCode[11][$i];
 				   $id= "gdcode=".$data[3]."=".$data[2]."=".$i;
@@ -422,7 +422,7 @@ function Drop2Area(event) {
 					    DrawRect($msg,10,$fontColor,array($x,$y,$w,$h),$BgColor );
 						//主
                         $BgColorm=  ProAPI_ReturnStateColor(  $BgColor2,$state[$i]);
-				        JAPI_DrawJavaDragbox(  $state[$i]."[".$wd."]",$x2,$y+1,$workWid,$h-2,10, $BgColorm,$fontColor,$id);
+				        JAPI_DrawJavaDragbox( "[".$wd."]",$x2,$y+1,$workWid,$h-2,10, $BgColorm,$fontColor,$id);
 						//時間控制
 					    $BgColorE= "#777777";// PAPI_changeColor( $BgColorm,array(0.8,0.8,0.8));
 						if($state[$i]!="已完成") JAPI_DrawJavaDragbox( "",$x2+$workWid,$y+1,$CalendarRect[2] ,$h-2,10, $BgColorE,$fontColor, $Eid);
