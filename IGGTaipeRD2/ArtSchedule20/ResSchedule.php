@@ -422,10 +422,17 @@ function Drop2Area(event) {
 						//補助線
 						if($state[$i]!="已完成")  DrawRect("",1,$fontColor,array($x+$w,$y+5,$x2-$x-$w,2),$BgColor);
 						//主拖曳
-					    JAPI_DrawJavaDragbox( "[".$wd."]",$x2,$y+1,$workWid,$h-4,10, $BgColor,$fontColor,$id);
+						$xe=$x2;
+						$endx=0;
+						if($x2<($x+$w)){
+							$x2=($x+$w);
+							$endx=$x2-$xe;
+						}
+					    JAPI_DrawJavaDragbox( "[".$wd."]",$x2,$y+1,$workWid-$endx,$h-4,10, $BgColor,$fontColor,$id);
 						//拖曳天數
-						  $BgColorE=PAPI_changeColor( $BgColor,array(0.8,0.8,0.8));
-						if($state[$i]!="已完成") JAPI_DrawJavaDragbox( "",$x2+$workWid,$y+1,$CalendarRect[2] ,$h-4,10, $BgColorE,$fontColor, $Eid);
+					    $BgColorE=PAPI_changeColor( $BgColor,array(0.8,0.8,0.8));
+					 
+						if($state[$i]!="已完成") JAPI_DrawJavaDragbox( "",$xe+$workWid,$y+1,$CalendarRect[2] ,$h-4,10, $BgColorE,$fontColor, $Eid);
 						/*
 					   
 						if($state[$i]=="已完成")  $BgColor="#888888";
