@@ -177,7 +177,7 @@
 				$LocX+=20;
 			    $Rect=array($LocX,$LocY,59,12);
 			    $ArrayVal=$WebSendVal;
-				 array_push( $ArrayVal, array("startDate_".$CookieName,date("Y-n-1")));
+				array_push( $ArrayVal, array("startDate_".$CookieName,date("Y-n-1")));
 			    sendVal($URL,$ArrayVal,$SubmitName,$startDate,$Rect,8, $BgColor , "#ffffff","true");
 				//後一月
 				 $LocX+=60;
@@ -229,10 +229,20 @@
 				return $ds/3600/24;
 	   }
 	 
-	  //取得幾天後
+
 	  function CAPI_GetAfterDate($date,$days){
 		       $d="+".$days." day";
 	           return   date("Y-n-1", strtotime($d, strtotime($date))) ;
+	  } 
+    //取得幾天後
+	  function CAPI_GetAfterDays($date,$days){
+		       $d="+".$days." day";
+	           return   date("Y-n-j", strtotime($d, strtotime($date)));
+	  }
+	  //取得幾月後
+	  function CAPI_GetAfterMonths($date,$Months){
+		       $d="+".$Months." month";
+	           return   date("Y-n-j", strtotime($d, strtotime($date))) ;
 	  }
 	  function CAPI_ChangeTimeFormat($baseStr){ //轉換日期格式 "_" > "-"
 		       $str=str_replace("_","-",$baseStr);
@@ -254,4 +264,18 @@
 		 
 			   return $result;
       }
+	  function  CAPI_boolInDataRange($TargetStartTime,$TargetDays, $startDate,$DateRange){
+		      //  echo $DateRange;
+				$ta=str_replace("_","-",$TargetStartTime);
+	            $end= CAPI_GetAfterMonths(  $startDate,$DateRange);
+			    $Bool=false;
+				//判斷開始
+				$result=CAPI_checkIsBetweenTime($startDate ,$end,$ta);
+			    if($result=="in")return true;
+				//判斷結束
+				$TE=CAPI_GetAfterDays($ta,$TargetDays);
+				$result=CAPI_checkIsBetweenTime($startDate ,$end,$TE);
+				if($result=="in")return true;
+				return false;
+	  }
 ?>

@@ -38,11 +38,12 @@ function Drop2Area(event) {
 	    var x=tx.split("px");
 	    document.Show.DragID.value=  DragID;
 	    document.Show.target.value=  targetID;
-	    Show.submit();
+	     Show.submit();
 	}
 
 </script>
 <?php //主控台
+ 
 	  defineData();
 	  checkSubmit();
       DrawButtoms();
@@ -56,11 +57,13 @@ function Drop2Area(event) {
 			 global $CookieArray;
 			 //進度座標
 		     global $CalendarRect;
-		     global $startDate;
+		     global $startDate,$DateRange;
 			 global $startDate_Res ,$DateRange_Res;
 			 global $ColorCode;
 		     $startDate=$startDate_Res;//"2021-1-1";
 			 if($startDate=="")  $startDate=  "2021-1-1";
+			 $DateRange=$DateRange_Res; 
+			  if($DateRange=="")$DateRange=6;
 		     $CalendarRect=array(315,80,10,0);
 			 $ColorCode= GetColorCode();
 			 //資源位置
@@ -376,7 +379,7 @@ function Drop2Area(event) {
 	 function SchedlueList($data ,$Rect){ //拖曳區
 	           global $CalendarRect;
    		       global $ResPregresList;
-			   global $startDate;
+			   global $startDate,$DateRange;
 		       global $ColorCode;
 		       $fontColor="#ffffff";
 			   $Rect[0]+=$Rect[2];
@@ -390,47 +393,45 @@ function Drop2Area(event) {
 			   $jila=explode("=",$data[12]);
 			   //7-s w-8 p-9 out-10 state=11
 			   for($i=0;$i<count($ResPregresList);$i++){
+				   $wd= $workingDays[0];
+	               if($wd=="")$wd=1;
 				   $BgColor=ColorCode[11][$i];
 				   $id= "gdcode=".$data[3]."=".$data[2]."=".$i;
 				   $Eid= "Egdcode=".$data[3]."=".$data[2]."=".$i."=".$startDay[$i];
 				   $msg=$ResPregresList[$i];
-				   
 				   $x=$Rect[0];
                    $y=$Rect[1]+$i*($Rect[3]+1);
 				   $w=120;
 				   $h=$Rect[3];
 				   //未排定
 				   $BgColor=$ColorCode[12][$i];
-				//   $BgColor2= PAPI_changeColor( $BgColor,array(1.2,1.2,1.2));
-				   if( $startDay[$i]=="")
+				   if( $startDay[$i]==""    )
 				       JAPI_DrawJavaDragbox(   $msg ,$x,$y,$w,$h,10,"#222222", "#aaaaaa",$id);
 				   //已排定
 				   if( $startDay[$i]!=""  ){
-					   if(  $principal[$i]!="")$msg=$msg."[".$principal[$i]."]";
-					   if(  $outsourcing[$i]!="")$msg=$msg."[".$outsourcing[$i]."]";
-					   if($state[$i]=="已完成"){
-					       JAPI_DrawJavaDragbox( $msg ,$x,$y,$w,$h,10,"#888888", "#cccccc",$id);
-					    }
-					   if($state[$i]!="已完成"){
+					   //判斷時間範圍
+					  if(CAPI_boolInDataRange($startDay[$i],$wd, $startDate,$DateRange)  ){
+					     if(  $principal[$i]!="")$msg=$msg."[".$principal[$i]."]";
+					     if(  $outsourcing[$i]!="")$msg=$msg."[".$outsourcing[$i]."]";
+						if($state[$i]=="已完成")  $BgColor="#888888";
 					    $BgColor2= PAPI_changeColor( $BgColor,array(1.2,1.2,1.2));
-					    $wd= $workingDays[$i];
-						if($wd=="")$wd=1;
 					    $workWid=$CalendarRect[2]*$wd;
 						$fontColor="#eeeeee";
 					    $x2= $CalendarRect[0]+ (CAPI_returnLocX($startDay[$i],$startDate )-1)*$CalendarRect[2];
-					    DrawRect("",1,$fontColor,array($x,$y+5,$x2-$x,2),$BgColor);
+						if($state[$i]!="已完成")  DrawRect("",1,$fontColor,array($x,$y+5,$x2-$x,2),$BgColor);
 					    DrawRect($msg,10,$fontColor,array($x,$y,$w,$h),$BgColor );
 						//主
                         $BgColorm=  ProAPI_ReturnStateColor(  $BgColor2,$state[$i]);
 				        JAPI_DrawJavaDragbox(  $state[$i]."[".$wd."]",$x2,$y+1,$workWid,$h-2,10, $BgColorm,$fontColor,$id);
 						//時間控制
-						 $BgColorE= "#777777";// PAPI_changeColor( $BgColorm,array(0.8,0.8,0.8));
-						JAPI_DrawJavaDragbox( "",$x2+$workWid,$y+1,$CalendarRect[2] ,$h-2,10, $BgColorE,$fontColor, $Eid);
-						 }
+					    $BgColorE= "#777777";// PAPI_changeColor( $BgColorm,array(0.8,0.8,0.8));
+						if($state[$i]!="已完成") JAPI_DrawJavaDragbox( "",$x2+$workWid,$y+1,$CalendarRect[2] ,$h-2,10, $BgColorE,$fontColor, $Eid);
+					  }
 				   }
 			   }
 			 
 	 }
+
 	 function UpSingle($data,$Rect){
 		 echo "up";
 	          //$upFormVal ==>0/id 1/name 2/URL 
@@ -467,9 +468,8 @@ function Drop2Area(event) {
 		       global $Resdatas;
 			   global $CalendarRect;
 			   global $startDate;
- 
 			   $DateRange=6;
-			   $h= count($Resdatas)* count($Resdatas)*10;
+			   $h= count($ResPregresList)* count($Resdatas)*21;
 	           CAPI_DrawBaseCalendar($startDate,$DateRange,$CalendarRect[0],$CalendarRect[1],$CalendarRect[2],$h);
                $Rect=array(300,70,40,10);
 			   ProAPI_DrawWorkersAreas($Rect);
@@ -586,10 +586,10 @@ function Drop2Area(event) {
 				    $up=array($str);
 		 
 				}
-			   $stmt=MAPI_MakeUpdateStmt($ResdataBase,$Base,$up,$WHEREtable,$WHEREData);
-			   // echo $stmt;
-			   SendCommand($stmt,$data_library);		
-			   JAPI_ReLoad($WebSendVal,$URL);
+			    $stmt=MAPI_MakeUpdateStmt($ResdataBase,$Base,$up,$WHEREtable,$WHEREData);
+			 //  echo $stmt;
+			    SendCommand($stmt,$data_library);		
+			    JAPI_ReLoad($WebSendVal,$URL);
 	  }
 	
 ?>
