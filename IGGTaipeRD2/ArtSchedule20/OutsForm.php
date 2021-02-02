@@ -29,7 +29,6 @@
 </head>
  
 <body bgcolor="#b5c4b1">
-
 <?php //主控台
       require_once('/Apis/PubApi20.php');
 	  require_once('/Apis/mysqlApi20.php');
@@ -88,8 +87,11 @@
 			 $FormListsize=$FormListsizeT[0];
 			 $FormList=array(2,3,4,5,6,7,8,9,10 );
 			 $FormRect=array(100,140,120,20);
-			 
- 
+			 //幣值兌換
+			 global $CurrencyNTtoUs;
+		     global $CurrencyCNYtoUs;
+             $CurrencyNTtoUs=0.035;
+			 $CurrencyCNYtoUs= 0.154;
  
 	}
 	function sortcontact(){  //整理聯絡人
@@ -294,7 +296,6 @@
       			  
 	 }
 ?>
- 
 <?php //列印編輯表單
       function  CreatNewOuts(){
 				        global $URL;
@@ -527,7 +528,7 @@
 			  }
 			  return $returnStr;
 	 }
-	 function  InputForms($sn){  //輸入資料
+	 function InputForms($sn){  //輸入資料
 		        echo "InputForms";
 		  	    global $URL;
 			     $sn=$_POST["EditSn"];
@@ -585,7 +586,7 @@
 			  }
 			  return $t;
 	 }
-     function AddNewMysqlData(){
+     function AddNewMysqlData(){  //新增資料
 	          global  $data_library,$tableName,$OutCosts;
 	          global  $URL;
 			  //外包基礎資料
@@ -599,6 +600,7 @@
 				      $tables=returnTables($data_library, $tableName);
 					  $WHEREtable=array();
 				      $WHEREData=array();
+					  $Usarr=returnUs();
 		              for($i=0;$i< count( $tables);$i++){
 						   $tmp=$_POST[$tables[$i]]; 
 						   if($tables[$i]=="outsourcing") $tmp=$OutData[0][15];
@@ -607,13 +609,15 @@
 						   if($tables[$i]=="outcode") $tmp=$OutData[0][1];
 						   if($tables[$i]=="state") $tmp=date("Y/m/d");
 						   if($tables[$i]=="principal") $tmp="黃謙信";
+						   if($tables[$i]=="usdollar") $tmp= $Usarr[0];
+						   if($tables[$i]=="baseCurrency") $tmp= $Usarr[1];
 				           array_push($WHEREtable, $tables[$i] );
 					       array_push($WHEREData, $tmp);
 		              }
 					  $stmt=   MakeNewStmt($tableName,$WHEREtable,$WHEREData);
-					  echo $stmt;
+					 // echo $stmt;
 				      SendCommand($stmt,$data_library);
-         
+                     
 	 }
 	 function AddNewPregressDataData(){ //未實裝
 	   	  //新增進度表
@@ -682,4 +686,47 @@
 				    $rect[1]+=22;
 			   }
 	  }
+?>
+
+<?php //判斷幣別
+     function returnUs( ){
+		 	  global $CurrencyNTtoUs;
+		      global $CurrencyCNYtoUs;
+              if($_POST["usdollar"]!="")return array( $_POST["usdollar"],"usdollar");
+			  if($_POST["nt"]!=""){
+				  $us= $_POST["nt"]*$CurrencyNTtoUs;
+				  return array( $us,"nt");
+			  }
+			  if($_POST["CNY"]!=""){
+				  $us= $_POST["CNY"]*$CurrencyCNYtoUs;
+				  return array( $us,"CNY");
+			  }
+	 }
+     function Setcurrency($sn){ //輸入合約序號 紀錄基礎幣別 計算其他幣別
+	          global $data_library,$tableName ;
+			  global $OutCosts;
+			  $currentSort=filterArray( $OutCosts,1,$sn)[0] ;
+			  if( $currentSort[10]!="")return;
+			  global $CurrencyNTtoUs;
+		      global $CurrencyCNYtoUs;
+		      $WHEREtable=array("data_type","sn");
+			  $WHEREData=array("cost",$sn);
+			  $Base=array("usdollar","baseCurrency");
+		      $up=array();
+		  	  //基本幣別台幣
+			  if( $currentSort[9]!=""){
+				  $us=$currentSort[9]*$CurrencyNTtoUs;
+			      $up=array($us,"nt");
+			  }
+			  //基本幣別人民幣
+			   if( $currentSort[11]!=""){
+			  	  $us=$currentSort[11]*$CurrencyCNYtoUs;
+			      $up=array($us,"CNY");
+			  } 
+		   	 $stmt= MAPI_MakeUpdateStmt(  $tableName,$Base,$up,$WHEREtable,$WHEREData);
+			 
+			  echo $stmt;
+			 SendCommand($stmt,$data_library);		
+		
+	 }
 ?>

@@ -163,7 +163,7 @@
 				//減一月
 				//預設   
 	  }
-	   function CAPI_setDateRangeButtom($URL,$LocX,$LocY,$startDate,$DateRange,$WebSendVal,$CookieName){
+	  function  CAPI_setDateRangeButtom($URL,$LocX,$LocY,$startDate,$DateRange,$WebSendVal,$CookieName){
 	            $BgColor="#442222";
 			    $SubmitName="submit";
 				if($startDate=="--" or $startDate=="" )$startDate=date("Y-m-1");
