@@ -43,8 +43,8 @@ function Drop2Area(event) {
 
 </script>
 <?php //主控台
- 
 	  defineData();
+	  SwitchListType();
 	  checkSubmit();
       DrawButtoms();
 	  DrawDateRangeButtom();
@@ -119,7 +119,7 @@ function Drop2Area(event) {
 				 array_push( $ListType,$className[$i]."[".$i);
 	         }
 			 SortResData();
-			  SwitchListType();
+		
 	}//重新排序
 	function AddResSort(){
 	     	 global $SortType; 
@@ -156,10 +156,6 @@ function Drop2Area(event) {
       function checkSubmit(){
 		       global $data_library, $ResdataBase ;
 			   global $WebSendVal,$URL;
-			 //  if($_POST["ListType"]!="清單"   and $_POST["ListType"]!=""){   
-			   
-			  // }
-
 	           if($_POST["submit"]=="變更"){
 				   //echo $_POST["ResType"];
 				   upform();
@@ -259,12 +255,11 @@ function Drop2Area(event) {
 			  }
 			  if($_POST["ListType"]=="排程表")   ListCalendar();
 			  for($i=0;$i<count($Resdatas);$i++){
-				  
 	              ListSingle($Resdatas[$i],$Rect);
 			      $Rect[1]+=$Rect[3]+2;
 			  }
 	 }
-	 function DrawType(){
+	 function DrawType(){ //列印分類
 	          global   $ResTypeSingleData;
 			  global   $ClasstypeSort;//分類編號
               $sort=6;
@@ -274,17 +269,22 @@ function Drop2Area(event) {
 			  $class=explode("_", $classArr[  $ClasstypeSort]);
 			  array_push( $class,"未分類");
 			  //拖曳底部
-		      DrawTypeDragBase(  $class,20,120,1000,80);
+			  global $ColorCode;
+			  $colorSet= $ColorCode[12];
+			  if(strpos($_POST["ListType"],"珠色") !== false) $colorSet=$ColorCode[13];
+		      DrawTypeDragBase(  $class,20,120,1000,80,$colorSet);
 	 }
-     function DrawTypeDragObj($typeName,$x,$y,$Typesort){
+     function DrawTypeDragObj($typeName,$x,$y,$Typesort,$types){
 		      global  $Resdatas;
 			 
-	          $sortArr= returnSortTypes( $Resdatas,$typeName,$Typesort);
+	          $sortArr= returnSortTypes( $Resdatas,$typeName,$Typesort,$types);
+			  /*
 			   if($typeName=="未分類"){
 				   $sortArr1=returnSortTypes( $Resdatas,"未分類",$Typesort);
 				   $sortArr2=returnSortTypes( $Resdatas,"",$Typesort);
-				  $sortArr=addArray( $sortArr1, $sortArr2);
+				   $sortArr=addArray( $sortArr1, $sortArr2);
 			   }
+			   */
 			  $BgColor="#333333";
 			  $fontColor="#ffffff";
 		      $w=50;
@@ -300,33 +300,37 @@ function Drop2Area(event) {
 				  $x+=$w+1;
 			  }
 	 }
+ 
 	 //列印底部
-	 function DrawTypeDragBase($types,$x,$y,$w,$h){
-		      global $ColorCode;
+	 function DrawTypeDragBase($types,$x,$y,$w,$h,$colorSet){
 			  global $ClasstypeSort;//分類編號
 			  $fontColor="#ffffff";
 			  $By=$y;
 			  $Typesort=$ClasstypeSort;
 	          for($i=0;$i<count($types);$i++){
 				  $id="tableName=classification=".$types[$i]."=".$ClasstypeSort;
-				  $BgColor=$ColorCode[12][$i];
-				    if($types[$i]=="未分類") $BgColor="#888888";
+				  $BgColor= $colorSet[$i];
+				  if($types[$i]=="未分類") $BgColor="#888888";
 				  JAPI_DrawJavaDragArea($types[$i],$x,$y,$w,$h,$BgColor,$fontColor,$id,"12" );
 				  $y+=$h+2;
 			  }
-			   for($i=0;$i<count($types);$i++){
+			  for($i=0;$i<count($types);$i++){
 				    //拖曳物件
-			      DrawTypeDragObj($types[$i],$x,$By,$Typesort);
+			      DrawTypeDragObj($types[$i],$x,$By,$Typesort,$types);
 				  $By+=$h+2;
-			   }
-		       //DrawTypeDragObj("",$x,$By,$Typesort);
+			  }
 	 }
 	 //取得該type的resdata
-	 function returnSortTypes( $Resdatas,$typeName,$Typesort){
+	 function returnSortTypes( $Resdatas,$typeName,$Typesort,$types){
 		      $arr=array();
 	          for($i=0;$i<count( $Resdatas);$i++){
-			      $t=explode("=",$Resdatas[$i][14]);//14為type欄位
-				  if(  $t[$Typesort]==$typeName)array_push($arr,$Resdatas[$i]);
+				  $t=explode("=",$Resdatas[$i][14]);//14為type欄位
+				  if($typeName!="未分類"){
+				    if(  $t[$Typesort]==$typeName)array_push($arr,$Resdatas[$i]);
+				  }
+				  if($typeName=="未分類"){
+				     if (!in_array($t[$Typesort], $types))array_push($arr,$Resdatas[$i]); 
+				  }
 			  }
 			  return $arr;
 	 }
