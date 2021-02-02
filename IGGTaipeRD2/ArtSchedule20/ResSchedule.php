@@ -107,7 +107,7 @@ function Drop2Area(event) {
            
 			 //java傳遞欄位
 		     global  $inputsTextNames ;
-             $inputsTextNames=array("DragID","target","Etype","ECode","DataName","Val","remark");
+             $inputsTextNames=array("cost","DragID","target");
 		  
 		
 		     //分類資料
@@ -509,7 +509,11 @@ function Drop2Area(event) {
 			   global $ResdataBase,$typeDatabase;
 			   global $inputsTextNames ;
 			   global $WebSendVal;
-	           JAPI_CreatJavaForm( $URL, $ResdataBase,$inputsTextNames,$WebSendVal );
+	           JAPI_CreatJavaForm( $URL, $ResdataBase,$inputsTextNames,$WebSendVal,600,60 );
+			   $id="tableName=cost=";
+			   $BgColor= "#aa9977";
+			   
+			   JAPI_DrawJavaDragArea("_",590,58,10,20,$BgColor,$fontColor,$id,"12" );
 	  }
 
 	  function upform(){
@@ -569,7 +573,6 @@ function Drop2Area(event) {
 				$gdcode=$datas[1];
 				$Type=$datas[2];
 				$ResSort=$datas[3];
-		
 				$tableNames=returnTables($data_library ,$ResdataBase);
 		        $WHEREtable=array( "gdcode", "Type");
 		        $WHEREData=array( $gdcode,$Type  );
@@ -585,12 +588,13 @@ function Drop2Area(event) {
 			     	if($data2[0]=="tableName"){
 					   //如果是類別
 					   if($data2[1]=="classification")  $ResSort=explode("[",$_POST["ListType"])[1];
-			     	 
+				
 				      // echo $ResSort;
 					   $tableName=$data2[1];
 					   $Base=array($tableName);
 					   $val=$data2[2];
                         if($val=="--")$val="";
+					   if($data2[1]=="cost") $val=$_POST["cost"];
 					   $sort= MAPI_returnTableSort($tableNames, $tableName);
 					   $count=count($ResPregresList);
 					   if(  $tableName="classification")  $count=count($ListType)-2;//如果是類別

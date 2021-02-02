@@ -78,9 +78,7 @@
 			           font-size:".$fontSize."px; color:".$fontColor."; background-color:".$BgColor."; '>".$msg;
 	             echo "</div>";
 	    }
-        function JAPI_CreatJavaForm( $URL,$tableName,$inputsTextNames,$RecWebPostArr ){
-		         $x=20;
-			     $y=10;
+        function JAPI_CreatJavaForm( $URL,$tableName,$inputsTextNames,$RecWebPostArr ,$sx=1000,  $y=10){
 			     $lastUpdate=date("Y_j_n_H_i_s");
 		         $upFormVal=array("Show","Show",$URL);
 			     $UpHidenVal=array(array("tablename",$tableName),
@@ -93,8 +91,7 @@
 					// echo $RecWebPostArr[$i][0].">".$RecWebPostArr[$i][1];
 			        array_Push( $UpHidenVal,array($RecWebPostArr[$i][0],$RecWebPostArr[$i][1] ));
 			     }				
-			     $inputVal=array();     
-                 $sx=1000;		
+			     $inputVal=array();     		
                  $w=100;	 			  
 			     for($i=0;$i<count( $inputsTextNames);$i++){
 			         $a=array("text",$inputsTextNames[$i],$inputsTextNames[$i],10,$sx ,$y, $w,20,$BgColor,$fontColor,"" ,10);
