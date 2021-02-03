@@ -246,6 +246,7 @@ function Drop2Area(event) {
 		      global $ResPregresList;
               $h=20*count($ResPregresList);
 			  $w= count($ResPregresList)*20;
+			  if($w<80)$w=80;
 			  $Rect=array("20","110",$w,$w);
 			  if(strpos($_POST["ListType"],"[") != false){ 
 			     DrawType();
