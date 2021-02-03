@@ -536,7 +536,7 @@ function Drop2Area(event) {
       function  returnState($Basestr,$state,$ResSort,$count){ //回傳切割_1_xx_1
 	            $arr=explode("=",$Basestr);
 				$str="";
-				for($i=0;$i<$count;$i++){
+				for($i=0;$i<=$count;$i++){
 				    $s=$arr[$i];
 					if($ResSort==$i)$s=$state;
 					$str=$str.$s."=";
