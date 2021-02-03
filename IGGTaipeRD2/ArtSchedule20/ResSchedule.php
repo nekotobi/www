@@ -405,13 +405,13 @@ function Drop2Area(event) {
 				   if(  $outsourcing[$i]!="")$msg=$msg."[".$outsourcing[$i]."]";
 				  
 				   $BgColor=$ColorCode[12][$i];
-				   if($startDay[$i]==""    ) $BgColor="#222222";
+				   if($startDay[$i]==""  or $state[$i]=="未定義"   ) $BgColor="#222222";
 				   if($state[$i]=="已完成")  $BgColor="#999999";
                    JAPI_DrawJavaDragbox(   $msg ,$x,$y,$w,$h,10, $BgColor, "#ffffff",$id);
 				   //價格
 				  
 				   //已排定
-				   if( $startDay[$i]!=""  ){
+				   if( $startDay[$i]!="" and $state[$i]!="未定義" ){
 					   //判斷時間範圍
 					  if(CAPI_boolInDataRange($startDay[$i],$wd, $startDate,$DateRange)  ){
 					    $workWid=$CalendarRect[2]*$wd;
@@ -426,6 +426,7 @@ function Drop2Area(event) {
 							$x2=($x+$w);
 							$endx=$x2-$xe;
 						}
+						 
 					    JAPI_DrawJavaDragbox( "[".$wd."]",$x2,$y+1,$workWid-$endx,$h-4,10, $BgColor,$fontColor,$id);
 						//拖曳天數
 					    $BgColorE=PAPI_changeColor( $BgColor,array(0.8,0.8,0.8));
