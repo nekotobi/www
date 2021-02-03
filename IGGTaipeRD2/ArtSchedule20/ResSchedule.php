@@ -118,7 +118,9 @@ function Drop2Area(event) {
 				 array_push( $ListType,$className[$i]."[".$i);
 	         }
 			 SortResData();
-		
+		     global $singleResHieght;
+			 $singleResHieght=  count($ResPregresList)*20;
+			   if($singleResHieght<80)$singleResHieght=80;
 	}//重新排序
 	function AddResSort(){
 	     	 global $SortType; 
@@ -244,9 +246,10 @@ function Drop2Area(event) {
      function SwitchListType(){
 			  global $typeDatabase,$Resdatas;
 		      global $ResPregresList;
+			  global $singleResHieght;
               $h=20*count($ResPregresList);
-			  $w= count($ResPregresList)*20;
-			  if($w<80)$w=80;
+			  $w=$singleResHieght;
+			
 			  $Rect=array("20","110",$w,$w);
 			  if(strpos($_POST["ListType"],"[") != false){ 
 			     DrawType();
@@ -471,8 +474,9 @@ function Drop2Area(event) {
 		       global $Resdatas;
 			   global $CalendarRect;
 			   global $startDate;
+			     global $singleResHieght;
 			   $DateRange=6;
-			   $h= count($ResPregresList)* count($Resdatas)*21;
+			   $h=  $singleResHieght*count($Resdatas)+30;
 	           CAPI_DrawBaseCalendar($startDate,$DateRange,$CalendarRect[0],$CalendarRect[1],$CalendarRect[2],$h);
                $Rect=array(300,70,40,10);
 			   ProAPI_DrawWorkersAreas($Rect);
