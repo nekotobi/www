@@ -120,7 +120,7 @@ function Drop2Area(event) {
 			 SortResData();
 		     global $singleResHieght;
 			 $singleResHieght=  count($ResPregresList)*20;
-			   if($singleResHieght<80)$singleResHieght=80;
+			 //  if($singleResHieght<80)$singleResHieght=80;
 	}//重新排序
 	function AddResSort(){
 	     	 global $SortType; 
@@ -376,6 +376,7 @@ function Drop2Area(event) {
    		       global $ResPregresList;
 			   global $startDate,$DateRange;
 		       global $ColorCode;
+			   global $singleResHieght;
 		       $fontColor="#ffffff";
 			   $Rect[0]+=$Rect[2];
 			   $Rect[3]=$Rect[3]/count($ResPregresList)-1;
@@ -393,10 +394,9 @@ function Drop2Area(event) {
 				   $BgColor=ColorCode[11][$i];
 				   $id= "gdcode=".$data[3]."=".$data[2]."=".$i;
 				   $Eid= "Egdcode=".$data[3]."=".$data[2]."=".$i."=".$startDay[$i];
-				 
 				   $x=$Rect[0];
                    $y=$Rect[1]+$i*($Rect[3]+1);
-				   $w=120;
+				   $w=120 +(100-$singleResHieght);
 				   $h=$Rect[3];
 				   //分類標題
 	               $costArr=explode("=",$data[15]);
