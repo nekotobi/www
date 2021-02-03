@@ -120,7 +120,7 @@ function Drop2Area(event) {
 			 SortResData();
 		     global $singleResHieght;
 			 $singleResHieght=  count($ResPregresList)*20;
-			 //  if($singleResHieght<80)$singleResHieght=80;
+			   if($singleResHieght<80)$singleResHieght=40;
 	}//重新排序
 	function AddResSort(){
 	     	 global $SortType; 
@@ -247,10 +247,10 @@ function Drop2Area(event) {
 			  global $typeDatabase,$Resdatas;
 		      global $ResPregresList;
 			  global $singleResHieght;
-              $h=20*count($ResPregresList);
-			  $w=$singleResHieght;
-			
-			  $Rect=array("20","110",$w,$w);
+              $h= $singleResHieght;// 20*count($ResPregresList);
+			 // $w=$singleResHieght;
+			  $w=60;
+			  $Rect=array("20","110",$w,$h);
 			  if(strpos($_POST["ListType"],"[") != false){ 
 			     DrawType();
 				 return;
