@@ -244,9 +244,9 @@ function Drop2Area(event) {
      function SwitchListType(){
 			  global $typeDatabase,$Resdatas;
 		      global $ResPregresList;
-			  //global $ListStartRect;
               $h=20*count($ResPregresList);
-			  $Rect=array("20","110","80","80");
+			  $w= count($ResPregresList)*20;
+			  $Rect=array("20","110",$w,$w);
 			  if(strpos($_POST["ListType"],"[") != false){ 
 			     DrawType();
 				 return;
@@ -335,15 +335,11 @@ function Drop2Area(event) {
 				  $name= $data[3];
 			      $SubmitName="submit";
 				  $ValArray=$WebSendVal;
-				 
-				 // $type=$WebSendVal[0][1];
 				  if($_POST["ListType"]=="清單"){
-			      //  if( $WebSendVal[1][1]== $name)$BgColor="#ff2222";
-				      array_push(  $ValArray,array("EditRes",$name));
-		              // $ValArray[1][1]=  $name;
-			           sendVal($URL,  $ValArray ,$SubmitName,$name,$Rect,10,$BgColor); 
+				     array_push(  $ValArray,array("EditRes",$name));
+			         sendVal($URL,  $ValArray ,$SubmitName,$name,$Rect,10,$BgColor); 
 				  }else{
-				        DrawRect($data[3],10,"#ffffff",$Rect,"#222222" );
+				     DrawRect($data[3],10,"#ffffff",$Rect,"#222222" );
 				  }
 				  //名稱
 				  $nRect=array($Rect[0]+1,$Rect[1]+$Rect[3]-20,$Rect[2]-2,18);
@@ -378,7 +374,7 @@ function Drop2Area(event) {
 		       global $ColorCode;
 		       $fontColor="#ffffff";
 			   $Rect[0]+=$Rect[2];
-			   $Rect[3]=$Rect[3]/4-1;
+			   $Rect[3]=$Rect[3]/count($ResPregresList)-1;
 			   $Rect[2]=40;
 			   $startDay=explode("=",$data[7]);
 	           $workingDays=explode("=",$data[8]);
@@ -403,7 +399,6 @@ function Drop2Area(event) {
 				   $msg=$ResPregresList[$i];
 				   if(  $principal[$i]!="")$msg=$msg."[".$principal[$i]."]";
 				   if(  $outsourcing[$i]!="")$msg=$msg."[".$outsourcing[$i]."]";
-				  
 				   $BgColor=$ColorCode[12][$i];
 				   if($startDay[$i]==""  or $state[$i]=="未定義"   ) $BgColor="#222222";
 				   if($state[$i]=="已完成")  $BgColor="#999999";
