@@ -108,8 +108,7 @@ function Drop2Area(event) {
 			 //java傳遞欄位
 		     global  $inputsTextNames ;
              $inputsTextNames=array("cost","DragID","target");
-		  
-		
+ 
 		     //分類資料
 			 global $ListType;
 			 global $className,$class;
@@ -166,7 +165,6 @@ function Drop2Area(event) {
 				  JAPI_ReLoad($WebSendVal,$URL);
 			   } 
 			   if($_POST["DragID"]!=""){ //拖曳物件
-			      
 				    upScedule();
 			   }
 	  }
@@ -276,15 +274,7 @@ function Drop2Area(event) {
 	 }
      function DrawTypeDragObj($typeName,$x,$y,$Typesort,$types){
 		      global  $Resdatas;
-			 
 	          $sortArr= returnSortTypes( $Resdatas,$typeName,$Typesort,$types);
-			  /*
-			   if($typeName=="未分類"){
-				   $sortArr1=returnSortTypes( $Resdatas,"未分類",$Typesort);
-				   $sortArr2=returnSortTypes( $Resdatas,"",$Typesort);
-				   $sortArr=addArray( $sortArr1, $sortArr2);
-			   }
-			   */
 			  $BgColor="#333333";
 			  $fontColor="#ffffff";
 		      $w=50;
@@ -296,6 +286,7 @@ function Drop2Area(event) {
 				  DrawRect("","12","#ffffff",array($x-1,$y-1,$w+2,$w+2+$h),"#000000" );
 				  DrawIDPic(returnPicPath($sortArr[$i][3]),array($x,$y+$h,$w,$w),$id);
 				  JAPI_DrawJavaDragbox(  $sortArr[$i][3] ,$x,$y,$w,$h,8, $BgColor,$fontColor,$id);
+				  if($sortArr[$i][2])
 				  DrawRect($sortArr[$i][4] ,"8","#ffffff",array($x,$y+$h-10,$w,10),"#222222" );
 				  $x+=$w+1;
 			  }
@@ -408,14 +399,17 @@ function Drop2Area(event) {
 				   $w=120;
 				   $h=$Rect[3];
 				   //分類標題
-
+	               $costArr=explode("=",$data[15]);
 				   $msg=$ResPregresList[$i];
 				   if(  $principal[$i]!="")$msg=$msg."[".$principal[$i]."]";
 				   if(  $outsourcing[$i]!="")$msg=$msg."[".$outsourcing[$i]."]";
+				  
 				   $BgColor=$ColorCode[12][$i];
 				   if($startDay[$i]==""    ) $BgColor="#222222";
 				   if($state[$i]=="已完成")  $BgColor="#999999";
                    JAPI_DrawJavaDragbox(   $msg ,$x,$y,$w,$h,10, $BgColor, "#ffffff",$id);
+				   //價格
+				  
 				   //已排定
 				   if( $startDay[$i]!=""  ){
 					   //判斷時間範圍
@@ -437,29 +431,13 @@ function Drop2Area(event) {
 					    $BgColorE=PAPI_changeColor( $BgColor,array(0.8,0.8,0.8));
 					 
 						if($state[$i]!="已完成") JAPI_DrawJavaDragbox( "",$xe+$workWid,$y+1,$CalendarRect[2] ,$h-4,10, $BgColorE,$fontColor, $Eid);
-						/*
-					   
-						if($state[$i]=="已完成")  $BgColor="#888888";
-					    $BgColor2= PAPI_changeColor( $BgColor,array(1.2,1.2,1.2));
-					
-					
-					  
-						
-					    DrawRect($msg,10,$fontColor,array($x,$y,$w,$h),$BgColor );
-						
-						//主
-                        $BgColorm=  ProAPI_ReturnStateColor(  $BgColor2,$state[$i]);
-				        JAPI_DrawJavaDragbox( "[".$wd."]",$x2,$y+1,$workWid,$h-2,10, $BgColorm,$fontColor,$id);
-						//時間控制
-					    $BgColorE= "#777777";// PAPI_changeColor( $BgColorm,array(0.8,0.8,0.8));
-						if($state[$i]!="已完成") JAPI_DrawJavaDragbox( "",$x2+$workWid,$y+1,$CalendarRect[2] ,$h-2,10, $BgColorE,$fontColor, $Eid);
-					  */
+ 
 					  }
 				   }
+				    if( $costArr[$i]!="") DrawRect( $costArr[$i],7,"#ffffff",array( $x+$w-30,$y,30,12),"#aa7744");
 			   }
 			 
 	 }
-
 	 function UpSingle($data,$Rect){
 		 echo "up";
 	          //$upFormVal ==>0/id 1/name 2/URL 
@@ -509,10 +487,12 @@ function Drop2Area(event) {
 			   global $ResdataBase,$typeDatabase;
 			   global $inputsTextNames ;
 			   global $WebSendVal;
-	           JAPI_CreatJavaForm( $URL, $ResdataBase,$inputsTextNames,$WebSendVal,600,60 );
-			   $id="tableName=cost=";
+			   $x=600;
+			   $y=60;
+	           JAPI_CreatJavaForm( $URL, $ResdataBase,$inputsTextNames,$WebSendVal,$x,  $y );
+			  
+			   $id="tableName=cost";
 			   $BgColor= "#aa9977";
-			   
 			   JAPI_DrawJavaDragArea("_",590,58,10,20,$BgColor,$fontColor,$id,"12" );
 	  }
 
