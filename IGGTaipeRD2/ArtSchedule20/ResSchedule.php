@@ -113,7 +113,7 @@ function Drop2Area(event) {
 			 global $ListType;
 			 global $className,$class;
 			 $className= explode("=", $ResTypeSingleData[7]) ;
-			 $ListType=array("清單","排程表");
+			 $ListType=array("清單","排程表","統計");
 	         for($i=0;$i<count($className);$i++){
 				 array_push( $ListType,$className[$i]."[".$i);
 	         }
@@ -189,7 +189,7 @@ function Drop2Area(event) {
 			  $startY=20;
 		      //資源分類
 			  global $ResTypes; 
-			  $Rect=array("20","40","50","20");
+			  $Rect=array("20","40","40","20");
 		      DrawSingle(  $ResTypes,0,$Rect);
 		      $Rect[1]+=21;
 			  //顯示
