@@ -62,9 +62,7 @@ function Drop2Area(event) {
 	  SwitchType();
 	 
 ?>
-
 <?php //Base
-    
       function DefineBaseData(){
 		       global $data_library,$MaintableName,$tableName;
 			   $MaintableName="maintask";
@@ -79,11 +77,11 @@ function Drop2Area(event) {
 		     //  if( $selectProject=="All")  $tableName=$ProjectTypes[0]."_tasks";
 			   //基本配置
 			   global $URL;
-			   //網頁選項資料
+			   //網頁選項資料F
 		       DefinetypeData();  
 			   //日期資訊
 		       global $LocX,$LocY,$wid,$taskHeight;
-			     global $startDate,$DateRange;
+			   global $startDate,$DateRange;
 			   if($DateRange=="")$DateRange=2;
                if($startDate=="--")$startDate=$range[0]."-".$range[1]."-1";
                $LocX=380;
@@ -106,6 +104,7 @@ function Drop2Area(event) {
 			   $taskDataBase = getMysqlDataArray( $taskDataBaseName);
 			   $taskDataBase_T= filterArray( $taskDataBase,0,"data");
 			   $taskDataBase_T2 =$taskDataBase_T;
+			
 			   if ($typeArray[4][1]!="顯示歷史")
 			       $taskDataBase_T2 = RemoveArray (   $taskDataBase_T,8,"已完成");    //移除完成
 			   //總規劃
@@ -121,6 +120,7 @@ function Drop2Area(event) {
 				    $typeTask_T=filterArray(    $typeTask_T,$num,$typeArray[$i][1]);
 				  }
 			   }
+			
 			   $typeTask= RemoveArray ($typeTask_T,12,"");
 			   $newTask= filterArray( $typeTask_T,12,"");
 			   //如果是觀看相關任務
@@ -128,10 +128,17 @@ function Drop2Area(event) {
 			     $RootTaskCode=filterArray( $typeTask_T,2,$typeArray[5][1]);
 			     $typeTask=  filterArray(   $taskDataBase_T,3,$RootTaskCode[0][1]);
 			    }
+			
 			   //過濾時間
 			   global $startDate,$DateRange;
 			   $typeTask=  CAPI_fillterDateRange(  $typeTask,$startDate,$DateRange,12,13);
+			   //過濾請假
+			   if($typeArray[2][1]!="休假" and $typeArray[0][1]=="--" ){
+				   $typeTask=   RemoveArray (  $typeTask,6,"休假");
+			    
+			   }
 			   
+		 
 	  }
 	  //收集請假資料
 	  function CollectLeave($tasks){
@@ -151,7 +158,6 @@ function Drop2Area(event) {
 				   array_Push($dates, $arr); //addArray($dates,$arr);
 			   }
 			   return( $dates);
-			   //print_r($dates);
 	  }
 	  function returnUsersArr($tasks,$userID){
 		       $arr= array( );
@@ -203,13 +209,13 @@ function Drop2Area(event) {
 			      MAPi_UpNewTask($data_library,$tableName);
 			   }
 		       if($typeArray[4][1]=="顯示甘特" or $typeArray[4][1]=="顯示歷史"){
-				  JAPI_CreatJavaForm( $URL,$tableName,$inputsTextNames,$typeArray);
-			      DrawCalendar( );
-				  global $LocY,$taskHeight;
-				  global $typeTask;
-				  $LocYs=$LocY+count($typeTask)*$taskHeight+35;//+60;
-				  ListTasks();
-				  ListnewTasks($LocYs);
+				   JAPI_CreatJavaForm( $URL,$tableName,$inputsTextNames,$typeArray);
+			       DrawCalendar( );
+			       global $LocY,$taskHeight;
+				   global $typeTask;
+				   $LocYs=$LocY+count($typeTask)*$taskHeight+35;//+60;
+			       ListTasks();
+				   ListnewTasks($LocYs);
 			   }
 			   //java拖曳
 			   if($_POST["DragID"]=="")return;
@@ -366,7 +372,6 @@ function Drop2Area(event) {
 			   $y=$Rect[1]+4;
 			   JAPI_DrawJavaDragArea($i,$x,$y,8,12,"#155555","#555555",$id,5);	
 	  }
-
  	  function DrawProcessDragArea(){
 			   $x=20;
 			   $y= 160;
@@ -386,14 +391,12 @@ function Drop2Area(event) {
 				}
 	  }	 
 ?>
-
 <?php //List
       function DrawCalendar( ){
 		       global $LocX,$LocY,$wid,$taskHeight;
 			   global $startDate,$DateRange;
 			   global $typeTask;
 			   $range=  CAPI_getDateRange( $typeTask,12,13);
-			
 	           CAPI_DrawBaseCalendar($startDate,$DateRange,$LocX,$LocY,$wid,(count($typeTask)+1)*$taskHeight+2);
 			   DrawVer();
 	  }

@@ -1,6 +1,8 @@
 <?php
      // function  CAPI_DrawBaseCalendar($StartY,$StartM,$MRange,$LocX,$LocY,$wid,$h){
 	  function  CAPI_DrawBaseCalendar($startDate,$DateRange,$LocX,$LocY,$wid,$h){
+		          $VacationDays=CAPI_ReturnVacationdaysArr();
+ 
 			      if( $startDate=="")$startDate=date("Y-n-1");  
 			      if($DateRange=="")$DateRange=2;  
 		          $BgColor="#222222";
@@ -13,12 +15,30 @@
 	              for($i=0;$i<$DateRange;$i++){
                      $days = cal_days_in_month(CAL_GREGORIAN, $m,$y); // 30
 				     DrawRect($m,$fontSize,$fontColor,array($LocX,$LocY,$wid*$days-2,18),$BgColor);
-				     CAPI_DrawCalDays($LocX,$LocY,$wid,$days, $h,$y,$m);
+				     CAPI_DrawCalDays($LocX,$LocY,$wid,$days, $h,$y,$m, $VacationDays);
 			         $m+=1;
 				     if($m>12){$m=1;$y+=1;}
 				     $LocX+=$wid* $days;
 				  }
 	   }
+	    function  CAPI_DrawCalDays($LocX,$LocY,$wid,$days, $h,$y,$m, $VacationDays){
+		     	  $BgColor="#aaaaaa";
+			      $fontColor="#ffffff";
+			      $fontSize=6;
+				  $date=date("Y_n_j");
+			      for($i=1;$i<=$days;$i++){
+					  $cd=$y."_".((int)$m)."_".$i;
+					  $dateStr=$y."-".$m."-".$i;
+					  $BgColor= CAPI_ReturnIsVacationdayColor($VacationDays,$dateStr);
+					  if($date== $cd){
+						  $BgColor="#aa7777";
+					  }
+					  $id="startDay=".$cd;
+					  DrawRect($i,$fontSize,"#eeeeee",array($LocX+($i-1)*$wid ,$LocY+20,$wid-1,10),"#777777");
+			          JAPI_DrawJavaDragArea("",$LocX+($i-1)*$wid ,$LocY+30,$wid-1,$h,$BgColor,$fontColor,$id,$fontSize );
+				  }
+	  }
+	   /*
       function  CAPI_DrawCalDays($LocX,$LocY,$wid,$days, $h,$y,$m){
 		     	  $BgColor="#aaaaaa";
 			      $fontColor="#ffffff";
@@ -36,7 +56,18 @@
 					  DrawRect($i,$fontSize,"#eeeeee",array($LocX+($i-1)*$wid ,$LocY+20,$wid-1,10),"#777777");
 			          JAPI_DrawJavaDragArea("",$LocX+($i-1)*$wid ,$LocY+30,$wid-1,$h,$BgColor,$fontColor,$id,$fontSize );
 				  }
-		}
+	  }
+	  */
+	  function  CAPI_ReturnIsVacationdayColor($VacationDays,$dateStr){
+		        $BgColor="#aaaaaa";
+	  	        $n=   date("w",strtotime($dateStr) );
+			    if($n==0 or $n==6)$BgColor="#bbaaaa";
+			 
+				if(in_array( $dateStr,$VacationDays)){
+				  $BgColor="#bbaaaa";
+				}
+				return $BgColor;
+	  } 
 	  function  CAPI_DrawMuiltCalendarLines($StartY,$StartM,$MRange,$LocX,$LocY,$wid,$h,$LineNum,$type=""){
 	    	    $BgColor="#222222";
 			    $fontColor="#ffffff";
@@ -218,8 +249,8 @@
 	           return $NewTasks;
 	  }
 	  //取得s>e過幾天
-	   function CAPI_GetPassDays($s,$e){
-		   echo $s.">";
+	  function CAPI_GetPassDays($s,$e){
+		//   echo $s.">";
 		        $s= str_replace("_","-",$s);
 		 
 			    $e= str_replace("_","-",$e);
@@ -277,5 +308,15 @@
 				$result=CAPI_checkIsBetweenTime($startDate ,$end,$TE);
 				if($result=="in")return true;
 				return false;
+	  }
+	  function CAPI_ReturnVacationdaysArr($bool=""){
+		       $arrT=getMysqlDataArray( "vacationdays");
+			   $arr = filterArray( $arrT,4,$bool);
+			   $ar=array();
+	           for($i=0;$i<count($arr);$i++){
+				   $str=$arr[$i][0]."-".$arr[$i][1]."-".$arr[$i][2];
+				   array_push($ar,$str);
+	           }
+			   return $ar;
 	  }
 ?>
