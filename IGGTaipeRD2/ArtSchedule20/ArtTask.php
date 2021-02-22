@@ -60,7 +60,6 @@ function Drop2Area(event) {
 	  PubApi_DrawUserData(800,0);
       DrawAllButtons();
 	  SwitchType();
-	 
 ?>
 <?php //Base
       function DefineBaseData(){
@@ -92,6 +91,7 @@ function Drop2Area(event) {
 			   global  $inputsTextNames ;
                $inputsTextNames=array("DragID","target","Etype","ECode","DataName","Val","remark");
 			   DefineDate_Task();
+			   AddRes_Task();
 	  } 
 	  function DefineDate_Task(){
 		       //進度資訊
@@ -104,7 +104,6 @@ function Drop2Area(event) {
 			   $taskDataBase = getMysqlDataArray( $taskDataBaseName);
 			   $taskDataBase_T= filterArray( $taskDataBase,0,"data");
 			   $taskDataBase_T2 =$taskDataBase_T;
-			
 			   if ($typeArray[4][1]!="顯示歷史")
 			       $taskDataBase_T2 = RemoveArray (   $taskDataBase_T,8,"已完成");    //移除完成
 			   //總規劃
@@ -128,18 +127,68 @@ function Drop2Area(event) {
 			     $RootTaskCode=filterArray( $typeTask_T,2,$typeArray[5][1]);
 			     $typeTask=  filterArray(   $taskDataBase_T,3,$RootTaskCode[0][1]);
 			    }
-			
 			   //過濾時間
 			   global $startDate,$DateRange;
 			   $typeTask=  CAPI_fillterDateRange(  $typeTask,$startDate,$DateRange,12,13);
 			   //過濾請假
 			   if($typeArray[2][1]!="休假" and $typeArray[0][1]=="--" ){
 				   $typeTask=   RemoveArray (  $typeTask,6,"休假");
-			    
 			   }
+ 
 			   
-		 
 	  }
+	  function AddRes_Task(){
+		       global $ProjectTypes,$selectProject ;
+			   global $Resdata;
+			   global $typeArray;
+	           $ResdataBase="resdata_".$selectProject;
+			   $ResdataT= getMysqlDataArray($ResdataBase);
+			   $Resdata= array();
+			   //過濾大類別
+			   global $RestType,$ResClass,$ResPrincipal;
+			   $RestType= ReturnResName();
+			   //類別分類
+	           if( $RestType!="null")   {
+				  $ResdataT=filterArray( $ResdataT,2, $RestType);
+			      $RestypeBase="restype_".$selectProject;
+	              $ResClassT= getMysqlDataArray($RestypeBase);
+			      $ResClassAr=filterArray( $ResClassT,2,  $RestType) ;
+			      $ResClass=explode("_",$ResClassAr[0][3]);
+	           }
+			    
+			   if($typeArray[0][1]!="--" and $typeArray[0][1]!=""){//負責人
+			       $Resdata= filterArrayContainStr(  $ResdataT,9,$typeArray[0][1]);
+				   $ResPrincipal=$typeArray[0][1];
+				  // $ResSort= getResSort($Resdata[0][9],$typeArray[0][1]);
+			   }
+			   if($typeArray[1][1]!="--"  and $typeArray[1][1]!=""){//外包
+			      $ResPrincipal=$typeArray[1][1];
+			       $Resdata= filterArrayContainStr(  $ResdataT,10,$typeArray[1][1]);
+				  // $ResSort= getResSort(  $Resdata[0][10],$typeArray[1][1]);
+			   }
+			 
+	           
+	  }
+	  function getResSort($DataStr,$name){
+		     
+	           $arr=explode("=",$DataStr);
+			   for($i=0;$i<count($arr);$i++){
+				   echo "[".$arr[$i]."]";
+			       if($arr[$i]==$name)return $i;
+			   }
+			  return -1;
+	  }
+	 
+	  function ReturnResName(){
+	           global $typeArray;//typeArray 0負責人 1外包 2大類別 3子類別
+			  
+			   if($typeArray[2][1]=="角色")return "Hero";
+			   if($typeArray[2][1]=="怪物")return "Mob";
+			   if($typeArray[2][1]=="召喚獸王")return "Boss";
+			   if($typeArray[2][1]=="場景")return "SceneBattel";
+			   return "null";
+	  }
+	 
 	  //收集請假資料
 	  function CollectLeave($tasks){
 		       $users=array();
@@ -169,7 +218,7 @@ function Drop2Area(event) {
 			   return $arr;
 	  }
       function DefinetypeData(){//網頁選項資料
-		       global $typeName,$typeArray,$PostArray;
+		       global $typeName,$typeArray,$PostArray; //typeArray 0負責人 1外包 2大類別 3子類別
 			   $subNameForWard="Type";
 			   $typeName=array(array("負責人","principal"),array("外包","outsourcing"),
   			                   array("大類別","RootType"),array("子類別","ChildType")
@@ -216,6 +265,8 @@ function Drop2Area(event) {
 				   $LocYs=$LocY+count($typeTask)*$taskHeight+35;//+60;
 			       ListTasks();
 				   ListnewTasks($LocYs);
+				   
+				   DrawResShecdule($LocYs);
 			   }
 			   //java拖曳
 			   if($_POST["DragID"]=="")return;
@@ -391,13 +442,87 @@ function Drop2Area(event) {
 				}
 	  }	 
 ?>
+<?php //ListRes
+      function DrawResShecdule($LocYs){
+		       global $Resdata ;
+			   global $Resy;
+			   $Resy=$LocYs;
+	           for($i=0;$i<count($Resdata);$i++){
+				   $ResDetails=ReturnResDetail($Resdata[$i] );
+				   DrawPluralRes($Resdata[$i],$ResDetails );
+	           }
+	  }
+	  function DrawPluralRes($data,$ResDetails ){
+		  	   global $startDate,$DateRange;
+			   global $LocX,$LocY,$wid,$taskHeight;
+			   global $Resy;
+		  	   $fontSize=12;
+			   $fontColor="#ffffff";
+		       for($i=0;$i<count($ResDetails);$i++){
+				   $ResDetail= $ResDetails[$i];
+				   $BgColor="#553333";
+		           if($ResDetail[2]=="已完成") $BgColor="#999999";
+				     $y=  $Resy ;//+ $LocY
+				     DrawResTitle($data, $y ,$h,$ResDetail);
+				     $TargetStartTime=$ResDetail[0];
+				     $TargetDays=$ResDetail[1];
+				     if(CAPI_boolInDataRange($TargetStartTime,$TargetDays, $startDate,$DateRange)){
+					    $fontColor="#eeeeee";
+					    $workWid=$TargetDays*$wid;
+						$x2= $LocX+ CAPI_returnLocX(  $TargetStartTime,$startDate );
+					    //主拖曳
+						$xe=$x2;
+						$endx=0;
+						$id="Res";
+						JAPI_DrawJavaDragbox( "[".$TargetDays."]",$x2,$y+1,$workWid-$endx,$h-4,10, $BgColor,$fontColor,$id);
+				   }
+				   $Resy+=$taskHeight;
+			   }
+	  }
+	  //取得Res類別
+	  function ReturnResDetail($data ){
+	           global  $ResClass,$ResPrincipal;
+			   $P_arr=explode("=",$data[9]);
+			   $O_arr=explode("=",$data[10]);
+			   $startDay_arr=explode("=",$data[7]);
+			   $workingDays_arr=explode("=",$data[8]);
+			   $state_arr=explode("=",$data[11]);
+			   $arr=array();
+			   for($i=0;$i<count($ResClass);$i++){
+				   if($P_arr[$i]==$ResPrincipal or  $O_arr[$i]==$ResPrincipal){
+				     array_Push($arr, array( $startDay_arr[$i], $workingDays_arr[$i],$state_arr[$i],$ResClass[$i])); 
+				   }
+			   }
+			 return   $arr;
+	  }
+	  
+	  function DrawResTitle($data, $y ,$h,$ResDetail){
+		       $name=$data[3].$data[4]."[".$ResDetail[3]."]"."[".$ResDetail[2]."]";
+			   $x=20;
+			   $w=300;
+			   $fontColor="#ffffff";
+			   $BgColor="#666666";
+			   if($ResDetail[2]=="已完成") $BgColor="#999999";
+			   DrawRect($name,10,$fontColor,array($x,$y ,$w,$h-1),$BgColor);
+			   //工單名稱
+			  // if($data[8]=="進行中")  $BgColor="#55aa55";
+			 //  if($data[8]=="未定義")  $BgColor="#999999";
+	          
+			  
+	  }
+?>
+
+
 <?php //List
+
       function DrawCalendar( ){
 		       global $LocX,$LocY,$wid,$taskHeight;
 			   global $startDate,$DateRange;
 			   global $typeTask;
+			   global $Resdata;
 			   $range=  CAPI_getDateRange( $typeTask,12,13);
-	           CAPI_DrawBaseCalendar($startDate,$DateRange,$LocX,$LocY,$wid,(count($typeTask)+1)*$taskHeight+2);
+			   $h= (count($typeTask)+count($Resdata)+1)*$taskHeight+2;
+	           CAPI_DrawBaseCalendar($startDate,$DateRange,$LocX,$LocY,$wid,$h);
 			   DrawVer();
 	  }
 	  function DrawVer(){
@@ -429,7 +554,6 @@ function Drop2Area(event) {
 			   $fontSize=12;
 			   $BgColor="#553333";
 			   $fontColor="#ffffff";
-	           
 		       if($typeArray[2][1]=="休假"){
 				  DrawRect("休假",12,$fontColor,array( 20, $LocY+18 ,350,16),"#000000");
 				  $UserTask=CollectLeave($typeTask);

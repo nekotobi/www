@@ -21,7 +21,7 @@
 				     $LocX+=$wid* $days;
 				  }
 	   }
-	    function  CAPI_DrawCalDays($LocX,$LocY,$wid,$days, $h,$y,$m, $VacationDays){
+	  function  CAPI_DrawCalDays($LocX,$LocY,$wid,$days, $h,$y,$m, $VacationDays){
 		     	  $BgColor="#aaaaaa";
 			      $fontColor="#ffffff";
 			      $fontSize=6;

@@ -178,6 +178,17 @@
 			       }
 	       return $data;
 	   }
+	   function filterArrayContainStr($BaseArray,$Num,$checkName){
+                $data=array();		     
+		        for($i=0;$i<count($BaseArray);$i++){
+			        $strBase=trim($BaseArray[$i][$Num]);
+			        $srtCheck=trim($checkName);
+			       if(strpos( $strBase,  $srtCheck) !== false){ 
+			           array_push($data,$BaseArray[$i]);
+			          } 
+			       }
+	       return $data;
+	   }
 	   function sortArrays($BaseArray ,$ArrayNum ,$forwardBool="true"){ //排序案某表格中的數字 tt 0  aa 1
   		  $newArray=array();
 		  $lastSn=  getLastSN2($BaseArray,$ArrayNum); 
@@ -195,7 +206,7 @@
 		  }
 	      return  $newArray;
 	  }
-	  function PAPI_sortCodeWithGDCode($BaseArray ,$ArrayNum ,$forwardBool="true"){ //排序GDCode案某表格中的數字 tt 0  aa 1
+	   function PAPI_sortCodeWithGDCode($BaseArray ,$ArrayNum ,$forwardBool="true"){ //排序GDCode案某表格中的數字 tt 0  aa 1
   		  $newArray=array();
 		  $lastSn= PAPI_getGDCODELastSN($BaseArray,$ArrayNum ); 
  
