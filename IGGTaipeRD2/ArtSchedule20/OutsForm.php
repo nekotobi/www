@@ -240,20 +240,29 @@
 		       $c= explode("_", $Pregressdata);  
 			   global $WebSendVal;
 			   global $URL;
+			   global $selectProject;
 			   $SendVal=$WebSendVal;
 			   $Rect[2]=50;
 			   array_push($SendVal,array("pregressSN",$sn));
 	           for($i=0;$i<count($Pregress);$i++){
 				   $BGColor="#999999";
 				    array_push($SendVal,array("pregressSort",$i));
-				   	  $msg="_";
-			       if($c[$i]!="" and $c[$i]!="X" ) {
+				    $msg="_";
+			        if($c[$i]!="" and $c[$i]!="X" ) {
 					   $BGColor="#99cc99";
 					   	  $msg=$c[$i];
 				   }
 			      sendVal($URL,  $SendVal,"submit", $msg,$Rect,7,$BGColor,"#ffffff"  );
 				  $Rect[0]+=52;
 			   }
+		       $Rect[2]=300;
+			   $path="\\\\10.4.0.190\\AppServ\\www\\AcceptanceData\\".$selectProject."\\".$sn;
+			   $webPath="..\\..\\AcceptanceData\\".$selectProject."\\".$sn;
+			   if (!is_dir($webPath) ){
+				   mkdir( $webPath, 0700);
+		        }
+			   sendVal($URL,  $SendVal,"submit", $path,$Rect,7,$BGColor,"#ffffff"); 
+	
 	  }
 	  function DrawLines($Data,$y, $Pregress ){
 		      global  $ListSize,$PreList;
