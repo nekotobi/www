@@ -252,7 +252,7 @@
 			        if($c[$i]!="" and $c[$i]!="X" ) {
 					   $BGColor="#99cc99";
 					   	  $msg=$c[$i];
-						  if($i>4) $ListAccept=true;
+						  if($i>1) $ListAccept=true;
 				   }
 				   
 			      sendVal($URL,  $SendVal,"submit", $msg,$Rect,7,$BGColor,"#ffffff"  );
