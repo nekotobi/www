@@ -244,6 +244,7 @@
 			   $SendVal=$WebSendVal;
 			   $Rect[2]=50;
 			   array_push($SendVal,array("pregressSN",$sn));
+			   $ListAccept=false;
 	           for($i=0;$i<count($Pregress);$i++){
 				   $BGColor="#999999";
 				    array_push($SendVal,array("pregressSort",$i));
@@ -251,17 +252,22 @@
 			        if($c[$i]!="" and $c[$i]!="X" ) {
 					   $BGColor="#99cc99";
 					   	  $msg=$c[$i];
+						  if($i>4) $ListAccept=true;
 				   }
+				   
 			      sendVal($URL,  $SendVal,"submit", $msg,$Rect,7,$BGColor,"#ffffff"  );
 				  $Rect[0]+=52;
 			   }
-		       $Rect[2]=300;
+			   if( !$ListAccept)return;
+		       $Rect[2]=250;
 			   $path="\\\\10.4.0.190\\AppServ\\www\\AcceptanceData\\".$selectProject."\\".$sn;
 			   $webPath="..\\..\\AcceptanceData\\".$selectProject."\\".$sn;
 			   if (!is_dir($webPath) ){
 				   mkdir( $webPath, 0700);
 		        }
-			   sendVal($URL,  $SendVal,"submit", $path,$Rect,7,$BGColor,"#ffffff"); 
+				$BgColor="#aaaaaa";
+			   DrawRect($path,9,$fontColor,$Rect,$BgColor);
+			  // sendVal($URL,  $SendVal,"submit", $path,$Rect,7,$BGColor,"#ffffff"); 
 	
 	  }
 	  function DrawLines($Data,$y, $Pregress ){
