@@ -55,6 +55,8 @@ function Drop2Area(event) {
 	         global $URL,$selectProject;
 			 if($selectProject=="")$selectProject="zombie";
 			 global $CookieArray;
+		     global   $SubmitName;
+		     $SubmitName="submit";
 			 //進度座標
 		     global $CalendarRect;
 		     global $startDate,$DateRange;
@@ -76,6 +78,7 @@ function Drop2Area(event) {
 			                   array("ResSn",$_POST["ResSn"] )  ,
 							   array("ListType",$_POST["ListType"] )  ,
 							   array("SortType",$_POST["SortType"] )  ,
+							   array("AssemblyType",$_POST["AssemblyType"] )  ,
 							   );
        
 			 //網頁變數
@@ -255,6 +258,12 @@ function Drop2Area(event) {
 			     DrawType();
 				 return;
 			  }
+			  //統計
+			  if($_POST["ListType"]=="統計"){
+				  require_once('ResScheduleApi.php');
+				  Resstatistics();
+			      return;
+			  }				  
 			  if($_POST["ListType"]=="排程表")   ListCalendar();
 			  for($i=0;$i<count($Resdatas);$i++){
 	              ListSingle($Resdatas[$i],$Rect);

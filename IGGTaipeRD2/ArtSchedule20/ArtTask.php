@@ -110,7 +110,6 @@ function Drop2Area(event) {
 			   global $plan;
 			   $plan=filterArray(  $taskDataBase_T2,15,"ver");	
 			   //定義工單
-	
 			   $typeTask_T=  $taskDataBase_T2;
 			   for($i=0;$i<4;$i++){ 
 			     if($typeArray[$i][1]!="--"){
@@ -119,7 +118,6 @@ function Drop2Area(event) {
 				    $typeTask_T=filterArray(    $typeTask_T,$num,$typeArray[$i][1]);
 				  }
 			   }
-			
 			   $typeTask= RemoveArray ($typeTask_T,12,"");
 			   $newTask= filterArray( $typeTask_T,12,"");
 			   //如果是觀看相關任務
