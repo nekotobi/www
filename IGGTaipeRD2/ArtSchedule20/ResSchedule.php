@@ -252,7 +252,8 @@ function Drop2Area(event) {
 			  global $singleResHieght;
               $h= $singleResHieght;// 20*count($ResPregresList);
 			 // $w=$singleResHieght;
-			  $w=60;
+			  $w=80;
+			  if($h<60)$h=60;
 			  $Rect=array("20","110",$w,$h);
 			  if(strpos($_POST["ListType"],"[") != false){ 
 			     DrawType();
@@ -448,7 +449,6 @@ function Drop2Area(event) {
 			 
 	 }
 	 function UpSingle($data,$Rect){
-		 echo "up";
 	          //$upFormVal ==>0/id 1/name 2/URL 
 			  //$UpHidenVal=array 0/name,1/val
 			  //$inputVal=0/type 1/name 2/showname 3/fontsize 4/5/6/7rect  8/bgcolor 9/fontColor 10/val 11/size
@@ -468,7 +468,7 @@ function Drop2Area(event) {
 		      DrawRect($msg,$fontSize,$fontColor,$BGRect,"#442222" );
 			  $name=array("text","name" ,$data[3]."修改名字","10", $Rect[0],$Rect[1],$Rect[2],$Rect[3], "#aaaaaa", "#ffffff", $data[4],14);
 			  //類別
-			  $file=array("file","pic" ,"pic","10",  $Rect[0] ,$Rect[1]+40,$Rect[2],$Rect[3], "#fffff", "ffffff", "1",10);
+			  $file=array("file","pic" ,"pic","10",  $Rect[0] ,$Rect[1]+30,$Rect[2],$Rect[3], "#fffff", "ffffff", "1",10);
 			  $submit=array("submit","submit" ,"s","10",  $Rect[0]+120  ,$Rect[1]+10 ,$Rect[2],$Rect[3], "#ffffff", "#fffff", "變更",20);
 			  array_push($inputVal,$name);
 			  array_push($inputVal,$file);
