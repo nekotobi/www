@@ -43,9 +43,24 @@
 	  defineData();
       DrawButtoms();
 	  SwitchType();
-      
+      showSpends();
 ?>
 <?php //初始資料
+    function showSpends(){
+	         //總計
+			 global $OutCosts;
+			 global $OutsCostTotal;
+			 $OutsCostTotal=0;
+			 $budget=400000;
+ 
+			 for($i=0;$i<count( $OutCosts);$i++){
+			    $OutsCostTotal+=$OutCosts[$i][10];
+			 }
+			 $p=round(($OutsCostTotal/$budget)*100);
+			 $Rect=array(900,20,200,20);
+			 $msg="總計:".round($OutsCostTotal)."/".$budget."(".$p."%)";
+			 DrawRect($msg,10,"#ffffff", $Rect,"#ffaa99");
+	}
     function defineData(){
 	         global $URL,$selectProject;
 			 global $CookieArray;
@@ -92,6 +107,7 @@
 		     global $CurrencyCNYtoUs;
              $CurrencyNTtoUs=0.035;
 			 $CurrencyCNYtoUs= 0.154;
+
  
 	}
 	function sortcontact(){  //整理聯絡人
