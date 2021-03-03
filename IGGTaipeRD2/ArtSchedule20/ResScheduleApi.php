@@ -1,7 +1,8 @@
 <?php //統計
       function Resstatistics(){
 	          global $ResTypeSingleData;
-			  $AssemblyType=explode("_", $ResTypeSingleData[3]);
+			  global $AssemblyType;
+ 
               DrawAssemblyType(  $AssemblyType);
 			  //廠商整理
 			  collectionOuts();
@@ -90,9 +91,107 @@
 			       $re2=array($Rect[0]+$Rect[2]-20,$Rect[1]+$Rect[2]-25,20,10);
  
 				   DrawRect($Outsdata[$i][2] ,8,$fontColor,$re2,"#aa8855");
-				   }
+				   } 
 				   $Rect[0]+=  $Rect[2]+1;
 				  
 			   }
 	  }
 ?>
+<?php //行程表熱區
+      function ListHotZone(){
+		       global $singleResHieght;
+			   $singleResHieght=20;
+               CollectionHotRes();	
+			   global $dateArr;
+               CAPI_getTimeRange($dateArr);	   
+               ListCalendar();
+			   DrawHotZone();
+ 	  }
+ 
+	  function DrawHotZone(){
+		       global $Resdatas;
+			   global $HotRect;
+			   $HotRect=array(20,110,20,20);
+	           for($i=0;$i<count($Resdatas);$i++){
+				  DrawHotSingleZone($Resdatas[$i]);
+			   }
+	  }
+
+	  function DrawHotSingleZone($data){
+		       global $HotRect;
+			   global $ColorCode;
+			   global $CalendarRect;
+			   global $startDate;
+			   $colorSet= $ColorCode[12];
+			   $HotRect[2]=20*count($data);
+			   $HotRect[3]=20*count($data);
+			   $id=$data[0][0];
+		       DrawIDPic(returnPicPath($data[0][0]),$HotRect,$id);
+			   $msg=$data[0][0].$data[0][1];
+			   $Rect=  $HotRect;
+			   $Rect[0]+=$HotRect[3];
+			   $Rect[2]=150-$HotRect[3];
+			   DrawRect(  $msg,"10","#ffffff",$Rect,"#333333" );
+			   $Rect[0]+=  $Rect[2];
+		       for($i=0;$i<count($data);$i++){
+			       $msg=  "[".$data[$i][3]."]".$data[$i][8].$data[$i][9];
+				   $Rect[1]+=$i*20;
+				   $Rect[2]=132;
+				   $Rect[3]=19;
+				   $BgColor=$colorSet[$data[$i][4]];
+				   DrawRect(  $msg,"10","#ffffff",$Rect,    $BgColor );
+				   //拖曳區
+				   $id= "gdcode=".$data[$i][0]."=".$data[$i][2]."=".$data[$i][4]; //分類/gd碼
+				   $Eid= "Egdcode=".$data[$i][0]."=".$data[$i][2]."=".$data[$i][4]."=".$data[$i][5];
+				   $x= $CalendarRect[0]+ (CAPI_returnLocX($data[$i][5],$startDate )-1)*$CalendarRect[2];
+				   $y=  $Rect[1];
+				   $w=$data[$i][6] *$CalendarRect[2];
+				   JAPI_DrawJavaDragbox( $data[$i][6] ,$x,$y,$w,$h,10, $BgColor, "#ffffff",$id);
+				   
+				   $x2= $x+ $w;
+				   $w=$CalendarRect[2];
+				   $BgColorE=PAPI_changeColor( $BgColor,array(0.8,0.8,0.8));
+				   JAPI_DrawJavaDragbox("_" ,$x2,$y,$w,$h,10,   $BgColorE, "#ffffff",  $Eid);
+			   }
+			   
+			   
+			   $HotRect[1]+=20*count($data)+1;
+	  }
+	  function CollectionHotRes(){
+	           global $Resdatas;
+			   global $dateArr;
+			   $dateArr=array();
+			   $arr=array();
+			   for($i=0;$i<count($Resdatas);$i++){
+				   $ar=CollectionHotRess($Resdatas[$i]);
+				   if($ar!=null)array_push($arr,$ar);
+			   }   
+			  $Resdatas= $arr;
+	  }
+	  function CollectionHotRess($data){
+		       global $AssemblyType;
+			   global $dateArr;
+		       $dateStr=explode("=",$data[7]);
+			   if(count ($dateStr)<2)return null;
+			   $stateArr=explode("=",$data[11]);
+			   $arr=array();
+			   $startDayArr=explode("=",$data[7]);
+			   $WorkingDayArr=explode("=",$data[8]);
+			   $principalArr=explode("=",$data[9]);
+			   $outArr=explode("=",$data[10]);
+			   for($i=0;$i<count($dateStr);$i++){
+				   if( $dateStr[$i]!=""){
+				       if($stateArr[$i]!="已完成"){
+					   //0編號  1名稱 2英雄類別 3類別 4類別編號  5日期 6時間 7狀態 8內 9外 
+					    array_push( $dateArr,array($startDayArr[$i],$WorkingDayArr[$i]));
+				        $ar=array($data[3],$data[4],$data[2],$AssemblyType[$i],$i,
+    						      $startDayArr[$i],$WorkingDayArr[$i],$principalArr[$i],$outArr[$i]);
+					    array_push( $arr,$ar);
+				      }
+				   }
+			   }
+			    if(count ( $arr)==0)return null;
+				return $arr;
+	  }
+?>
+

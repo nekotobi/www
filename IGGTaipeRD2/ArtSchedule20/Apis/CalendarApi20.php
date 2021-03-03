@@ -259,8 +259,23 @@
 			    $ds=  $st-$et ;
 				return $ds/3600/24;
 	   }
-	 
-
+	  //日期陣列傳回 開始日期 月範圍
+   	  function CAPI_getTimeRange($dateArr){ //array(startdate,workingdays) 傳回 開始日期 月範圍
+               global $startDate,$DateRange; 
+               $startDay=str_replace("_","-" ,$dateArr[0][0] );		
+			   $endDay= $startDay;		   
+			   for($i=0;$i<count($dateArr);$i++){
+			       $sd=str_replace("_","-" ,$dateArr[$i][0] );	
+				   $ed= CAPI_GetAfterDays($sd,$dateArr[$i][1]) ; 
+				   if(strtotime($sd)<strtotime($startDay))$startDay=$sd;
+				   if(strtotime($ed)>strtotime( $endDay)) $endDay=$ed;
+			   }
+			   $mr=ceil( (date( strtotime($endDay)-date(strtotime($startDate))))/3600/24 )/30 ;
+			   $s=explode("-",$startDay);
+               $startDate= $s[0]."-".$s[1]."-1";//$startDay;
+			   echo $startDate;
+			   $DateRange=$mr+2;
+	  }
 	  function CAPI_GetAfterDate($date,$days){
 		       $d="+".$days." day";
 	           return   date("Y-n-1", strtotime($d, strtotime($date))) ;

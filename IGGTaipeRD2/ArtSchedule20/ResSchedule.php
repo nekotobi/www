@@ -1,5 +1,5 @@
  <?PHP
- 
+ 	  require_once('ResScheduleApi.php');
  	  require_once('/Apis/PubJavaApi.php');
  	  require_once('/Apis/mysqlApi20.php');
 	  require_once('/Apis/CalendarApi20.php');
@@ -55,7 +55,7 @@ function Drop2Area(event) {
 	         global $URL,$selectProject;
 			 if($selectProject=="")$selectProject="zombie";
 			 global $CookieArray;
-		     global   $SubmitName;
+		     global  $SubmitName;
 		     $SubmitName="submit";
 			 //進度座標
 		     global $CalendarRect;
@@ -93,6 +93,8 @@ function Drop2Area(event) {
 			 $ResTypeSingleDataT=filterArray( $ResTypeT2,2,$_POST["ResType"] );
 			 $ResTypeSingleData=$ResTypeSingleDataT[0];
 	         $ResTypes = returnArraybySort( $ResTypeT2,2);
+			  global $AssemblyType;
+			  $AssemblyType=explode("_", $ResTypeSingleData[3]);
 			 //細項
 			 $type= $WebSendVal[0][1];
 			 if( $type=="")return;
@@ -116,7 +118,7 @@ function Drop2Area(event) {
 			 global $ListType;
 			 global $className,$class;
 			 $className= explode("=", $ResTypeSingleData[7]) ;
-			 $ListType=array("清單","排程表","統計");
+			 $ListType=array("清單","排程表","統計","熱區");
 	         for($i=0;$i<count($className);$i++){
 				 array_push( $ListType,$className[$i]."[".$i);
 	         }
@@ -218,7 +220,7 @@ function Drop2Area(event) {
 			  $BgColor="#aa5555";
 			 
 			  $Rect =array(20,95,40,12);
-			   DrawRect( "X".$ResLastGDSN,"10","#ffffff",$Rect,"#222222" );
+			  DrawRect( "X".$ResLastGDSN,"10","#ffffff",$Rect,"#222222" );
 			  array_push($valArray,array("AddRes" , $ResLastGDSN));
 		      array_push($valArray,array("Type", $_POST["ResType"]));
 			  array_push($valArray,array("ECode",  PAPI_returnECode( )));
@@ -259,9 +261,12 @@ function Drop2Area(event) {
 			     DrawType();
 				 return;
 			  }
+		      if($_POST["ListType"]=="熱區"){
+				 ListHotZone();
+			     return;
+			  }
 			  //統計
 			  if($_POST["ListType"]=="統計"){
-				  require_once('ResScheduleApi.php');
 				  Resstatistics();
 			      return;
 			  }				  
@@ -270,6 +275,8 @@ function Drop2Area(event) {
 	              ListSingle($Resdatas[$i],$Rect);
 			      $Rect[1]+=$Rect[3]+2;
 			  }
+			 
+			  
 	 }
 	 function DrawType(){ //列印分類
 	          global   $ResTypeSingleData;
@@ -482,9 +489,8 @@ function Drop2Area(event) {
 		       global $ResPregresList;
 		       global $Resdatas;
 			   global $CalendarRect;
-			   global $startDate;
-			     global $singleResHieght;
-			   $DateRange=6;
+			   global $startDate,$DateRange;
+			   global $singleResHieght;
 			   $h=  $singleResHieght*count($Resdatas)+30;
 	           CAPI_DrawBaseCalendar($startDate,$DateRange,$CalendarRect[0],$CalendarRect[1],$CalendarRect[2],$h);
                $Rect=array(300,70,40,10);
