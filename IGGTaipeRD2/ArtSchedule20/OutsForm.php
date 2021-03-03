@@ -417,6 +417,7 @@
 			   $sn=$_POST["EditSn"];
 	           $outsDetialT=getMysqlDataArray( $DetailFormName); 
 			   $outsDetial= filterArray( $outsDetialT,1,$sn);
+	  
 			   $ListTitle=filterArray( $outsDetialT,0,"資料類別");
 			   $List=array(4,5,6,7,8,9);
 			   $rect=array(160,100,80,16);
@@ -438,7 +439,8 @@
 			   $Link="../../IGGTaipeRD2/Outsourcing/ExportMat20.php";//?Exporttype=mat1&sn=".$sn;
 			   $msg="產生[材料1：项目外包需求申请单.xls]";
 			   $fontColor="#ffffff";$BGcolor="#99aa99";
-			   $rect[1]+=60+(count(outsDetial)+1)*22;
+			   $rect[1]+=60+(count( $outsDetial)+1)*22;
+			 //  echo ">>>>>>>>>>>>>>>>>>>>>>>>".count( $outsDetial).">>".$rect[1];
 		       $rect[2]=300;
 			   $ValArray=array(array("Exporttype",mat1),array("sn",$sn),array("selectProject",$selectProject));
 			   sendVal( $Link,$ValArray,"submit",$msg,$rect, 12, $BGcolor ,$fontColor );
