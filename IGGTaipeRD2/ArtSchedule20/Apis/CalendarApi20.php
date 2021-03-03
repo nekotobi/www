@@ -273,7 +273,7 @@
 			   $mr=ceil( (date( strtotime($endDay)-date(strtotime($startDate))))/3600/24 )/30 ;
 			   $s=explode("-",$startDay);
                $startDate= $s[0]."-".$s[1]."-1";//$startDay;
-			   echo $startDate;
+			  // echo $startDate;
 			   $DateRange=$mr+2;
 	  }
 	  function CAPI_GetAfterDate($date,$days){
