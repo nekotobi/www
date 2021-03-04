@@ -57,6 +57,7 @@
 				}
 		   echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
         }
+ 
 ?>
 <?php //php繪製表格 
 	  function PubApi_MakeSelection($items,$selectItem,$selectName,$size){
@@ -370,6 +371,22 @@
 ?>
 
 <?php //color
+       function PAPI_changeGlayColor($hex, $GlayP){
+                $RGB=PAPI_hex2rgb(  $hex  );
+				$nrgb=$RGB;
+				//取得平均數
+				$p=0;
+				for( $i=0;$i<count($RGB);$i++){
+					$p+=$RGB[$i];
+				}
+				$p=($p/3)*$GlayP;
+				for( $i=0;$i<count($RGB);$i++){
+				    $nrgb[$i]=(int)( ($RGB[$i]+$p)/2);
+					if(  $nrgb[$i]>255)$nrgb[$i]=255;
+				}
+			    $hex= PAPI_rgb2hex($nrgb) ;
+				return  $hex;
+	   }
        function PAPI_changeColor($hex, $colorAddArr){
                 $RGB=PAPI_hex2rgb(  $hex  );
 				$nrgb=$RGB;

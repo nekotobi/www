@@ -159,7 +159,7 @@ function Drop2Area(event) {
 	}
 ?>
 <?php //判斷submit
-      function checkSubmit(){
+     function checkSubmit(){
 		       global $data_library, $ResdataBase ;
 			   global $WebSendVal,$URL;
 	           if($_POST["submit"]=="變更"){
@@ -312,7 +312,6 @@ function Drop2Area(event) {
 				  $x+=$w+1;
 			  }
 	 }
- 
 	 //列印底部
 	 function DrawTypeDragBase($types,$x,$y,$w,$h,$colorSet){
 			  global $ClasstypeSort;//分類編號
@@ -413,7 +412,7 @@ function Drop2Area(event) {
 				   $Eid= "Egdcode=".$data[3]."=".$data[2]."=".$i."=".$startDay[$i];
 				   $x=$Rect[0];
                    $y=$Rect[1]+$i*($Rect[3]+1);
-				   $w=120 +(100-$singleResHieght);
+				   $w=100 +(100-$singleResHieght);
 				   $h=$Rect[3];
 				   //分類標題
 	               $costArr=explode("=",$data[15]);
@@ -423,6 +422,7 @@ function Drop2Area(event) {
 				   $BgColor=$ColorCode[12][$i];
 				   if($startDay[$i]==""  or $state[$i]=="未定義"   ) $BgColor="#222222";
 				   if($state[$i]=="已完成")  $BgColor="#999999";
+				   if($state[$i]=="規劃排程")  $BgColor=PAPI_changeGlayColor(  $BgColor,2);
                    JAPI_DrawJavaDragbox(   $msg ,$x,$y,$w,$h,10, $BgColor, "#ffffff",$id);
 				   //價格
 				  
@@ -433,6 +433,7 @@ function Drop2Area(event) {
 					    $workWid=$CalendarRect[2]*$wd;
 					    $fontColor="#eeeeee";
 						$x2= $CalendarRect[0]+ (CAPI_returnLocX($startDay[$i],$startDate )-1)*$CalendarRect[2];
+					 
 						//補助線
 						if($state[$i]!="已完成")  DrawRect("",1,$fontColor,array($x+$w,$y+5,$x2-$x-$w,2),$BgColor);
 						//主拖曳
@@ -451,7 +452,7 @@ function Drop2Area(event) {
  
 					  }
 				   }
-				    if( $costArr[$i]!="") DrawRect( $costArr[$i],7,"#ffffff",array( $x+$w-30,$y,30,12),"#aa7744");
+				   if( $costArr[$i]!="") DrawRect( $costArr[$i],7,"#ffffff",array( $x+$w-30,$y,30,12),"#aa7744");
 			   }
 			 
 	 }
