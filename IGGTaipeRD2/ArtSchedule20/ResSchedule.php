@@ -228,7 +228,7 @@ function Drop2Area(event) {
 			  $GdCode=ProAPI_ReturnGDCode( $_POST["ResType"],$ResLastGDSN+1);
 			  array_push($valArray,array("gdcode", $GdCode));
               $Rect[0]+= $Rect[2]+2;
-			     $Rect[2]= 20;
+			  $Rect[2]= 20;
 			  sendVal($URL,  $valArray ,$SubmitName,  "+",$Rect,10,$BgColor); 
 	 }
 	 function DrawSingle($data,$Wsort ,$Rect,$fontSize=10){
@@ -404,6 +404,8 @@ function Drop2Area(event) {
 			   $state=explode("=",$data[11]);
 			   $jila=explode("=",$data[12]);
 			   //7-s w-8 p-9 out-10 state=11
+			    //附註
+ 			   if($data[13]!="")DrawRect($data[13],10,"#000000",array(22,$Rect[1]+2,100,20),"#ffee88");
 			   for($i=0;$i<count($ResPregresList);$i++){
 				   $wd= $workingDays[$i];
 	               if($wd=="")$wd=1;
@@ -419,13 +421,14 @@ function Drop2Area(event) {
 				   $msg=$ResPregresList[$i];
 				   if(  $principal[$i]!="")$msg=$msg."[".$principal[$i]."]";
 				   if(  $outsourcing[$i]!="")$msg=$msg."[".$outsourcing[$i]."]";
+				   if(  $state[$i]!="")$msg=$msg."[".$state[$i]."]";
 				   $BgColor=$ColorCode[12][$i];
 				   if($startDay[$i]==""  or $state[$i]=="未定義"   ) $BgColor="#222222";
 				   if($state[$i]=="已完成")  $BgColor="#999999";
 				   if($state[$i]=="規劃排程")  $BgColor=PAPI_changeGlayColor(  $BgColor,2);
+				   if($state[$i]=="進行中") $BgColor=PAPI_changeColor( $BgColor,array(1.3,1.3,1.3));
                    JAPI_DrawJavaDragbox(   $msg ,$x,$y,$w,$h,10, $BgColor, "#ffffff",$id);
 				   //價格
-				  
 				   //已排定
 				   if( $startDay[$i]!="" and $state[$i]!="未定義" ){
 					   //判斷時間範圍
@@ -433,7 +436,6 @@ function Drop2Area(event) {
 					    $workWid=$CalendarRect[2]*$wd;
 					    $fontColor="#eeeeee";
 						$x2= $CalendarRect[0]+ (CAPI_returnLocX($startDay[$i],$startDate )-1)*$CalendarRect[2];
-					 
 						//補助線
 						if($state[$i]!="已完成")  DrawRect("",1,$fontColor,array($x+$w,$y+5,$x2-$x-$w,2),$BgColor);
 						//主拖曳
@@ -443,13 +445,10 @@ function Drop2Area(event) {
 							$x2=($x+$w);
 							$endx=$x2-$xe;
 						}
-						 
 					    JAPI_DrawJavaDragbox( "[".$wd."]",$x2,$y+1,$workWid-$endx,$h-4,10, $BgColor,$fontColor,$id);
 						//拖曳天數
 					    $BgColorE=PAPI_changeColor( $BgColor,array(0.8,0.8,0.8));
-					 
 						if($state[$i]!="已完成") JAPI_DrawJavaDragbox( "",$xe+$workWid,$y+1,$CalendarRect[2] ,$h-4,10, $BgColorE,$fontColor, $Eid);
- 
 					  }
 				   }
 				   if( $costArr[$i]!="") DrawRect( $costArr[$i],7,"#ffffff",array( $x+$w-30,$y,30,12),"#aa7744");
@@ -470,15 +469,18 @@ function Drop2Area(event) {
 			 // echo ">".$_POST["SortType"].$WebSendVal[0][1];
 			  array_push($UpHidenVal,array("gdcode",$data[3]));
 			  $BGRect=$Rect;
-			  $BGRect[2]=$Rect[2]*3;
+			  $BGRect[2]=300;
               $inputVal=array(); 
 			  //基底
 		      DrawRect($msg,$fontSize,$fontColor,$BGRect,"#442222" );
 			  $name=array("text","name" ,$data[3]."修改名字","10", $Rect[0],$Rect[1],$Rect[2],$Rect[3], "#aaaaaa", "#ffffff", $data[4],14);
+			  $remark=array("text","remark" ,"附註","10", $Rect[0]+80,$Rect[1],$Rect[2],$Rect[3], "#aaaaaa", "#ffffff", $data[13],24);
 			  //類別
 			  $file=array("file","pic" ,"pic","10",  $Rect[0] ,$Rect[1]+30,$Rect[2],$Rect[3], "#fffff", "ffffff", "1",10);
-			  $submit=array("submit","submit" ,"s","10",  $Rect[0]+120  ,$Rect[1]+10 ,$Rect[2],$Rect[3], "#ffffff", "#fffff", "變更",20);
+			  
+			  $submit=array("submit","submit" ,"s","10",  $Rect[0]+220  ,$Rect[1]+10 ,$Rect[2],$Rect[3], "#ffffff", "#fffff", "變更",20);
 			  array_push($inputVal,$name);
+			  array_push($inputVal,$remark);
 			  array_push($inputVal,$file);
 			  array_push($inputVal,$submit);
 			  upSubmitform($upFormVal,$UpHidenVal, $inputVal);

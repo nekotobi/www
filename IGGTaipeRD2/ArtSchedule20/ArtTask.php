@@ -168,18 +168,16 @@ function Drop2Area(event) {
 	           
 	  }
 	  function getResSort($DataStr,$name){
-		     
 	           $arr=explode("=",$DataStr);
 			   for($i=0;$i<count($arr);$i++){
 				   echo "[".$arr[$i]."]";
 			       if($arr[$i]==$name)return $i;
 			   }
-			  return -1;
+			   return -1;
 	  }
 	 
 	  function ReturnResName(){
 	           global $typeArray;//typeArray 0負責人 1外包 2大類別 3子類別
-			  
 			   if($typeArray[2][1]=="角色")return "Hero";
 			   if($typeArray[2][1]=="怪物")return "Mob";
 			   if($typeArray[2][1]=="召喚獸王")return "Boss";

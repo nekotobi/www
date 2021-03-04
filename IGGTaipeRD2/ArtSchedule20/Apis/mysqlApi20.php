@@ -22,7 +22,7 @@
 					}
 			     }
 				$stmt= MAPI_MakeUpdateStmt(  $tableName,$Base,$up,$WHEREtable,$WHEREData);
-			   SendCommand($stmt,$data_library);		
+			    SendCommand($stmt,$data_library);		
 	   }
        function MakeDeleteStmt($table,$WHEREtable,$WHEREData){
 		     $stmt= "DELETE FROM ".$table;
