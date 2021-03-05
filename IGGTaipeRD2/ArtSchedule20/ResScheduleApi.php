@@ -232,9 +232,8 @@
 	  function DrawDragMatInst($mats,$x,$y,$w,$h){
 	           $arr=explode("_",$mats);
 		       for($i=0;$i<count( $arr);$i++){	
-			    
 				   $id="SetMat=".$arr[$i];
-			       DrawIDPic(returnPicPath( $arr[$i]),array($x,$y,$w,$w),$id);
+			       DrawIDPic(returnPicPath( $arr[$i] ),array($x,$y,$w,$w),$id);
 				   JAPI_DrawJavaDragbox(  $arr[$i] ,$x,$y,$w,$h,8, "#222222","#ffffff",$id,8);
 				   $x+=$w+1;
 			   }
@@ -244,7 +243,7 @@
 			   $y=$LocY;
 	           for($i=0;$i<count( $data);$i++){	
 		           $id="SetMat=".$data[$i][3];
-			       DrawIDPic(returnPicPath($data[$i][3]),array($x,$y,$w,$w),$id);
+			       DrawIDPic(returnPicPath($data[$i][3],$type),array($x,$y,$w,$w),$id);
 			       JAPI_DrawJavaDragbox( $data[$i][3] ,$x,$y,$w,$h,8, "#222222","#ffffff",$id,8);
 			       $c+=1;
 			       $x+=$w+1;

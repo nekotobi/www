@@ -522,10 +522,18 @@ function Drop2Area(event) {
 			   $x=600;
 			   $y=60;
 	           JAPI_CreatJavaForm( $URL, $ResdataBase,$inputsTextNames,$WebSendVal,$x,  $y );
-			  
+			   //費用
 			   $id="tableName=cost";
 			   $BgColor= "#aa9977";
 			   JAPI_DrawJavaDragArea("_",590,58,10,20,$BgColor,$fontColor,$id,"12" );
+			   //清除
+			   $id="cmd=delete";
+ 
+			   JAPI_DrawJavaDragArea("D",920,58,10,10,"#aa7777" ,"#ffffff",$id,7 );
+			    //清除
+			   $id="cmd=delete=all";
+ 
+			   JAPI_DrawJavaDragArea("D",940,58,10,10,"#ff7777" ,"#ffffff",$id,7 );
 	  }
 
 	  function upform(){
@@ -535,7 +543,7 @@ function Drop2Area(event) {
 			   global $URL;
 			   global $WebSendVal;
 			   global $data_library,  $ResdataBase ;
-			 //  echo  $_POST["ResType"].">=".$_POST["EResType"];;
+			  //  echo  $_POST["ResType"].">=".$_POST["EResType"];;
 			   //上傳圖檔
 			   $upPath="..\\..\\".$selectProject."Res\\".$_POST["ResType"];
 			   if (!is_dir($upPath) ) mkdir($upPath, 0700);
@@ -554,7 +562,7 @@ function Drop2Area(event) {
 				 $WHEREData=array("data",$_POST["gdcode"]);
 			     MAPI_AutoEditMsQLData($data_library, $ResdataBase,$WHEREtable,$WHEREData );
 			     $arr=array(array("ResType",$_POST["ResType"] ),array("ListType",$_POST["ListType"] ),array("SortType",$_POST["SortType"] ));
-                  JAPI_ReLoad(  $arr,$URL);
+                 JAPI_ReLoad(  $arr,$URL);
 			 
 	  }
 ?>
@@ -574,6 +582,26 @@ function Drop2Area(event) {
 				}
 				return $str;
 	  }
+	  function  clearSc($curentData, $WHEREtable,$WHEREData,$sort,$all){
+		        global $WebSendVal,$URL;
+		        global $ResdataBase;
+		        //7 startDay 8 workingDays 9principal 10 outsourcing 11 state
+				global $ResPregresList;
+		       // echo "clear".$curentData[0][3].">".$sort;
+		        $Base=array("startDay","workingDays","principal","outsourcing","state");
+				$up=array();
+				for($i=0;$i<count( $Base);$i++){
+				    $Rsort=$i+7;
+					$str=returnState($curentData[0][$Rsort],"",$sort,count($ResPregresList));
+					if($all=="all") $str="";
+ 
+					array_push( $up,$str);
+				}
+				$stmt=MAPI_MakeUpdateStmt($ResdataBase,$Base,$up,$WHEREtable,$WHEREData);
+			    echo $stmt;
+				  SendCommand($stmt,$data_library);		
+			    JAPI_ReLoad($WebSendVal,$URL);
+	  }
       function  upScedule(){
 			    global $data_library,$ResdataBase;
 			    global $ResPregresList;
@@ -592,6 +620,10 @@ function Drop2Area(event) {
 				//目前的資源資料
 				$curentData=filterArray($Resdatas,3,$gdcode);
 				 //判斷特殊狀況
+				if($data2[0]=="cmd"){
+				   if($data2[1]="delete") clearSc(	$curentData, $WHEREtable,$WHEREData,$datas[3],$data2[2]);
+				   return;
+				}
 				if($datas[0]=="SetMat"){ //怪物分布圖
 			       $gdcode=$data2[1];  
 				   $curentData=filterArray($Resdatas,3,$gdcode);
