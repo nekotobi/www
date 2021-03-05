@@ -379,16 +379,26 @@ function Drop2Area(event) {
 				
 	 } 
 	 function returnPicPath($GdCode ){
-		       global $WebSendVal ;
 			   global $noPic;
-	           global  $webPath,$ResPath;
-			   $type=$WebSendVal[0][1];
+	           global $webPath,$ResPath;
+			   $type= returnGDType($GdCode);
 			   $resdir="\\".$type."\\spic\\".$GdCode.".png";
 			   $pic=$webPath.$resdir;
 			   $path=$ResPath.$resdir;
 			   if (is_readable($path) != false)   return $pic ;
 			   return $noPic;
 			   
+	 }
+	 function returnGDType($GdCode){
+	          $s=  substr($GdCode,0, 1); 
+			  if($s=="H")return "Hero";
+			    if($s=="M")return "Mob";
+				 if($s=="B")return "Boss";
+				  if($s=="S")return "SceneBattel";
+				    if($s=="A")return "Army";
+					   if($s=="T")return "Town";
+					     global $WebSendVal ;
+					return   $WebSendVal[0][1];
 	 }
 	 function SchedlueList($data ,$Rect){ //拖曳區
 	           global $CalendarRect;
