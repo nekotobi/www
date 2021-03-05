@@ -83,7 +83,7 @@ function Drop2Area(event) {
        
 			 //網頁變數
 			 global $ResTypes,$ResTypeSingleData;
-			 global $typeDatabase,$Resdatas, $ResLastGDSN;
+			 global $typeDatabase,$Resdatas, $ResLastGDSN,$ResdatasT;
              global  $ResdataBase,$typeDatabase;
 			 $typeDatabase="restype_".$selectProject;
 			 $ResdataBase="resdata_".$selectProject;
@@ -109,23 +109,22 @@ function Drop2Area(event) {
  	         //資源進程
 			 global $ResPregresList;
 			 $ResPregresList= explode("_",  $currentType[0][3]) ;
-           
 			 //java傳遞欄位
 		     global  $inputsTextNames ;
              $inputsTextNames=array("cost","DragID","target");
- 
 		     //分類資料
 			 global $ListType;
 			 global $className,$class;
 			 $className= explode("=", $ResTypeSingleData[7]) ;
 			 $ListType=array("清單","排程表","統計","熱區");
+			 if($_POST["ResType"]=="SceneBattel") array_push( $ListType,"怪物分布");
 	         for($i=0;$i<count($className);$i++){
 				 array_push( $ListType,$className[$i]."[".$i);
 	         }
 			 SortResData();
 		     global $singleResHieght;
 			 $singleResHieght=  count($ResPregresList)*20;
-			   if($singleResHieght<80)$singleResHieght=40;
+			  if($singleResHieght<80)$singleResHieght=40;
 	}//重新排序
 	function AddResSort(){
 	     	 global $SortType; 
@@ -264,6 +263,10 @@ function Drop2Area(event) {
 		      if($_POST["ListType"]=="熱區"){
 				 ListHotZone();
 			     return;
+			  }
+		      if($_POST["ListType"]=="怪物分布"){
+				 StageMobSet();
+			  
 			  }
 			  //統計
 			  if($_POST["ListType"]=="統計"){
@@ -569,6 +572,7 @@ function Drop2Area(event) {
 				global $ListType;
 				$datas=explode("=",$_POST["DragID"]);
 				$data2=explode("=",$_POST["target"]);
+
 				$gdcode=$datas[1];
 				$Type=$datas[2];
 				$ResSort=$datas[3];
@@ -577,6 +581,14 @@ function Drop2Area(event) {
 		        $WHEREData=array( $gdcode,$Type  );
 				//目前的資源資料
 				$curentData=filterArray($Resdatas,3,$gdcode);
+				 //判斷特殊狀況
+				if($datas[0]=="SetMat"){ //怪物分布圖
+			       $gdcode=$data2[1];  
+				   $curentData=filterArray($Resdatas,3,$gdcode);
+				   upDragMat( $curentData,$datas[1],$data2[2] );
+				   
+				   return;
+				}
 				//設定項目時間
 				if($datas[0]=="gdcode"){
 					if($data2[0]=="startDay"){
@@ -618,7 +630,6 @@ function Drop2Area(event) {
 		 
 				}
 			    $stmt=MAPI_MakeUpdateStmt($ResdataBase,$Base,$up,$WHEREtable,$WHEREData);
-			 //  echo $stmt;
 			    SendCommand($stmt,$data_library);		
 			    JAPI_ReLoad($WebSendVal,$URL);
 	  }

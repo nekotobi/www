@@ -195,3 +195,91 @@
 	  }
 ?>
 
+<?php //關卡排怪區
+      function StageMobSet(){
+           global $Resdatas;
+		   global $ResdatasT;
+		   $Mobs=filterArray( $ResdatasT,2,"Mob" );
+		   $Boss=filterArray($ResdatasT,2,"Boss" );
+		   $x=170;
+		   $y=110;
+		   $w=280;
+		   $h=60;
+		   //拖曳區
+		   DrawRect( "怪物分布" ,"10","#ffffff",array($x,$y-20,$w,$h),"#222222" );
+		   for($i=0;$i<count($Resdatas);$i++){
+		       $id="gdcode=".$Resdatas[$i][3];
+			   JAPI_DrawJavaDragArea("mob" ,$x,$y,$w,$h, "#999999", "#cc9999",$id); 
+			  // $id="gdcode=".$Resdatas[$i][3]."=Remove";
+			  // JAPI_DrawJavaDragArea("mob" ,$x+$w,$y,10,$h, "#553333", "#cc9999",$id); 
+			  if($Resdatas[$i][14]!="")
+			   DrawDragMatInst($Resdatas[$i][14],$x+2,$y+10,40,10);
+			   $y+=$h+2;
+			   
+		   }	
+           //mob
+		   $x2=$x+$w+12;
+		   $x=$x2;
+		   $c=0;
+		   $w=40;
+		   $h=10;
+		   global $LocY;
+		   $LocY  =110;
+           DrawDragMat( $Mobs,$x,$y,$w,$h,$x2);
+		    $LocY+=$w+2;
+           DrawDragMat($Boss,$x,$y,$w,$h,$x2);   
+      }
+	  function DrawDragMatInst($mats,$x,$y,$w,$h){
+		
+	           $arr=explode("_",$mats);
+		       for($i=0;$i<count( $arr);$i++){	
+			     echo $arr[$i];
+				   $id="SetMat=".$arr[$i];
+			       DrawIDPic(returnPicPath( $arr[$i]),array($x,$y,$w,$w),$id);
+				   JAPI_DrawJavaDragbox(  $arr[$i] ,$x,$y,$w,$h,8, "#222222","#ffffff",$id,8);
+				   $x+=$w+1;
+			   }
+	  }
+	  function DrawDragMat($data,$x,$y,$w,$h,$x2){
+		       global $LocY;
+			   $y=$LocY;
+	           for($i=0;$i<count( $data);$i++){	
+		           $id="SetMat=".$data[$i][3];
+			       DrawIDPic(returnPicPath($data[$i][3]),array($x,$y,$w,$w),$id);
+			       JAPI_DrawJavaDragbox( $data[$i][3] ,$x,$y,$w,$h,8, "#222222","#ffffff",$id,8);
+			       $c+=1;
+			       $x+=$w+1;
+			       if ($c>10){
+			           $c=0;
+				       $x =$x2;
+				       $y+=40;
+			       }
+				 $LocY=$y;  
+		   }
+	  }
+       function upDragMat( $curentData ,$MatCode,$Remove){//上傳怪物分布
+		        global $WebSendVal,$URL,$ResdataBase;
+			    $WHEREtable=array( "gdcode", "EData");
+		        $WHEREData=array($curentData[0][3],"data"  );
+				$Base=array("classification");
+			    $up=array(returnSetMat($curentData[0][14],$MatCode));
+			    $stmt=MAPI_MakeUpdateStmt($ResdataBase,$Base,$up,$WHEREtable,$WHEREData);
+				 SendCommand($stmt,$data_library);		
+			    JAPI_ReLoad($WebSendVal,$URL);
+	   }
+	   function returnSetMat($BaseStr,$addStr){
+				 $arr=explode("_",$BaseStr);
+				 $str="";
+				 $Repetbool=false;
+				 for($i=0;$i<count($arr);$i++){
+					  if($arr[$i]==$addStr   ) $Repetbool=true;
+					 if($arr[$i]!=$addStr && $arr[$i]!="" ){
+						 $str=$str.$arr[$i]."_";
+					 }
+				 }
+				if(! $Repetbool) $str=$str.$addStr ;    
+				 return $str;
+	   }
+	   
+?>
+
