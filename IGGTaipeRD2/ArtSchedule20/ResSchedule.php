@@ -264,9 +264,9 @@ function Drop2Area(event) {
 				 ListHotZone();
 			     return;
 			  }
-		      if($_POST["ListType"]=="怪物分布"){
+		      if($_POST["ListType"]=="怪物分布" & $_POST["ResType"]=="SceneBattel"){
 				 StageMobSet();
-			  
+			     
 			  }
 			  //統計
 			  if($_POST["ListType"]=="統計"){

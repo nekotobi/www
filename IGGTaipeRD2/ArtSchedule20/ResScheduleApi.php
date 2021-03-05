@@ -226,14 +226,13 @@
 		   global $LocY;
 		   $LocY  =110;
            DrawDragMat( $Mobs,$x,$y,$w,$h,$x2);
-		    $LocY+=$w+2;
+		   $LocY+=$w+2;
            DrawDragMat($Boss,$x,$y,$w,$h,$x2);   
       }
 	  function DrawDragMatInst($mats,$x,$y,$w,$h){
-		
 	           $arr=explode("_",$mats);
 		       for($i=0;$i<count( $arr);$i++){	
-			     echo $arr[$i];
+			    
 				   $id="SetMat=".$arr[$i];
 			       DrawIDPic(returnPicPath( $arr[$i]),array($x,$y,$w,$w),$id);
 				   JAPI_DrawJavaDragbox(  $arr[$i] ,$x,$y,$w,$h,8, "#222222","#ffffff",$id,8);
