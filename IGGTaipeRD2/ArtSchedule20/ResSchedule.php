@@ -93,8 +93,8 @@ function Drop2Area(event) {
 			 $ResTypeSingleDataT=filterArray( $ResTypeT2,2,$_POST["ResType"] );
 			 $ResTypeSingleData=$ResTypeSingleDataT[0];
 	         $ResTypes = returnArraybySort( $ResTypeT2,2);
-			  global $AssemblyType;
-			  $AssemblyType=explode("_", $ResTypeSingleData[3]);
+			 global $AssemblyType;
+			 $AssemblyType=explode("_", $ResTypeSingleData[3]);
 			 //細項
 			 $type= $WebSendVal[0][1];
 			 if( $type=="")return;
@@ -116,7 +116,7 @@ function Drop2Area(event) {
 			 global $ListType;
 			 global $className,$class;
 			 $className= explode("=", $ResTypeSingleData[7]) ;
-			 $ListType=array("清單","排程表","統計","熱區");
+			 $ListType=array("清單","排程表","統計","熱區","季計畫");
 			 if($_POST["ResType"]=="SceneBattel") array_push( $ListType,"怪物分布");
 	         for($i=0;$i<count($className);$i++){
 				 array_push( $ListType,$className[$i]."[".$i);
@@ -124,7 +124,9 @@ function Drop2Area(event) {
 			 SortResData();
 		     global $singleResHieght;
 			 $singleResHieght=  count($ResPregresList)*20;
-			  if($singleResHieght<80)$singleResHieght=40;
+			 if($singleResHieght<80)$singleResHieght=60;
+			 global $CalendarH;
+			  $CalendarH= $singleResHieght*count($Resdatas)+ 50;
 	}//重新排序
 	function AddResSort(){
 	     	 global $SortType; 
@@ -507,7 +509,8 @@ function Drop2Area(event) {
 			   global $CalendarRect;
 			   global $startDate,$DateRange;
 			   global $singleResHieght;
-			   $h=  $singleResHieght*count($Resdatas)+30;
+			   global $CalendarH;
+			   $h=$CalendarH; // $singleResHieght*count($Resdatas)+ 50;
 	           CAPI_DrawBaseCalendar($startDate,$DateRange,$CalendarRect[0],$CalendarRect[1],$CalendarRect[2],$h);
                $Rect=array(300,70,40,10);
 			   ProAPI_DrawWorkersAreas($Rect);

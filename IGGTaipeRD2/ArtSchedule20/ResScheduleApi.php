@@ -103,7 +103,16 @@
 			   $singleResHieght=20;
                CollectionHotRes();	
 			   global $dateArr;
-               CAPI_getTimeRange($dateArr);	   
+               CAPI_getTimeRange($dateArr);	 
+	           global $CalendarH;	
+			   global $singleResHieght;
+			   $hs=0;
+			   global $Resdatas;
+               for($i=0;$i<count($Resdatas);$i++){
+				   foreach($Resdatas[$i] as $v)$hs+=1;
+               }	
+ 
+			   $CalendarH=$singleResHieght* $hs+20;
                ListCalendar();
 			   DrawHotZone();
  	  }
@@ -113,6 +122,7 @@
 			   global $HotRect;
 			   $HotRect=array(20,110,20,20);
 	           for($i=0;$i<count($Resdatas);$i++){
+				 
 				  DrawHotSingleZone($Resdatas[$i]);
 			   }
 	  }
@@ -194,7 +204,6 @@
 				return $arr;
 	  }
 ?>
-
 <?php //關卡排怪區
       function StageMobSet(){
            global $Resdatas;
@@ -215,7 +224,6 @@
 			  if($Resdatas[$i][14]!="")
 			   DrawDragMatInst($Resdatas[$i][14],$x+2,$y+10,40,10);
 			   $y+=$h+2;
-			   
 		   }	
            //mob
 		   $x2=$x+$w+12;
@@ -279,5 +287,11 @@
 				 return $str;
 	   }
 	   
+?>
+
+<?php //季計畫
+      function DrawSeasonPlan(){
+               
+	  }
 ?>
 
