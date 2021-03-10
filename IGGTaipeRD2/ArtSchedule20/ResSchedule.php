@@ -295,10 +295,14 @@ function Drop2Area(event) {
 			  $colorSet= $ColorCode[12];
 			  if(strpos($_POST["ListType"],"珠色") !== false) $colorSet=$ColorCode[13];
 		      DrawTypeDragBase(  $class,20,120,1000,80,$colorSet);
+			 
+			 
 	 }
-     function DrawTypeDragObj($typeName,$x,$y,$Typesort,$types){
+ 
+ 
+     function DrawTypeDragObj($typeName,$x,$y,$Typesort,$types,$sortArr){
 		      global  $Resdatas;
-	          $sortArr= returnSortTypes( $Resdatas,$typeName,$Typesort,$types);
+	         // $sortArr= returnSortTypes( $Resdatas,$typeName,$Typesort,$types);
 			  $BgColor="#333333";
 			  $fontColor="#ffffff";
 		      $w=50;
@@ -318,19 +322,36 @@ function Drop2Area(event) {
 	 //列印底部
 	 function DrawTypeDragBase($types,$x,$y,$w,$h,$colorSet){
 			  global $ClasstypeSort;//分類編號
+			  global $ResTypeSingleData;
+			  global $Resdatas;
 			  $fontColor="#ffffff";
 			  $By=$y;
 			  $Typesort=$ClasstypeSort;
+			  
+			  //拖曳區
+			  $total=0;
+			  $sortArrs=array();
+			   // $sortArr= returnSortTypes( $Resdatas,$typeName,$Typesort,$types);
 	          for($i=0;$i<count($types);$i++){
 				  $id="tableName=classification=".$types[$i]."=".$ClasstypeSort;
 				  $BgColor= $colorSet[$i];
 				  if($types[$i]=="未分類") $BgColor="#888888";
 				  JAPI_DrawJavaDragArea($types[$i],$x,$y,$w,$h,$BgColor,$fontColor,$id,"12" );
-				  $y+=$h+2;
+				
+				  $sortArr= returnSortTypes( $Resdatas,$types[$i],$Typesort,$types);
+				  array_push( $sortArrs, $sortArr);
+				  $total+=count($sortArr);
+				  //季計畫完成度
+				  if(strpos($_POST["ListType"],"季計畫") !== false){
+					$msg=$total."/".$ResTypeSingleData[8]."[".(int)(($total/$ResTypeSingleData[8])*100)."%]";
+					echo $total;
+				    DrawRect($msg,8,"#ffffff",array($x+1,$y+16,47,14),"#000000");
+				  }
+				    $y+=$h+2;
 			  }
 			  for($i=0;$i<count($types);$i++){
 				    //拖曳物件
-			      DrawTypeDragObj($types[$i],$x,$By,$Typesort,$types);
+			      DrawTypeDragObj($types[$i],$x+20,$By,$Typesort,$types, $sortArrs[$i]);
 				  $By+=$h+2;
 			  }
 	 }
