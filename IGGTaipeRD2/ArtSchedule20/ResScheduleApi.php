@@ -291,7 +291,8 @@
 
 <?php //季計畫
       function DrawSeasonPlan(){
-               
+               global $ResdatasT;
+			  
 	  }
 ?>
 

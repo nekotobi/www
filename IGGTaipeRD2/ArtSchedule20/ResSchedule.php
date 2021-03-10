@@ -65,7 +65,7 @@ function Drop2Area(event) {
 		     $startDate=$startDate_Res;//"2021-1-1";
 			 if($startDate=="")  $startDate=  "2021-1-1";
 			 $DateRange=$DateRange_Res; 
-			  if($DateRange=="")$DateRange=6;
+			 if($DateRange=="")$DateRange=6;
 		     $CalendarRect=array(315,80,10,0);
 			 $ColorCode= GetColorCode();
 			 //資源位置
@@ -80,7 +80,6 @@ function Drop2Area(event) {
 							   array("SortType",$_POST["SortType"] )  ,
 							   array("AssemblyType",$_POST["AssemblyType"] )  ,
 							   );
-       
 			 //網頁變數
 			 global $ResTypes,$ResTypeSingleData;
 			 global $typeDatabase,$Resdatas, $ResLastGDSN,$ResdatasT;
@@ -116,7 +115,7 @@ function Drop2Area(event) {
 			 global $ListType;
 			 global $className,$class;
 			 $className= explode("=", $ResTypeSingleData[7]) ;
-			 $ListType=array("清單","排程表","統計","熱區","季計畫");
+			 $ListType=array("清單","排程表","統計","熱區");
 			 if($_POST["ResType"]=="SceneBattel") array_push( $ListType,"怪物分布");
 	         for($i=0;$i<count($className);$i++){
 				 array_push( $ListType,$className[$i]."[".$i);
@@ -268,7 +267,6 @@ function Drop2Area(event) {
 			  }
 		      if($_POST["ListType"]=="怪物分布" & $_POST["ResType"]=="SceneBattel"){
 				 StageMobSet();
-			     
 			  }
 			  //統計
 			  if($_POST["ListType"]=="統計"){
