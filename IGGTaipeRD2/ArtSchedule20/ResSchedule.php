@@ -307,16 +307,24 @@ function Drop2Area(event) {
 			  $fontColor="#ffffff";
 		      $w=50;
 			  $h=20;
-			  $x+=30;
+			  $ax=$x+30;
 			  $y+=4;
+			  $Acount=0;
 			  for($i=0;$i<count($sortArr);$i++){
 			      $id= "gdcode=".$sortArr[$i][3]."=".$sortArr[$i][2]."=".$i;//1.gdcode. 2.
-				  DrawRect("","12","#ffffff",array($x-1,$y-1,$w+2,$w+2+$h),"#000000" );
-				  DrawIDPic(returnPicPath($sortArr[$i][3]),array($x,$y+$h,$w,$w),$id);
-				  JAPI_DrawJavaDragbox(  $sortArr[$i][3] ,$x,$y,$w,$h,8, $BgColor,$fontColor,$id);
+				  DrawRect("","12","#ffffff",array($ax-1,$y-1,$w+2,$w+2+$h),"#000000" );
+				  DrawIDPic(returnPicPath($sortArr[$i][3]),array($ax,$y+$h,$w,$w),$id);
+				  JAPI_DrawJavaDragbox(  $sortArr[$i][3] ,$ax,$y,$w,$h,8, $BgColor,$fontColor,$id);
 				  if($sortArr[$i][2])
-				  DrawRect($sortArr[$i][4] ,"8","#ffffff",array($x,$y+$h-10,$w,10),"#222222" );
-				  $x+=$w+1;
+				  DrawRect($sortArr[$i][4] ,"8","#ffffff",array($ax,$y+$h-10,$w,10),"#222222" );
+				  
+				  $ax+=$w+1;
+				  $Acount+=1;
+				  if($Acount>=18){
+				     $y+=$w+$h+4;
+					 $ax=$x+30;
+					 $Acount=0;
+				  }
 			  }
 	 }
 	 //列印底部
@@ -328,31 +336,35 @@ function Drop2Area(event) {
 			  $By=$y;
 			  $Typesort=$ClasstypeSort;
 			  
+
+			  $sortArrs=array();
+			  //計算區量
+		      for($i=0;$i<count($types);$i++){
+			     $sortArr= returnSortTypes( $Resdatas,$types[$i],$Typesort,$types);
+				  array_push( $sortArrs, $sortArr);
+			  }
 			  //拖曳區
 			  $total=0;
-			  $sortArrs=array();
-			   // $sortArr= returnSortTypes( $Resdatas,$typeName,$Typesort,$types);
 	          for($i=0;$i<count($types);$i++){
 				  $id="tableName=classification=".$types[$i]."=".$ClasstypeSort;
+				  $ArrCount=count($sortArrs[$i]);
+				  $total+= $ArrCount;
 				  $BgColor= $colorSet[$i];
 				  if($types[$i]=="未分類") $BgColor="#888888";
-				  JAPI_DrawJavaDragArea($types[$i],$x,$y,$w,$h,$BgColor,$fontColor,$id,"12" );
-				
-				  $sortArr= returnSortTypes( $Resdatas,$types[$i],$Typesort,$types);
-				  array_push( $sortArrs, $sortArr);
-				  $total+=count($sortArr);
+				  $Ah=ceil($ArrCount/18)*$h;
+				  JAPI_DrawJavaDragArea($types[$i],$x,$y,$w,$Ah,$BgColor,$fontColor,$id,"12" );
 				  //季計畫完成度
 				  if(strpos($_POST["ListType"],"季計畫") !== false){
 					$msg=$total."/".$ResTypeSingleData[8]."[".(int)(($total/$ResTypeSingleData[8])*100)."%]";
-					echo $total;
 				    DrawRect($msg,8,"#ffffff",array($x+1,$y+16,47,14),"#000000");
 				  }
-				    $y+=$h+2;
+				  $y+=$Ah+2;
 			  }
 			  for($i=0;$i<count($types);$i++){
-				    //拖曳物件
+				  //拖曳物件
 			      DrawTypeDragObj($types[$i],$x+20,$By,$Typesort,$types, $sortArrs[$i]);
-				  $By+=$h+2;
+				  $Ah=ceil(count( $sortArrs[$i])/18)*$h;
+				  $By+=$Ah+2;
 			  }
 	 }
 	 //取得該type的resdata
