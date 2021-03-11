@@ -351,7 +351,9 @@ function Drop2Area(event) {
 				  $total+= $ArrCount;
 				  $BgColor= $colorSet[$i];
 				  if($types[$i]=="未分類") $BgColor="#888888";
+				  
 				  $Ah=ceil($ArrCount/18)*$h;
+				  if($ArrCount==0) $Ah= $h;
 				  JAPI_DrawJavaDragArea($types[$i],$x,$y,$w,$Ah,$BgColor,$fontColor,$id,"12" );
 				  //季計畫完成度
 				  if(strpos($_POST["ListType"],"季計畫") !== false){
@@ -363,7 +365,9 @@ function Drop2Area(event) {
 			  for($i=0;$i<count($types);$i++){
 				  //拖曳物件
 			      DrawTypeDragObj($types[$i],$x+20,$By,$Typesort,$types, $sortArrs[$i]);
-				  $Ah=ceil(count( $sortArrs[$i])/18)*$h;
+				  $lineCont=ceil(count( $sortArrs[$i])/18);
+				  if ($lineCont<1)$lineCont=1;
+				  $Ah=$lineCont*$h;
 				  $By+=$Ah+2;
 			  }
 	 }
