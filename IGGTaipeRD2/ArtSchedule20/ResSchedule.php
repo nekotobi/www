@@ -115,7 +115,7 @@ function Drop2Area(event) {
 			 global $ListType;
 			 global $className,$class;
 			 $className= explode("=", $ResTypeSingleData[7]) ;
-			 $ListType=array("清單","排程表","統計","熱區");
+			 $ListType=array("清單","排程表","統計","熱區","排序");
 			 if($_POST["ResType"]=="SceneBattel") array_push( $ListType,"怪物分布");
 	         for($i=0;$i<count($className);$i++){
 				 array_push( $ListType,$className[$i]."[".$i);
@@ -194,20 +194,18 @@ function Drop2Area(event) {
 			  $startY=20;
 		      //資源分類
 			  global $ResTypes; 
-			  $Rect=array("20","40","40","20");
-		      DrawSingle(  $ResTypes,0,$Rect);
-		      $Rect[1]+=21;
+			  $Rect=array("20",$startY,"40","15");
+		      DrawSingleButtom(  $ResTypes,0,$Rect);
 			  //顯示
 			  global $ListType;
-			  DrawSingle($ListType,2,$Rect);
+			  DrawSingleButtom($ListType,2,$Rect);
 			  //排序
-			   $Rect =array(20,82,20,12);
+			   $Rect =array(20,$startY,15,15);
 			   global $SortType;
-			   DrawSingle($SortType,3,$Rect,8);
+			  DrawSingleButtom($SortType,3,$Rect,8);
 			  //新增工單
 			  if($_POST["ListType"]=="清單") {
 				   $x=count($SortType)-2;
-			      
 				   AddResButtom( );
 			  }
 	 }
@@ -215,11 +213,11 @@ function Drop2Area(event) {
 	          global $WebSendVal;
 			  global $URL;
 			  global $ResLastGDSN;
+			  global $startY;
 		      $valArray=$WebSendVal; 
 			  $SubmitName="submit";
 			  $BgColor="#aa5555";
-			 
-			  $Rect =array(20,95,40,12);
+			  $Rect =array(20,  $startY,40,12);
 			  DrawRect( "X".$ResLastGDSN,"10","#ffffff",$Rect,"#222222" );
 			  array_push($valArray,array("AddRes" , $ResLastGDSN));
 		      array_push($valArray,array("Type", $_POST["ResType"]));
@@ -231,12 +229,15 @@ function Drop2Area(event) {
 			  $Rect[2]= 20;
 			  sendVal($URL,  $valArray ,$SubmitName,  "+",$Rect,10,$BgColor); 
 	 }
-	 function DrawSingle($data,$Wsort ,$Rect,$fontSize=10){
+	 function DrawSingleButtom($data,$Wsort ,$Rect,$fontSize=10){
 		      global $URL;
 		      global $WebSendVal  ;
+			  global $startY;
 			  $SubmitName="submit";
 			  $valArray=$WebSendVal;
 			  $valArray[1][1]="";
+			  $BaseRect=$Rect;
+			  $Rect[1]=$startY;
 	          for($i=0;$i<count($data);$i++){
 				   $BgColor="#222222";
 				   $name= $data[$i] ;
@@ -244,7 +245,15 @@ function Drop2Area(event) {
 				   $valArray[$Wsort][1]=  $name;
 			       sendVal($URL,  $valArray ,$SubmitName,$name,$Rect,$fontSize,$BgColor); 
 				   $Rect[0]+=$Rect[2]+2;
+				  
+				   if( $Rect[0]>280    ){
+				  // $count=0;
+				   $Rect[0]=$BaseRect[0];
+				   $Rect[1]+=$Rect[3] +1;
+				   }
+				 
 			  }
+			  $startY=$Rect[1] +$Rect[3] +1;
 	 }
 ?>
 <?php //List
@@ -525,6 +534,7 @@ function Drop2Area(event) {
 		      DrawRect($msg,$fontSize,$fontColor,$BGRect,"#442222" );
 			  $name=array("text","name" ,$data[3]."修改名字","10", $Rect[0],$Rect[1],$Rect[2],$Rect[3], "#aaaaaa", "#ffffff", $data[4],14);
 			  $remark=array("text","remark" ,"附註","10", $Rect[0]+80,$Rect[1],$Rect[2],$Rect[3], "#aaaaaa", "#ffffff", $data[13],24);
+			  $reGDSort =array("text","reGDSort" ,"重新編號","10", $Rect[0]+80,$Rect[1]+21,20,20, "#aaaaaa", "#ffffff", $data[16],24);
 			  //類別
 			  $file=array("file","pic" ,"pic","10",  $Rect[0] ,$Rect[1]+30,$Rect[2],$Rect[3], "#fffff", "ffffff", "1",10);
 			  
