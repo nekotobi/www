@@ -108,7 +108,7 @@
 ?>
 
 <?php //
-        function  JAPI_ReLoad($PostArray,$URL){
+       function  JAPI_ReLoad($PostArray,$URL){
 		         $params="{";
 		   	     for($i=0;$i<count($PostArray);$i++){
 			         $params=$params."'".$PostArray[$i][0]."':'".$PostArray[$i][1]."'";

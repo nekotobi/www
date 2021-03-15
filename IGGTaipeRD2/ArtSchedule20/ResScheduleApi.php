@@ -284,10 +284,102 @@
 					 }
 				 }
 				if(! $Repetbool) $str=$str.$addStr ;    
-				 return $str;
+				return $str;
 	   }
 	   
 ?>
 
+<?php //重新排序
+     function getReSortRes(){//取得重新排列
+	          global  $Resdatas;
+			  $sort1= getLastSN2($Resdatas,16);
  
+			  global  $ReSortResDatas,$NoSortDatas;
+			  $NoSortDatas=$Resdatas;
+			  $ReSortResDatas=array();
+			  for($i=1;$i<=$sort1;$i++){
+			     $Res=filterArray( $Resdatas,16,$i);
+				 $ResS= sortArrays($Res ,17);
+			 
+				 $NoSortDatas= RemoveArray($NoSortDatas,16,$i);
+				 array_push( $ReSortResDatas, $ResS);
+			  }
+ 
+	 }
+ 
+	 function SortRes(){
+		      getReSortRes();
+		      global  $ReSortResDatas,$NoSortDatas;
+			  $Prefix=substr($_POST["ResType"], 0, 1); 
+			  $sort1= getLastSN2($ResdatasT,16)+2;
+			  $x=20;
+			  $y=100;
+			  $w=60;
+			  $h=60;
+			  $x2=$x;
+			  global  $highest;
+			  for($i=0;$i<=count($ReSortResDatas);$i++){
+                  DrawSingleSortArea($ReSortResDatas[$i],$i+1,$x2,$y,$w,$h, $Prefix);
+				  $x2+=$w+2;
+				  if($x2>1000){
+				     $x2=$x;
+				     $y+=$h+1;
+				  }
+		      }
+			  $x2=$x;
+			  $y+=$highest+$h+12;
+			  $BgColor="#222222";
+			  $fontColor="#ffffff";
+		      for($i=0;$i<count($NoSortDatas);$i++){
+				   $id= "gdcode=".$NoSortDatas[$i][3];//."=".$NoSortDatas[$i][2]."=".$i;//1.gdcode. 2.
+				   $msg=$NoSortDatas[$i][3];
+				   JAPI_DrawJavaDragbox($msg,$x2,$y,$w,$h,10,$BgColor,$fontColor,$id);
+				   DrawPic( returnPicPath($NoSortDatas[$i][3] ),array($x2,$y+12,$w,$w) );// $noPic
+				   $x2+=$w+1;
+				   if($x2>1000){
+				     $x2=$x;
+				     $y+=$h+1;
+				   }
+			  }
+			  
+	  }
+	  function DrawSingleSortArea($data,$s,$x,$y,$w,$h,$Prefix){
+		       global $highest;
+			   $BgColor="#999999";
+			   $fontColor="#ffffff";
+			   $pn=$Prefix.PAPI_ReturnzeroCode($s,4).$s ;
+			   $ch=$h*count($data);
+			   if($ch>$highest)$highest=$ch;
+			   DrawRect( $pn,10,$fontColor,array($x,$y-12,$w,20),"#222222" );
+			   $LastSN= getLastSN2($data,17)+1;
+			   for($i=1;$i<=$LastSN;$i++){
+				   $id="setSort1=".$s."=".$i;
+				   $msg=$pn."_".PAPI_ReturnzeroCode($i,2).$i ;
+				   JAPI_DrawJavaDragArea($msg,$x,$y,$w,$h,$BgColor,$fontColor,$id);
+				   $arr=filterArray($data,17,$i);
+				   if(count($arr)==1){  //拖曳
+				      $id= "gdcode=".$arr[0][3]."=remove"; 
+					  DrawPic( returnPicPath($arr[0][3] ),array($x,$y+12,$w,$w) );
+					  JAPI_DrawJavaDragbox($msg,$x,$y,$w-12,12,10,"#332222",$fontColor,$id);
+				   }
+				    $y+=$h+1;
+			   }
+ 
+	  }
+     
+     function upReSort($curentData ,$upSort1,$upSort2,$remove  ){
+	 	      global $WebSendVal,$URL,$ResdataBase;
+	         // echo $curentData[0][3].">".$upSort1;
+			  $WHEREtable=array( "gdcode", "EData");
+		      $WHEREData=array($curentData[0][3],"data"  );
+			  $Base=array("reGDSort","skinSn");
+			  $up=array($upSort1,$upSort2);
+			  if($remove=="remove") $up=array("","");
+			  $stmt=MAPI_MakeUpdateStmt($ResdataBase,$Base,$up,$WHEREtable,$WHEREData);
+			  //echo  $stmt;
+			  SendCommand($stmt,$data_library);		
+			  JAPI_ReLoad($WebSendVal,$URL);
+	 }
+?>
+
 

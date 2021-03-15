@@ -38,7 +38,7 @@ function Drop2Area(event) {
 	    var x=tx.split("px");
 	    document.Show.DragID.value=  DragID;
 	    document.Show.target.value=  targetID;
-	     Show.submit();
+	      Show.submit();
 	}
 
 </script>
@@ -281,7 +281,11 @@ function Drop2Area(event) {
 			  if($_POST["ListType"]=="統計"){
 				  Resstatistics();
 			      return;
-			  }				  
+			  }	
+			  if($_POST["ListType"]=="排序"){
+			      SortRes();
+				  return;
+			  }
 			  if($_POST["ListType"]=="排程表")   ListCalendar();
 			  for($i=0;$i<count($Resdatas);$i++){
 	              ListSingle($Resdatas[$i],$Rect);
@@ -656,12 +660,13 @@ function Drop2Area(event) {
 				global $Resdatas;
 				global $WebSendVal,$URL;
 				global $ListType;
-				$datas=explode("=",$_POST["DragID"]);
+			//	$datas=explode("=",$_POST["DragID"]);
+			    $DragID=explode("=",$_POST["DragID"]);
 				$data2=explode("=",$_POST["target"]);
 
-				$gdcode=$datas[1];
-				$Type=$datas[2];
-				$ResSort=$datas[3];
+				$gdcode=$DragID[1];
+				$Type=$DragID[2];
+				$ResSort=$DragID[3];
 				$tableNames=returnTables($data_library ,$ResdataBase);
 		        $WHEREtable=array( "gdcode", "Type");
 		        $WHEREData=array( $gdcode,$Type  );
@@ -669,18 +674,24 @@ function Drop2Area(event) {
 				$curentData=filterArray($Resdatas,3,$gdcode);
 				 //判斷特殊狀況
 				if($data2[0]=="cmd"){
-				   if($data2[1]="delete") clearSc(	$curentData, $WHEREtable,$WHEREData,$datas[3],$data2[2]);
+				   if($data2[1]="delete") clearSc(	$curentData, $WHEREtable,$WHEREData,$DragID[3],$data2[2]);
 				   return;
 				}
-				if($datas[0]=="SetMat"){ //怪物分布圖
+				if($DragID[0]=="SetMat"){ //怪物分布圖
 			       $gdcode=$data2[1];  
 				   $curentData=filterArray($Resdatas,3,$gdcode);
-				   upDragMat( $curentData,$datas[1],$data2[2] );
-				   
+				   upDragMat( $curentData,$DragID[1],$data2[2] );
 				   return;
 				}
+				if($data2[0]=="setSort1"){ //重新排序
+				  
+				   $curentData=filterArray($Resdatas,3,$gdcode);
+				   $sort1=$data2[1];
+				   upReSort( $curentData,$sort1,$data2[2],$DragID[2]);
+			       return;
+				}
 				//設定項目時間
-				if($datas[0]=="gdcode"){
+				if($DragID[0]=="gdcode"){
 					if($data2[0]=="startDay"){
 					   $Base=array("startDay");
 					   $str=returnState($curentData[0][7],$data2[1],$ResSort,count($ResPregresList));
@@ -704,17 +715,17 @@ function Drop2Area(event) {
 					}
 		 
 				}
-				if($datas[0]=="Egdcode"){
+				if($DragID[0]=="Egdcode"){
 				    $Base=array("workingDays");
 			        $arr=explode("=",$curentData[0][7]);
 					//echo $_POST["DragID"];
 					//echo $ResSort.";";
-				    $e=$datas[4];
+				    $e=$DragID[4];
 					//$s= $arr[$ResSort] ;   // returnState($curentData[0][7],$data2[1],$ResSort,count($ResPregresList));
 					$s= $data2[1];
 					$days=CAPI_GetPassDays($s,$e);
 					//echo $s.">".$e.">".$days;
-					$ResSort=$datas[3];
+					$ResSort=$DragID[3];
 				    $str=returnState($curentData[0][8],$days,$ResSort,count($ResPregresList));
 				    $up=array($str);
 		 

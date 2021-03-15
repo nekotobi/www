@@ -282,7 +282,7 @@
 			   if($s=="--")$s="";
                return  $s;			   
 	   }
-	    function PAPI_returnGDSnArray($BaseArray, $ArrayNum ,$sn ){ 
+	   function PAPI_returnGDSnArray($BaseArray, $ArrayNum ,$sn ){ 
 		        for($i=0;$i<count($BaseArray);$i++){
 					 $s=PAPI_GDCODE2Sort($BaseArray[$i][ $ArrayNum]);
 			         if( $s==$sn) return $BaseArray[$i];
@@ -302,7 +302,9 @@
 	            $lastSN=0;
 		        for($i=0;$i<count($SQLData);$i++){
 		           if($SQLData[$i][$SnNum]>$lastSN)$lastSN=$SQLData[$i][$SnNum];
+				   
 		           }
+				  
 		        return $lastSN;
 	   }
 	   function PAPI_GDCODE2Sort($code){
@@ -369,7 +371,16 @@
 				      '></div>";
 	   }
 ?>
-
+<?php //字串
+	 function PAPI_ReturnzeroCode($sort,$totalSn){
+		      $c=strlen($sort);
+			  $str="";
+			  for($i=0;$i<($totalSn-$c);$i++){
+			     $str=$str."0";
+			  }
+			  return $str;
+	 }
+?>
 <?php //color
        function PAPI_changeGlayColor($hex, $GlayP){
                 $RGB=PAPI_hex2rgb(  $hex  );
