@@ -127,7 +127,7 @@
 	  function DrawLinkPic($pic,$Rect,$Link,$Layer=0){
 		       echo "<div  onclick=location.href='".$Link."' style='position:absolute; 
 					   z-index:".$Layer .";  
-				       top:".$Rect[0]."px;Left:".$Rect[1]."px; width:".$Rect[2]."px;height:".$Rect[3]."px;
+				       top:".$Rect[1]."px;Left:".$Rect[0]."px; width:".$Rect[2]."px;height:".$Rect[3]."px;
 				      '><img src=".$pic." width=".$Rect[2]." height=".$Rect[3]."></div>";
 	   }
 	  function sendValPic($URL,$pic,$Rect,$ValArray,$Layer=0){

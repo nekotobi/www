@@ -414,9 +414,8 @@ function Drop2Area(event) {
 					  $sn=$data[3];
 					  $Resort=returnReSort($data[16],$data[17]);
 					  if($Resort!="")$sn=$Resort;
-	 
 				      DrawRect($sn,10,"#ffffff",$Rect,"#222222" );
-					   if($Resort!="")  DrawRect($data[3],8,"#aaaaaa",array($Rect[0]+45,$Rect[1]+12,30,10),"#444444" );
+					  if($Resort!="")  DrawRect($data[3],8,"#aaaaaa",array($Rect[0]+45,$Rect[1]+12,30,10),"#444444" );
 				  }
 				  //名稱
 				  $nRect=array($Rect[0]+1,$Rect[1]+$Rect[3]-20,$Rect[2]-2,18);
@@ -425,7 +424,8 @@ function Drop2Area(event) {
 			      //縮圖
 				  $Rect[0]+=$Rect[2]+2;
 				  $Rect[2]=$Rect[3];
-				  DrawPic( returnPicPath($name ),$Rect );// $noPic
+				  DrawLinkPic(returnPicPath($name ),$Rect,returnPicPath($name ,true ) );
+				 // DrawPic( returnPicPath($name ),$Rect );// $noPic
 				  if( $_POST["EditRes"]== $name and $_POST["EditRes"]!="") UpSingle($data,$ERect);
 				  if($_POST["ListType"]!="排程表")return;
 				  //可拖曳工作分類
@@ -433,14 +433,18 @@ function Drop2Area(event) {
 				  //如果是編輯
 				
 	 } 
-	 function returnPicPath($GdCode ){
+	 function returnPicPath($GdCode ,$Basepic=false){
 			   global $noPic;
 	           global $webPath,$ResPath;
+			   global $selectProject;
 			   $type= returnGDType($GdCode);
 			   $resdir="\\".$type."\\spic\\".$GdCode.".png";
+               
+			   $Basepic= "/".$selectProject."Res/".$type."/".$GdCode.".png";
+			    if($Basepic==true) return $Basepic;
 			   $pic=$webPath.$resdir;
 			   $path=$ResPath.$resdir;
-			   if (is_readable($path) != false)   return $pic ;
+			   if (is_readable($path) != false)   return  $Basepic ;
 			   return $noPic;
 			   
 	 }
@@ -543,6 +547,7 @@ function Drop2Area(event) {
               $inputVal=array(); 
 			  //基底
 		      DrawRect($msg,$fontSize,$fontColor,$BGRect,"#442222" );
+			
 			  $name=array("text","name" ,$data[3]."修改名字","10", $Rect[0],$Rect[1],$Rect[2],$Rect[3], "#aaaaaa", "#ffffff", $data[4],14);
 			  $remark=array("text","remark" ,"附註","10", $Rect[0]+80,$Rect[1],$Rect[2],$Rect[3], "#aaaaaa", "#ffffff", $data[13],24);
 			  $reGDSort =array("text","reGDSort" ,"重新編號","10", $Rect[0]+80,$Rect[1]+21,20,20, "#aaaaaa", "#ffffff", $data[16],24);
