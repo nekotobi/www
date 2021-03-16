@@ -311,8 +311,7 @@ function Drop2Area(event) {
 			 
 			 
 	 }
- 
- 
+
      function DrawTypeDragObj($typeName,$x,$y,$Typesort,$types,$sortArr){
 		      global  $Resdatas;
 	         // $sortArr= returnSortTypes( $Resdatas,$typeName,$Typesort,$types);
@@ -401,7 +400,7 @@ function Drop2Area(event) {
 	 function ListSingle($data,$Rect){
 		 		  global $URL;
 	              global $WebSendVal  ;
-			      global  $webPath,$ResPath;
+			      global $webPath,$ResPath;
 				  $ERect=$Rect;
 	 			  //編號
 				  $BgColor="#222222";
@@ -412,10 +411,14 @@ function Drop2Area(event) {
 				     array_push(  $ValArray,array("EditRes",$name));
 			         sendVal($URL,  $ValArray ,$SubmitName,$name,$Rect,10,$BgColor); 
 				  }else{
-				     DrawRect($data[3],10,"#ffffff",$Rect,"#222222" );
+					  $sn=$data[3];
+					  $Resort=returnReSort($data[16],$data[17]);
+					  if($Resort!="")$sn=$Resort;
+				     DrawRect($sn,10,"#ffffff",$Rect,"#222222" );
 				  }
 				  //名稱
 				  $nRect=array($Rect[0]+1,$Rect[1]+$Rect[3]-20,$Rect[2]-2,18);
+			
 				  DrawRect($data[4],10,"#000000",$nRect,"#eeeeee" );
 			      //縮圖
 				  $Rect[0]+=$Rect[2]+2;
@@ -466,6 +469,7 @@ function Drop2Area(event) {
 			   $outsourcing=explode("=",$data[10]);
 			   $state=explode("=",$data[11]);
 			   $jila=explode("=",$data[12]);
+		
 			   //7-s w-8 p-9 out-10 state=11
 			    //附註
  			   if($data[13]!="")DrawRect($data[13],10,"#000000",array(22,$Rect[1]+2,100,20),"#ffee88");
@@ -482,6 +486,7 @@ function Drop2Area(event) {
 				   //分類標題
 	               $costArr=explode("=",$data[15]);
 				   $msg=$ResPregresList[$i];
+				  
 				   if(  $principal[$i]!="")$msg=$msg."[".$principal[$i]."]";
 				   if(  $outsourcing[$i]!="")$msg=$msg."[".$outsourcing[$i]."]";
 				   if(  $state[$i]!="")$msg=$msg."[".$state[$i]."]";

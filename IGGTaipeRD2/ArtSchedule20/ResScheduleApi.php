@@ -290,6 +290,12 @@
 ?>
 
 <?php //重新排序
+     function returnReSort($s1,$s2){
+		      if($s1=="")return "";
+	          $Prefix=substr($_POST["ResType"], 0, 1); 
+	          return $Prefix.PAPI_ReturnzeroCode($s1,4).$s1."_".PAPI_ReturnzeroCode($s2,2).$s2;
+	 }
+     
      function getReSortRes(){//取得重新排列
 	          global  $Resdatas;
 			  $sort1= getLastSN2($Resdatas,16);
@@ -306,7 +312,7 @@
 			  }
  
 	 }
- 
+  
 	 function SortRes(){
 		      getReSortRes();
 		      global  $ReSortResDatas,$NoSortDatas;
