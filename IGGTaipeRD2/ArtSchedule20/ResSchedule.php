@@ -414,7 +414,9 @@ function Drop2Area(event) {
 					  $sn=$data[3];
 					  $Resort=returnReSort($data[16],$data[17]);
 					  if($Resort!="")$sn=$Resort;
-				     DrawRect($sn,10,"#ffffff",$Rect,"#222222" );
+	 
+				      DrawRect($sn,10,"#ffffff",$Rect,"#222222" );
+					   if($Resort!="")  DrawRect($data[3],8,"#aaaaaa",array($Rect[0]+45,$Rect[1]+12,30,10),"#444444" );
 				  }
 				  //名稱
 				  $nRect=array($Rect[0]+1,$Rect[1]+$Rect[3]-20,$Rect[2]-2,18);
