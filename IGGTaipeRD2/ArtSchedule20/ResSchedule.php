@@ -115,7 +115,7 @@ function Drop2Area(event) {
 			 global $ListType;
 			 global $className,$class;
 			 $className= explode("=", $ResTypeSingleData[7]) ;
-			 $ListType=array("清單","排程表","統計","熱區","排序");
+			 $ListType=array("清單","排程表","統計","熱區","排序","接續");
 			 if($_POST["ResType"]=="SceneBattel") array_push( $ListType,"怪物分布");
 	         for($i=0;$i<count($className);$i++){
 				 array_push( $ListType,$className[$i]."[".$i);
@@ -286,13 +286,15 @@ function Drop2Area(event) {
 			      SortRes();
 				  return;
 			  }
+	          if($_POST["ListType"]== "接續"){
+		         ListContinue();
+				 return;
+	          }
 			  if($_POST["ListType"]=="排程表")   ListCalendar();
 			  for($i=0;$i<count($Resdatas);$i++){
 	              ListSingle($Resdatas[$i],$Rect);
 			      $Rect[1]+=$Rect[3]+2;
 			  }
-			 
-			  
 	 }
 	 function DrawType(){ //列印分類
 	          global   $ResTypeSingleData;
@@ -439,11 +441,12 @@ function Drop2Area(event) {
 			   global $selectProject;
 			   $type= returnGDType($GdCode);
 			   $resdir="\\".$type."\\spic\\".$GdCode.".png";
-               
 			   $Basepic= "/".$selectProject."Res/".$type."/".$GdCode.".png";
-			    if($Basepic==true) return $Basepic;
 			   $pic=$webPath.$resdir;
 			   $path=$ResPath.$resdir;
+			   if($Basepic==true) {
+				  if (is_readable($path))  return $Basepic;
+			   }
 			   if (is_readable($path) != false)   return  $Basepic ;
 			   return $noPic;
 			   

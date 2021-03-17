@@ -151,20 +151,8 @@
 				   $BgColor=$colorSet[$data[$i][4]];
 				   DrawRect(  $msg,"10","#ffffff",$Rect,    $BgColor );
 				   //拖曳區
-				   $id= "gdcode=".$data[$i][0]."=".$data[$i][2]."=".$data[$i][4]; //分類/gd碼
-				   $Eid= "Egdcode=".$data[$i][0]."=".$data[$i][2]."=".$data[$i][4]."=".$data[$i][5];
-				   $x= $CalendarRect[0]+ (CAPI_returnLocX($data[$i][5],$startDate )-1)*$CalendarRect[2];
-				   $y=  $Rect[1];
-				   $w=$data[$i][6] *$CalendarRect[2];
-				   JAPI_DrawJavaDragbox( $data[$i][6] ,$x,$y,$w,$h,10, $BgColor, "#ffffff",$id);
-				   
-				   $x2= $x+ $w;
-				   $w=$CalendarRect[2];
-				   $BgColorE=PAPI_changeColor( $BgColor,array(0.8,0.8,0.8));
-				   JAPI_DrawJavaDragbox("_" ,$x2,$y,$w,$h,10,   $BgColorE, "#ffffff",  $Eid);
+				   Pub_DragTasks($data,$i,$Rect[1] ,  $BgColor , $data[$i][5], $data[$i][6]);
 			   }
-			   
-			   
 			   $HotRect[1]+=20*count($data)+1;
 	  }
 	  function CollectionHotRes(){
@@ -288,6 +276,26 @@
 	   }
 	   
 ?>
+<?php //共用
+      //拖曳區
+      function Pub_DragTasks($data,$i ,$y,  $BgColor ,$startDay,$days  ){
+		       global $startDate;
+			   global $CalendarRect;
+			   if($days=="")$days=1;
+			   $id= "gdcode=".$data[$i][0]."=".$data[$i][2]."=".$data[$i][4]; //分類/gd碼
+			   $Eid= "Egdcode=".$data[$i][0]."=".$data[$i][2]."=".$data[$i][4]."=".$data[$i][5];
+			   $x= $CalendarRect[0]+ (CAPI_returnLocX($startDay,$startDate )-1)*$CalendarRect[2];
+				   $w=$days*$CalendarRect[2];
+				   JAPI_DrawJavaDragbox( $days ,$x,$y,$w,$h,10, $BgColor, "#ffffff",$id);
+				   $x2= $x+ $w;
+				   $w=$CalendarRect[2];
+				   $BgColorE=PAPI_changeColor( $BgColor,array(0.8,0.8,0.8));
+				   JAPI_DrawJavaDragbox("_" ,$x2,$y,$w,$h,10,   $BgColorE, "#ffffff",  $Eid);
+	  }
+	     //拖曳區2
+
+?>
+
 
 <?php //重新排序
      function returnReSort($s1,$s2){
@@ -388,7 +396,82 @@
 	 }
 ?>
 
-<?php //規劃排程
-
-
+<?php //等待接續清單
+     function ListContinue(){
+              CollectionContRes();
+	 }
+	 function CollectionContRes(){
+			  global $ResPregresList;
+			  $ResReadyArr=array();
+		      for($i=0;$i<count($ResPregresList);$i++){
+				  $arr=CollectionSContRes($i,count($ResPregresList));
+				  array_push( $ResReadyArr, $arr);
+		      }
+			  global $CstartY;
+			  global $singleResHieght;
+			  $singleResHieght=20;
+			  $CstartY=100;
+			  $tc=0;
+		      global  $CalendarH;
+			  for($i=0;$i< count($ResReadyArr)-1;$i++) $tc+=count($ResReadyArr[$i]);
+			  $CalendarH= (($singleResHieght+2)*$tc)+20;
+              ListCalendar();
+			  for($i=0;$i< count($ResReadyArr)-1;$i++){
+			      ListContRes($ResReadyArr[$i],$ResPregresList[$i+1],$i+1 );
+			  }
+			
+		   
+	 }
+	 function ListContRes($data,$PregrestName,$s){
+		      global $CstartY;
+		      global $singleResHieght;
+			  global $ColorCode;
+			  $colorSet= $ColorCode[12];
+			  $x=20;
+			  $y=$CstartY;
+			  $h=$singleResHieght;
+			  DrawRect( "未安排接續".$PregrestName ,12,"#ffffff",array($x,$y,280, $h),"#222222");
+			  $y+= $h+2;
+			  $BgColor=$colorSet[$s];
+	          for($i=0;$i< count($data);$i++){
+				  $pic= returnPicPath($data[$i][3]);
+				  DrawRect( $data[$i][3].$data[$i][4],10,"#ffffff",array($x,$y,220, $h),"#555555");
+				  DrawPic( $pic,array($x,$y,20, $h));
+	              //拖曳區
+				  $id= "gdcode=".$data[$i][0]."=".$data[$i][2]."=".$data[$i][4]; //分類/gd碼
+				  JAPI_DrawJavaDragbox( $PregrestName ,$x+220,$y,60,$h,10, $BgColor, "#ffffff",$id);
+	              $startDate=explode("=",$data[$i][7]);
+				  $days =explode("=",$data[$i][8]);
+				  if( $startDate[$s]!=""){
+	                 Pub_DragcontTasks($data ,$i ,$y,  $BgColor ,$startDate[$s],$days[$s] ,$s );
+				  }
+				  $y+= $h+2;
+			  } 
+			  $CstartY=$y;
+	 }
+	  function Pub_DragcontTasks($data,$i ,$y,  $BgColor ,$startDay,$days,$ResSort ){
+		       global $startDate;
+			   global $CalendarRect;
+			   if($days=="")$days=1;
+			   $id= "gdcode=".$data[$i][3]."=".$data[$i][2]."=".($ResSort);
+			   $Eid= "Egdcode=".$data[$i][3]."=".$data[$i][2]."=".$ResSort."=".$startDay;
+			   $x= $CalendarRect[0]+ (CAPI_returnLocX($startDay,$startDate )-1)*$CalendarRect[2];
+				   $w=$days*$CalendarRect[2];
+				   JAPI_DrawJavaDragbox( $days ,$x,$y,$w,$h,10, $BgColor, "#ffffff",$id);
+				   $x2= $x+ $w;
+				   $w=$CalendarRect[2];
+				   $BgColorE=PAPI_changeColor( $BgColor,array(0.8,0.8,0.8));
+				   JAPI_DrawJavaDragbox("_" ,$x2,$y,$w,$h,10,   $BgColorE, "#ffffff",  $Eid);
+	  }
+	 function CollectionSContRes($s,$count){
+		      global $Resdatas;
+			  $arr=array();
+			  for($i=1;$i<count($Resdatas);$i++){
+			      $state=explode("=",$Resdatas[$i][11]);
+				  if( $state[$s]=="已完成"   ){
+					  if( $state[$s+1]=="" or $state[$s+1]=="規劃排程")   array_push( $arr,$Resdatas[$i] );
+				  }
+			  }
+			  return $arr;
+	 }
 ?>
