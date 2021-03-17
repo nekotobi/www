@@ -438,7 +438,8 @@
 				  DrawRect( $data[$i][3].$data[$i][4],10,"#ffffff",array($x,$y,220, $h),"#555555");
 				  DrawPic( $pic,array($x,$y,20, $h));
 	              //拖曳區
-				  $id= "gdcode=".$data[$i][0]."=".$data[$i][2]."=".$data[$i][4]; //分類/gd碼
+				  
+				   $id= "gdcode=".$data[$i][3]."=".$data[$i][2]."=".($s);
 				  JAPI_DrawJavaDragbox( $PregrestName ,$x+220,$y,60,$h,10, $BgColor, "#ffffff",$id);
 	              $startDate=explode("=",$data[$i][7]);
 				  $days =explode("=",$data[$i][8]);
