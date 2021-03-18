@@ -428,7 +428,7 @@ function Drop2Area(event) {
 			      //縮圖
 				  $Rect[0]+=$Rect[2]+2;
 				  $Rect[2]=$Rect[3];
-				  DrawLinkPic(returnPicPath($GDcode ),$Rect,returnPicPath($$GDcode ,true ) );
+				  DrawLinkPic(returnPicPath($GDcode ),$Rect,returnPicPath($GDcode ,true ) );
 				  if( $_POST["EditRes"]== $GDcode and $_POST["EditRes"]!="") UpSingle($data,$ERect);
 				  if($_POST["ListType"]!="排程表")return;
 				  //可拖曳工作分類
@@ -442,13 +442,14 @@ function Drop2Area(event) {
 			   global $selectProject;
 			   $type= returnGDType($GdCode);
 			   $resdir="\\".$type."\\spic\\".$GdCode.".png";
-			   $Basepic= "/".$selectProject."Res/".$type."/".$GdCode.".png";
+			   $Bigpic= "/".$selectProject."Res/".$type."/".$GdCode.".png";
+	 
 			   $pic=$webPath.$resdir;
 			   $path=$ResPath.$resdir;
 			   if($Basepic==true) {
-				  if (is_readable($path))  return $Basepic;
+				  if (is_readable($path))  return $Bigpic;
 			   }
-			   if (is_readable($path) != false)   return  $Basepic ;
+			   if (is_readable($path) != false)   return $Bigpic ;
 			   return $noPic;
 			   
 	 }
