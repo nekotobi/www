@@ -156,7 +156,6 @@
 ?>
 <?php //判斷狀況
       function SwitchType(){
-		      
 	           global $WebSendVal,$WebSendValDetials;
 	           if($_POST["ListType"]=="處理中表單"){
 					 DrawTitle();
@@ -181,7 +180,7 @@
 			   if($_POST["pregressSN"]!=""){
 			     UpPregress();
 			   }
-			     if($_POST["submit"]=="上傳匯率") UpExchangeRate();
+			   if($_POST["submit"]=="上傳匯率") UpExchangeRate();
 	  }
 
 ?>

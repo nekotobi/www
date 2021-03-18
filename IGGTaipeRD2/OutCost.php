@@ -844,7 +844,7 @@
 			   SendCommand($stmt,$data_library);
 		        echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
 	 }
-	 function  UpExchangeRate(){
+	 function UpExchangeRate(){
 	           global  $outsn,$datas;
 			   global $data_library ;
 			   global $exchangeRate;

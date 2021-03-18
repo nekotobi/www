@@ -406,11 +406,12 @@ function Drop2Area(event) {
 				  $ERect=$Rect;
 	 			  //編號
 				  $BgColor="#222222";
-				  $name= $data[3];
+				  $GDcode= $data[3];
 			      $SubmitName="submit";
 				  $ValArray=$WebSendVal;
+				  if ($data[16]!="")$name=$data[16]."_".$data[17]."(".$GDcode.")";
 				  if($_POST["ListType"]=="清單"){
-				     array_push(  $ValArray,array("EditRes",$name));
+				     array_push(  $ValArray,array("EditRes",$GDcode));
 			         sendVal($URL,  $ValArray ,$SubmitName,$name,$Rect,10,$BgColor); 
 				  }else{
 					  $sn=$data[3];
@@ -426,9 +427,8 @@ function Drop2Area(event) {
 			      //縮圖
 				  $Rect[0]+=$Rect[2]+2;
 				  $Rect[2]=$Rect[3];
-				  DrawLinkPic(returnPicPath($name ),$Rect,returnPicPath($name ,true ) );
-				 // DrawPic( returnPicPath($name ),$Rect );// $noPic
-				  if( $_POST["EditRes"]== $name and $_POST["EditRes"]!="") UpSingle($data,$ERect);
+				  DrawLinkPic(returnPicPath($GDcode ),$Rect,returnPicPath($$GDcode ,true ) );
+				  if( $_POST["EditRes"]== $GDcode and $_POST["EditRes"]!="") UpSingle($data,$ERect);
 				  if($_POST["ListType"]!="排程表")return;
 				  //可拖曳工作分類
                   SchedlueList($data ,$Rect);
