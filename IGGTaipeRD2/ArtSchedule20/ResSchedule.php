@@ -409,6 +409,7 @@ function Drop2Area(event) {
 				  $GDcode= $data[3];
 			      $SubmitName="submit";
 				  $ValArray=$WebSendVal;
+				  $name=$GDcode;
 				  if ($data[16]!="")$name=$data[16]."_".$data[17]."(".$GDcode.")";
 				  if($_POST["ListType"]=="清單"){
 				     array_push(  $ValArray,array("EditRes",$GDcode));
