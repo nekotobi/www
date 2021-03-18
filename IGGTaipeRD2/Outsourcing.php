@@ -33,7 +33,7 @@
 		$x=20;
 		$y=60;
 	    $BaseURL="Outsourcing.php";
-	     DrawRect("外包資源列表","22","#ffffff","20","20","1400","30","#000000");
+	    DrawRect("外包資源列表","22","#ffffff","20","20","1400","30","#000000");
 		DrawTitle($Names,$x,$y,"#222222","#ffffff");
  
         DrawOutsourcings($BaseData,$y);

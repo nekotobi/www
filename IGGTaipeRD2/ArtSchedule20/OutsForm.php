@@ -158,10 +158,10 @@
       function SwitchType(){
 		      
 	           global $WebSendVal,$WebSendValDetials;
-	            if($_POST["ListType"]=="處理中表單"){
+	           if($_POST["ListType"]=="處理中表單"){
 					 DrawTitle();
 				}
-			    if($_POST["ListType"]=="請款進程"){
+			   if($_POST["ListType"]=="請款進程"){
                     DrawTitle();
 				}
 			   if($_POST["ListType"]=="+"){//新增表單
@@ -181,6 +181,7 @@
 			   if($_POST["pregressSN"]!=""){
 			     UpPregress();
 			   }
+			     if($_POST["submit"]=="上傳匯率") UpExchangeRate();
 	  }
 
 ?>
@@ -422,8 +423,8 @@
 					echo "</from>";
 				  }
 				  $pic="Outsourcing/exchangeRate/".$sn.".png";
-			      if(file_exists($pic))  
-					  DrawLinkPic($pic,$rect[1]-60,$rect[0]+877,300,120,$Link);
+			       if(file_exists($pic))  
+					  DrawLinkPic($pic,array($rect[0]+777,$rect[1]-80,200,90),$Link);
 	  }
 	  //php 產生表單
 	  function  ExportForms($sn){
@@ -719,6 +720,34 @@
 				    $rect[1]+=22;
 			   }
 	  }
+	   function  UpExchangeRate(){
+		   echo "xxx";
+	           global  $outsn,$datas;
+			   global $data_library ;
+			   global $exchangeRate;
+			   global $BaseURL,$BackURL;
+			   global $backURLval;
+			   $outsn=$_POST["outsn"];
+			 //  echo ">".$outsn;
+	           $WHEREtable=array( "data_type", "OutsSn"   );
+		       $WHEREData=array( "outs",$outsn  );
+			   $Base=array("exchangeRate");
+		       $up=array($exchangeRate);
+			   $stmt= MAPI_MakeUpdateStmt(  $data_library,"outsdetail",$Base,$up,$WHEREtable,$WHEREData);
+			   SendCommand($stmt,$data_library);
+			   //上傳截圖
+			   if($_FILES['exchangeRatepic']["name"]!=null  ){
+				   $temp = explode(".", $_FILES['exchangeRatepic']["name"]);
+				   $path="Outsourcing/exchangeRate/".$outsn.".".$temp[1];
+				   echo $path;
+			       move_uploaded_file($_FILES['exchangeRatepic']["tmp_name"], $path);  
+				   $Npath="Outsourcing/exchangeRate/".$outsn.".png";
+				   $cmd="convert   $path       $Npath ";
+				   exec($cmd);
+			   }
+			  //  echo " <script language='JavaScript'>window.location.replace('".$BackURL."')</script>";
+			 //  echo " <script language='JavaScript'>window.location.replace('".$backURLval."&sn=".$outsn."')</script>";
+	 }
 ?>
 
 <?php //判斷幣別
