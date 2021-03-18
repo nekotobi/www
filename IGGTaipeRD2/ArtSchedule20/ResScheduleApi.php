@@ -230,7 +230,8 @@
 		       for($i=0;$i<count( $arr);$i++){	
 				   $id="SetMat=".$arr[$i];
 			       DrawIDPic(returnPicPath( $arr[$i] ),array($x,$y,$w,$w),$id);
-				   JAPI_DrawJavaDragbox(  $arr[$i] ,$x,$y,$w,$h,8, "#222222","#ffffff",$id,8);
+			     $n=  Pub_ReturnFinCodeByCode($arr[$i]);
+				   JAPI_DrawJavaDragbox(  $n,$x,$y,$w,$h,8, "#222222","#ffffff",$id,8);
 				   $x+=$w+1;
 			   }
 	  }
@@ -240,7 +241,8 @@
 	           for($i=0;$i<count( $data);$i++){	
 		           $id="SetMat=".$data[$i][3];
 			       DrawIDPic(returnPicPath($data[$i][3],$type),array($x,$y,$w,$w),$id);
-			       JAPI_DrawJavaDragbox( $data[$i][3] ,$x,$y,$w,$h,8, "#222222","#ffffff",$id,8);
+				   $n= Pub_ReturnFinCode($data[$i]);
+			       JAPI_DrawJavaDragbox( $n,$x,$y,$w,$h,8, "#222222","#ffffff",$id,8);
 			       $c+=1;
 			       $x+=$w+1;
 			       if ($c>10){
@@ -251,17 +253,17 @@
 				 $LocY=$y;  
 		   }
 	  }
-       function upDragMat( $curentData ,$MatCode,$Remove){//上傳怪物分布
+      function  upDragMat( $curentData ,$MatCode,$Remove){//上傳怪物分布
 		        global $WebSendVal,$URL,$ResdataBase;
 			    $WHEREtable=array( "gdcode", "EData");
 		        $WHEREData=array($curentData[0][3],"data"  );
 				$Base=array("classification");
 			    $up=array(returnSetMat($curentData[0][14],$MatCode));
 			    $stmt=MAPI_MakeUpdateStmt($ResdataBase,$Base,$up,$WHEREtable,$WHEREData);
-				 SendCommand($stmt,$data_library);		
+				SendCommand($stmt,$data_library);		
 			    JAPI_ReLoad($WebSendVal,$URL);
 	   }
-	   function returnSetMat($BaseStr,$addStr){
+	  function returnSetMat($BaseStr,$addStr){
 				 $arr=explode("_",$BaseStr);
 				 $str="";
 				 $Repetbool=false;
@@ -293,17 +295,29 @@
 				   JAPI_DrawJavaDragbox("_" ,$x2,$y,$w,$h,10,   $BgColorE, "#ffffff",  $Eid);
 	  }
 	     //拖曳區2
-
+      function Pub_ReturnFinCode($data){
+		       $n=$data[3];
+			   $p=mb_substr( $data[3],0,1 );
+		       if($data[16]!="")$n=returnReSort($data[16],$data[17], $p) ;
+			   return $n;
+	  }
+	  function Pub_ReturnFinCodeByCode($code){
+	           global $ResdatasT;
+			   $data=filterArray($ResdatasT,3,$code);
+			   
+			   return  Pub_ReturnFinCode($data[0]) ;
+	  }
+	  
 ?>
 
 
 <?php //重新排序
-     function returnReSort($s1,$s2){
+     function returnReSort($s1,$s2, $Prefix="x"){
 		      if($s1=="")return "";
-	          $Prefix=substr($_POST["ResType"], 0, 1); 
+			  if( $Prefix=="x")$Prefix=substr($_POST["ResType"], 0, 1); 
+	          
 	          return $Prefix.PAPI_ReturnzeroCode($s1,4).$s1."_".PAPI_ReturnzeroCode($s2,2).$s2;
-	 }
-     
+	 }  
      function getReSortRes(){//取得重新排列
 	          global  $Resdatas;
 			  $sort1= getLastSN2($Resdatas,16);
@@ -320,7 +334,6 @@
 			  }
  
 	 }
-  
 	 function SortRes(){
 		      getReSortRes();
 		      global  $ReSortResDatas,$NoSortDatas;
@@ -357,7 +370,7 @@
 			  }
 			  
 	  }
-	  function DrawSingleSortArea($data,$s,$x,$y,$w,$h,$Prefix){
+	 function DrawSingleSortArea($data,$s,$x,$y,$w,$h,$Prefix){
 		       global $highest;
 			   $BgColor="#999999";
 			   $fontColor="#ffffff";
@@ -422,6 +435,7 @@
 			
 		   
 	 }
+	 
 	 function ListContRes($data,$PregrestName,$s){
 		      global $CstartY;
 		      global $singleResHieght;
@@ -452,7 +466,7 @@
 			  } 
 			  $CstartY=$y;
 	 }
-	  function Pub_DragcontTasks($data,$i ,$y,  $BgColor ,$startDay,$days,$ResSort ){
+	 function Pub_DragcontTasks($data,$i ,$y,  $BgColor ,$startDay,$days,$ResSort ){
 		       global $startDate;
 			   global $CalendarRect;
 			   if($days=="")$days=1;
