@@ -226,10 +226,10 @@
            DrawDragMat($Boss,$x,$y,$w,$h,$x2);   
       }
 	  function DrawDragMatInst($mats,$x,$y,$w,$h){
+		  
 	           $arr=explode("_",$mats);
 		       for($i=0;$i<count( $arr);$i++){	
 				   $id="SetMat=".$arr[$i];
-				 
 				   if(strlen( $arr[$i])==5){
 			       DrawIDPic(returnPicPath( $arr[$i] ),array($x,$y,$w,$w),$id);
 			       $n=Pub_ReturnFinCodeByCode($arr[$i]);
@@ -244,11 +244,17 @@
 	  function DrawDragMat($data,$x,$y,$w,$h,$x2){
 		       global $LocY;
 			   $y=$LocY;
+			   global $Resdatas;
 	           for($i=0;$i<count( $data);$i++){	
 		           $id="SetMat=".$data[$i][3];
+				   $co=count(  filterArrayContainStr($Resdatas,14, $data[$i][3]) );
 			       DrawIDPic(returnPicPath($data[$i][3],$type),array($x,$y,$w,$w),$id);
 				   $n= Pub_ReturnFinCode($data[$i]);
 			       JAPI_DrawJavaDragbox( $n,$x,$y,$w,$h,8, "#222222","#ffffff",$id,8);
+				   $BgColor="#bbaa66" ;
+				   if($co==0)$BgColor="#66aa66" ;
+				   if($co>4)$BgColor="#ff6666" ;
+				   DrawRect("x".$co,"8","#ffffff",array($x+30,$y+30,10,10),$BgColor);
 			       $c+=1;
 			       $x+=$w+1;
 			       if ($c>10){
