@@ -230,8 +230,11 @@
 		       for($i=0;$i<count( $arr);$i++){	
 				   $id="SetMat=".$arr[$i];
 			       DrawIDPic(returnPicPath( $arr[$i] ),array($x,$y,$w,$w),$id);
-			     $n=  Pub_ReturnFinCodeByCode($arr[$i]);
-				   JAPI_DrawJavaDragbox(  $n,$x,$y,$w,$h,8, "#222222","#ffffff",$id,8);
+			       $n=Pub_ReturnFinCodeByCode($arr[$i]);
+				   $Prefix=substr($n, 0, 1); 
+				   $BgColor="#555555";
+				   if( $Prefix=="B")$BgColor="#aa5555";
+				   JAPI_DrawJavaDragbox(  $n,$x,$y,$w,$h,8,  $BgColor,"#ffffff",$id,8);
 				   $x+=$w+1;
 			   }
 	  }
@@ -303,8 +306,7 @@
 	  }
 	  function Pub_ReturnFinCodeByCode($code){
 	           global $ResdatasT;
-			   $data=filterArray($ResdatasT,3,$code);
-			   
+			   $data=filterArray($ResdatasT,3,$code); 
 			   return  Pub_ReturnFinCode($data[0]) ;
 	  }
 	  
