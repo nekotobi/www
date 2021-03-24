@@ -229,13 +229,16 @@
 	           $arr=explode("_",$mats);
 		       for($i=0;$i<count( $arr);$i++){	
 				   $id="SetMat=".$arr[$i];
+				 
+				   if(strlen( $arr[$i])==5){
 			       DrawIDPic(returnPicPath( $arr[$i] ),array($x,$y,$w,$w),$id);
 			       $n=Pub_ReturnFinCodeByCode($arr[$i]);
 				   $Prefix=substr($n, 0, 1); 
 				   $BgColor="#555555";
 				   if( $Prefix=="B")$BgColor="#aa5555";
-				   JAPI_DrawJavaDragbox(  $n,$x,$y,$w,$h,8,  $BgColor,"#ffffff",$id,8);
+				   JAPI_DrawJavaDragbox( $n,$x,$y,$w,$h,8,  $BgColor,"#ffffff",$id,8);
 				   $x+=$w+1;
+				   }
 			   }
 	  }
 	  function DrawDragMat($data,$x,$y,$w,$h,$x2){
