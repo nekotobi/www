@@ -257,7 +257,7 @@
 				   DrawRect("x".$co,"8","#ffffff",array($x+30,$y+30,10,10),$BgColor);
 			       $c+=1;
 			       $x+=$w+1;
-			       if ($c>10){
+			       if ($c>10){ 
 			           $c=0;
 				       $x =$x2;
 				       $y+=40;
@@ -265,7 +265,7 @@
 				 $LocY=$y;  
 		   }
 	  }
-      function  upDragMat( $curentData ,$MatCode,$Remove){//上傳怪物分布
+      function upDragMat( $curentData ,$MatCode,$Remove){//上傳怪物分布
 		        global $WebSendVal,$URL,$ResdataBase;
 			    $WHEREtable=array( "gdcode", "EData");
 		        $WHEREData=array($curentData[0][3],"data"  );
@@ -280,7 +280,7 @@
 				 $str="";
 				 $Repetbool=false;
 				 for($i=0;$i<count($arr);$i++){
-					  if($arr[$i]==$addStr   ) $Repetbool=true;
+					 if($arr[$i]==$addStr   ) $Repetbool=true;
 					 if($arr[$i]!=$addStr && $arr[$i]!="" ){
 						 $str=$str.$arr[$i]."_";
 					 }
@@ -288,7 +288,7 @@
 				if(! $Repetbool) $str=$str.$addStr ;    
 				return $str;
 	   }
-	   
+ 
 ?>
 <?php //共用
       //拖曳區
@@ -446,7 +446,6 @@
 			
 		   
 	 }
-	 
 	 function ListContRes($data,$PregrestName,$s){
 		      global $CstartY;
 		      global $singleResHieght;
