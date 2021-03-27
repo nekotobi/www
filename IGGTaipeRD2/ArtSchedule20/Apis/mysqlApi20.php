@@ -40,6 +40,7 @@
 		  $re = mysql_query($stmt,$db) ;	
 	   }
 	   function getAll_num($SElectTable){
+	 
 		  $data_library="IGGTaipeRD2";
 	      $db = mysql_connect("localhost","root","1406");
 	      mysql_select_db( $data_library,$db);

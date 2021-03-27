@@ -296,7 +296,7 @@ function Drop2Area(event) {
 			      $Rect[1]+=$Rect[3]+2;
 			  }
 	 }
-	 function DrawType(){ //列印分類
+	 function DrawType(){ //列印[]分類
 	          global   $ResTypeSingleData;
 			  global   $ClasstypeSort;//分類編號
               $sort=6;
@@ -325,9 +325,17 @@ function Drop2Area(event) {
 			  $y+=4;
 			  $Acount=0;
 			  for($i=0;$i<count($sortArr);$i++){
-			      $id= "gdcode=".$sortArr[$i][3]."=".$sortArr[$i][2]."=".$i;//1.gdcode. 2.
-				  DrawRect("","12","#ffffff",array($ax-1,$y-1,$w+2,$w+2+$h),"#000000" );
+			      $id= "gdcode=".$sortArr[$i][3]."=".$sortArr[$i][2]."=".$i;//1.gdcode. 2
+				  $BgColor="#000000";
+				   if( isMatFin($sortArr[$i])){
+					   $BgColor="#335555";
+					
+				   }
+				  DrawRect("","12","#ffffff",array($ax-1,$y-1,$w+2,$w+2+$h),$BgColor);
 				  DrawIDPic(returnPicPath($sortArr[$i][3]),array($ax,$y+$h,$w,$w),$id);
+				  if(  $BgColor=="#335555" )   DrawRect("fin",7,"#ffffff",array($x+70,$y+60,12,12),$BgColor);
+				  //判斷素材完成
+				 
 				  JAPI_DrawJavaDragbox(  $sortArr[$i][3] ,$ax,$y,$w,$h,8, $BgColor,$fontColor,$id);
 				  if($sortArr[$i][2])
 				  DrawRect($sortArr[$i][4] ,"8","#ffffff",array($ax,$y+$h-10,$w,10),"#222222" );
@@ -373,6 +381,7 @@ function Drop2Area(event) {
 				  if(strpos($_POST["ListType"],"計畫") !== false){
 					$msg=$total."/".$ResTypeSingleData[8]."[".(int)(($total/$ResTypeSingleData[8])*100)."%]";
 				    DrawRect($msg,8,"#ffffff",array($x+1,$y+16,47,14),"#000000");
+				
 				  }
 				  $y+=$Ah+2;
 			  }

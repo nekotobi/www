@@ -321,7 +321,15 @@
 	  
 ?>
 
-
+<?php  //完成度判斷
+     function isMatFin($data){
+	          global $className;
+			  $s=  explode("=", $data[11]) ;
+			  $t=count( $className) -1;
+			  if($s[$t]=="已完成")return true;
+			  return false;
+	 }
+?>
 <?php //重新排序
      function returnReSort($s1,$s2, $Prefix="x"){
 		      if($s1=="")return "";
