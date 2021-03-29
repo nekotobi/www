@@ -358,7 +358,8 @@ function Drop2Area(event) {
 			  $By=$y;
 			  $Typesort=$ClasstypeSort;
 			  
-
+              $AllResTotal=count ($Resdatas);
+			  if($ResTypeSingleData[8]!="") $AllResTotal=$ResTypeSingleData[8];
 			  $sortArrs=array();
 			  //計算區量
 		      for($i=0;$i<count($types);$i++){
@@ -379,7 +380,8 @@ function Drop2Area(event) {
 				  JAPI_DrawJavaDragArea($types[$i],$x,$y,$w,$Ah,$BgColor,$fontColor,$id,"12" );
 				  //季計畫完成度
 				  if(strpos($_POST["ListType"],"計畫") !== false){
-					$msg=$total."/".$ResTypeSingleData[8]."[".(int)(($total/$ResTypeSingleData[8])*100)."%]";
+					 if($ResTypeSingleData[8]=="")$to=
+					$msg=$total."/".$AllResTotal."[".(int)(($total/$AllResTotal)*100)."%]";
 				    DrawRect($msg,8,"#ffffff",array($x+1,$y+16,47,14),"#000000");
 				
 				  }
