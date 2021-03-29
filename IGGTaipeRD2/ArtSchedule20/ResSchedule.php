@@ -333,7 +333,7 @@ function Drop2Area(event) {
 				   }
 				  DrawRect("","12","#ffffff",array($ax-1,$y-1,$w+2,$w+2+$h),$BgColor);
 				  DrawIDPic(returnPicPath($sortArr[$i][3]),array($ax,$y+$h,$w,$w),$id);
-				  if(  $BgColor=="#335555" )   DrawRect("fin",7,"#ffffff",array($x+70,$y+60,12,12),$BgColor);
+				  if(  $BgColor=="#335555" )   DrawRect("fin",7,"#ffffff",array($ax,$y+$h,12,12),$BgColor);
 				  //判斷素材完成
 				 
 				  JAPI_DrawJavaDragbox(  $sortArr[$i][3] ,$ax,$y,$w,$h,8, $BgColor,$fontColor,$id);

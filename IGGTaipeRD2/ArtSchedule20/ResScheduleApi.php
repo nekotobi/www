@@ -323,9 +323,11 @@
 
 <?php  //完成度判斷
      function isMatFin($data){
-	          global $className;
+	          global $ResPregresList;;
+			 // print_r($ResPregresList );
 			  $s=  explode("=", $data[11]) ;
-			  $t=count( $className) -1;
+			  $t=count( $ResPregresList)-1 ;
+			  //echo count($ResPregresList)."-".$data[11];
 			  if($s[$t]=="已完成")return true;
 			  return false;
 	 }
