@@ -380,7 +380,7 @@ function Drop2Area(event) {
 				  JAPI_DrawJavaDragArea($types[$i],$x,$y,$w,$Ah,$BgColor,$fontColor,$id,"12" );
 				  //季計畫完成度
 				  if(strpos($_POST["ListType"],"計畫") !== false){
-					 if($ResTypeSingleData[8]=="")$to=
+				 
 					$msg=$total."/".$AllResTotal."[".(int)(($total/$AllResTotal)*100)."%]";
 				    DrawRect($msg,8,"#ffffff",array($x+1,$y+16,47,14),"#000000");
 				
