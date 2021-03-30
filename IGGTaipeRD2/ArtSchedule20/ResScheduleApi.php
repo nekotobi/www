@@ -322,15 +322,63 @@
 ?>
 
 <?php  //完成度判斷
+     function DrawFinRects($str,$x,$y,$ResCount){
+	          $st=  explode("=", $str) ;
+			  if( $st[$ResCount-1]=="已完成"){
+					$BgColor="#55aaaa";
+					 DrawRect("fin","8","#ffffff",array($x+4,$y-2,40,10),$BgColor );
+					 return;
+				}
+			  DrawRect("","8","#ffffff",array($x,$y-2,11*$ResCount,11),"#000000" );
+			  for($i=0;$i<$ResCount;$i++){
+				  $BgColor="#556666";
+				  if($st[$i]!="")$BgColor="#995555";
+				  if($st[$i]=="已完成")$BgColor="#55aaaa";
+				  if($st[$i]=="進行中")$BgColor="#88cc88";
+				  DrawRect("","8","#ffffff",array($x,$y,10,5),$BgColor );
+				  $x+=11;
+			 
+			  }
+	 }
+	 /*
      function isMatFin($data){
-	          global $ResPregresList;;
+	        //  global $ResPregresList;;
 			 // print_r($ResPregresList );
 			  $s=  explode("=", $data[11]) ;
-			  $t=count( $ResPregresList)-1 ;
-			  //echo count($ResPregresList)."-".$data[11];
-			  if($s[$t]=="已完成")return true;
-			  return false;
+			 // $t=count( $ResPregresList)-1 ;
+			  $fin= array(0,"_");
+			  for($i=0;$i<count($s);$i++){
+				  if($s[$i]=="已完成")  $fin= array($i,"_");  
+  
+			  }
+			  $f=$fin[0]+1 ;
+			  
+			  $fin[1]= $s[$f] ;
+ 
+			  return  $fin;
 	 }
+	 function DrawFinRects_b($fin,$x,$y,$ResCount){
+		        
+			    if($fin[0]==($ResCount-1) and $fin[1]=="已完成"){
+					$BgColor="#55aaaa";
+					 DrawRect("fin","8","#ffffff",array($x,$y,30,10),$BgColor );
+					 return;
+				}
+				
+	          	for($i=0;$i<=$fin[0];$i++){
+					$BgColor="#aa5555";
+					$str="";
+					if($i<$fin[0])$BgColor="#557777";
+				    if($i==$fin[0]){
+						if ($fin[1]=="進行中")$BgColor="#55ffff";
+						if ($fin[1]=="已完成")$BgColor="#557777";
+					}
+					DrawRect($str,"8","#ffffff",array($x,$y,10,10),$BgColor );
+					$x+=11;
+				}
+ 
+	 }
+	 */
 ?>
 <?php //重新排序
      function returnReSort($s1,$s2, $Prefix="x"){

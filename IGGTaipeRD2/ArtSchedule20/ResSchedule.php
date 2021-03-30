@@ -316,6 +316,8 @@ function Drop2Area(event) {
 
      function DrawTypeDragObj($typeName,$x,$y,$Typesort,$types,$sortArr){
 		      global  $Resdatas;
+			   global $ResPregresList; 
+			   $ResCount=count( $ResPregresList);
 	         // $sortArr= returnSortTypes( $Resdatas,$typeName,$Typesort,$types);
 			  $BgColor="#333333";
 			  $fontColor="#ffffff";
@@ -327,13 +329,13 @@ function Drop2Area(event) {
 			  for($i=0;$i<count($sortArr);$i++){
 			      $id= "gdcode=".$sortArr[$i][3]."=".$sortArr[$i][2]."=".$i;//1.gdcode. 2
 				  $BgColor="#000000";
-				   if( isMatFin($sortArr[$i])){
-					   $BgColor="#335555";
-					
-				   }
 				  DrawRect("","12","#ffffff",array($ax-1,$y-1,$w+2,$w+2+$h),$BgColor);
-				  DrawIDPic(returnPicPath($sortArr[$i][3]),array($ax,$y+$h,$w,$w),$id);
-				  if(  $BgColor=="#335555" )   DrawRect("fin",7,"#ffffff",array($ax,$y+$h,12,12),$BgColor);
+				   DrawIDPic(returnPicPath($sortArr[$i][3]),array($ax,$y+$h,$w,$w),$id);
+				   //顯示工作狀態
+				   DrawFinRects($sortArr[$i][11],$ax,$y+$h+42,  $ResCount);
+				  //$fin= isMatFin($sortArr[$i]); 
+		     	 // DrawFinRects($fin,$ax,$y+$h+40,  $ResCount);
+				//  if(  $BgColor=="#335555" )   DrawRect("fin",7,"#ffffff",array($ax,$y+$h,12,12),$BgColor);
 				  //判斷素材完成
 				 
 				  JAPI_DrawJavaDragbox(  $sortArr[$i][3] ,$ax,$y,$w,$h,8, $BgColor,$fontColor,$id);
