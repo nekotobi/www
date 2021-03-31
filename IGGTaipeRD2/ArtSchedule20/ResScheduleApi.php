@@ -423,7 +423,7 @@
 					  DrawPic( returnPicPath($arr[0][3] ),array($x,$y+12,$w,$w) );
 					  JAPI_DrawJavaDragbox($msg,$x,$y,$w-12,10,10,"#332222",$fontColor,$id);
 				   }
-				    $y+=$h+1;
+				   $y+=$h+1;
 			   }
  
 	  }
