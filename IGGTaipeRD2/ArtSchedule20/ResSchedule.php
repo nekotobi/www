@@ -125,11 +125,11 @@ function Drop2Area(event) {
 			 $singleResHieght=  count($ResPregresList)*20;
 			 if($singleResHieght<80)$singleResHieght=60;
 			 global $CalendarH;
-			  $CalendarH= $singleResHieght*count($Resdatas)+ 50;
+			 $CalendarH= $singleResHieght*count($Resdatas)+ 50;
 			 global $Prefix;
 			 $Prefix= $ResTypeSingleData[9];
 			 if($Prefix=="")$Prefix=substr($_POST["ResType"], 0, 1); 
-			 echo $Prefix;
+ 
 	}//重新排序
 	function AddResSort(){
 	     	 global $SortType; 
