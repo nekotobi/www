@@ -416,12 +416,13 @@
 			   for($i=1;$i<=$LastSN;$i++){
 				   $id="setSort1=".$s."=".$i;
 				   $msg=$pn."_".PAPI_ReturnzeroCode($i,2).$i ;
-				   JAPI_DrawJavaDragArea($msg,$x,$y,$w,$h,$BgColor,$fontColor,$id);
+				   JAPI_DrawJavaDragArea("",$x,$y,$w,$h,$BgColor,$fontColor,$id);
 				   $arr=filterArray($data,17,$i);
 				   if(count($arr)==1){  //拖曳
 				      $id= "gdcode=".$arr[0][3]."=remove"; 
 					  DrawPic( returnPicPath($arr[0][3] ),array($x,$y+12,$w,$w) );
-					  JAPI_DrawJavaDragbox( $msg,$x,$y,$w-12,10,10,"#332222",$fontColor,$id);
+					  JAPI_DrawJavaDragbox( $msg,$x,$y,$w-4,10,8,"#332222",$fontColor,$id);
+					  DrawRect( $arr[0][4],8,$fontColor,array($x,$y+50,40,10),"#000000" );
 				   }
 				   $y+=$h+1;
 			   }
