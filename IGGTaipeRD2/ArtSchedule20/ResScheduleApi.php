@@ -384,11 +384,11 @@
 				  $x2+=$w+2;
 				  if($x2>1000){
 				     $x2=$x;
-				     $y+=$h+1;
+				     $y+=$highest+$h+20;
 				  }
 		      }
 			  $x2=$x;
-			  $y+=$highest+$h+12;
+			  $y+=$highest+$h+22;
 			  $BgColor="#222222";
 			  $fontColor="#ffffff";
 		      for($i=0;$i<count($NoSortDatas);$i++){
@@ -421,11 +421,10 @@
 				   if(count($arr)==1){  //拖曳
 				      $id= "gdcode=".$arr[0][3]."=remove"; 
 					  DrawPic( returnPicPath($arr[0][3] ),array($x,$y+12,$w,$w) );
-					  JAPI_DrawJavaDragbox($msg,$x,$y,$w-12,10,10,"#332222",$fontColor,$id);
+					  JAPI_DrawJavaDragbox( $msg,$x,$y,$w-12,10,10,"#332222",$fontColor,$id);
 				   }
 				   $y+=$h+1;
 			   }
- 
 	  }
      
      function upReSort($curentData ,$upSort1,$upSort2,$remove  ){
