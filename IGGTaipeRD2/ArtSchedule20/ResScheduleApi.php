@@ -308,9 +308,11 @@
 	  }
 	     //拖曳區2
       function Pub_ReturnFinCode($data){
+		       global $ResTypeSingleData;
 		       $n=$data[3];
-			   $p=mb_substr( $data[3],0,1 );
-		       if($data[16]!="")$n=returnReSort($data[16],$data[17], $p) ;
+			 //  $p=mb_substr( $data[3],0,1 );
+		       $p= $ResTypeSingleData[9];
+			   if($data[16]!="")$n=returnReSort($data[16],$data[17], $p) ;
 			   return $n;
 	  }
 	  function Pub_ReturnFinCodeByCode($code){
@@ -340,47 +342,9 @@
 			 
 			  }
 	 }
-	 /*
-     function isMatFin($data){
-	        //  global $ResPregresList;;
-			 // print_r($ResPregresList );
-			  $s=  explode("=", $data[11]) ;
-			 // $t=count( $ResPregresList)-1 ;
-			  $fin= array(0,"_");
-			  for($i=0;$i<count($s);$i++){
-				  if($s[$i]=="已完成")  $fin= array($i,"_");  
-  
-			  }
-			  $f=$fin[0]+1 ;
-			  
-			  $fin[1]= $s[$f] ;
  
-			  return  $fin;
-	 }
-	 function DrawFinRects_b($fin,$x,$y,$ResCount){
-		        
-			    if($fin[0]==($ResCount-1) and $fin[1]=="已完成"){
-					$BgColor="#55aaaa";
-					 DrawRect("fin","8","#ffffff",array($x,$y,30,10),$BgColor );
-					 return;
-				}
-				
-	          	for($i=0;$i<=$fin[0];$i++){
-					$BgColor="#aa5555";
-					$str="";
-					if($i<$fin[0])$BgColor="#557777";
-				    if($i==$fin[0]){
-						if ($fin[1]=="進行中")$BgColor="#55ffff";
-						if ($fin[1]=="已完成")$BgColor="#557777";
-					}
-					DrawRect($str,"8","#ffffff",array($x,$y,10,10),$BgColor );
-					$x+=11;
-				}
- 
-	 }
-	 */
 ?>
-<?php //重新排序
+<?php //重新GD排序
      function returnReSort($s1,$s2, $Prefix="x"){
 		      if($s1=="")return "";
 			  if( $Prefix=="x")$Prefix=substr($_POST["ResType"], 0, 1); 
@@ -406,7 +370,8 @@
 	 function SortRes(){
 		      getReSortRes();
 		      global  $ReSortResDatas,$NoSortDatas;
-			  $Prefix=substr($_POST["ResType"], 0, 1); 
+			 
+			  global $Prefix;
 			  $sort1= getLastSN2($ResdatasT,16)+2;
 			  $x=20;
 			  $y=100;
@@ -443,7 +408,7 @@
 		       global $highest;
 			   $BgColor="#999999";
 			   $fontColor="#ffffff";
-			   $pn=$Prefix.PAPI_ReturnzeroCode($s,4).$s ;
+			   $pn=$Prefix.PAPI_ReturnzeroCode($s,3).$s ;
 			   $ch=$h*count($data);
 			   if($ch>$highest)$highest=$ch;
 			   DrawRect( $pn,10,$fontColor,array($x,$y-12,$w,20),"#222222" );
@@ -456,7 +421,7 @@
 				   if(count($arr)==1){  //拖曳
 				      $id= "gdcode=".$arr[0][3]."=remove"; 
 					  DrawPic( returnPicPath($arr[0][3] ),array($x,$y+12,$w,$w) );
-					  JAPI_DrawJavaDragbox($msg,$x,$y,$w-12,12,10,"#332222",$fontColor,$id);
+					  JAPI_DrawJavaDragbox($msg,$x,$y,$w-12,10,10,"#332222",$fontColor,$id);
 				   }
 				    $y+=$h+1;
 			   }

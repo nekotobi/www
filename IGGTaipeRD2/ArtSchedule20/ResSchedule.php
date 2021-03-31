@@ -115,7 +115,7 @@ function Drop2Area(event) {
 			 global $ListType;
 			 global $className,$class;
 			 $className= explode("=", $ResTypeSingleData[7]) ;
-			 $ListType=array("清單","排程表","統計","熱區","排序","接續");
+			 $ListType=array("清單","排程表","統計","熱區","GD排序","接續");
 			 if($_POST["ResType"]=="SceneBattel") array_push( $ListType,"怪物分布");
 	         for($i=0;$i<count($className);$i++){
 				 array_push( $ListType,$className[$i]."[".$i);
@@ -126,6 +126,10 @@ function Drop2Area(event) {
 			 if($singleResHieght<80)$singleResHieght=60;
 			 global $CalendarH;
 			  $CalendarH= $singleResHieght*count($Resdatas)+ 50;
+			 global $Prefix;
+			 $Prefix= $ResTypeSingleData[9];
+			 if($Prefix=="")$Prefix=substr($_POST["ResType"], 0, 1); 
+			 echo $Prefix;
 	}//重新排序
 	function AddResSort(){
 	     	 global $SortType; 
@@ -282,7 +286,7 @@ function Drop2Area(event) {
 				  Resstatistics();
 			      return;
 			  }	
-			  if($_POST["ListType"]=="排序"){
+			  if($_POST["ListType"]=="GD排序"){
 			      SortRes();
 				  return;
 			  }
