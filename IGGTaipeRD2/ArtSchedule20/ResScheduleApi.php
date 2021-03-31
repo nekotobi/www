@@ -396,6 +396,7 @@
 				   $msg=$NoSortDatas[$i][3];
 				   JAPI_DrawJavaDragbox($msg,$x2,$y,$w,$h,10,$BgColor,$fontColor,$id);
 				   DrawPic( returnPicPath($NoSortDatas[$i][3] ),array($x2,$y+12,$w,$w) );// $noPic
+				   	  DrawRect($NoSortDatas[$i][4],8,"#ffffff",array($x2+20,$y+50,40,10),"#000000" );
 				   $x2+=$w+1;
 				   if($x2>1000){
 				     $x2=$x;
@@ -422,7 +423,7 @@
 				      $id= "gdcode=".$arr[0][3]."=remove"; 
 					  DrawPic( returnPicPath($arr[0][3] ),array($x,$y+12,$w,$w) );
 					  JAPI_DrawJavaDragbox( $msg,$x,$y,$w-4,10,8,"#332222",$fontColor,$id);
-					  DrawRect( $arr[0][4],8,$fontColor,array($x,$y+50,40,10),"#000000" );
+					  DrawRect( $arr[0][4],8,$fontColor,array($x+20,$y+50,40,10),"#000000" );
 				   }
 				   $y+=$h+1;
 			   }
