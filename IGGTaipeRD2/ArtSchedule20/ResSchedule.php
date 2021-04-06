@@ -38,7 +38,7 @@ function Drop2Area(event) {
 	    var x=tx.split("px");
 	    document.Show.DragID.value=  DragID;
 	    document.Show.target.value=  targetID;
-	      Show.submit();
+	    Show.submit();
 	}
 
 </script>
@@ -84,22 +84,24 @@ function Drop2Area(event) {
 			 global $ResTypes,$ResTypeSingleData;
 			 global $typeDatabase,$Resdatas, $ResLastGDSN,$ResdatasT;
              global  $ResdataBase,$typeDatabase;
+			 global $ResTypeAll;
 			 $typeDatabase="restype_".$selectProject;
 			 $ResdataBase="resdata_".$selectProject;
 			 //類別
 		     $ResTypeT= getMysqlDataArray( $typeDatabase);
-		     $ResTypeT2=  filterArray( $ResTypeT,0,"data");
-			 $ResTypeSingleDataT=filterArray( $ResTypeT2,2,$_POST["ResType"] );
+		     $ResTypeAll=  filterArray( $ResTypeT,0,"data");
+			 $ResTypeSingleDataT=filterArray( $ResTypeAll,2,$_POST["ResType"] );
 			 $ResTypeSingleData=$ResTypeSingleDataT[0];
-	         $ResTypes = returnArraybySort( $ResTypeT2,2);
+	         $ResTypes = returnArraybySort( $ResTypeAll,2);
 			 global $AssemblyType;
 			 $AssemblyType=explode("_", $ResTypeSingleData[3]);
 			 //細項
 			 $type= $WebSendVal[0][1];
 			 if( $type=="")return;
-		     $currentType= filterArray(  $ResTypeT2,2, $type);
-		     $ResdatasT= getMysqlDataArray($ResdataBase);
-		     $Resdatas =  filterArray(  $ResdatasT,2, $type);
+			 global $ResdataAll;
+		     $currentType= filterArray(  $ResTypeAll,2, $type);
+		     $ResdataAll= getMysqlDataArray($ResdataBase);
+		     $Resdatas =  filterArray(  $ResdataAll,2, $type);
 			 $ResLastGDSN=PAPI_getGDCODELastSN( $Resdatas,3);//最後的gd編碼
 			 //排序
 			 global $SortType;
@@ -183,12 +185,12 @@ function Drop2Area(event) {
 <?php //buttoms;
 	 function DrawDateRangeButtom(){
 		       if($_POST["ListType"]!=="排程表")return;
+		 
 	            //控制日期
 			   global $URL,$startDate,$DateRange;
 			   global $WebSendVal;
 			   $LocX=305;
 			   $LocY=68;
-			   
 			   CAPI_setDateRangeButtom($URL,$LocX,$LocY,$startDate,$DateRange,$WebSendVal,"Res");
 	  }
      function DrawButtoms(){
@@ -294,7 +296,11 @@ function Drop2Area(event) {
 		         ListContinue();
 				 return;
 	          }
-			  if($_POST["ListType"]=="排程表")   ListCalendar();
+			  if($_POST["ListType"]=="排程表")    ListCalendar();
+			  if($_POST["SelectWorkUnit"]!=""){
+				     ListSelectUintWork();
+					 return;
+				  }
 			  for($i=0;$i<count($Resdatas);$i++){
 	              ListSingle($Resdatas[$i],$Rect);
 			      $Rect[1]+=$Rect[3]+2;
@@ -314,8 +320,7 @@ function Drop2Area(event) {
 			  $colorSet= $ColorCode[12];
 			  if(strpos($_POST["ListType"],"珠色") !== false) $colorSet=$ColorCode[13];
 		      DrawTypeDragBase(  $class,20,120,1000,80,$colorSet);
-			 
-			 
+
 	 }
 
      function DrawTypeDragObj($typeName,$x,$y,$Typesort,$types,$sortArr){
@@ -448,6 +453,7 @@ function Drop2Area(event) {
 				  DrawLinkPic(returnPicPath($GDcode ),$Rect,returnPicPath($GDcode ,true ) );
 				  if( $_POST["EditRes"]== $GDcode and $_POST["EditRes"]!="") UpSingle($data,$ERect);
 				  if($_POST["ListType"]!="排程表")return;
+			
 				  //可拖曳工作分類
                   SchedlueList($data ,$Rect);
 				  //如果是編輯
@@ -585,7 +591,7 @@ function Drop2Area(event) {
 	 }
  
 ?>
-<?php //ListCalendar
+<?php //ListCalendar  
       function ListCalendar(){
 		       global $ResPregresList;
 		       global $Resdatas;
@@ -596,7 +602,8 @@ function Drop2Area(event) {
 			   $h=$CalendarH; // $singleResHieght*count($Resdatas)+ 50;
 	           CAPI_DrawBaseCalendar($startDate,$DateRange,$CalendarRect[0],$CalendarRect[1],$CalendarRect[2],$h);
                $Rect=array(300,70,40,10);
-			   ProAPI_DrawWorkersAreas($Rect);
+			   //工作人員區
+			   ProAPI_DrawWorkersAreas($Rect,true);
 	  }
 ?>
 <?php //判斷submit;
@@ -692,12 +699,11 @@ function Drop2Area(event) {
 			    global $data_library,$ResdataBase;
 			    global $ResPregresList;
 				global $Resdatas;
+				global $ResdataAll;
 				global $WebSendVal,$URL;
 				global $ListType;
-			//	$datas=explode("=",$_POST["DragID"]);
 			    $DragID=explode("=",$_POST["DragID"]);
 				$data2=explode("=",$_POST["target"]);
-
 				$gdcode=$DragID[1];
 				$Type=$DragID[2];
 				$ResSort=$DragID[3];
@@ -705,7 +711,7 @@ function Drop2Area(event) {
 		        $WHEREtable=array( "gdcode", "Type");
 		        $WHEREData=array( $gdcode,$Type  );
 				//目前的資源資料
-				$curentData=filterArray($Resdatas,3,$gdcode);
+				$curentData=filterArray($ResdataAll,3,$gdcode);
 				 //判斷特殊狀況
 				if($data2[0]=="cmd"){
 				   if($data2[1]="delete") clearSc(	$curentData, $WHEREtable,$WHEREData,$DragID[3],$data2[2]);
@@ -718,7 +724,6 @@ function Drop2Area(event) {
 				   return;
 				}
 				if($data2[0]=="setSort1"){ //重新排序
-				  
 				   $curentData=filterArray($Resdatas,3,$gdcode);
 				   $sort1=$data2[1];
 				   upReSort( $curentData,$sort1,$data2[2],$DragID[2]);
@@ -732,14 +737,13 @@ function Drop2Area(event) {
 					   $up=array($str);
 					}
 			     	if($data2[0]=="tableName"){
+							 
 					   //如果是類別
 					   if($data2[1]=="classification")  $ResSort=explode("[",$_POST["ListType"])[1];
-				
-				      // echo $ResSort;
 					   $tableName=$data2[1];
 					   $Base=array($tableName);
 					   $val=$data2[2];
-                        if($val=="--")$val="";
+                       if($val=="--")$val="";
 					   if($data2[1]=="cost") $val=$_POST["cost"];
 					   $sort= MAPI_returnTableSort($tableNames, $tableName);
 					   $count=count($ResPregresList);
@@ -749,24 +753,23 @@ function Drop2Area(event) {
 					}
 		 
 				}
+			 
 				if($DragID[0]=="Egdcode"){
 				    $Base=array("workingDays");
 			        $arr=explode("=",$curentData[0][7]);
-					//echo $_POST["DragID"];
-					//echo $ResSort.";";
 				    $e=$DragID[4];
-					//$s= $arr[$ResSort] ;   // returnState($curentData[0][7],$data2[1],$ResSort,count($ResPregresList));
 					$s= $data2[1];
 					$days=CAPI_GetPassDays($s,$e);
-					//echo $s.">".$e.">".$days;
 					$ResSort=$DragID[3];
 				    $str=returnState($curentData[0][8],$days,$ResSort,count($ResPregresList));
 				    $up=array($str);
 		 
 				}
+			//	echo ">".$curentData[0][$sort]."[";
 			    $stmt=MAPI_MakeUpdateStmt($ResdataBase,$Base,$up,$WHEREtable,$WHEREData);
-			    SendCommand($stmt,$data_library);		
-			    JAPI_ReLoad($WebSendVal,$URL);
+			 //    echo $stmt;
+			   SendCommand($stmt,$data_library);		
+			   JAPI_ReLoad($WebSendVal,$URL);
 	  }
 	
 ?>

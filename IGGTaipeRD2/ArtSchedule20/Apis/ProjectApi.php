@@ -13,7 +13,7 @@
 			   } 
 	    }
 		
-        function ProAPI_DrawWorkersAreas($Rect){ //
+        function ProAPI_DrawWorkersAreas($Rect,$LinkButtom=false){ //
 	           $startX=$Rect[0];
 			   $startY=$Rect[1];
 			   $wid=$Rect[2];
@@ -22,25 +22,34 @@
 		       $arrT=filterArray( $Typestmp,0,"data3");
 			   $arr=returnArraybySort($arrT,2);
 			   ProAPI_DrawDragUpArea($arr,$startX,$startY-20,$wid,"state");
+			     
 			   // 內部
 			   $membersT=getMysqlDataArray("members"); 
 			   $membersT2=filterArray($membersT,3,"Art");
 			   $members=returnArraybySort( $membersT2,1);
 			   array_Push($members,"--");
-			   ProAPI_DrawDragUpArea($members,$startX,$startY-60,$wid,"principal");
+			   ProAPI_DrawDragUpArea($members,$startX,$startY-60,$wid,"principal",$LinkButtom);
 			   //外部
 			   $OutsT=getMysqlDataArray("outsourcing"); 
 			   $OutsT2=filterArray($OutsT,35,"true");
 			   $Outs=returnArraybySort( $OutsT2,2);
 			   array_Push( $Outs,"--");
-		       ProAPI_DrawDragUpArea($Outs,$startX,$startY-40,$wid,"outsourcing");
+		       ProAPI_DrawDragUpArea($Outs,$startX,$startY-40,$wid,"outsourcing",$LinkButtom);
 	 }
-	    function ProAPI_DrawDragUpArea($arr,$x,$y,$wid,$uptableName){ //
+	    function ProAPI_DrawDragUpArea($arr,$x,$y,$wid,$uptableName,$LinkButtom=false){ //
 	          $BgColor="#224444";
 			  $fontColor="#ffffff";
+			   global  $WebSendVal  ;
+			   global $URL;
 	          for($i=0;$i<count($arr);$i++){
 				  $id="tableName=".$uptableName."=".$arr[$i];
-				   JAPI_DrawJavaDragArea($arr[$i],$x,$y,$wid-1,18,$BgColor,$fontColor,$id,9);
+				  JAPI_DrawJavaDragArea($arr[$i],$x,$y,$wid-1,18,$BgColor,$fontColor,$id,9);
+				  if($LinkButtom){
+					 $valArray=$WebSendVal;
+					 $SubmitName="submit";
+					 array_push( $valArray ,array("SelectWorkUnit",$arr[$i]));
+					 sendVal($URL,  $valArray ,$SubmitName,  "_",array($x+30,$y+1,5,15),6,  "#664444"); 
+				  }
 				  $x+=$wid;
 			   }
 	    }

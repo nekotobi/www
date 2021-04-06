@@ -91,7 +91,7 @@ function Drop2Area(event) {
 			   global  $inputsTextNames ;
                $inputsTextNames=array("DragID","target","Etype","ECode","DataName","Val","remark");
 			   DefineDate_Task();
-			   AddRes_Task();
+			    AddRes_Task();
 	  } 
 	  function DefineDate_Task(){
 		       //進度資訊
@@ -140,11 +140,13 @@ function Drop2Area(event) {
 			   global $Resdata;
 			   global $typeArray;
 	           $ResdataBase="resdata_".$selectProject;
+ 
 			   $ResdataT= getMysqlDataArray($ResdataBase);
 			   $Resdata= array();
 			   //過濾大類別
 			   global $RestType,$ResClass,$ResPrincipal;
 			   $RestType= ReturnResName();
+			   echo   $RestType;
 			   //類別分類
 	           if( $RestType!="null")   {
 				  $ResdataT=filterArray( $ResdataT,2, $RestType);
@@ -443,6 +445,7 @@ function Drop2Area(event) {
 		       global $Resdata ;
 			   global $Resy;
 			   $Resy=$LocYs;
+			  
 	           for($i=0;$i<count($Resdata);$i++){
 				   $ResDetails=ReturnResDetail($Resdata[$i] );
 				   DrawPluralRes($Resdata[$i],$ResDetails );

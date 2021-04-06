@@ -116,7 +116,6 @@
                ListCalendar();
 			   DrawHotZone();
  	  }
- 
 	  function DrawHotZone(){
 		       global $Resdatas;
 			   global $HotRect;
@@ -126,7 +125,6 @@
 				  DrawHotSingleZone($Resdatas[$i]);
 			   }
 	  }
-
 	  function DrawHotSingleZone($data){
 		       global $HotRect;
 			   global $ColorCode;
@@ -396,7 +394,7 @@
 				   $msg=$NoSortDatas[$i][3];
 				   JAPI_DrawJavaDragbox($msg,$x2,$y,$w,$h,10,$BgColor,$fontColor,$id);
 				   DrawPic( returnPicPath($NoSortDatas[$i][3] ),array($x2,$y+12,$w,$w) );// $noPic
-				   	  DrawRect($NoSortDatas[$i][4],8,"#ffffff",array($x2+20,$y+50,40,10),"#000000" );
+				   DrawRect($NoSortDatas[$i][4],8,"#ffffff",array($x2+20,$y+50,40,10),"#000000" );
 				   $x2+=$w+1;
 				   if($x2>1000){
 				     $x2=$x;
@@ -525,4 +523,38 @@
 			  }
 			  return $arr;
 	 }
+?>
+
+<?php //負責人工作清單
+     function ListSelectUintWork(){
+	     	 global $ResdataAll;
+			 $SelectWorkUnit= $_POST["SelectWorkUnit"];
+			 $UnitWorks1= filterArrayContainStr($ResdataAll,9,$SelectWorkUnit);
+			 $UnitWorks2= filterArrayContainStr($ResdataAll,10,$SelectWorkUnit);
+			 $UnitWorks=addArray($UnitWorks1,$UnitWorks2);
+			 SetResTypeArr();
+			 for($i=0;$i<count($UnitWorks);$i++){
+				 ListSingleUnitWork($UnitWorks[$i]);
+			 } 
+	 }
+	 function ListSingleUnitWork($data){
+		      global $ResTypeAllStep;
+			  echo $data[2];
+			  $typeArr=$ResTypeAllStep[$data[2]];
+			  for($i=0;$i<count( $typeArr);$i++){
+			     echo  $typeArr[$i];
+			  }
+	 }
+	 function SetResTypeArr(){
+	          global $ResTypeAll;
+			  global $ResTypeAllStep;
+			  $ResTypeAllStep=array();
+			  for($i=0;$i<count($ResTypeAll);$i++){
+				  $arr=explode("-",$ResTypeAll[$i][3]);
+				  $ResTypeAllStep[$ResTypeAll[$i][2]]=$arr;
+			  }
+			  
+			 
+	 }
+	 
 ?>
