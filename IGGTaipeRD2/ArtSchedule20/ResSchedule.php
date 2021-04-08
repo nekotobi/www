@@ -506,7 +506,7 @@ function Drop2Area(event) {
 		
 			   //7-s w-8 p-9 out-10 state=11
 			    //附註
- 			   if($data[13]!="")DrawRect($data[13],10,"#000000",array(22,$Rect[1]+2,100,20),"#ffee88");
+ 			   if(trim($data[13])!="")DrawRect($data[13],10,"#000000",array(22,$Rect[1]+2,100,20),"#ffee88");
 			   for($i=0;$i<count($ResPregresList);$i++){
 				   $wd= $workingDays[$i];
 	               if($wd=="")$wd=1;
