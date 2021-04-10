@@ -107,6 +107,7 @@ function Drop2Area(event) {
 			 global $SortType;
 		     $SortType=array("▲","▼");
 			 AddResSort();
+			 AddMRes();//月
  	         //資源進程
 			 global $ResPregresList;
 			 $ResPregresList= explode("_",  $currentType[0][3]) ;
@@ -142,6 +143,14 @@ function Drop2Area(event) {
 				  array_push( $SortType,$s);
 			 }
 	}
+	function AddMRes(){
+	   	     global $SortType; 
+			 $sm=date("m")+0;
+			 for($i=$sm;$i<=$sm+4 ;$i+=1){
+				  array_push( $SortType, $i."m");
+			 }
+	}
+	 //整理列印Res
 	function SortResData(){
 		     global $Resdatas;
 	         if($_POST["SortType"]=="" or $_POST["SortType"]=="▲"){
@@ -152,6 +161,12 @@ function Drop2Area(event) {
 			    $Resdatas= PAPI_sortCodeWithGDCode( $Resdatas ,3,"false");
 			    return;
 			 }
+			 //月計畫
+			  if( strpos($_POST["SortType"],"m") !== false  ){
+				 $m=explode("m",$_POST["SortType"] );
+				 $Resdatas=SortMPlanResData($m[0]);
+				  return;
+			  }
 			 //分頁
 			 $so=$_POST["SortType"];
 			 $arr=array();
@@ -163,6 +178,26 @@ function Drop2Area(event) {
 			 }
 			 $Resdatas= $arr;
 	}
+	function SortMPlanResData($m){ //過濾月資料
+	          global $Resdatas;
+			  global $ResTypeSingleData;
+			  $c=0;
+			  $strArr=explode("=",$ResTypeSingleData[7]);
+			  //取得月計畫欄位
+			  for($i=0;$i<count($strArr);$i++){
+			      if($strArr[$i]=="月計畫")$c=$i;
+			  }
+			  $arr=array();
+			  for($i=0;$i<count($Resdatas);$i++){
+			      $strAr =explode("=",$Resdatas[$i][14]);
+				  if($strAr[$c]==$m){
+					  array_push( $arr,$Resdatas[$i]);
+				  }
+			  
+			  }
+		      return $arr;
+	}
+	
 ?>
 <?php //判斷submit
      function checkSubmit(){
@@ -208,7 +243,7 @@ function Drop2Area(event) {
 			  //排序
 			   $Rect =array(20,$startY,15,15);
 			   global $SortType;
-			  DrawSingleButtom($SortType,3,$Rect,8);
+			  DrawSingleButtom($SortType,3,$Rect,6);
 			  //新增工單
 			  if($_POST["ListType"]=="清單") {
 				   $x=count($SortType)-2;

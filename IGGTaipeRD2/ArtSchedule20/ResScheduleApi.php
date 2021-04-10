@@ -162,7 +162,7 @@
 				   $ar=CollectionHotRess($Resdatas[$i]);
 				   if($ar!=null)array_push($arr,$ar);
 			   }   
-			  $Resdatas= $arr;
+			   $Resdatas= $arr;
 	  }
 	  function CollectionHotRess($data){
 		       global $AssemblyType;
@@ -320,7 +320,6 @@
 	  }
 	  
 ?>
-
 <?php  //完成度判斷
      function DrawFinRects($str,$x,$y,$ResCount){
 	          $st=  explode("=", $str) ;
@@ -539,8 +538,8 @@
 	 }
 	 function ListSingleUnitWork($data){
 		      global $ResTypeAllStep;
-			  echo $data[2];
 			  $typeArr=$ResTypeAllStep[$data[2]];
+			  $work=explode("=",$ResTypeAll[$i][3]);
 			  for($i=0;$i<count( $typeArr);$i++){
 			     echo  $typeArr[$i];
 			  }
@@ -553,8 +552,8 @@
 				  $arr=explode("-",$ResTypeAll[$i][3]);
 				  $ResTypeAllStep[$ResTypeAll[$i][2]]=$arr;
 			  }
-			  
-			 
+ 
 	 }
-	 
 ?>
+
+ 
