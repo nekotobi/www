@@ -485,7 +485,19 @@ function Drop2Area(event) {
 			      //縮圖
 				  $Rect[0]+=$Rect[2]+2;
 				  $Rect[2]=$Rect[3];
-				  DrawLinkPic(returnPicPath($GDcode ),$Rect,returnPicPath($GDcode ,true ) );
+				  $LinkPath=$data[18];
+				  
+				  if($LinkPath=="") {
+					  $LinkPath=returnPicPath($GDcode ,"true" );
+				  }
+				  if($LinkPath!="") {
+					  $LinkPath=returnPicPath($GDcode ,"Link" );
+				  }
+				  DrawLinkPic(returnPicPath($GDcode ),$Rect,$LinkPath );
+				  //jila
+				  $jila=$data[12];
+				  $Link="http://bzbfzjira.iggcn.com/browse/ZW-".$jila;
+				  if( $jila!="") DrawLinkRect_newtab($jila,8,"#ffffff",$Rect[0],$Rect[1],20,10,"#aa5555",$Link,$border);
 				  if( $_POST["EditRes"]== $GDcode and $_POST["EditRes"]!="") UpSingle($data,$ERect);
 				  if($_POST["ListType"]!="排程表")return;
 			
@@ -494,18 +506,22 @@ function Drop2Area(event) {
 				  //如果是編輯
 				
 	 } 
-	 function returnPicPath($GdCode ,$Basepic=false){
+	 function returnPicPath($GdCode ,$Basepic="false"){
 			   global $noPic;
 	           global $webPath,$ResPath;
 			   global $selectProject;
 			   $type= returnGDType($GdCode);
 			   $resdir="\\".$type."\\spic\\".$GdCode.".png";
 			   $Bigpic= "/".$selectProject."Res/".$type."/".$GdCode.".png";
-	 
+	         
 			   $pic=$webPath.$resdir;
 			   $path=$ResPath.$resdir;
-			   if($Basepic==true) {
+			   if($Basepic=="true") {
 				  if (is_readable($path))  return $Bigpic;
+			   }
+			   if($Basepic=="Link") {
+				     $Linkpic= "/".$selectProject."Res/".$type."/LinkPic/".$GdCode.".png";
+				   return $Linkpic;
 			   }
 			   if (is_readable($path) != false)   return $Bigpic ;
 			   return $noPic;
@@ -606,21 +622,27 @@ function Drop2Area(event) {
 			 // echo ">".$_POST["SortType"].$WebSendVal[0][1];
 			  array_push($UpHidenVal,array("gdcode",$data[3]));
 			  $BGRect=$Rect;
-			  $BGRect[2]=300;
+			  $BGRect[2]=400;
               $inputVal=array(); 
 			  //基底
 		      DrawRect($msg,$fontSize,$fontColor,$BGRect,"#442222" );
 			
 			  $name=array("text","name" ,$data[3]."修改名字","10", $Rect[0],$Rect[1],$Rect[2],$Rect[3], "#aaaaaa", "#ffffff", $data[4],14);
-			  $remark=array("text","remark" ,"附註","10", $Rect[0]+80,$Rect[1],$Rect[2],$Rect[3], "#aaaaaa", "#ffffff", $data[13],24);
+			  $remark=array("text","remark" ,"附註","8", $Rect[0]+100,$Rect[1],$Rect[2],$Rect[3], "#aaaaaa", "#ffffff", $data[13],24);
 			  $reGDSort =array("text","reGDSort" ,"重新編號","10", $Rect[0]+80,$Rect[1]+21,20,20, "#aaaaaa", "#ffffff", $data[16],24);
 			  //類別
-			  $file=array("file","pic" ,"pic","10",  $Rect[0] ,$Rect[1]+30,$Rect[2],$Rect[3], "#fffff", "ffffff", "1",10);
-			  
-			  $submit=array("submit","submit" ,"s","10",  $Rect[0]+220  ,$Rect[1]+10 ,$Rect[2],$Rect[3], "#ffffff", "#fffff", "變更",20);
+			  //jila
+			  $Jila =array("text","jila" ,"jila","8", $Rect[0]+220,$Rect[1] ,60,20, "#aaaaaa", "#ffffff", $data[12],14);
+			  //pic
+			  $file=array("file","pic" ,"pic","6",  $Rect[0] ,$Rect[1]+30,$Rect[2],$Rect[3], "#fffff", "ffffff", "1",10);
+			  //參考圖
+			  $file2=array("file","LinkPic" ,"LinkPic","6",  $Rect[0]+100 ,$Rect[1]+30,$Rect[2],$Rect[3], "#fffff", "ffffff", "1",10);
+			  $submit=array("submit","submit" ,"s","10",  $Rect[0]+320  ,$Rect[1]+10 ,$Rect[2],$Rect[3], "#ffffff", "#fffff", "變更",20);
 			  array_push($inputVal,$name);
 			  array_push($inputVal,$remark);
 			  array_push($inputVal,$file);
+			  array_push($inputVal,$file2);
+			  array_push($inputVal,$Jila);
 			  array_push($inputVal,$submit);
 			  upSubmitform($upFormVal,$UpHidenVal, $inputVal);
 	 }
@@ -677,18 +699,30 @@ function Drop2Area(event) {
 			   if (!is_dir($upPath) ) mkdir($upPath, 0700);
                $sPicPath=$upPath."\\spic";
 			   if (!is_dir($sPicPath) ) mkdir($sPicPath, 0700);
+
 			   if($_FILES["pic"]["name"]!=""){
 				  $filePath= $upPath."\\".$_POST["gdcode"].".png";
 	              $filePaths= $sPicPath."\\".$_POST["gdcode"].".png";
-				  echo $filePath;
+				//  echo $filePath;
 				  move_uploaded_file($_FILES["pic"]["tmp_name"], $filePath);
 				  $cmd="convert     $filePath    -flatten  -resize 256  $filePaths";
 			      exec($cmd);
 			   }
+			   //LinkPic
+			   $specialVal=array();
+			   $LinkPath="..\\\\..\\\\".$selectProject."Res\\\\".$_POST["ResType"]."\\\\LinkPic";
+			      echo  $LinkPath;
+			   if (!is_dir($LinkPath) ) mkdir($LinkPath, 0700);
+			   if($_FILES["LinkPic"]["name"]!=""){
+				   $LinkPath= "//".$selectProject."Res/".$_POST["ResType"]."/LinkPic/".$_POST["gdcode"].".png";
+			       $specialVal=array(array("LinkPic",$LinkPath));
+				   move_uploaded_file($_FILES["LinkPic"]["tmp_name"], $LinkPath);
+			
+			   }
 			   //修改資料
 			     $WHEREtable=array("EData","gdcode");
 				 $WHEREData=array("data",$_POST["gdcode"]);
-			     MAPI_AutoEditMsQLData($data_library, $ResdataBase,$WHEREtable,$WHEREData );
+			     MAPI_AutoEditMsQLData($data_library, $ResdataBase,$WHEREtable,$WHEREData , $specialVal);
 			     $arr=array(array("ResType",$_POST["ResType"] ),array("ListType",$_POST["ListType"] ),array("SortType",$_POST["SortType"] ));
                  JAPI_ReLoad(  $arr,$URL);
 			 

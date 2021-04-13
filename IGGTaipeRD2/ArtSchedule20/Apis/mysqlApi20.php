@@ -11,7 +11,7 @@
 				 SendCommand($stmt,$data_library);		
 		             
 	   }
-	   function MAPI_AutoEditMsQLData($data_library,$tableName,$WHEREtable,$WHEREData ){
+	   function MAPI_AutoEditMsQLData($data_library,$tableName,$WHEREtable,$WHEREData,$specialVal=null ){
 		        $tables=returnTables($data_library ,$tableName); 
 				$Base=array();
 			    $up=array();
@@ -21,6 +21,13 @@
 			        array_push( $up,$_POST[$tables[$i]]);
 					}
 			     }
+			 
+				//特別變數array("LinkPic",$LinkPath);
+				 for($i=0;$i<count($specialVal);$i++){
+					  array_push( $Base,$specialVal[$i][0]);
+					  array_push( $up,$specialVal[$i][1]);
+					  
+				 }
 				$stmt= MAPI_MakeUpdateStmt(  $tableName,$Base,$up,$WHEREtable,$WHEREData);
 			    SendCommand($stmt,$data_library);		
 	   }
