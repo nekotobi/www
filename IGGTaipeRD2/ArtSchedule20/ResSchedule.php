@@ -719,7 +719,7 @@ function Drop2Area(event) {
 			       $specialVal=array(array("LinkPic",$LinkPath2));
 				   move_uploaded_file($_FILES["LinkPic"]["tmp_name"], $LinkPath);
 			
-			   }
+			   }//
 			   //修改資料
 			     $WHEREtable=array("EData","gdcode");
 				 $WHEREData=array("data",$_POST["gdcode"]);
