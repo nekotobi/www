@@ -710,12 +710,13 @@ function Drop2Area(event) {
 			   }
 			   //LinkPic
 			   $specialVal=array();
-			   $LinkPath="..\\\\..\\\\".$selectProject."Res\\\\".$_POST["ResType"]."\\\\LinkPic";
+			   $LinkPath="..\\..\\".$selectProject."Res\\".$_POST["ResType"]."\\LinkPic";
 			      echo  $LinkPath;
 			   if (!is_dir($LinkPath) ) mkdir($LinkPath, 0700);
 			   if($_FILES["LinkPic"]["name"]!=""){
-				   $LinkPath= "//".$selectProject."Res/".$_POST["ResType"]."/LinkPic/".$_POST["gdcode"].".png";
-			       $specialVal=array(array("LinkPic",$LinkPath));
+				   $LinkPath2= "//".$selectProject."Res/".$_POST["ResType"]."/LinkPic/".$_POST["gdcode"].".png";
+				   $LinkPath= $LinkPath."\\".$_POST["gdcode"].".png";;
+			       $specialVal=array(array("LinkPic",$LinkPath2));
 				   move_uploaded_file($_FILES["LinkPic"]["tmp_name"], $LinkPath);
 			
 			   }
