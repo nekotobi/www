@@ -531,28 +531,59 @@
 			 $UnitWorks1= filterArrayContainStr($ResdataAll,9,$SelectWorkUnit);
 			 $UnitWorks2= filterArrayContainStr($ResdataAll,10,$SelectWorkUnit);
 			 $UnitWorks=addArray($UnitWorks1,$UnitWorks2);
-			 SetResTypeArr();
+		     global $ResTypeAllStep;//$ResTypeAllStep["mob"]
+			 $ResTypeAllStep= SetResTypeArr();
+			 DrawRect($SelectWorkUnit."工作安排",10,"#ffffff",array(60 ,100 ,200,20),"#a27e7e");
+			 global $ResUintY;
+			 $ResUintY=120;
 			 for($i=0;$i<count($UnitWorks);$i++){
-				 ListSingleUnitWork($UnitWorks[$i]);
+			 	  $RestypeArr=$ResTypeAllStep[$UnitWorks[$i][2]]; //取得製作類別陣列 $ResTypeAllStep["mob"]
+				  ListSingleUnitWork($UnitWorks[$i],$SelectWorkUnit,$RestypeArr, $y);
+				 
 			 } 
 	 }
-	 function ListSingleUnitWork($data){
-		      global $ResTypeAllStep;
-			  $typeArr=$ResTypeAllStep[$data[2]];
-			  $work=explode("=",$ResTypeAll[$i][3]);
-			  for($i=0;$i<count( $typeArr);$i++){
-			     echo  $typeArr[$i];
+	 function ListSingleUnitWork($data,$SelectWorkUnit,  $RestypeArr){ //$RestypeArr=array("製作","設定");
+		 	  global $ResTypeAllStep;
+			  global $ResUintY;
+			 
+              $principalArr=explode("=",$data[9]);
+			  $outsourcing=explode("=",$data[10]);
+			  $startDay=explode("=",$data[7]);
+			  $workingDays=explode("=",$data[8]);
+			  for($i=0;$i<count( $RestypeArr);$i++){
+				//  echo $principalArr[$i]."-".$outsourcing."=".$SelectWorkUnit;
+			       if($principalArr[$i]==$SelectWorkUnit or $outsourcing[$i]==$SelectWorkUnit ){
+					  $title=$data[3]."-".$data[4]."[".$RestypeArr[$i]."]";
+				      DrawRect($title,10,"#ffffff",array(20 ,$ResUintY ,270,19),"#222222");
+					  $sdate= $startDay[$i];
+					  $days=$workingDays[$i];
+					  PUB_DrawDragTask($data,$sdate, $days,$i, $ResUintY);
+					   $ResUintY+=20;
+				   }
 			  }
+			 
+	 }
+     function PUB_DrawDragTask($data,$sdate, $days,$ResSort,$y){
+		      global $startDate,$DateRange;
+			  global $CalendarRect;
+			  $BgColor="#222222";
+			  $fontColor="#ffffff";
+	          $id= "gdcode=".$data[3]."=".$data[2]."=".$ResSort;
+			  $x= $CalendarRect[0]+ (CAPI_returnLocX(  $sdate,$startDate )-1)*$CalendarRect[2];
+			  $workWid=$CalendarRect[2]*$days;
+			  
+			  JAPI_DrawJavaDragbox( $days ,$x,$y,$workWid,18,8, $BgColor,$fontColor,$id);
+			
+	 
 	 }
 	 function SetResTypeArr(){
 	          global $ResTypeAll;
-			  global $ResTypeAllStep;
 			  $ResTypeAllStep=array();
 			  for($i=0;$i<count($ResTypeAll);$i++){
 				  $arr=explode("-",$ResTypeAll[$i][3]);
 				  $ResTypeAllStep[$ResTypeAll[$i][2]]=$arr;
 			  }
- 
+              return $ResTypeAllStep;
 	 }
 ?>
 
