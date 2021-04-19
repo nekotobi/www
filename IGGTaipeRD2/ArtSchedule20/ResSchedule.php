@@ -77,6 +77,7 @@ function Drop2Area(event) {
 			 //$Restmp=$_POST["ResType"];
 			 $selUnitmp=$_POST["SelectWorkUnit"];
 			 if ($_POST["SelectWorkUnit"]=="--") $selUnitmp="";
+			  if ($_POST["ListType"]=="清單") $selUnitmp="";
 			 $WebSendVal=array(array("ResType",$_POST["ResType"]),
 			                   array("ResSn",$_POST["ResSn"] )  ,
 							   array("ListType",$_POST["ListType"] )  ,

@@ -548,8 +548,11 @@
 			  $outsourcing=explode("=",$data[10]);
 			  $startDay=explode("=",$data[7]);
 			  $workingDays=explode("=",$data[8]);
+			  $state=explode("=",$data[11]);
 			  for($i=0;$i<count( $RestypeArr);$i++){
+				 if( $state[$i]!="已完成"){
 			       if(trim($principalArr[$i])==trim($SelectWorkUnit)   or $outsourcing[$i]==$SelectWorkUnit ){
+					   
 					  $title=$data[3]."-".$data[4]."[".$RestypeArr[$i]."]";
 				      DrawRect($title,10,"#ffffff",array(20 ,$ResUintY ,270,19),"#222222");
 					  $sdate= $startDay[$i];
@@ -557,6 +560,7 @@
 					  PUB_DrawDragTask($data,$sdate, $days,$i, $ResUintY);
 					  $ResUintY+=20;
 				   }
+				 }
 			  }
 			 
 	 }
@@ -564,7 +568,7 @@
 		      global $startDate,$DateRange;
 			  global $CalendarRect;
 			  $BgColor="#777722";
-			   $BgColorE ="#555522";
+			  $BgColorE ="#555522";
 			  $fontColor="#ffffff";
 	          $id= "gdcode=".$data[3]."=".$data[2]."=".$ResSort;
 			  $Eid= "Egdcode=".$data[3]."=".$data[2]."=".$ResSort."=".$sdate;
