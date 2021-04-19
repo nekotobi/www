@@ -10,8 +10,8 @@
 		       global $URL;
 			   $URL="ResSchedule.php";
 			   global $CookieArray;
-			   $CookieArray=array("selectProject","startDate_Res","DateRange_Res");
-			   $WebSendArray=array("ResType","ListType","SortType");
+			   $CookieArray=array("selectProject","startDate_Res","DateRange_Res" );
+			   $WebSendArray=array("ResType","ListType","SortType","SelectWorkUnit");
 	           //PubApi_setcookies($CookieArray, $URL);
 		  	   JAPI_setcookiesAndReload($CookieArray, $WebSendArray, $URL);
 			   PubApi_GetArrayCookie($CookieArray); 
@@ -74,17 +74,21 @@ function Drop2Area(event) {
 			 $ResPath=dirname(dirname(dirname(__FILE__))) ."\\".$selectProject."Res";
 			 $noPic=$webPath."\\NoPic.png";
 			 global  $WebSendVal  ;
-			 $WebSendVal=array(array("ResType",$_POST["ResType"] ),
+			 //$Restmp=$_POST["ResType"];
+			 $selUnitmp=$_POST["SelectWorkUnit"];
+			 if ($_POST["SelectWorkUnit"]=="--") $selUnitmp="";
+			 $WebSendVal=array(array("ResType",$_POST["ResType"]),
 			                   array("ResSn",$_POST["ResSn"] )  ,
 							   array("ListType",$_POST["ListType"] )  ,
 							   array("SortType",$_POST["SortType"] )  ,
 							   array("AssemblyType",$_POST["AssemblyType"] )  ,
+							   array("SelectWorkUnit",$selUnitmp )  ,
 							   );
 			 //網頁變數
 			 global $ResTypes,$ResTypeSingleData;
 			 global $typeDatabase,$Resdatas, $ResLastGDSN,$ResdatasT;
              global  $ResdataBase,$typeDatabase;
-			 global $ResTypeAll;
+			 global $ResTypeAll, $ResTypeAllStep;
 			 $typeDatabase="restype_".$selectProject;
 			 $ResdataBase="resdata_".$selectProject;
 			 //類別
@@ -93,6 +97,7 @@ function Drop2Area(event) {
 			 $ResTypeSingleDataT=filterArray( $ResTypeAll,2,$_POST["ResType"] );
 			 $ResTypeSingleData=$ResTypeSingleDataT[0];
 	         $ResTypes = returnArraybySort( $ResTypeAll,2);
+			 $ResTypeAllStep= SetResTypeArr();
 			 global $AssemblyType;
 			 $AssemblyType=explode("_", $ResTypeSingleData[3]);
 			 //細項
@@ -769,7 +774,7 @@ function Drop2Area(event) {
 			    global $data_library,$ResdataBase;
 			    global $ResPregresList;
 				global $Resdatas;
-				global $ResdataAll;
+				global $ResdataAll,$ResTypeAllStep;
 				global $WebSendVal,$URL;
 				global $ListType;
 			    $DragID=explode("=",$_POST["DragID"]);
@@ -787,6 +792,7 @@ function Drop2Area(event) {
 				   if($data2[1]="delete") clearSc(	$curentData, $WHEREtable,$WHEREData,$DragID[3],$data2[2]);
 				   return;
 				}
+			 
 				if($DragID[0]=="SetMat"){ //怪物分布圖
 			       $gdcode=$data2[1];  
 				   $curentData=filterArray($Resdatas,3,$gdcode);
@@ -803,7 +809,9 @@ function Drop2Area(event) {
 				if($DragID[0]=="gdcode"){
 					if($data2[0]=="startDay"){
 					   $Base=array("startDay");
-					   $str=returnState($curentData[0][7],$data2[1],$ResSort,count($ResPregresList));
+					    $c=count($ResTypeAllStep[$curentData[0][2]]);
+					   //$str=returnState($curentData[0][7],$data2[1],$ResSort,count($ResPregresList));
+					   $str=returnState($curentData[0][7],$data2[1],$ResSort,$c);
 					   $up=array($str);
 					}
 			     	if($data2[0]=="tableName"){
@@ -837,7 +845,7 @@ function Drop2Area(event) {
 				}
 			//	echo ">".$curentData[0][$sort]."[";
 			    $stmt=MAPI_MakeUpdateStmt($ResdataBase,$Base,$up,$WHEREtable,$WHEREData);
-			 //    echo $stmt;
+			 //  echo $stmt;
 			   SendCommand($stmt,$data_library);		
 			   JAPI_ReLoad($WebSendVal,$URL);
 	  }
