@@ -663,6 +663,7 @@ function Drop2Area(event) {
 			   global $singleResHieght;
 			   global $CalendarH;
 			   $h=$CalendarH; // $singleResHieght*count($Resdatas)+ 50;
+			 //  if($h<600)  $h=600;
 	           CAPI_DrawBaseCalendar($startDate,$DateRange,$CalendarRect[0],$CalendarRect[1],$CalendarRect[2],$h);
                $Rect=array(320,0,40,10);
 			   //工作人員區

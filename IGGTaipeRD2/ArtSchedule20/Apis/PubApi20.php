@@ -270,6 +270,29 @@
 				 }
 	            return $returnArray;
 	   }  
+	   function getSortArrayNames($BaseArray,$num){ //整理某欄位所有名稱(不重複)回傳陣列
+	            $arr=array();
+				for($i=0;$i<count($BaseArray);$i++){
+				    if($BaseArray[$i][$num]!=""){
+					    if(!in_array($BaseArray[$i][$num], $arr)){
+					      array_push($arr,$BaseArray[$i][$num]);
+					      }
+				     }
+	            }
+				return $arr;
+	   }
+	   function SortNamesToArray($BaseArray,$num,$NameArray){//整理名稱陣列> arr["name"]=array(array(xx,xx,xx));
+	            $arr=array();
+				for($i=0;$i<count($NameArray);$i++){
+					$arr[$NameArray[$i]]=array();
+					foreach($BaseArray as $ar   ){
+					   if($ar[$num]==$NameArray[$i]){
+					      array_push($arr[$NameArray[$i]],$ar);
+					   }
+					}
+			    }
+				return $arr;
+	   }
 ?>
 <?php //function_exist
        function PAPI_returnSplitStr($str,$num){

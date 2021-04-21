@@ -1,16 +1,43 @@
 <?php
-       function MAPI_AutoCreateNewMsQLData($data_library,$tableName ){
+       function UpPic($postname,  $upPath,$filename){
+		        if (!is_dir($upPath) ) mkdir($upPath, 0700);
+	            if($_FILES[$postname]["name"]!=""){
+				  $exe=  pathinfo($_FILES[$postname]['name'],PATHINFO_EXTENSION);
+			      $up=$upPath."//".$filename.".".$exe;
+				  move_uploaded_file($_FILES[$postname]["tmp_name"], $up);
+				  return $exe;
+				 }
+	   }
+       function MAPI_AutoCreateNewMsQLData($data_library,$tableName,$extraArr=null ){
 		        $tables=returnTables($data_library ,$tableName);
 				$WHEREtable=array();
 				$WHEREData=array();
 	            for($i=0;$i<count($tables);$i++){
-					array_push($WHEREtable,$tables[$i]);
+					$val=$_POST[$tables[$i]];
+					if($extraArr[$tables[$i]]!="")$val=$extraArr[$tables[$i]];
+					array_push( $WHEREtable,"`".$tables[$i]."`");
+					array_push(	$WHEREData,$val);
+	            }
+				$stmt= MakeNewStmt($tableName,$WHEREtable,$WHEREData);
+			  
+				SendCommand($stmt,$data_library);		
+		             
+	   }
+	   /*
+	   function MAPI_AutoCreateNewMsQLData($data_library,$tableName ){
+		        $tables=returnTables($data_library ,$tableName);
+				$WHEREtable=array();
+				$WHEREData=array();
+	            for($i=0;$i<count($tables);$i++){
+					array_push( $WHEREtable,$tables[$i]);
 					array_push(	$WHEREData,$_POST[$tables[$i]]);
 	            }
 				$stmt= MakeNewStmt($tableName,$WHEREtable,$WHEREData);
-				 SendCommand($stmt,$data_library);		
+			    echo $stmt;
+				SendCommand($stmt,$data_library);		
 		             
 	   }
+	   */
 	   function MAPI_AutoEditMsQLData($data_library,$tableName,$WHEREtable,$WHEREData,$specialVal=null ){
 		        $tables=returnTables($data_library ,$tableName); 
 				$Base=array();

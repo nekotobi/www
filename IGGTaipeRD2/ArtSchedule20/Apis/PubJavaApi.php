@@ -78,7 +78,7 @@
 			           font-size:".$fontSize."px; color:".$fontColor."; background-color:".$BgColor."; '>".$msg;
 	             echo "</div>";
 	    }
-        function JAPI_CreatJavaForm( $URL,$tableName,$inputsTextNames,$RecWebPostArr ,$sx=1000,  $y=10){
+        function JAPI_CreatJavaForm( $URL,$tableName,$inputsTextNames,$RecWebPostArr ,$sx=1000,  $y=10,$RectArray=array()){
 			     $lastUpdate=date("Y_j_n_H_i_s");
 		         $upFormVal=array("Show","Show",$URL);
 			     $UpHidenVal=array(array("tablename",$tableName),
@@ -94,7 +94,17 @@
 			     $inputVal=array();     		
                  $w=100;	 			  
 			     for($i=0;$i<count( $inputsTextNames);$i++){
-			         $a=array("text",$inputsTextNames[$i],$inputsTextNames[$i],10,$sx ,$y, $w,20,$BgColor,$fontColor,"" ,10);
+					 $ix=$sx;
+					 $iy=$y;
+					 $fs=10;
+					 $h=20;
+					 if($RectArray[$inputsTextNames[$i]]!=""){
+					 $ix =$RectArray[$inputsTextNames[$i]][0];
+					 $iy=$RectArray[$inputsTextNames[$i]][1];
+					  $fs=$RectArray[$inputsTextNames[$i]][2];
+					 $h=$RectArray[$inputsTextNames[$i]][3];
+					 }
+			         $a=array("text",$inputsTextNames[$i],$inputsTextNames[$i],10,$ix ,$iy, $w, $h,$BgColor,$fontColor,"" ,$fs);
 					 $sx+= $w;
 					 array_push( $inputVal,$a);
 			     }		  

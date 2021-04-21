@@ -13,6 +13,16 @@
 			   } 
 	    }
 		
+        function ProAPI_DrawOutsAreas($Rect,$LinkButtom=false){ 
+		         global $WorkY;
+			     $WorkY=$Rect[1];
+			     $wid=$Rect[2];   
+			     $OutsT=getMysqlDataArray("outsourcing"); 
+			     $OutsT2=filterArray($OutsT,35,"true");
+			     $Outs=returnArraybySort( $OutsT2,2);
+			     array_Push( $Outs,"--");
+		         ProAPI_DrawDragUpArea($Outs,$Rect[0],$WorkY,$wid,"outsourcing",$LinkButtom);
+		}
         function ProAPI_DrawWorkersAreas($Rect,$LinkButtom=false){ //
 	           $startX=$Rect[0];
 			 //  $startY=$Rect[1];
@@ -38,30 +48,26 @@
            	   $Typestmp=getMysqlDataArray("scheduletype"); 
 		       $arrT=filterArray( $Typestmp,0,"data3");
 			   $arr=returnArraybySort($arrT,2);
-			   
 			   ProAPI_DrawDragUpArea($arr,$startX,$WorkY,$wid,"state");
-			     
-
 	 }
 	    function ProAPI_DrawDragUpArea($arr,$x,$y,$wid,$uptableName,$LinkButtom=false){ //
 	          $BgColor="#224444";
 			  $fontColor="#ffffff";
-			   global  $WebSendVal  ;
+			   global $WebSendVal  ;
 			   global $URL;
-			     global $WorkY;
+			   global $WorkY;
 			   $c=0;
 			   $Bx=$x;
 	          for($i=0;$i<count($arr);$i++){
-				  
 				  $id="tableName=".$uptableName."=".$arr[$i];
-			
+		          $str= substr($arr[$i], 0, 9);
 				  if($LinkButtom){
 					 $valArray=$WebSendVal;
 					 $SubmitName="submit";
 					 array_push( $valArray ,array("SelectWorkUnit",$arr[$i]));
 					 sendVal($URL,  $valArray ,$SubmitName,  "_",array($x-3,$WorkY,5,14),4,  "#664444"); 
 				  }
-				  JAPI_DrawJavaDragArea($arr[$i],$x,$WorkY,$wid-1,14,$BgColor,$fontColor,$id,8);
+				  JAPI_DrawJavaDragArea( $str,$x,$WorkY,$wid-1,14,$BgColor,$fontColor,$id,8);
 				  $c+=1;
 				  $x+=$wid;
 				  if($c>17)  {
