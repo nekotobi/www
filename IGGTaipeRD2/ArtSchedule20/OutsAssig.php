@@ -157,7 +157,7 @@ function Drop2Area(event) {
 				 echo $exe;
 				 if($exe!="") $extraArr["filename"]=$exe;
 				 MAPI_AutoCreateNewMsQLData($data_library,$tableName, $extraArr );
-			     //JAPI_ReLoad(  $WebSendVal,$URL);
+			     JAPI_ReLoad(  $WebSendVal,$URL);
 			  }
 			  if($_POST["DragID"]!=""){
 				  CheckDrag();
