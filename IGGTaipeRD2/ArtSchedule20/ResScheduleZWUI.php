@@ -131,8 +131,8 @@ function Drop2Area(event) {
 	         }
 			 SortResData();
 		     global $singleResHieght;
-			 $singleResHieght=  count($ResPregresList)*20;
-			 if($singleResHieght<80)$singleResHieght=60;
+			 $singleResHieght=  count($ResPregresList)*14;
+			// if($singleResHieght<80)$singleResHieght=60;
 			 global $CalendarH;
 			 $CalendarH= $singleResHieght*count($Resdatas)+ 50;
 			 global $Prefix;
@@ -311,7 +311,7 @@ function Drop2Area(event) {
               $h= $singleResHieght;// 20*count($ResPregresList);
 			 // $w=$singleResHieght;
 			  $w=80;
-			  if($h<60)$h=60;
+			 // if($h<60)$h=60;
 			  $Rect=array("20","110",$w,$h);
 			  if(strpos($_POST["ListType"],"[") != false){ 
 			     DrawType();
@@ -481,13 +481,13 @@ function Drop2Area(event) {
 					  $sn=$data[3];
 					  $Resort=returnReSort($data[16],$data[17]);
 					  if($Resort!="")$sn=$Resort;
-				      DrawRect($sn,10,"#ffffff",$Rect,"#222222" );
+				      DrawRect($sn,8,"#ffffff",$Rect,"#222222" );
 					  if($Resort!="")  DrawRect($data[3],8,"#aaaaaa",array($Rect[0]+45,$Rect[1]+12,30,10),"#444444" );
 				  }
 				  //名稱
-				  $nRect=array($Rect[0]+1,$Rect[1]+$Rect[3]-20,$Rect[2]-2,18);
+				  $nRect=array($Rect[0]+1,$Rect[1]+$Rect[3]-16,$Rect[2]-4,14);
 			
-				  DrawRect($data[4],10,"#000000",$nRect,"#eeeeee" );
+				  DrawRect($data[4],9,"#000000",$nRect,"#eeeeee" );
 			      //縮圖
 				  $Rect[0]+=$Rect[2]+2;
 				  $Rect[2]=$Rect[3];
@@ -586,7 +586,7 @@ function Drop2Area(event) {
 				   if($state[$i]=="已完成")  $BgColor="#999999";
 				   if($state[$i]=="規劃排程")  $BgColor=PAPI_changeGlayColor(  $BgColor,2);
 				   if($state[$i]=="進行中") $BgColor=PAPI_changeColor( $BgColor,array(1.3,1.3,1.3));
-                   JAPI_DrawJavaDragbox(   $msg ,$x,$y,$w,$h,10, $BgColor, "#ffffff",$id);
+                   JAPI_DrawJavaDragbox(   $msg ,$x,$y,$w,$h,8, $BgColor, "#ffffff",$id);
 				   //價格
 				   //已排定
 				   if( $startDay[$i]!="" and $state[$i]!="未定義" ){
@@ -604,10 +604,10 @@ function Drop2Area(event) {
 							$x2=($x+$w);
 							$endx=$x2-$xe;
 						}
-					    JAPI_DrawJavaDragbox( "[".$wd."]",$x2,$y+1,$workWid-$endx,$h-4,10, $BgColor,$fontColor,$id);
+					    JAPI_DrawJavaDragbox( "[".$wd."]",$x2,$y+1,$workWid-$endx,$h-4,8, $BgColor,$fontColor,$id);
 						//拖曳天數
 					    $BgColorE=PAPI_changeColor( $BgColor,array(0.8,0.8,0.8));
-						if($state[$i]!="已完成") JAPI_DrawJavaDragbox( "",$xe+$workWid,$y+1,$CalendarRect[2] ,$h-4,10, $BgColorE,$fontColor, $Eid);
+						if($state[$i]!="已完成") JAPI_DrawJavaDragbox( "",$xe+$workWid,$y+1,$CalendarRect[2] ,$h-4,8, $BgColorE,$fontColor, $Eid);
 					  }
 				   }
 				   if( $costArr[$i]!="") DrawRect( $costArr[$i],7,"#ffffff",array( $x+$w-30,$y,30,12),"#aa7744");
