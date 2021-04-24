@@ -435,7 +435,6 @@ function Drop2Area(event) {
 				  JAPI_DrawJavaDragArea($types[$i],$x,$y,$w,$Ah,$BgColor,$fontColor,$id,"12" );
 				  //季計畫完成度
 				  if(strpos($_POST["ListType"],"計畫") !== false){
-				 
 					$msg=$total."/".$AllResTotal."[".(int)(($total/$AllResTotal)*100)."%]";
 				    DrawRect($msg,8,"#ffffff",array($x+1,$y+16,47,14),"#000000");
 				
@@ -497,12 +496,11 @@ function Drop2Area(event) {
 			      //縮圖
 				  $Rect[0]+=$Rect[2]+2;
 				  $Rect[2]=$Rect[3];
-				  $LinkPath=$data[18];
 				  
-				  if($LinkPath=="") {
+				  if($data[18]=="") {
 					  $LinkPath=returnPicPath($GDcode ,"true" );
 				  }
-				  if($LinkPath!="") {
+				  if($data[18]!="") {
 					  $LinkPath=returnPicPath($GDcode ,"Link" );
 				  }
 				  DrawLinkPic(returnPicPath($GDcode ),$Rect,$LinkPath );
