@@ -336,10 +336,26 @@
 				  if($st[$i]=="進行中")$BgColor="#88cc88";
 				  DrawRect("","8","#ffffff",array($x,$y,10,5),$BgColor );
 				  $x+=11;
-			 
 			  }
 	 }
- 
+	 function ListProgressRate($typeName,$sortArr,$x,$y){
+		      echo ">".$typeName.">";
+			  global $AssemblyType;
+			  $typeFin=array();
+			  	   for($j=0;$j<count($AssemblyType);$j++) $typeFin[$j]=0;
+	          for($i=0;$i<count($sortArr);$i++){
+			       $arr=explode("=",$sortArr[$i][11]);
+				   for($j=0;$j<count($arr);$j++){
+					   if($arr[$j]=="已完成")$typeFin[$j]+=1;
+				   }
+			  }
+			  for($i=0;$i<count($AssemblyType);$i++){
+				  $str=$AssemblyType[$i]."已完成:".$typeFin[$i]."/".count($sortArr);
+				  DrawRect( $str,10,"#ffffff",array($x,$y+10,100,16),"#224422");
+				  $y+=16;
+			  }
+	 }
+     
 ?>
 <?php //重新GD排序
      function returnReSort($s1,$s2, $Prefix="x"){

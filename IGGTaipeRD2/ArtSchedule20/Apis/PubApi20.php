@@ -357,7 +357,7 @@
        function PAPI_returnECode( ){
 	            return  date("Y-m-d-His",(time()+8*3600));
 	   }
-	   function upSubmitform($upFormVal,$UpHidenVal, $inputVal){
+	   function upSubmitform($upFormVal,$UpHidenVal, $inputVal,$selectVal=array()){
 		        //=========
 	            //$upFormVal ==>0/id 1/name 2/URL 
 			    //$UpHidenVal=array 0/name,1/val
@@ -379,7 +379,11 @@
 				    $fontColor=$inputVal[$i][9];
 				    $BgColor=$inputVal[$i][8];
 				    DrawInputRect_size($msg,$fontSize,$fontColor,$x,$y,$w,$h,$BgColor,$WorldAlign,$input);
-			  }
+			   }
+			   for($i=0;$i<count($selectVal);$i++){
+				   $Rect=$selectVal[$i][1];
+			   	   DrawInputRect_size("表單列表",10,"#222222",$Rect[0],$Rect[1],$Rect[2],$Rect[3],$BgColor,$WorldAlign,$selectVal[$i][0]);
+			   }
 	 		    echo "<form>";
 			 
 	   }

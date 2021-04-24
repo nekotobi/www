@@ -25,6 +25,7 @@ function Drop2Area(event) {
 	  defineData();
 	  ListOuts();
       CheckSubmit();
+	   ListOutsInput();
 	  setJavaForm();//java表單一定要最後
 ?>
 
@@ -64,7 +65,7 @@ function Drop2Area(event) {
 		     DrawRect("外包需求未申請暫存區",14,"#ffffff",array(20,20,1000,20),"222222");
 			 global $ListY;
 			 $ListY=100;
-		     ListOutsInput();
+	
 		     DrawNewOrder();
 			 ListOutsNames();
 	}
@@ -167,6 +168,9 @@ function Drop2Area(event) {
 		      global $data_library,$ResdataBase;
 	          $Drag=explode("=",$_POST["DragID"]);
 			  $targ=explode("=",$_POST["target"]);
+			  if( $targ[0]=="edit"){
+			  
+			  }
 		      $WHEREtable=array( "EData", "ECode");
 		      $WHEREData=array( "data",$Drag[1] );
 			  $Base=array($targ[1]);
@@ -195,5 +199,7 @@ function Drop2Area(event) {
 	           JAPI_CreatJavaForm( $URL, $ResdataBase,$inputsTextNames,$WebSendVal,$x,  $y ,$RectArray);
 			   $id="tableName=process=".date("y-m-j");
 			   JAPI_DrawJavaDragArea( "已處理",440,98,40,20,"#225555","#ffffff",$id,11);
+			   $id="edit";
+			   JAPI_DrawJavaDragArea( "編輯",500,98,40,20,"#aa3333","#ffffff",$id,11);
 	  }
 ?>

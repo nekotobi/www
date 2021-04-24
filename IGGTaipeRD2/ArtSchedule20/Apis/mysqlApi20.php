@@ -218,6 +218,36 @@
 ?>
 
 <?php
+       function MAPI_getColumnsize(){
+		       $selectable= $_POST['selectable'];
+		       global $data_library ;
+		       $db = mysql_connect("localhost","root","1406");
+		       $db_selected = mysql_select_db( $data_library,$db);
+		       $fields= returnTables($data_library ,$selectable);
+		       $ret=array();
+		       for($i=0;$i<count($fields);$i++){
+			       $sql = "SELECT CHARACTER_MAXIMUM_LENGTH,column_name FROM information_schema.columns  
+                    WHERE table_name = '$selectable' AND column_name LIKE '$fields[$i]'"; 
+                    $query = mysql_query($sql,$db) or die(mysql_error());
+			        while($result = mysql_fetch_array($query)){
+				        array_push($ret,$result[CHARACTER_MAXIMUM_LENGTH] );
+				   //  echo  $result[CHARACTER_MAXIMUM_LENGTH] ;
+			   }
+		   }
+		   return $ret;
+	 }
+     function MAPI_getlibraryTables($data_library){ //取得資料表格內所有table
+	        $db = mysql_connect("localhost","root","1406");
+	        $db_selected = mysql_select_db( $data_library,$db);
+			$sql = "SHOW TABLES FROM $data_library";
+			$result = mysql_query($sql);
+			$tables=array();
+			while ($row = mysql_fetch_row($result)) {
+				   Array_Push($tables, $row[0] );
+                 //  echo "</br>Table: {$row[0]}\n";
+            }
+			return $tables;
+	}
        function MAPI_MakeUpdateStmt($tableName,$Base,$up,$WHEREtable,$WHEREData){
 	            $stmt="UPDATE `".$tableName."` SET ";
                 for($i=0;$i<count($Base);$i++){
