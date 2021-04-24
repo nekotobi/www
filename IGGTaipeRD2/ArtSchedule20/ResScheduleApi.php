@@ -323,7 +323,7 @@
 <?php  //完成度判斷
      function DrawFinRects($str,$x,$y,$ResCount){
 	          $st=  explode("=", $str) ;
-			  if( $st[$ResCount-1]=="已完成"){
+			  if( $st[$ResCount-1]=="已完成" or $st[$ResCount-1]=="優化中" ){
 					$BgColor="#55aaaa";
 					 DrawRect("fin","8","#ffffff",array($x+4,$y-2,40,10),$BgColor );
 					 return;
@@ -339,20 +339,66 @@
 			  }
 	 }
 	 function ListProgressRate($typeName,$sortArr,$x,$y){
-		      echo ">".$typeName.">";
+		      
 			  global $AssemblyType;
 			  $typeFin=array();
-			  	   for($j=0;$j<count($AssemblyType);$j++) $typeFin[$j]=0;
+			  	   for($j=0;$j<count($AssemblyType);$j++) {
+					   $typeFin[$j]["fin"]=0;
+					   $typeFin[$j]["inprogress"]=0;
+					   $typeFin[$j]["notprogress"]=0;
+					     $typeFin[$j]["optimization"]=0;
+				   }
 	          for($i=0;$i<count($sortArr);$i++){
 			       $arr=explode("=",$sortArr[$i][11]);
 				   for($j=0;$j<count($arr);$j++){
-					   if($arr[$j]=="已完成")$typeFin[$j]+=1;
+					   if($arr[$j]=="優化中"){
+						  $typeFin[$j]["optimization"]+=1;
+					   }
+					   if($arr[$j]=="已完成" or $arr[$j]=="優化中") 
+					   {
+					     $typeFin[$j]["fin"]+=1;
+					   }else{
+					     if($arr[$j]!="")$typeFin[$j]["inprogress"]+=1;
+					     if($arr[$j]=="")$typeFin[$j]["notprogress"]+=1;
+					   }
 				   }
 			  }
+			  $Bx=$x;
 			  for($i=0;$i<count($AssemblyType);$i++){
-				  $str=$AssemblyType[$i]."已完成:".$typeFin[$i]."/".count($sortArr);
-				  DrawRect( $str,10,"#ffffff",array($x,$y+10,100,16),"#224422");
-				  $y+=16;
+				  $total= count($sortArr);
+				  $str1="[".$AssemblyType[$i]."]";
+				  $fontColor="#ffffff";
+				  $BgColor="#002200";
+				  $x=$Bx;
+				  DrawRect( "",10, $fontColor,array($x,$y+10,200,16), $BgColor);
+				  DrawRect( $str1,10, $fontColor,array($x,$y+10,30,16), $BgColor);
+		          $str="完成".$typeFin[$i]["fin"]."/". $total;
+				    $x+=30;
+				  if ( $typeFin[$i]["fin"]== $total and  $typeFin[$i]["fin"]!=0)$fontColor="#aaffaa";
+			      DrawRect( "完成".$typeFin[$i]["fin"]."/". $total,8, $fontColor,array($x,$y+10,40,16),$BgColor);
+				   
+				  if($typeFin[$i]["optimization"]!=0){
+					    $x+=40;
+			         DrawRect( "優化中[".$typeFin[$i]["optimization"]."]",8,"#ffff66",array($x,$y+10,40,16),$BgColor);
+				  }
+				
+				  if($typeFin[$i]["inprogress"]!=0){
+					    $x+=40;
+			         DrawRect( "製作中[".$typeFin[$i]["inprogress"]."]",8,"#aaaa66",array($x,$y+10,40,16),$BgColor);
+				  }
+				
+			       if($typeFin[$i]["notprogress"]!=0){
+					     $x+=40;
+			         DrawRect( "未製作[".$typeFin[$i]["notprogress"]."]",8,"#bb6666",array($x,$y+10,40,16),$BgColor);
+				  }
+				   $y+=16;
+				 /*
+				  $str=
+				  已完成/製作中/未進行:".
+				  $typeFin[$i]["fin"]."/".$typeFin[$i]["inprogress"]."/".$typeFin[$i]["notprogress"]."/".count($sortArr);
+				  DrawRect( $str,10,"#ffffff",array($x,$y+10,200,16),"#002200");
+				
+				  */
 			  }
 	 }
      
