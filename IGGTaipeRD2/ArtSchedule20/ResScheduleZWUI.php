@@ -628,7 +628,7 @@ function Drop2Area(event) {
 			 // echo ">".$_POST["SortType"].$WebSendVal[0][1];
 			  array_push($UpHidenVal,array("gdcode",$data[3]));
 			  $BGRect=$Rect;
-			  $BGRect[2]=400;
+			  $BGRect[2]=600;
               $inputVal=array(); 
 			  //基底
 		      DrawRect($msg,$fontSize,$fontColor,$BGRect,"#442222" );
@@ -640,10 +640,10 @@ function Drop2Area(event) {
 			  //jila
 			  $Jila =array("text","jila" ,"jila","8", $Rect[0]+220,$Rect[1] ,60,20, "#aaaaaa", "#ffffff", $data[12],14);
 			  //pic
-			  $file=array("file","pic" ,"pic","6",  $Rect[0] ,$Rect[1]+30,$Rect[2],$Rect[3], "#fffff", "ffffff", "1",10);
+			  $file=array("file","pic" ,"pic","6",  $Rect[0]+400 ,$Rect[1] ,$Rect[2],$Rect[3], "#fffff", "ffffff", "1",10);
 			  //參考圖
 			  $file2=array("file","LinkPic" ,"LinkPic","6",  $Rect[0]+100 ,$Rect[1]+30,$Rect[2],$Rect[3], "#fffff", "ffffff", "1",10);
-			  $submit=array("submit","submit" ,"s","10",  $Rect[0]+320  ,$Rect[1]+10 ,$Rect[2],$Rect[3], "#ffffff", "#fffff", "變更",20);
+			  $submit=array("submit","submit" ,"s","10",  $Rect[0]+520  ,$Rect[1]+10 ,$Rect[2],$Rect[3], "#ffffff", "#fffff", "變更",20);
 			  array_push($inputVal,$name);
 			  array_push($inputVal,$remark);
 			  array_push($inputVal,$file);
