@@ -689,9 +689,9 @@
 					}
 				        $id= "gdcode=".$Resdatas[$i][3]."=".$Resdatas[$i][2];
 						$pic= returnPicPath($Resdatas[$i][3]);
-					    DrawPic( $pic,array($x,$y,20, $h));
+					    DrawPic( $pic,array($x,$y,38, 38));
 					    $msg=$Resdatas[$i][3].$Resdatas[$i][4];
-				        JAPI_DrawJavaDragbox(  $msg,$x,$y,$w-4,10,8,"#662222","#ffffff",$id);
+				        JAPI_DrawJavaDragbox(  $msg,$x,$y,$w ,10,8,"#222222","#ffffff",$id);
 				 }
 	   
 	   }
@@ -710,7 +710,7 @@
 		        for($i=1;$i<=$LastSN;$i++){
 				    $id="tablename=Rank=".$i;
 				     JAPI_DrawJavaDragArea("",$x,$y,$w,$h,$BgColor,$fontColor,$id);
-				     DrawRect(  $i ,8,$fontColor,array($x,$y+$w ,$w,10),"#222222" );
+				     DrawRect(  $i ,8,$fontColor,array($x,$y+$w ,$w,10),"#446666" );
 				  $x+=40;
 				  if($x>1000){
 					  $x=$PriX;
@@ -738,7 +738,7 @@
 				 SendCommand($stmt,$data_library);		
 			     JAPI_ReLoad($WebSendVal,$URL);
 	  }
-	   function  ReSortArr($Arrs,$sortNum,$SortaffterNum,$LastSN){//陣列,判斷欄位,在哪個數字後面開始
+	   function ReSortArr($Arrs,$sortNum,$SortaffterNum,$LastSN){//陣列,判斷欄位,在哪個數字後面開始
 	             global $data_library,$ResdataBase;	  
              	 for($i=$SortaffterNum;$i<=$LastSN;$i++) {
 				     $Ar=filterArray($Arrs,$sortNum,$i);
