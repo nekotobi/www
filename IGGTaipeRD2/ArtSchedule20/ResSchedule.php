@@ -794,6 +794,10 @@ function Drop2Area(event) {
 				//目前的資源資料
 				$curentData=filterArray($ResdataAll,3,$gdcode);
 				 //判斷特殊狀況
+				if($DragID[2]=="PrioritySort"){
+					 upPriority($curentData, $WHEREtable,$WHEREData,$DragID[1],$data2[2]);
+					 return;
+				}
 				if($data2[0]=="cmd"){
 				   if($data2[1]="delete") clearSc(	$curentData, $WHEREtable,$WHEREData,$DragID[3],$data2[2]);
 				   return;

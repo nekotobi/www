@@ -124,7 +124,7 @@ function Drop2Area(event) {
 			 global $ListType;
 			 global $className,$class;
 			 $className= explode("=", $ResTypeSingleData[7]) ;
-			 $ListType=array("清單","排程表","統計","熱區","GD排序","接續");
+			 $ListType=array("清單","排程表","統計","熱區","GD排序","接續","優序");
 			 if($_POST["ResType"]=="SceneBattel") array_push( $ListType,"怪物分布");
 	         for($i=0;$i<count($className);$i++){
 				 array_push( $ListType,$className[$i]."[".$i);
@@ -148,6 +148,7 @@ function Drop2Area(event) {
 				  $s+=1;
 				  array_push( $SortType,$s);
 			 }
+			 array_push( $SortType,"優");
 	}
 	function AddMRes(){
 	   	     global $SortType; 
@@ -171,6 +172,12 @@ function Drop2Area(event) {
 			  if( strpos($_POST["SortType"],"m") !== false  ){
 				 $m=explode("m",$_POST["SortType"] );
 				 $Resdatas=SortMPlanResData($m[0]);
+				  return;
+			  }
+		      //優序
+			 if( strpos($_POST["SortType"],"優") !== false  ){
+			   
+				 $Resdatas= sortPriorityRes($Resdatas);
 				  return;
 			  }
 			 //分頁
@@ -331,6 +338,10 @@ function Drop2Area(event) {
 			  }	
 			  if($_POST["ListType"]=="GD排序"){
 			      SortRes();
+				  return;
+			  }
+              if($_POST["ListType"]=="優序"){
+			     sortPriority();
 				  return;
 			  }
 	          if($_POST["ListType"]== "接續"){
@@ -790,6 +801,11 @@ function Drop2Area(event) {
 				//目前的資源資料
 				$curentData=filterArray($ResdataAll,3,$gdcode);
 				 //判斷特殊狀況
+				if($data2[1]=="Rank"){
+					$r=$data2[3];
+					 upPriority($curentData, $WHEREtable,$WHEREData,$DragID[1],$data2[2],$r);
+					 return;
+				}
 				if($data2[0]=="cmd"){
 				   if($data2[1]="delete") clearSc(	$curentData, $WHEREtable,$WHEREData,$DragID[3],$data2[2]);
 				   return;

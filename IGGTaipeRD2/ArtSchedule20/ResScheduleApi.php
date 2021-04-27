@@ -651,4 +651,104 @@
 	 }
 ?>
 
+<?php //優先序
+       function sortPriorityRes($Resdatas){ //排序優先序
+	            $LastSN =getLastSN2( $Resdatas,6);//rank欄位
+				$arr=array();
+				for($i=1;$i<=$LastSN;$i++){
+				     $Ar=filterArray( $Resdatas,6,$i);
+					 if(count($Ar)>0)
+					 array_push($arr,$Ar[0]);
+				}
+				return $arr;
+	   }
+       function sortPriority(){
+	            global  $Resdatas;
+				$LastSN =getLastSN2( $Resdatas,6)+1;//rank欄位
+				$PriY=140;
+				$PriX=20;
+				$x=$PriX;
+		    	$y=$PriY;
+				$w=38;
+				$h=38;
+			    DrawSortArea($LastSN,$PriY,$PriX)+62;
+				$sPriY=$PriY+((int)($LastSN*40/1000)+2)*42;
+				$fontColor="#fffffff";
+				$s=0;
+
+	             for($i=0;$i<count($Resdatas);$i++){
+                    if($Resdatas[$i][6]!=""){
+					    $x=$PriX+(($Resdatas[$i][6]-1)*40)%1000;
+                        $y=$PriY+((int)($Resdatas[$i][6]*40/1000))*42;
+					}
+				    if($Resdatas[$i][6]==""){
+						$s+=1;
+					    $x=$PriX+($s*40)%1000;
+                        $y=$sPriY+((int)($s*40/1000))*42;
+				     
+					}
+				        $id= "gdcode=".$Resdatas[$i][3]."=".$Resdatas[$i][2];
+						$pic= returnPicPath($Resdatas[$i][3]);
+					    DrawPic( $pic,array($x,$y,20, $h));
+					    $msg=$Resdatas[$i][3].$Resdatas[$i][4];
+				        JAPI_DrawJavaDragbox(  $msg,$x,$y,$w-4,10,8,"#662222","#ffffff",$id);
+				 }
+	   
+	   }
+	   function DrawSortArea($LastSN,$PriY,$PriX){
+		      	$x=$PriX;
+		    	$y=$PriY;
+				$w=38;
+				$h=42;
+				$BgColor="#aaaaaa";
+				$fontColor="#ffffff";				 
+				//丟出排序
+			    $id="tablename=Rank=".$i."=RemoveandSort";
+			    JAPI_DrawJavaDragArea("移出欄位重排",$x,$y-20,100,14,"#aa3333",$fontColor,$id);
+			    
+				
+		        for($i=1;$i<=$LastSN;$i++){
+				    $id="tablename=Rank=".$i;
+				     JAPI_DrawJavaDragArea("",$x,$y,$w,$h,$BgColor,$fontColor,$id);
+				     DrawRect(  $i ,8,$fontColor,array($x,$y+$w ,$w,10),"#222222" );
+				  $x+=40;
+				  if($x>1000){
+					  $x=$PriX;
+				      $y+=42;
+				  }
+				  
+			    }
+				 
+	  }
+	   function upPriority($curentData, $WHEREtable,$WHEREData,$gdCode,$Rank,$up ){		
+                 global $data_library,$ResdataBase;	  
+				 global $WebSendVal,$URL;
  
+				 if($up=="RemoveandSort"){
+				      global  $Resdatas;
+					  $ra=$curentData[0][6];
+					  $LastSN =getLastSN2( $Resdatas,6)+1;//rank欄位
+				      ReSortArr($Resdatas,6,$ra,$LastSN);
+					 
+				 }
+				 $Base=array("rank");
+				 $up=array($Rank);
+			     $stmt=MAPI_MakeUpdateStmt($ResdataBase,$Base,$up,$WHEREtable,$WHEREData);
+	       	     
+				 SendCommand($stmt,$data_library);		
+			     JAPI_ReLoad($WebSendVal,$URL);
+	  }
+	   function  ReSortArr($Arrs,$sortNum,$SortaffterNum,$LastSN){//陣列,判斷欄位,在哪個數字後面開始
+	             global $data_library,$ResdataBase;	  
+             	 for($i=$SortaffterNum;$i<=$LastSN;$i++) {
+				     $Ar=filterArray($Arrs,$sortNum,$i);
+					 $data=$Ar[0];
+				     $WHEREtable=array( "gdcode", "Type");
+		             $WHEREData=array( $data[3]  , $data[2]  );
+					 $Base=array("rank");
+				     $up=array($i-1);
+					 $stmt=MAPI_MakeUpdateStmt($ResdataBase,$Base,$up,$WHEREtable,$WHEREData);
+					 SendCommand($stmt,$data_library);	
+				 }
+	  }	   
+?>
