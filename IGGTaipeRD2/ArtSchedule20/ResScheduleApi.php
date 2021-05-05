@@ -318,7 +318,17 @@
 			   $data=filterArray($ResdatasT,3,$code); 
 			   return  Pub_ReturnFinCode($data[0]) ;
 	  }
-	  
+	  	function AddMRes(){
+	   	     global $SortType; 
+			 $sm=date("m")-1;
+			 
+			 if($sm<0)$sm=12;
+			 $em=$sm+4;
+			 if($sm>12)$em=$em-12;
+			 for($i=$sm;$i<=$em;$i+=1){
+				  array_push( $SortType, $i."m");
+			 }
+	}
 ?>
 <?php  //完成度判斷
      function DrawFinRects($str,$x,$y,$ResCount){

@@ -150,13 +150,7 @@ function Drop2Area(event) {
 			 }
 			 array_push( $SortType,"優");
 	}
-	function AddMRes(){
-	   	     global $SortType; 
-			 $sm=date("m")+0;
-			 for($i=$sm;$i<=$sm+4 ;$i+=1){
-				  array_push( $SortType, $i."m");
-			 }
-	}
+
 	 //整理列印Res
 	function SortResData(){
 		     global $Resdatas;
