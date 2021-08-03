@@ -8,7 +8,7 @@
 
 	  function CheckCookies(){
 		       global $URL;
-			   $URL="ResSchedule.php";
+			   $URL="ResScheduleZWUI.php";
 			   global $CookieArray;
 			   $CookieArray=array("selectProject","startDate_Res","DateRange_Res" );
 			   $WebSendArray=array("ResType","ListType","SortType","SelectWorkUnit");
@@ -26,7 +26,7 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-   <title>美術素材表</title>
+   <title>ZWM2UI美術進度表</title>
 </head>
 <body bgcolor="#b5c4b1">
 <script type="text/javascript">
@@ -53,7 +53,7 @@ function Drop2Area(event) {
 <?php //定義資料
     function defineData(){
 	         global $URL,$selectProject;
-			 if($selectProject=="")$selectProject="zombie";
+			 $selectProject="zombieUI";
 			 global $CookieArray;
 		     global  $SubmitName;
 		     $SubmitName="submit";
@@ -124,24 +124,20 @@ function Drop2Area(event) {
 			 global $ListType;
 			 global $className,$class;
 			 $className= explode("=", $ResTypeSingleData[7]) ;
-			 $ListType=array("清單","排程表","統計","熱區","GD排序","接續");
+			 $ListType=array("清單","排程表","統計","熱區","GD排序","接續","優序");
 			 if($_POST["ResType"]=="SceneBattel") array_push( $ListType,"怪物分布");
 	         for($i=0;$i<count($className);$i++){
 				 array_push( $ListType,$className[$i]."[".$i);
 	         }
 			 SortResData();
 		     global $singleResHieght;
-			 $singleResHieght=  count($ResPregresList)*20;
-			 if($singleResHieght<80)$singleResHieght=60;
+			 $singleResHieght=  count($ResPregresList)*14;
+			// if($singleResHieght<80)$singleResHieght=60;
 			 global $CalendarH;
 			 $CalendarH= $singleResHieght*count($Resdatas)+ 50;
 			 global $Prefix;
 			 $Prefix= $ResTypeSingleData[9];
 			 if($Prefix=="")$Prefix=substr($_POST["ResType"], 0, 1); 
-			 //里程碑版本資料
-			 global $milestoneData;
-			  $milestoneDataTmp= getMysqlDataArray("milestoneData_zombie");
-			   $milestoneData=filterArray( 	  $milestoneDataTmp,0,"data");
  
 	}//重新排序
 	function AddResSort(){
@@ -152,8 +148,9 @@ function Drop2Area(event) {
 				  $s+=1;
 				  array_push( $SortType,$s);
 			 }
+			 array_push( $SortType,"優");
 	}
- 
+
 	 //整理列印Res
 	function SortResData(){
 		     global $Resdatas;
@@ -169,6 +166,12 @@ function Drop2Area(event) {
 			  if( strpos($_POST["SortType"],"m") !== false  ){
 				 $m=explode("m",$_POST["SortType"] );
 				 $Resdatas=SortMPlanResData($m[0]);
+				  return;
+			  }
+		      //優序
+			 if( strpos($_POST["SortType"],"優") !== false  ){
+			   
+				 $Resdatas= sortPriorityRes($Resdatas);
 				  return;
 			  }
 			 //分頁
@@ -309,7 +312,7 @@ function Drop2Area(event) {
               $h= $singleResHieght;// 20*count($ResPregresList);
 			 // $w=$singleResHieght;
 			  $w=80;
-			  if($h<60)$h=60;
+			 // if($h<60)$h=60;
 			  $Rect=array("20","110",$w,$h);
 			  if(strpos($_POST["ListType"],"[") != false){ 
 			     DrawType();
@@ -329,6 +332,10 @@ function Drop2Area(event) {
 			  }	
 			  if($_POST["ListType"]=="GD排序"){
 			      SortRes();
+				  return;
+			  }
+              if($_POST["ListType"]=="優序"){
+			     sortPriority();
 				  return;
 			  }
 	          if($_POST["ListType"]== "接續"){
@@ -353,16 +360,13 @@ function Drop2Area(event) {
 			  $ClasstypeSort=$ClasstypeSortArr[1];
 			  $classArr=explode("=", $ResTypeSingleData[$sort]);
 			  $class=explode("_", $classArr[  $ClasstypeSort]);
-			  
 			  array_push( $class,"未分類");
 			  //拖曳底部
 			  global $ColorCode;
 			  $colorSet= $ColorCode[12];
 			  if(strpos($_POST["ListType"],"珠色") !== false) $colorSet=$ColorCode[13];
 		      DrawTypeDragBase(  $class,20,120,1000,80,$colorSet);
-           
-			  
-			
+
 	 }
 
      function DrawTypeDragObj($typeName,$x,$y,$Typesort,$types,$sortArr){
@@ -395,7 +399,7 @@ function Drop2Area(event) {
 				  
 				  $ax+=$w+1;
 				  $Acount+=1;
-				  if($Acount>=16){
+				  if($Acount>=18){
 				     $y+=$w+$h+4;
 					 $ax=$x+30;
 					 $Acount=0;
@@ -428,11 +432,12 @@ function Drop2Area(event) {
 				  $BgColor= $colorSet[$i];
 				  if($types[$i]=="未分類") $BgColor="#888888";
 				  
-				  $Ah=ceil($ArrCount/16)*$h;
+				  $Ah=ceil($ArrCount/18)*$h;
 				  if($ArrCount==0) $Ah= $h;
 				  JAPI_DrawJavaDragArea($types[$i],$x,$y,$w,$Ah,$BgColor,$fontColor,$id,"12" );
 				  //季計畫完成度
 				  if(strpos($_POST["ListType"],"計畫") !== false){
+				 
 					$msg=$total."/".$AllResTotal."[".(int)(($total/$AllResTotal)*100)."%]";
 				    DrawRect($msg,8,"#ffffff",array($x+1,$y+16,47,14),"#000000");
 				
@@ -445,11 +450,8 @@ function Drop2Area(event) {
 				  $lineCont=ceil(count( $sortArrs[$i])/18);
 				  if ($lineCont<1)$lineCont=1;
 				  $Ah=$lineCont*$h;
-				  ListProgressRate($types[$i],$sortArrs[$i],900,$By);   //列印完成度
 				  $By+=$Ah+2;
-				 
 			  }
-		   //   
 	 }
 	 //取得該type的resdata
 	 function returnSortTypes( $Resdatas,$typeName,$Typesort,$types){
@@ -484,27 +486,28 @@ function Drop2Area(event) {
 					  $sn=$data[3];
 					  $Resort=returnReSort($data[16],$data[17]);
 					  if($Resort!="")$sn=$Resort;
-				      DrawRect($sn,10,"#ffffff",$Rect,"#222222" );
-					  if($Resort!="")  DrawRect($data[3],8,"#aaaaaa",array($Rect[0]+45,$Rect[1]+12,30,10),"#444444" );
+				      DrawRect($sn,8,"#ffffff",$Rect,"#222222" );
+					  if($Resort!="")  DrawRect($data[3],8,"#aaaaaa",array($Rect[0]+45,$Rect[1]+15,20,10),"#444444" );
 				  }
 				  //名稱
-				  $nRect=array($Rect[0]+1,$Rect[1]+$Rect[3]-20,$Rect[2]-2,18);
+				  $nRect=array($Rect[0]+1,$Rect[1]+$Rect[3]-16,$Rect[2]-4,14);
 			
-				  DrawRect($data[4],10,"#000000",$nRect,"#eeeeee" );
+				  DrawRect($data[4],9,"#000000",$nRect,"#eeeeee" );
 			      //縮圖
 				  $Rect[0]+=$Rect[2]+2;
 				  $Rect[2]=$Rect[3];
+				  $LinkPath=$data[18];
 				  
-				  if($data[18]=="") {
+				  if($LinkPath=="") {
 					  $LinkPath=returnPicPath($GDcode ,"true" );
 				  }
-				  if($data[18]!="") {
+				  if($LinkPath!="") {
 					  $LinkPath=returnPicPath($GDcode ,"Link" );
 				  }
 				  DrawLinkPic(returnPicPath($GDcode ),$Rect,$LinkPath );
 				  //jila
 				  $jila=$data[12];
-				  $Link="http://bzbfzjira.iggcn.com/browse/ZW-".$jila;
+				  $Link="http://bzbfzjira.iggcn.com/browse/".$jila;
 				  if( $jila!="") DrawLinkRect_newtab($jila,8,"#ffffff",$Rect[0],$Rect[1],20,10,"#aa5555",$Link,$border);
 				  if( $_POST["EditRes"]== $GDcode and $_POST["EditRes"]!="") UpSingle($data,$ERect);
 				  if($_POST["ListType"]!="排程表")return;
@@ -588,7 +591,7 @@ function Drop2Area(event) {
 				   if($state[$i]=="已完成")  $BgColor="#999999";
 				   if($state[$i]=="規劃排程")  $BgColor=PAPI_changeGlayColor(  $BgColor,2);
 				   if($state[$i]=="進行中") $BgColor=PAPI_changeColor( $BgColor,array(1.3,1.3,1.3));
-                   JAPI_DrawJavaDragbox(   $msg ,$x,$y,$w,$h,10, $BgColor, "#ffffff",$id);
+                   JAPI_DrawJavaDragbox(   $msg ,$x,$y,$w,$h,8, $BgColor, "#ffffff",$id);
 				   //價格
 				   //已排定
 				   if( $startDay[$i]!="" and $state[$i]!="未定義" ){
@@ -606,17 +609,17 @@ function Drop2Area(event) {
 							$x2=($x+$w);
 							$endx=$x2-$xe;
 						}
-					    JAPI_DrawJavaDragbox( "[".$wd."]",$x2,$y+1,$workWid-$endx,$h-4,10, $BgColor,$fontColor,$id);
+					    JAPI_DrawJavaDragbox( "[".$wd."]",$x2,$y+1,$workWid-$endx,$h-4,8, $BgColor,$fontColor,$id);
 						//拖曳天數
 					    $BgColorE=PAPI_changeColor( $BgColor,array(0.8,0.8,0.8));
-						if($state[$i]!="已完成") JAPI_DrawJavaDragbox( "",$xe+$workWid,$y+1,$CalendarRect[2] ,$h-4,10, $BgColorE,$fontColor, $Eid);
+						if($state[$i]!="已完成") JAPI_DrawJavaDragbox( "",$xe+$workWid,$y+1,$CalendarRect[2] ,$h-4,8, $BgColorE,$fontColor, $Eid);
 					  }
 				   }
 				   if( $costArr[$i]!="") DrawRect( $costArr[$i],7,"#ffffff",array( $x+$w-30,$y,30,12),"#aa7744");
 			   }
 			 
 	 }
-	 function UpSingle($data,$Rect){                                                                                                                                                                                                                                                                           
+	 function UpSingle($data,$Rect){
 	          //$upFormVal ==>0/id 1/name 2/URL 
 			  //$UpHidenVal=array 0/name,1/val
 			  //$inputVal=0/type 1/name 2/showname 3/fontsize 4/5/6/7rect  8/bgcolor 9/fontColor 10/val 11/size
@@ -630,7 +633,7 @@ function Drop2Area(event) {
 			 // echo ">".$_POST["SortType"].$WebSendVal[0][1];
 			  array_push($UpHidenVal,array("gdcode",$data[3]));
 			  $BGRect=$Rect;
-			  $BGRect[2]=400;
+			  $BGRect[2]=600;
               $inputVal=array(); 
 			  //基底
 		      DrawRect($msg,$fontSize,$fontColor,$BGRect,"#442222" );
@@ -642,10 +645,10 @@ function Drop2Area(event) {
 			  //jila
 			  $Jila =array("text","jila" ,"jila","8", $Rect[0]+220,$Rect[1] ,60,20, "#aaaaaa", "#ffffff", $data[12],14);
 			  //pic
-			  $file=array("file","pic" ,"pic","6",  $Rect[0] ,$Rect[1]+30,$Rect[2],$Rect[3], "#fffff", "ffffff", "1",10);
+			  $file=array("file","pic" ,"pic","6",  $Rect[0]+400 ,$Rect[1] ,$Rect[2],$Rect[3], "#fffff", "ffffff", "1",10);
 			  //參考圖
 			  $file2=array("file","LinkPic" ,"LinkPic","6",  $Rect[0]+100 ,$Rect[1]+30,$Rect[2],$Rect[3], "#fffff", "ffffff", "1",10);
-			  $submit=array("submit","submit" ,"s","10",  $Rect[0]+320  ,$Rect[1]+10 ,$Rect[2],$Rect[3], "#ffffff", "#fffff", "變更",20);
+			  $submit=array("submit","submit" ,"s","10",  $Rect[0]+520  ,$Rect[1]+10 ,$Rect[2],$Rect[3], "#ffffff", "#fffff", "變更",20);
 			  array_push($inputVal,$name);
 			  array_push($inputVal,$remark);
 			  array_push($inputVal,$file);
@@ -670,34 +673,6 @@ function Drop2Area(event) {
                $Rect=array(320,0,40,10);
 			   //工作人員區
 			   ProAPI_DrawWorkersAreas($Rect,true);
-			   //里程碑
-			   DrawMilestone();
-	  }
-      function DrawMilestone(){
-	  		   //里程碑
-			   global $milestoneData;
-			   global $startDate;
-			   for($i=0;$i<count($milestoneData);$i++){
-				   //美術
-				    $xl= CAPI_returnLocX($milestoneData[$i][2],$startDate )-1 ;
-	                drawsm( $milestoneData[$i][4]."(Art)",$xl,"#55aaaa");
-					//包版
-				    $x1= CAPI_returnLocX($milestoneData[$i][3],$startDate )-1 ;
-				
-                    drawsm( $milestoneData[$i][4],$x1,"#aa6666");
-			  }
-	  }
-	  function drawsm( $title,$x1,$Color){
-		  	   global $CalendarRect; // $CalendarRect=array(315,80,10,0);
-			   global $CalendarH;
-		       if($x1<0)return;
-			//   	echo $x1;
-	  	       $x= $CalendarRect[0]+($x1*$CalendarRect[2]);
-			   echo $x;
-			   $Rect=array($x,$CalendarRect[1]+2,40,10);
-			   DrawRect( $title ,"8","#ffffff",$Rect,$Color  );
-			   $Rect=array($x,$CalendarRect[1],1, $CalendarH);
-			   DrawRect( $title ,"1","#ffffff",$Rect,$Color  );
 	  }
 ?>
 <?php //判斷submit;
@@ -722,7 +697,7 @@ function Drop2Area(event) {
  
 			   JAPI_DrawJavaDragArea("D",940,58,10,10,"#ff7777" ,"#ffffff",$id,7 );
 	  }
-
+      
 	  function upform(){
 		       global $ResdataBase,$typeDatabase;
 			   global $selectProject;
@@ -762,7 +737,7 @@ function Drop2Area(event) {
 				 $WHEREData=array("data",$_POST["gdcode"]);
 			     MAPI_AutoEditMsQLData($data_library, $ResdataBase,$WHEREtable,$WHEREData , $specialVal);
 			     $arr=array(array("ResType",$_POST["ResType"] ),array("ListType",$_POST["ListType"] ),array("SortType",$_POST["SortType"] ));
-		 
+                 JAPI_ReLoad(  $arr,$URL);
 			 
 	  }
 ?>
@@ -820,8 +795,9 @@ function Drop2Area(event) {
 				//目前的資源資料
 				$curentData=filterArray($ResdataAll,3,$gdcode);
 				 //判斷特殊狀況
-				if($DragID[2]=="PrioritySort"){
-					 upPriority($curentData, $WHEREtable,$WHEREData,$DragID[1],$data2[2]);
+				if($data2[1]=="Rank"){
+					$r=$data2[3];
+					 upPriority($curentData, $WHEREtable,$WHEREData,$DragID[1],$data2[2],$r);
 					 return;
 				}
 				if($data2[0]=="cmd"){
